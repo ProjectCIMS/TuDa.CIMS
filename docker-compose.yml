@@ -1,0 +1,14 @@
+﻿services:
+  tuda.cims.web:
+    image: tuda.cims.web
+    build:
+      context: .
+      dockerfile: src/TuDa.CIMS.Web/Dockerfile
+
+  tuda.cims.api:
+    image: tuda.cims.api
+    build:
+      context: .
+      dockerfile: src/TuDa.CIMS.Api/Dockerfile
+
+
