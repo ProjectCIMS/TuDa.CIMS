@@ -4,11 +4,27 @@
     build:
       context: .
       dockerfile: src/TuDa.CIMS.Web/Dockerfile
+    ports:
+      - "80:8080"
 
   tuda.cims.api:
     image: tuda.cims.api
     build:
       context: .
       dockerfile: src/TuDa.CIMS.Api/Dockerfile
+    ports:
+      - "8080:8080"
 
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: CIMS
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
+volumes:
+  postgres_data:
