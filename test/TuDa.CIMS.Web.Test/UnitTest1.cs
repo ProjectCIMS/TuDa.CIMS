@@ -1,4 +1,4 @@
-namespace TuDa.CIMS.Test;
+namespace TuDa.CIMS.Web.Test;
 
 public class UnitTest1
 {
