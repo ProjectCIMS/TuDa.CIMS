@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src/TuDa.CIMS.Api", "src\TuDa.CIMS.Api\TuDa.CIMS.Api.csproj", "{A532F427-D7A5-4BEA-9F1B-B812093E7BC0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{75B40CC1-517E-4A53-8993-23F59613AA30}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infrastructure", "infrastructure", "{75B40CC1-517E-4A53-8993-23F59613AA30}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
@@ -18,6 +18,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3FCAC1FD-3078-43C1-A9BE-40E7F9BE0388}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.Api.Test", "test\TuDa.CIMS.Api.Test\TuDa.CIMS.Api.Test.csproj", "{AA895B46-1C78-431C-A1E1-537899A3F0E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.Shared.Test", "test\TuDa.CIMS.Shared.Test\TuDa.CIMS.Shared.Test.csproj", "{430BC609-E4EC-42EF-AFD7-27DD5D587E41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{AA895B46-1C78-431C-A1E1-537899A3F0E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA895B46-1C78-431C-A1E1-537899A3F0E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA895B46-1C78-431C-A1E1-537899A3F0E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{430BC609-E4EC-42EF-AFD7-27DD5D587E41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{430BC609-E4EC-42EF-AFD7-27DD5D587E41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{430BC609-E4EC-42EF-AFD7-27DD5D587E41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{430BC609-E4EC-42EF-AFD7-27DD5D587E41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CD89505D-FA85-4962-B004-C4C0780196E3} = {A78619F8-AAF0-444B-BFC2-6C5A6882243E}
@@ -52,5 +58,6 @@ Global
 		{8613E185-9946-4E84-96EC-B0358333F8E4} = {3FCAC1FD-3078-43C1-A9BE-40E7F9BE0388}
 		{6C68F0E9-B135-4957-8A35-AE1BCA1A2F21} = {3FCAC1FD-3078-43C1-A9BE-40E7F9BE0388}
 		{AA895B46-1C78-431C-A1E1-537899A3F0E7} = {A78619F8-AAF0-444B-BFC2-6C5A6882243E}
+		{430BC609-E4EC-42EF-AFD7-27DD5D587E41} = {A78619F8-AAF0-444B-BFC2-6C5A6882243E}
 	EndGlobalSection
 EndGlobal
