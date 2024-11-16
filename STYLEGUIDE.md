@@ -86,6 +86,17 @@ ProjectRoot/
 ```
 ### HTML
 
+To enforce this in Rider you can change the formatting settings for razor files (Editor/Code Style/ASP.NET (Razor).
+
+- Processing Instructions
+    - Attributes format: `Each attribute on separate line`
+    - Attributes indenting: `Align by first attribute`
+- Inside of Tag Header
+    - Attributes format: `Each attribute on separate line`
+    - Attributes indenting: `Align by first attribute`
+    - Sort attributes: `Checked`
+    - Sort class attributes: `Checked`
+
 #### Maximum of two HMTL-attribute per line
 
 To reduce line length and improve readability, limit the number of HTML attributes per line to two. For more than two attributes, separate them into new lines. If there are only two attributes, it's the decision of the developer to split them or not.
