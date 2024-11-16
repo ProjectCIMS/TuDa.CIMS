@@ -89,10 +89,10 @@ ProjectRoot/
 To enforce this in Rider you can change the formatting settings for razor files (Editor/Code Style/ASP.NET (Razor).
 
 - Processing Instructions
-    - Attributes format: `Each attribute on separate line`
+    - Attributes format: `First attribute on single line`
     - Attributes indenting: `Align by first attribute`
 - Inside of Tag Header
-    - Attributes format: `Each attribute on separate line`
+    - Attributes format: `First attribute on single line`
     - Attributes indenting: `Align by first attribute`
     - Sort attributes: `Checked`
     - Sort class attributes: `Checked`
@@ -110,12 +110,11 @@ To reduce line length and improve readability, limit the number of HTML attribut
 ##### To:
 
 ```html
-<button
-    class="navbar-toggler"
-    type="button"
-    aria-controls="navbarNav"
-    aria-expanded="false"
-    aria-label="Toggle navigation">
+<button class="navbar-toggler"
+        type="button"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation">
   Button
 </button>
 ```
