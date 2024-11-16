@@ -1,4 +1,4 @@
-﻿@* FilterComponent *@
+﻿@* Filter *@
 
 <!-- Frame -->
 <form>
@@ -12,8 +12,9 @@
             {
                 <span class="badge bg-secondary">
                     @keyword
-                    <button class="btn-close btn-close-white btn-sm ms-2"
-                            @onclick="() => RemoveKeyword(keyword)">
+                    <button
+                        class="btn-close btn-close-white btn-sm ms-2"
+                        @onclick="() => RemoveKeyword(keyword)">
                     </button>
                 </span>
             }
@@ -24,7 +25,11 @@
         @foreach (var item in CheckboxItems)
         {
             <div class="form check mb-2">
-                <input class="form-check-input" type="checkbox" value="" id="@item.Label">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="@item.Label">
                 <label class="form-check-label" for="@item.Label">
                     <strong>@item.Label</strong>
                     <div class="small text-muted"> @item.Description</div>
@@ -40,7 +45,10 @@
                 <span>@MinPrice€</span>
                 <span>@MaxPrice€</span>
             </div>
-            <input type="range" class="form-range" id="priceSlider">
+            <input
+                type="range"
+                class="form-range"
+                id="priceSlider">
         </div>
     </div>
 </form>
