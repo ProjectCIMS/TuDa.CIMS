@@ -14,7 +14,8 @@
                     @keyword
                     <button
                         class="btn-close btn-close-white btn-sm ms-2"
-                        @onclick="() => RemoveKeyword(keyword)">
+                        @onclick="() => RemoveKeyword(keyword)"
+                        >
                     </button>
                 </span>
             }
@@ -29,7 +30,8 @@
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="@item.Label">
+                    id="@item.Label"
+                    >
                 <label class="form-check-label" for="@item.Label">
                     <strong>@item.Label</strong>
                     <div class="small text-muted"> @item.Description</div>
