@@ -104,8 +104,7 @@ To reduce line length and improve readability, limit the number of HTML attribut
     type="button"
     aria-controls="navbarNav"
     aria-expanded="false"
-    aria-label="Toggle navigation"
->
+    aria-label="Toggle navigation">
   Button
 </button>
 ```
