@@ -1,8 +1,9 @@
-﻿@* Search bar for assets *@
+﻿@page "/assets"
+
+@* Search bar for assets *@
 <div class="position-relative"
      style="max-width: 600px;">
     <input class="form-control rounded-pill"
-           id="prototypeSearchBar"
            placeholder="Suche">
 
     <!-- Search button -->
@@ -10,13 +11,12 @@
             class="position-absolute end-0 top-50 translate-middle-y me-2 btn p-0 border-0 bg-transparent">
 
         <!-- Search icon -->
-        <i class="bi bi-search position-absolute"
-           style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;">
-        </i>
+        <span
+            class="bi bi-search position-absolute top-50 end-0 translate-middle-y text-secondary">
+        </span>
     </button>
 </div>
 
-@* Link to Bootstrap Icons *@
-<link
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
-    rel="stylesheet"/>
+
+
+
