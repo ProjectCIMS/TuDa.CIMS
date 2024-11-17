@@ -55,7 +55,7 @@ ProjectRoot/
 ├── Clients/
 ├── Models/
 ├── Entities/
-├── DTOs/
+├── Dtos/
 └── Interfaces/
 ```
 
@@ -63,7 +63,7 @@ ProjectRoot/
 
 ### Naming Conventions
 
-- For _Components_, use the suffix `Component`.
+- For _Pages_ and _Dialogs_, use the suffix `Page` and `Dialog` respectively.
 - Method Naming: Use verbs that describe the action (e.g., `OnSubmit`, `HandleClick`).
 - Event Naming: Use the `On` prefix followed by the event name (e.g., `OnClick`, `OnChange`).
 
@@ -75,13 +75,15 @@ ProjectRoot/
 
 ```markdown
 /Pages
-└── Home.razor
-└── About.razor
+└── HomePage.razor
+└── AboutPage.razor
 /Components
-└── Shared
-└── NavBarComponent.razor
-└── Forms
-└── LoginForm.razor
+└── /Shared
+└── /Forms
+└───── LoginForm.razor
+└── /Home
+└───── WelcomeBanner.razor
+└── NavBar.razor
 ```
 
 ### Use of `@code`
