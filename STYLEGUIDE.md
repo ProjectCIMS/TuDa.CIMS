@@ -9,6 +9,7 @@ For the most part, we have chosen to follow the [Microsoft Naming Conventions](<
 A `.editorconfig` file is included in the repository to enforce these conventions.
 
 Please format your code according to the rules outlined in this document before submitting a pull request.
+In Rider, you can use `Ctrl + Alt + L` to format your code.
 
 ## Extra Naming Conventions
 
@@ -84,6 +85,69 @@ ProjectRoot/
 └── /Home
 └───── WelcomeBanner.razor
 └── NavBar.razor
+```
+### HTML
+
+To enforce this in Rider you can change the formatting settings for razor files (Editor/Code Style/ASP.NET (Razor).
+
+- Processing Instructions
+    - Attributes format: `First attribute on single line`
+    - Attributes indenting: `Align by first attribute`
+- Inside of Tag Header
+    - Attributes format: `First attribute on single line`
+    - Attributes indenting: `Align by first attribute`
+    - Sort attributes: `Checked`
+    - Sort class attributes: `Checked`
+
+#### Maximum of two HMTL-attribute per line
+
+To reduce line length and improve readability, limit the number of HTML attributes per line to two. For more than two attributes, separate them into new lines. If there are only two attributes, it's the decision of the developer to split them or not.
+
+##### From:
+
+```html
+<button class="navbar-toggler" type="button" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">Button</button>
+```
+
+##### To:
+
+```html
+<button class="navbar-toggler"
+        type="button"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation">
+  Button
+</button>
+```
+
+#### No nesting of HMTL-elements in one line
+
+To ensure clarity of the HTML hierarchy, avoid nesting HTML elements in one line.
+
+##### From:
+
+```html
+<div><span>html</span></div>
+```
+
+##### To:
+
+```html
+<div>
+    <span>html</span>
+</div>
+```
+
+#### Add section comments where applicable
+
+To improve readability and overview of the code, add section comments where applicable.
+
+##### Example:
+
+```html
+<!-- Main Form Frame -->
+<form>...</form>
 ```
 
 ### Use of `@code`
