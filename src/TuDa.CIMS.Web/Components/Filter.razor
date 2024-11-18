@@ -2,16 +2,16 @@
 
 <!-- Frame -->
 <form>
-    <div class="bg-light p-3 rounded"
+    <div class="bg-secondary-subtle p-3 rounded"
          style="width: 250px;">
 
 
         <!-- Keyword Tags -->
-        <h6>Keywords</h6>
+        <h4 class="fw-bold">Filter</h4>
         <div class="d-flex flex-wrap gap-2 mb-3">
             @foreach (var keyword in Keywords)
             {
-                <span class="badge bg-secondary">
+                <span class="badge bg-secondary d-flex justify-content-center align-items-center">
                     @keyword
                     <button class="btn-close btn-close-white btn-sm ms-2"
                             @onclick="() => RemoveKeyword(keyword)">
