@@ -1,0 +1,71 @@
+<!-- grid with one column for items -->
+<div class="container text-center bg-light">
+    <div class="col">
+        @foreach (var item in Items)
+        {
+            <div class="row custom-checkbox-container">
+                <p class="text-start">@item</p>
+                <p class="text-end">
+                    <label class="custom-checkbox">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               aria-label="...">
+                        <span class="checkmark"> </span>
+                    </label>
+                </p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- pagination -->
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        <li
+            class="page-item disabled">
+            <button class="page-link">
+                🡸
+            </button>
+        </li>
+        <li
+            class="page-item active"
+            aria-current="page">
+            <button class="page-link">
+                1
+            </button>
+        </li>
+        <li class="page-item">
+            <button class="page-link">
+                2
+            </button>
+        </li>
+        <li class="page-item">
+            <button class="page-link">
+                3
+            </button>
+        </li>
+        <li class="page-item">
+            <button class="page-link">
+                🡺
+            </button>
+        </li>
+    </ul>
+</nav>
+
+
+@code {
+
+    /// <summary>
+    /// List of items to be shown
+    /// </summary>
+    [Parameter]
+    public required List<string> Items { get; set; } = Examples;
+
+    // TODO: remove the code for the initialization
+    private static readonly List<string> Examples =
+    [
+        "Trockeneis", "Ethanol", "Natriumhydroxid", "Aceton", "Ammoniumchlorid", "Wasserstoffperoxid",
+        "Kaliumpermanganat", "Messzylinder", "Erlenmeyerkolben", "Reagenzglas"
+    ];
+
+}
