@@ -17,4 +17,8 @@
     <PackageReference Include="MudBlazor" Version="7.15.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TuDa.CIMS.Shared\TuDa.CIMS.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

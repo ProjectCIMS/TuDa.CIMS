@@ -1,10 +1,12 @@
+using TuDa.CIMS.Shared.Extensions;
 using TuDa.CIMS.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
+builder.Services.AddServices().AddRefitClients(builder.Configuration);
 
 var app = builder.Build();
 
@@ -21,7 +23,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
-app.Run();
+await app.RunAsync();
