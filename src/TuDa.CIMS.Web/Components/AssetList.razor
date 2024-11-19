@@ -1,18 +1,15 @@
 <!-- grid with one column for items -->
-<div class="container text-center bg-light">
+<div class="container-fluid text-center bg-light">
     <div class="col">
         @foreach (var item in Items)
         {
-            <div class="row custom-checkbox-container">
-                <p class="text-start">@item</p>
-                <p class="text-end">
-                    <label class="custom-checkbox">
-                        <input type="checkbox"
-                               class="form-check-input"
-                               aria-label="...">
-                        <span class="checkmark"> </span>
-                    </label>
-                </p>
+            <div class="row">
+                <div class="col text-start">@item</div>
+                <div class="col text-end">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           aria-label="...">
+                </div>
             </div>
         }
     </div>
@@ -52,6 +49,13 @@
     </ul>
 </nav>
 
+<!-- TODO: Remove this again after presentation -->
+<script>
+    function tickCheckbox(row) {
+        const checkbox = row.querySelector('input[type="checkbox"]');
+        checkbox.checked = !checkbox.checked;
+    }
+</script>
 
 @code {
 
