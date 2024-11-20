@@ -1,0 +1,75 @@
+<!-- grid with one column for items -->
+<div class="container-fluid text-center bg-light">
+    <div class="col">
+        @foreach (var item in Items)
+        {
+            <div class="row">
+                <div class="col text-start">@item</div>
+                <div class="col text-end">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           aria-label="...">
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- pagination -->
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        <li
+            class="page-item disabled">
+            <button class="page-link">
+                🡸
+            </button>
+        </li>
+        <li
+            class="page-item active"
+            aria-current="page">
+            <button class="page-link">
+                1
+            </button>
+        </li>
+        <li class="page-item">
+            <button class="page-link">
+                2
+            </button>
+        </li>
+        <li class="page-item">
+            <button class="page-link">
+                3
+            </button>
+        </li>
+        <li class="page-item">
+            <button class="page-link">
+                🡺
+            </button>
+        </li>
+    </ul>
+</nav>
+
+<!-- TODO: Remove this again after presentation -->
+<script>
+    function tickCheckbox(row) {
+        const checkbox = row.querySelector('input[type="checkbox"]');
+        checkbox.checked = !checkbox.checked;
+    }
+</script>
+
+@code {
+
+    /// <summary>
+    /// List of items to be shown
+    /// </summary>
+    [Parameter]
+    public required List<string> Items { get; set; } = Examples;
+
+    // TODO: remove the code for the initialization
+    private static readonly List<string> Examples =
+    [
+        "Trockeneis", "Ethanol", "Natriumhydroxid", "Aceton", "Ammoniumchlorid", "Wasserstoffperoxid",
+        "Kaliumpermanganat", "Messzylinder", "Erlenmeyerkolben", "Reagenzglas"
+    ];
+
+}
