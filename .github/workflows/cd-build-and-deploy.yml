@@ -83,7 +83,7 @@ jobs:
         uses: cssnr/stack-deploy-action@v1
         with:
           name: cims
-          file: docker-stack.yaml
+          file: docker-stack.yml
           host: ${{ secrets.DEV_IP_ADDRESS }}
           user: deploy
           ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
