@@ -42,7 +42,8 @@ jobs:
       - name: Build and push Api Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./src/TuDa.CIMS.Api
+          context: .
+          dockerfile_path: ./src/TuDa.CIMS.Api
           push: true
           tags: |
             ghcr.io/projectcims/cims-api:latest
@@ -51,7 +52,8 @@ jobs:
       - name: Build and push Web Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./src/TuDa.CIMS.Web
+          context: .
+          dockerfile_path: ./src/TuDa.CIMS.Api
           push: true
           tags: |
             ghcr.io/projectcims/cims-web:latest
