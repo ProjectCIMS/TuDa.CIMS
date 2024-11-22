@@ -1,7 +1,8 @@
 name: CIMS Build and Deploy
 
+# TODO: This back to on_push
 on:
-  push:
+  pull_request:
     branches: [ "main" ]
 
 permissions:
