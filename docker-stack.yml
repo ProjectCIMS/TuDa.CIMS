@@ -11,9 +11,11 @@ services:
 
   postgres:
     image: postgres:latest
+    secrets:
+      - db-password
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/db-password
       POSTGRES_DB: CIMS
     ports:
       - "5432:5432"
@@ -22,3 +24,7 @@ services:
 
 volumes:
   postgres_data:
+
+secrets:
+  db-password:
+    external: true
