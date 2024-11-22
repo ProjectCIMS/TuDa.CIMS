@@ -43,7 +43,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          dockerfile_path: ./src/TuDa.CIMS.Api
+          file: ./src/TuDa.CIMS.Api/Dockerfile
+          platforms: linux/arm64,linux/amd64
           push: true
           tags: |
             ghcr.io/projectcims/cims-api:latest
@@ -53,7 +54,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          dockerfile_path: ./src/TuDa.CIMS.Api
+          file: ./src/TuDa.CIMS.Api/Dockerfile
+          platforms: linux/arm64,linux/amd64
           push: true
           tags: |
             ghcr.io/projectcims/cims-web:latest
