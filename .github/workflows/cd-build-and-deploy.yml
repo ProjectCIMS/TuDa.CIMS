@@ -1,9 +1,9 @@
 name: CIMS Build and Deploy
 
-# TODO: This back to on_push
+# TODO: This back to on_push on main
 on:
-  pull_request:
-    branches: [ "main" ]
+  push:
+    branches: [ "37-setup-cd" ]
 
 permissions:
   packages: write
