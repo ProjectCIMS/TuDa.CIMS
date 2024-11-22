@@ -1,11 +1,11 @@
 services:
   cims-web:
-    image: sc3l3t0n/cims-web:latest
+    image: ghcr.io/projectcims/cims-web:latest
     ports:
       - "80:8080"
 
   cims-api:
-    image: sc3l3t0n/cims-api:latest
+    image: ghcr.io/projectcims/cims-api:latest
     ports:
       - "8080:8080"
 
