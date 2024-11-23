@@ -9,7 +9,7 @@ services:
     ports:
       - "8080:8080"
 
-  postgres:
+  cims-postgres:
     image: postgres:latest
     secrets:
       - db-password
