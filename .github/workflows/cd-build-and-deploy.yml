@@ -86,12 +86,13 @@ jobs:
         run: |
           echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
 
-      - name: Docker Compose Deploy
-        uses: alex-ac/github-action-ssh-docker-compose@master
+      - name: Docker Stack Deploy
+        uses: sc3l3t0n/stack-deploy-action@v1
         with:
-          docker_compose_prefix: cims
-          docker_compose_filename: docker-compose.yml
-          ssh_host: ${{ secrets.DEV_IP_ADDRESS }}
-          ssh_user: deploy
-          ssh_private_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
-          docker_compose_down: 'true'
+          name: cims
+          file: docker-compose.yml
+          host: ${{ secrets.DEV_IP_ADDRESS }}
+          user: deploy
+          ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          env_file: ./envfile
+          compose: true
