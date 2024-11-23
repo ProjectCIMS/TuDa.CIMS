@@ -3,7 +3,7 @@
 /// <summary>
 /// An entity representing an item in the chemical inventory.
 /// </summary>
-public record AssetItem()
+public abstract record AssetItem
 {
     /// <summary>
     /// An identifier for the item.
@@ -21,4 +21,12 @@ public record AssetItem()
     /// The name of the item.
     /// </summary>
     public required string Name { get; set; }
-};
+    /// <summary>
+    /// The item number of the item.
+    /// </summary>
+    public required string ItemNumber { get; set; }
+    /// <summary>
+    /// The shop where the item was purchased.
+    /// </summary>
+    public required string Shop { get; set; }
+}

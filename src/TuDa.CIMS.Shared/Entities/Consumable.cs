@@ -3,7 +3,7 @@
 /// <summary>
 /// An entity representing a consumable item in the chemical inventory.
 /// </summary>
-public record Consumables()
+public record Consumable : AssetItem
 {
     /// <summary>
     /// The name of the consumable item.
@@ -21,4 +21,4 @@ public record Consumables()
     /// The shop where the item was purchased.
     /// </summary>
     public required string Shop { get; set; }
-};
+}

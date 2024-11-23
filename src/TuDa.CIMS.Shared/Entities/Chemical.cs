@@ -3,7 +3,7 @@
 /// <summary>
 /// An entity representing a chemical.
 /// </summary>
-public record Chemical()
+public record Chemical : AssetItem
 {
     /// <summary>
     /// An unique identifier for the chemical.
@@ -17,12 +17,4 @@ public record Chemical()
     /// The unit of the chemical.
     /// </summary>
     public required string Unit { get; set; }
-    /// <summary>
-    /// The item number of the chemical.
-    /// </summary>
-    public required string ItemNumber { get; set; }
-    /// <summary>
-    /// The shop where the item was purchased.
-    /// </summary>
-    public required string Shop { get; set; }
-};
+}
