@@ -1,8 +1,8 @@
 name: CIMS Build and Deploy
 
 on:
-  pull_request:
-    branches: [ "main" ]
+  push:
+    branches: [ "main", "fix/stack-not-pulling-new-images" ]
 
 permissions:
   packages: write
