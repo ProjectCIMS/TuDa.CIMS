@@ -21,4 +21,8 @@ public record Chemical()
     /// The item number of the chemical.
     /// </summary>
     public required string ItemNumber { get; set; }
+    /// <summary>
+    /// The shop where the item was purchased.
+    /// </summary>
+    public required string Shop { get; set; }
 };

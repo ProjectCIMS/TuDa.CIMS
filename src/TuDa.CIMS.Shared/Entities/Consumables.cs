@@ -17,4 +17,8 @@ public record Consumables()
     /// The item number of the consumable item.
     /// </summary>
     public required string ItemNumber { get; set; }
+    /// <summary>
+    /// The shop where the item was purchased.
+    /// </summary>
+    public required string Shop { get; set; }
 };
