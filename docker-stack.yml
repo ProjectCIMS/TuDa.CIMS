@@ -1,11 +1,11 @@
 services:
   cims-web:
-    image: ghcr.io/projectcims/cims-web:latest
+    image: ghcr.io/projectcims/cims-web:${GIT_COMMIT_HASH}
     ports:
       - "80:8080"
 
   cims-api:
-    image: ghcr.io/projectcims/cims-api:latest
+    image: ghcr.io/projectcims/cims-api:${GIT_COMMIT_HASH}
     ports:
       - "8080:8080"
 

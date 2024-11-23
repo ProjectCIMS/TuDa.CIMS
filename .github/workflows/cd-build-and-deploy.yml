@@ -1,7 +1,7 @@
 name: CIMS Build and Deploy
 
 on:
-  push:
+  pull_request:
     branches: [ "main" ]
 
 permissions:
@@ -80,7 +80,7 @@ jobs:
           echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
 
       - name: Docker Stack Deploy
-        uses: cssnr/stack-deploy-action@v1
+        uses: sc3l3t0n/stack-deploy-action@v1
         with:
           name: cims
           file: docker-stack.yml
@@ -88,3 +88,4 @@ jobs:
           user: deploy
           ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
           env_file: ./envfile
+          pull: true
