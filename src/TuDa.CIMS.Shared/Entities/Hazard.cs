@@ -1,11 +1,22 @@
-﻿
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 
 namespace TuDa.CIMS.Shared.Entities;
 
+/// <summary>
+/// An entity representing a hazard.
+/// </summary>
 public record Hazard()
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public Image Image { get; set; }
+    /// <summary>
+    /// An identifier for the hazard.
+    /// </summary>
+    public required Guid Id { get; set; }
+    /// <summary>
+    /// The name of the hazard.
+    /// </summary>
+    public required string Name { get; set; }
+    /// <summary>
+    /// An Image of the hazard.
+    /// </summary>
+    public required Image Image { get; set; }
 };
