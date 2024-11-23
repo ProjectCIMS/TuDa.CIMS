@@ -1,31 +1,21 @@
-﻿services:
+services:
   cims-web:
     image: ghcr.io/projectcims/cims-web:latest
-    build:
-      context: .
-      dockerfile: src/TuDa.CIMS.Web/Dockerfile
-      platforms:
-        - linux/arm64
-        - linux/amd64
     ports:
       - "80:8080"
 
   cims-api:
     image: ghcr.io/projectcims/cims-api:latest
-    build:
-      context: .
-      dockerfile: src/TuDa.CIMS.Api/Dockerfile
-      platforms:
-        - linux/arm64
-        - linux/amd64
     ports:
       - "8080:8080"
 
   postgres:
     image: postgres:latest
+    secrets:
+      - db-password
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/db-password
       POSTGRES_DB: CIMS
     ports:
       - "5432:5432"
@@ -34,3 +24,7 @@
 
 volumes:
   postgres_data:
+
+secrets:
+  db-password:
+    external: true
