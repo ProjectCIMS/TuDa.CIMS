@@ -95,4 +95,4 @@ jobs:
           user: deploy
           ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
           env_file: ./envfile
-          compose: true
+          compose: 'true'
