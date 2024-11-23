@@ -57,7 +57,7 @@
 
 @code {
 
-// Keywords for the Filter
+    // Keywords for the Filter
     private List<string> Keywords { get; set; } = ["Keyword", "Key", "Word"];
 
     private void RemoveKeyword(string keyword)
@@ -65,14 +65,14 @@
         Keywords.Remove(keyword);
     }
 
-// Checkbox Item Class
+    // Checkbox Item Class
     private class CheckboxItem
     {
         public required string Label { get; set; }
         public required string Description { get; set; }
     }
 
-// List of CheckboxItem Objects
+    // List of CheckboxItem Objects
     private List<CheckboxItem> CheckboxItems { get; set; } =
     [
         new CheckboxItem { Label = "Label", Description = "Description" },
@@ -81,7 +81,7 @@
     ];
 
 
-// Max and Min of the Slider
+    // Max and Min of the Slider
     private int MinPrice { get; set; } = 0;
     private int MaxPrice { get; set; } = 100;
 }
