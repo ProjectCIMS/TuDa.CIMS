@@ -80,7 +80,7 @@ jobs:
           echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
 
       - name: Docker Stack Deploy
-        uses: sc3l3t0n/stack-deploy-action@v1
+        uses: sc3l3t0n/stack-deploy-action@v1.0.0
         with:
           name: cims
           file: docker-stack.yml
