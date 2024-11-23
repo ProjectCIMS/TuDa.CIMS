@@ -56,11 +56,12 @@ jobs:
             ghcr.io/projectcims/cims-api:latest
             ghcr.io/projectcims/cims-api:${{ github.sha }}
           secret-envs: "ConnectionStrings:CIMS=${{ secrets.DB_CONNECTION_STRING }}"
+
       - name: Build and push Web Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./src/TuDa.CIMS.Api/Dockerfile
+          file: ./src/TuDa.CIMS.Web/Dockerfile
           platforms: linux/arm64,linux/amd64
           push: true
           tags: |
