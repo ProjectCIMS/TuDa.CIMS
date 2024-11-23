@@ -13,12 +13,4 @@ public record Consumable : AssetItem
     /// The serial number of the consumable item.
     /// </summary>
     public required string SerialNumber { get; set; }
-    /// <summary>
-    /// The item number of the consumable item.
-    /// </summary>
-    public required string ItemNumber { get; set; }
-    /// <summary>
-    /// The shop where the item was purchased.
-    /// </summary>
-    public required string Shop { get; set; }
 }
