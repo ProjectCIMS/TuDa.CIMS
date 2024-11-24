@@ -27,31 +27,7 @@ public class AssetItemController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var room = new Room { Id = Guid.NewGuid(), Name = "Raum" };
-        List<AssetItem> items =
-        [
-            new Chemical
-            {
-                Cas = "12343",
-                Unit = "mg",
-                Id = Guid.NewGuid(),
-                Room = room,
-                Name = "Chemikalien",
-                ItemNumber = "erwwref",
-                Shop = "fjfoej",
-            },
-            new Consumable
-            {
-                Manufacturer = "fjeifje",
-                SerialNumber = "fgjiefoefr",
-                Id = Guid.NewGuid(),
-                Room = room,
-                Name = "jiofej",
-                ItemNumber = "gjikoefe",
-                Shop = "jfikoefj",
-            },
-        ];
-        return Ok(items);
+        return (await _assetItemService.GetAll()).Match<IActionResult>(Ok, BadRequest);
     }
 
     [HttpGet($"{{{nameof(id)}:guid}}")]
