@@ -12,7 +12,10 @@ public static class ConfigureServices
     /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <returns></returns>
-    public static IServiceCollection ConfigureDbContext(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ConfigureDbContext(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
         services.AddDbContext<CIMSDbContext>(options =>
         {
@@ -28,11 +31,18 @@ public static class ConfigureServices
     {
         app.MapScalarApiReference(options =>
         {
-            options.WithTitle("CIMS Api")
+            options
+                .WithTitle("CIMS Api")
                 .WithTheme(ScalarTheme.DeepSpace)
                 .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
         });
 
         return app;
+    }
+
+    public static WebApplicationBuilder AddDbContext(this WebApplicationBuilder builder)
+    {
+        builder.AddNpgsqlDbContext<ApplicationDbContext>("CIMS");
+        return builder;
     }
 }
