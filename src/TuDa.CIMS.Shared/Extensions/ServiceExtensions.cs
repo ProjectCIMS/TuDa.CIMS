@@ -10,8 +10,8 @@ public static class ServiceExtensions
 {
     private record struct Service(
         Type ServiceType,
-        ServiceRegistrationAttribute Attribute,
-        Type ImplementationType
+        Type ImplementationType,
+        ServiceRegistrationAttribute Attribute
     );
 
     /// <summary>
@@ -25,11 +25,16 @@ public static class ServiceExtensions
 
         types
             .Where(t => t.GetCustomAttribute<ServiceRegistrationAttribute>() is not null)
-            .Select(t => new Service
+            .Select(t =>
             {
-                ServiceType = t,
-                Attribute = t.GetCustomAttribute<ServiceRegistrationAttribute>()!,
-                ImplementationType = types.First(i => i.IsAssignableTo(t) && t != i),
+                var attr = t.GetCustomAttribute<ServiceRegistrationAttribute>()!;
+                return new Service
+                {
+                    ServiceType = attr.ServiceType ?? t,
+                    ImplementationType =
+                        attr.ImplementationType ?? types.First(i => i.IsAssignableTo(t) && t != i),
+                    Attribute = attr,
+                };
             })
             .ToList()
             .ForEach(services.AddService);
@@ -41,13 +46,13 @@ public static class ServiceExtensions
     {
         switch (service)
         {
-            case (var sType, ScopedServiceAttribute, var iType):
+            case (var sType, var iType, ScopedServiceAttribute):
                 services.AddScoped(sType, iType);
                 break;
-            case (var sType, SingletonServiceAttribute, var iType):
+            case (var sType, var iType, SingletonServiceAttribute):
                 services.AddSingleton(sType, iType);
                 break;
-            case (var sType, TransientServiceAttribute, var iType):
+            case (var sType, var iType, TransientServiceAttribute):
                 services.AddTransient(sType, iType);
                 break;
         }
