@@ -26,39 +26,65 @@ public class AssetItemController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        return Ok(await _assetItemService.GetAll());
+        var room = new Room { Id = Guid.NewGuid(), Name = "Raum" };
+        List<AssetItem> items =
+        [
+            new Chemical
+            {
+                Cas = "12343",
+                Unit = "mg",
+                Id = Guid.NewGuid(),
+                Room = room,
+                Name = "Chemikalien",
+                ItemNumber = "erwwref",
+                Shop = "fjfoej",
+            },
+            new Consumable
+            {
+                Manufacturer = "fjeifje",
+                SerialNumber = "fgjiefoefr",
+                Id = Guid.NewGuid(),
+                Room = room,
+                Name = "jiofej",
+                ItemNumber = "gjikoefe",
+                Shop = "jfikoefj",
+            },
+        ];
+        return Ok(items);
+    }
+
+    [HttpGet("/{id:guid}")]
+    public async Task<IActionResult> Get(Guid id)
+    {
+        return Ok(
+            new Consumable
+            {
+                Manufacturer = "fjeifje",
+                SerialNumber = "fgjiefoefr",
+                Id = Guid.NewGuid(),
+                Room = new Room { Id = Guid.NewGuid(), Name = "Raum" },
+                Name = "jiofej",
+                ItemNumber = "gjikoefe",
+                Shop = "jfikoefj",
+            }
+        );
     }
 
     [HttpPut]
-    public async Task<IActionResult> AddSome()
+    public async Task<IActionResult> Create(AssetItem item)
     {
-        var room = new Room { Id = Guid.NewGuid(), Name = "Raum" };
-        _applicationDbContext.Rooms.Add(room);
-        await _applicationDbContext.SaveChangesAsync();
-        await _assetItemRepository.AddAll(
-            [
-                new Chemical
-                {
-                    Cas = "12343",
-                    Unit = "mg",
-                    Id = Guid.NewGuid(),
-                    Room = room,
-                    Name = "Chemikalien",
-                    ItemNumber = "erwwref",
-                    Shop = "fjfoej",
-                },
-                new Consumable
-                {
-                    Manufacturer = "fjeifje",
-                    SerialNumber = "fgjiefoefr",
-                    Id = Guid.NewGuid(),
-                    Room = room,
-                    Name = "jiofej",
-                    ItemNumber = "gjikoefe",
-                    Shop = "jfikoefj",
-                },
-            ]
-        );
+        return Ok(Guid.NewGuid());
+    }
+
+    [HttpDelete("/{id:guid}")]
+    public async Task<IActionResult> Remove(Guid id)
+    {
         return Ok();
+    }
+
+    [HttpPatch("/{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, AssetItem item)
+    {
+        return Ok(item with { Id = id });
     }
 }
