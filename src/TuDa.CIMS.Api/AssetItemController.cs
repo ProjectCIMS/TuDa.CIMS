@@ -53,7 +53,7 @@ public class AssetItemController : ControllerBase
         return Ok(items);
     }
 
-    [HttpGet("/{id:guid}")]
+    [HttpGet($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> Get(Guid id)
     {
         return Ok(
@@ -76,13 +76,13 @@ public class AssetItemController : ControllerBase
         return Ok(Guid.NewGuid());
     }
 
-    [HttpDelete("/{id:guid}")]
+    [HttpDelete($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> Remove(Guid id)
     {
         return Ok();
     }
 
-    [HttpPatch("/{id:guid}")]
+    [HttpPatch($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> Update(Guid id, AssetItem item)
     {
         return Ok(item with { Id = id });
