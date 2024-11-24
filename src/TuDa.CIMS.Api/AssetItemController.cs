@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Entities;
 
@@ -57,16 +58,18 @@ public class AssetItemController : ControllerBase
     public async Task<IActionResult> Get(Guid id)
     {
         return Ok(
-            new Consumable
-            {
-                Manufacturer = "fjeifje",
-                SerialNumber = "fgjiefoefr",
-                Id = Guid.NewGuid(),
-                Room = new Room { Id = Guid.NewGuid(), Name = "Raum" },
-                Name = "jiofej",
-                ItemNumber = "gjikoefe",
-                Shop = "jfikoefj",
-            }
+            JsonSerializer.Serialize<AssetItem>(
+                new Consumable
+                {
+                    Manufacturer = "fjeifje",
+                    SerialNumber = "fgjiefoefr",
+                    Id = Guid.NewGuid(),
+                    Room = new Room { Id = Guid.NewGuid(), Name = "Raum" },
+                    Name = "jiofej",
+                    ItemNumber = "gjikoefe",
+                    Shop = "jfikoefj",
+                }
+            )
         );
     }
 
@@ -85,6 +88,6 @@ public class AssetItemController : ControllerBase
     [HttpPatch($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> Update(Guid id, AssetItem item)
     {
-        return Ok(item with { Id = id });
+        return Ok(JsonSerializer.Serialize<AssetItem>(item with { Id = id }));
     }
 }
