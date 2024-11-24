@@ -1,4 +1,5 @@
-﻿using Scalar.AspNetCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 namespace TuDa.CIMS.Api;
 
@@ -11,11 +12,24 @@ public static class ConfigureServices
     {
         app.MapScalarApiReference(options =>
         {
-            options.WithTitle("CIMS Api")
+            options
+                .WithTitle("CIMS Api")
                 .WithTheme(ScalarTheme.DeepSpace)
                 .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
         });
 
         return app;
+    }
+
+    public static IServiceCollection ConfigureDbContext(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
+    {
+        services.AddDbContext<ApplicationDbContext>(options =>
+        {
+            options.UseNpgsql(configuration.GetConnectionString("CIMS"));
+        });
+        return services;
     }
 }

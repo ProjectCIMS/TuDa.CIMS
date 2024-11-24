@@ -1,4 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api;
+using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Api.Repositories;
+using TuDa.CIMS.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+
+builder.Services.ConfigureDbContext(builder.Configuration);
+builder.Services.AddScoped<IAssetItemRepository, AssetItemRepository>();
+builder.Services.AddScoped<IAssetItemService, AssetItemService>();
 
 var app = builder.Build();
 
@@ -17,24 +26,38 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapControllers();
 
 var summaries = new[]
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    "Freezing",
+    "Bracing",
+    "Chilly",
+    "Cool",
+    "Mild",
+    "Warm",
+    "Balmy",
+    "Hot",
+    "Sweltering",
+    "Scorching",
 };
 
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
+app.MapGet(
+        "/weatherforecast",
+        (IAssetItemRepository assetItemRepository) =>
+        {
+            assetItemRepository.Get(new Guid());
+            var forecast = Enumerable
+                .Range(1, 5)
+                .Select(index => new WeatherForecast(
                     DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                     Random.Shared.Next(-20, 55),
                     summaries[Random.Shared.Next(summaries.Length)]
                 ))
-            .ToArray();
-        return forecast;
-    })
+                .ToArray();
+            return forecast;
+        }
+    )
     .WithName("GetWeatherForecast")
     .WithOpenApi();
 

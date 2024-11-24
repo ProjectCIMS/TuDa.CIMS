@@ -1,6 +1,6 @@
 @TuDa.CIMS_HostAddress = http://localhost:5285
 
-GET {{TuDa.CIMS_HostAddress}}/weatherforecast/
+GET {{TuDa.CIMS_HostAddress}}/api/asset-item
 Accept: application/json
 
 ###
