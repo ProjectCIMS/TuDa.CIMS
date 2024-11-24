@@ -24,16 +24,16 @@ public class AssetItemService : IAssetItemService
         }
     }
 
-    public async Task<IEnumerable<AssetItem>> GetAll()
+    public async Task<ErrorOr<IEnumerable<AssetItem>>> GetAll()
     {
         try
         {
             var result = await _assetItemRepository.GetAll();
-            return result;
+            return result.ToErrorOr();
         }
         catch (Exception e)
         {
-            return [];
+            return Error.Failure();
         }
     }
 }

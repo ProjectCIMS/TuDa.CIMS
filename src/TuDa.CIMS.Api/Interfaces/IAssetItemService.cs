@@ -8,5 +8,5 @@ public interface IAssetItemService
     ///
     /// </summary>
     /// <returns></returns>
-    public Task<IEnumerable<AssetItem>> GetAll();
+    public Task<ErrorOr<IEnumerable<AssetItem>>> GetAll();
 }
