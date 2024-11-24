@@ -31,6 +31,7 @@ public interface IAssetItemApi
     /// </summary>
     /// <param name="item">The AssetItem to create.</param>
     /// <returns>A Task representing the asynchronous operation, with a result of the created AssetItem's ID.</returns>
+    /// <remarks>Uses <see cref="JsonSerializer"/> to ensure $type in json.</remarks>
     public async Task<Guid> CreateAsync(AssetItem item) =>
         await CreateAsyncInternal(JsonSerializer.Serialize(item));
 
@@ -57,6 +58,7 @@ public interface IAssetItemApi
     /// <param name="id">The ID of the AssetItem to update.</param>
     /// <param name="item">The updated AssetItem.</param>
     /// <returns>A Task representing the asynchronous operation, with a result of the updated AssetItem.</returns>
+    /// <remarks>Uses <see cref="JsonSerializer"/> to ensure $type in json.</remarks>
     public async Task<AssetItem> UpdateAsync(Guid id, AssetItem item) =>
         await UpdateAsyncInternal(id, JsonSerializer.Serialize(item));
 
