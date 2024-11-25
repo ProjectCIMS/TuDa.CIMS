@@ -37,6 +37,13 @@ public class AssetItemController : ControllerBase
 
     public async Task<IActionResult> UpdateAsync(Guid id, AssetItem updateModel)
     {
-        return Ok(JsonSerializer.Serialize<AssetItem>(updateModel with { Id = id }));
+        await _assetItemService.UpdateAsync(id, updateModel);
+        return Ok();
+    }
+
+    public async Task<IActionResult> RemoveAsync(Guid id)
+    {
+        await _assetItemService.RemoveAsync(id);
+        return Ok();
     }
 }
