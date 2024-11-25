@@ -12,11 +12,11 @@ public class AssetItemService : IAssetItemService
         _assetItemRepository = assetItemRepository;
     }
 
-    public async Task<IEnumerable<AssetItem>> GetAll()
+    public async Task<IEnumerable<AssetItem>> GetAllAsync()
     {
         try
         {
-            var result = await _assetItemRepository.GetAll();
+            var result = await _assetItemRepository.GetAllAsync();
             return result;
         }
         catch (Exception e)
@@ -25,11 +25,11 @@ public class AssetItemService : IAssetItemService
         }
     }
 
-    public async Task<ErrorOr<AssetItem>> GetOne(Guid id)
+    public async Task<ErrorOr<AssetItem>> GetOneAsync(Guid id)
     {
         try
         {
-            return await _assetItemRepository.GetOne(id);
+            return await _assetItemRepository.GetOneAsync(id);
         }
         catch (Exception e)
         {
@@ -37,11 +37,11 @@ public class AssetItemService : IAssetItemService
         }
     }
 
-    public async Task Update(Guid id)
+    public async Task UpdateAsync(Guid id, AssetItem updateModel)
     {
         try
         {
-            await _assetItemRepository.Update(id);
+            await _assetItemRepository.UpdateAsync(id, updateModel);
         }
         catch (Exception e)
         {
@@ -49,11 +49,11 @@ public class AssetItemService : IAssetItemService
         }
     }
 
-    public async Task Remove(Guid id)
+    public async Task RemoveAsync(Guid id)
     {
         try
         {
-            await _assetItemRepository.Remove(id);
+            await _assetItemRepository.RemoveAsync(id);
         }
         catch (Exception e)
         {

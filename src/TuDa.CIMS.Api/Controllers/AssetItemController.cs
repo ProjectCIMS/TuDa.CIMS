@@ -15,14 +15,24 @@ public class AssetItemController : ControllerBase
         _assetItemService = assetItemService;
     }
 
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAllAsync()
     {
-        //return (await _assetItemService.GetAll()).Match
+        return (await _assetItemService.GetAllAsync())
+            .ToErrorOr()
+            .Match<IActionResult>(value => Ok(value), err => BadRequest(err));
     }
 
-    public async Task<IActionResult> GetOne(Guid id)
+    public async Task<IActionResult> GetOneAsync(Guid id)
     {
-        return (await _assetItemService.GetOne(id)).Match<IActionResult>(
+        return (await _assetItemService.GetOneAsync(id)).Match<IActionResult>(
+            value => Ok(value),
+            err => BadRequest(err)
+        );
+    }
+
+    public async Task<IActionResult> UpdateAsync(Guid id, AssetItem updateModel)
+    {
+        return (await _assetItemService.UpdateAsync(id, updateModel)).Match<IActionResult>(
             value => Ok(value),
             err => BadRequest(err)
         );
