@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Entities;
 
@@ -15,26 +16,27 @@ public class AssetItemController : ControllerBase
         _assetItemService = assetItemService;
     }
 
+    [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
         return (await _assetItemService.GetAllAsync())
             .ToErrorOr()
-            .Match<IActionResult>(value => Ok(value), err => BadRequest(err));
+            .Match<IActionResult>(
+                value => Ok(JsonSerializer.Serialize(value)),
+                err => BadRequest(JsonSerializer.Serialize(err))
+            );
     }
 
     public async Task<IActionResult> GetOneAsync(Guid id)
     {
         return (await _assetItemService.GetOneAsync(id)).Match<IActionResult>(
-            value => Ok(value),
-            err => BadRequest(err)
+            value => Ok(JsonSerializer.Serialize(value)),
+            err => BadRequest(JsonSerializer.Serialize(err))
         );
     }
 
     public async Task<IActionResult> UpdateAsync(Guid id, AssetItem updateModel)
     {
-        return (await _assetItemService.UpdateAsync(id, updateModel)).Match<IActionResult>(
-            value => Ok(value),
-            err => BadRequest(err)
-        );
+        return Ok(JsonSerializer.Serialize<AssetItem>(updateModel with { Id = id }));
     }
 }
