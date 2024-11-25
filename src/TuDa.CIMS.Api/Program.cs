@@ -1,6 +1,13 @@
+using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api;
+using TuDa.CIMS.Api.Database;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.ConfigureDbContext(builder.Configuration);
+
+
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -44,3 +51,4 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
+
