@@ -1,18 +1,15 @@
 <!-- grid with one column for items -->
-<div class="container text-center bg-light">
+<div class="container-fluid text-center">
     <div class="col">
         @foreach (var item in Items)
         {
-            <div class="row custom-checkbox-container">
-                <p class="text-start">@item</p>
-                <p class="text-end">
-                    <label class="custom-checkbox">
-                        <input type="checkbox"
-                               class="form-check-input"
-                               aria-label="...">
-                        <span class="checkmark"> </span>
-                    </label>
-                </p>
+            <div class="row bg-body">
+                <div class="col text-start">@item</div>
+                <div class="col text-end">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           aria-label="...">
+                </div>
             </div>
         }
     </div>
@@ -21,14 +18,12 @@
 <!-- pagination -->
 <nav aria-label="Page navigation example">
     <ul class="pagination">
-        <li
-            class="page-item disabled">
+        <li class="page-item disabled">
             <button class="page-link">
                 🡸
             </button>
         </li>
-        <li
-            class="page-item active"
+        <li class="page-item active"
             aria-current="page">
             <button class="page-link">
                 1
@@ -51,7 +46,6 @@
         </li>
     </ul>
 </nav>
-
 
 @code {
 

@@ -2,16 +2,16 @@
 
 <!-- Frame -->
 <form>
-    <div class="bg-light p-3 rounded"
+    <div class="bg-body p-3 rounded"
          style="width: 250px;">
 
 
         <!-- Keyword Tags -->
-        <h6>Keywords</h6>
+        <h4 class="fw-bold">Filter</h4>
         <div class="d-flex flex-wrap gap-2 mb-3">
             @foreach (var keyword in Keywords)
             {
-                <span class="badge bg-secondary">
+                <span class="badge bg-secondary d-flex justify-content-center align-items-center">
                     @keyword
                     <button class="btn-close btn-close-white btn-sm ms-2"
                             @onclick="() => RemoveKeyword(keyword)">
@@ -57,7 +57,7 @@
 
 @code {
 
-// Keywords for the Filter
+    // Keywords for the Filter
     private List<string> Keywords { get; set; } = ["Keyword", "Key", "Word"];
 
     private void RemoveKeyword(string keyword)
@@ -65,14 +65,14 @@
         Keywords.Remove(keyword);
     }
 
-// Checkbox Item Class
+    // Checkbox Item Class
     private class CheckboxItem
     {
         public required string Label { get; set; }
         public required string Description { get; set; }
     }
 
-// List of CheckboxItem Objects
+    // List of CheckboxItem Objects
     private List<CheckboxItem> CheckboxItems { get; set; } =
     [
         new CheckboxItem { Label = "Label", Description = "Description" },
@@ -81,7 +81,7 @@
     ];
 
 
-// Max and Min of the Slider
+    // Max and Min of the Slider
     private int MinPrice { get; set; } = 0;
     private int MaxPrice { get; set; } = 100;
 }
