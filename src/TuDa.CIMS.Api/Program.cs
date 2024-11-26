@@ -1,15 +1,11 @@
 using TuDa.CIMS.Api;
+using TuDa.CIMS.Api.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.AddDbContext();
+builder.AddNpgsqlDbContext<CIMSDbContext>("CIMS");
 
-// Add services to the container.
-builder.Services.ConfigureDbContext(builder.Configuration);
-
-
-// Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
