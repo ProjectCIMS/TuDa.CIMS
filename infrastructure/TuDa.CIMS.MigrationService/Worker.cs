@@ -42,7 +42,7 @@ public class Worker(
         hostApplicationLifetime.StopApplication();
     }
 
-    private async Task EnsureDatabaseAsync(
+    private static async Task EnsureDatabaseAsync(
         CIMSDbContext dbContext,
         CancellationToken cancellationToken
     )
@@ -57,12 +57,11 @@ public class Worker(
             if (!await dbCreator.ExistsAsync(cancellationToken))
             {
                 await dbCreator.CreateAsync(cancellationToken);
-                logger.LogInformation("Created Database \"CIMS\"");
             }
         });
     }
 
-    private async Task RunMigrationAsync(
+    private static async Task RunMigrationAsync(
         CIMSDbContext dbContext,
         CancellationToken cancellationToken
     )
@@ -71,7 +70,6 @@ public class Worker(
         await strategy.ExecuteAsync(async () =>
         {
             await dbContext.Database.MigrateAsync(cancellationToken);
-            logger.LogInformation("Migrated database");
         });
     }
 
