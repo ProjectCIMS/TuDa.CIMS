@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using OpenTelemetry.Trace;
-using TuDa.CIMS.Api;
+using TuDa.CIMS.Api.Database;
+using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.MigrationService;
 
@@ -26,17 +27,7 @@ public class Worker(
         try
         {
             using var scope = serviceProvider.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync(
-                stoppingToken
-            );
-            if (!pendingMigrations.Any())
-            {
-                logger.LogInformation("No pending Migrations");
-                hostApplicationLifetime.StopApplication();
-                return;
-            }
+            var dbContext = scope.ServiceProvider.GetRequiredService<CIMSDbContext>();
 
             await EnsureDatabaseAsync(dbContext, stoppingToken);
             await RunMigrationAsync(dbContext, stoppingToken);
@@ -51,8 +42,8 @@ public class Worker(
         hostApplicationLifetime.StopApplication();
     }
 
-    private static async Task EnsureDatabaseAsync(
-        ApplicationDbContext dbContext,
+    private async Task EnsureDatabaseAsync(
+        CIMSDbContext dbContext,
         CancellationToken cancellationToken
     )
     {
@@ -66,49 +57,53 @@ public class Worker(
             if (!await dbCreator.ExistsAsync(cancellationToken))
             {
                 await dbCreator.CreateAsync(cancellationToken);
+                logger.LogInformation("Created Database \"CIMS\"");
             }
         });
     }
 
-    private static async Task RunMigrationAsync(
-        ApplicationDbContext dbContext,
+    private async Task RunMigrationAsync(
+        CIMSDbContext dbContext,
         CancellationToken cancellationToken
     )
     {
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
-            // Run migration in a transaction to avoid partial migration if it fails.
-            await using var transaction = await dbContext.Database.BeginTransactionAsync(
-                cancellationToken
-            );
             await dbContext.Database.MigrateAsync(cancellationToken);
-            await transaction.CommitAsync(cancellationToken);
+            logger.LogInformation("Migrated database");
         });
     }
 
-    private static async Task SeedDataAsync(
-        ApplicationDbContext dbContext,
-        CancellationToken cancellationToken
-    )
+    private async Task SeedDataAsync(CIMSDbContext dbContext, CancellationToken cancellationToken)
     {
-        // TODO: Seed DB
-        /*ItemType firstItemType = new() { Name = "Default Type" };
+        var hazard = new Hazard { Id = Guid.NewGuid(), Name = "Hazard" };
+        var room = new Room { Id = Guid.NewGuid(), Name = "Haupt" };
 
-        Place firstPlace =
-            new() { Name = "Default Place", Description = "Default place, please ignore!" };
+        var chemical = new Chemical
+        {
+            Cas = "12-33-34232",
+            Unit = "Liter",
+            Id = Guid.NewGuid(),
+            Room = room,
+            Name = "Chemikalie",
+            ItemNumber = "12345",
+            Shop = "Chemikalien Shop",
+            Hazards = [hazard],
+            Note = "Notiz",
+        };
 
-        Item firstTicket =
-            new()
-            {
-                Name = "Default Ticket",
-                Description = "Default ticket, please ignore!",
-                Type = firstItemType,
-                Amount = 1,
-                Guid = Guid.NewGuid(),
-                Place = firstPlace,
-                StoreDate = DateTime.UtcNow,
-            };
+        var consumable = new Consumable
+        {
+            Manufacturer = "Glasmacher",
+            SerialNumber = "12343842738437293",
+            Id = Guid.NewGuid(),
+            Room = room,
+            Name = "Verbrauchsgegenstand",
+            ItemNumber = "12345",
+            Shop = "Glas Shop",
+            Note = "Notiz",
+        };
 
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
@@ -117,16 +112,33 @@ public class Worker(
             await using var transaction = await dbContext.Database.BeginTransactionAsync(
                 cancellationToken
             );
-            var typeEntity = await dbContext.ItemTypes.AddAsync(firstItemType, cancellationToken);
-            var placeEntity = await dbContext.Places.AddAsync(firstPlace, cancellationToken);
 
-            firstTicket.Type = typeEntity.Entity;
-            firstTicket.Place = placeEntity.Entity;
+            if (!await dbContext.Hazards.AnyAsync(cancellationToken))
+            {
+                await dbContext.Hazards.AddAsync(hazard, cancellationToken);
+                logger.LogInformation("Seeding Hazard with Id {HazardId}", hazard.Id);
+            }
 
-            await dbContext.Items.AddAsync(firstTicket, cancellationToken);
+            if (!await dbContext.Rooms.AnyAsync(cancellationToken))
+            {
+                await dbContext.Rooms.AddAsync(room, cancellationToken);
+                logger.LogInformation("Seeding Room with Id {RoomId}", room.Id);
+            }
+
+            if (!await dbContext.Chemicals.AnyAsync(cancellationToken))
+            {
+                await dbContext.Chemicals.AddAsync(chemical, cancellationToken);
+                logger.LogInformation("Seeding Chemicals with Id {ChemicalsId}", chemical.Id);
+            }
+
+            if (!await dbContext.Consumables.AnyAsync(cancellationToken))
+            {
+                await dbContext.Consumables.AddAsync(consumable, cancellationToken);
+                logger.LogInformation("Seeding Consumables with Id {ConsumablesId}", consumable.Id);
+            }
 
             await dbContext.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-        });*/
+        });
     }
 }
