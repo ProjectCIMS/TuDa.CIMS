@@ -1,6 +1,4 @@
-using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api;
-using TuDa.CIMS.Api.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
