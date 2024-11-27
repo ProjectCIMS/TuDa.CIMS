@@ -17,216 +17,217 @@
      class="fade modal"
      id="createItemDialog"
      tabindex="-1">
-<div class="modal-dialog">
-<div class="modal-content">
-    <div class="modal-header">
-        <h5 class="modal-title"
-            id="createItemDialogLabel">
-            Create Item
-        </h5>
-        <button aria-label="Close"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                type="button">
-        </button>
-    </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="createItemDialogLabel">
+                    Create Item
+                </h5>
+                <button aria-label="Close"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        type="button">
+                </button>
+            </div>
 
-    <!-- Modal Body -->
-    <div class="modal-body">
+            <!-- Modal Body -->
+            <div class="modal-body">
 
-        <!-- Button Group -->
-        <div aria-label="Button group"
-             class="btn-group"
-             role="group">
-            <button class="btn btn-primary"
-                    @onclick="() => SelectedType = 1">
-                Chemical
-            </button>
-            <button class="btn btn-primary"
-                    @onclick="() => SelectedType = 2">
-                Consumable
-            </button>
+                <!-- Button Group -->
+                <div aria-label="Button group"
+                     class="btn-group"
+                     role="group">
+                    <button class="btn btn-primary"
+                            @onclick="() => SelectedType = 1">
+                        Chemical
+                    </button>
+                    <button class="btn btn-primary"
+                            @onclick="() => SelectedType = 2">
+                        Consumable
+                    </button>
+                </div>
+
+                <!-- Different Inputs dependent on the Type of the Item -->
+                @if (SelectedType == 1)
+                {
+                    <div class="mt-3">
+                        <h4>Chemical Details</h4>
+
+                        <div class="row">
+
+                            <!-- First Column -->
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label"
+                                       for="chemicalName">
+                                    Chemical Name
+                                </label>
+                                <input class="form-control"
+                                       id="chemicalName"
+                                       placeholder="Enter Chemical Name"
+                                       type="text">
+
+
+                                <label class="form-label"
+                                       for="chemicalShop">
+                                    Shop
+                                </label>
+                                <input class="form-control"
+                                       id="chemicalShop"
+                                       placeholder="Enter Shop"
+                                       type="text">
+
+
+                                <label class="form-label"
+                                       for="chemicalItemNumber">
+                                    Item Number
+                                </label>
+                                <input class="form-control"
+                                       id="chemicalItemNumber"
+                                       placeholder="Enter ItemNumber"
+                                       type="text">
+
+
+                                <label class="form-label"
+                                       for="chemicalNote">
+                                    Notes
+                                </label>
+                                <input class="form-control"
+                                       id="chemicalNote"
+                                       placeholder="Enter Notes"
+                                       type="text">
+
+                            </div>
+
+
+                            <!-- Second Column -->
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label"
+                                       for="chemicalCas">
+                                    CAS
+                                </label>
+                                <input class="form-control"
+                                       id="chemicalCas"
+                                       placeholder="Enter CAS"
+                                       type="text">
+
+
+                                <label class="form-label"
+                                       for="chemicalUnit">
+                                    Unit
+                                </label>
+                                <input class="form-control"
+                                       id="chemicalUnit"
+                                       placeholder="Enter Unit"
+                                       type="text">
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (SelectedType == 2)
+                {
+                    <div class="mt-3">
+                        <h4>Consumable Details</h4>
+
+                        <div class="row">
+                            <!-- First Column -->
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label"
+                                       for="consumableName">
+                                    Consumable Name
+                                </label>
+                                <input class="form-control"
+                                       id="consumableName"
+                                       placeholder="Enter Consumable Name"
+                                       type="text">
+
+
+                                <label class="form-label"
+                                       for="chemicalShop">
+                                    Shop
+                                </label>
+                                <input class="form-control"
+                                       id="chemicalShop"
+                                       placeholder="Enter Shop"
+                                       type="text">
+
+
+                                <label class="form-label"
+                                       for="consumableItemNumber">
+                                    Item Number
+                                </label>
+                                <input class="form-control"
+                                       id="consumableItemNumber"
+                                       placeholder="Enter ItemNumber"
+                                       type="text">
+
+
+                                <label class="form-label"
+                                       for="consumableNote">
+                                    Notes
+                                </label>
+                                <input class="form-control"
+                                       id="consumableNote"
+                                       placeholder="Enter Notes"
+                                       type="text">
+
+                            </div>
+
+
+                            <!-- Second Column -->
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label"
+                                       for="consumableManufacturer">
+                                    Manufacturer
+                                </label>
+                                <input class="form-control"
+                                       id="consumableManufacturer"
+                                       placeholder="Enter Manufacturer"
+                                       type="text">
+
+
+                                <label class="form-label"
+                                       for="consumableSerialNumber">
+                                    Serial Number
+                                </label>
+                                <input class="form-control"
+                                       id="consumableSerialNumber"
+                                       placeholder="Enter Serial Number"
+                                       type="text">
+
+
+                                <label class="form-label"
+                                       for="consumableQuantity">
+                                    Quantity:
+                                </label>
+                                <input class="form-control"
+                                       id="consumableQuantity"
+                                       placeholder="Enter Quantity"
+                                       type="number">
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div >
+
+            <!-- Modal Bottom -->
+            <div class="modal-footer">
+                <button class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        type="button">
+                    Close
+                </button>
+                <button class="btn btn-primary"
+                        type="button">
+                    Save Changes
+                </button>
+            </div>
         </div>
-
-        <!-- Different Inputs dependent on the Type of the Item -->
-        @if (SelectedType == 1)
-        {
-            <div class="mt-3">
-                <h4>Chemical Details</h4>
-
-                <div class="row">
-
-                    <!-- First Column -->
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label"
-                               for="chemicalName">
-                            Chemical Name
-                        </label>
-                        <input class="form-control"
-                               id="chemicalName"
-                               placeholder="Enter Chemical Name"
-                               type="text">
-
-
-                        <label class="form-label"
-                               for="chemicalShop">
-                            Shop
-                        </label>
-                        <input class="form-control"
-                               id="chemicalShop"
-                               placeholder="Enter Shop"
-                               type="text">
-
-
-                        <label class="form-label"
-                               for="chemicalItemNumber">
-                            Item Number
-                        </label>
-                        <input class="form-control"
-                               id="chemicalItemNumber"
-                               placeholder="Enter ItemNumber"
-                               type="text">
-
-
-                        <label class="form-label"
-                               for="chemicalNote">
-                            Notes
-                        </label>
-                        <input class="form-control"
-                               id="chemicalNote"
-                               placeholder="Enter Notes"
-                               type="text">
-
-                    </div>
-
-
-                    <!-- Second Column -->
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label"
-                               for="chemicalCas">
-                            CAS
-                        </label>
-                        <input class="form-control"
-                               id="chemicalCas"
-                               placeholder="Enter CAS"
-                               type="text">
-
-
-                        <label class="form-label"
-                               for="chemicalUnit">
-                            Unit
-                        </label>
-                        <input class="form-control"
-                               id="chemicalUnit"
-                               placeholder="Enter Unit"
-                               type="text">
-                    </div>
-                </div>
-            </div>
-        }
-        else if (SelectedType == 2)
-        {
-            <div class="mt-3">
-                <h4>Consumable Details</h4>
-
-                <div class="row">
-                    <!-- First Column -->
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label"
-                               for="consumableName">
-                            Consumable Name
-                        </label>
-                        <input class="form-control"
-                               id="consumableName"
-                               placeholder="Enter Consumable Name"
-                               type="text">
-
-
-                        <label class="form-label"
-                               for="chemicalShop">
-                            Shop
-                        </label>
-                        <input class="form-control"
-                               id="chemicalShop"
-                               placeholder="Enter Shop"
-                               type="text">
-
-
-                        <label class="form-label"
-                               for="consumableItemNumber">
-                            Item Number
-                        </label>
-                        <input class="form-control"
-                               id="consumableItemNumber"
-                               placeholder="Enter ItemNumber"
-                               type="text">
-
-
-                        <label class="form-label"
-                               for="consumableNote">
-                            Notes
-                        </label>
-                        <input class="form-control"
-                               id="consumableNote"
-                               placeholder="Enter Notes"
-                               type="text">
-
-                    </div>
-
-
-                    <!-- Second Column -->
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label"
-                               for="consumableManufacturer">
-                            Manufacturer
-                        </label>
-                        <input class="form-control"
-                               id="consumableManufacturer"
-                               placeholder="Enter Manufacturer"
-                               type="text">
-
-
-                        <label class="form-label"
-                               for="consumableSerialNumber">
-                            Serial Number
-                        </label>
-                        <input class="form-control"
-                               id="consumableSerialNumber"
-                               placeholder="Enter Serial Number"
-                               type="text">
-
-
-                        <label class="form-label"
-                               for="consumableQuantity">
-                            Quantity:
-                        </label>
-                        <input class="form-control"
-                               id="consumableQuantity"
-                               placeholder="Enter Quantity"
-                               type="number">
-                    </div>
-                </div>
-            </div>
-        }
-    </div >
-    <!-- Modal Bottom -->
-    <div class="modal-footer">
-        <button class="btn btn-secondary"
-                data-bs-dismiss="modal"
-                type="button">
-            Close
-        </button>
-        <button class="btn btn-primary"
-                type="button">
-            Save Changes
-        </button>
     </div>
-</div>
-</div>
 </div>
 
 @code {
