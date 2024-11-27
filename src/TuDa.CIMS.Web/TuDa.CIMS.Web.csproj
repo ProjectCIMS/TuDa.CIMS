@@ -27,4 +27,8 @@
     <ProjectReference Include="..\TuDa.CIMS.Shared\TuDa.CIMS.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TuDa.CIMS.Shared\TuDa.CIMS.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
