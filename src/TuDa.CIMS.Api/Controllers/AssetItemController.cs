@@ -27,6 +27,7 @@ public class AssetItemController : ControllerBase
             );
     }
 
+    [HttpGet]
     public async Task<IActionResult> GetOneAsync(Guid id)
     {
         return (await _assetItemService.GetOneAsync(id)).Match<IActionResult>(
@@ -35,12 +36,14 @@ public class AssetItemController : ControllerBase
         );
     }
 
+    [HttpPut]
     public async Task<IActionResult> UpdateAsync(Guid id, AssetItem updateModel)
     {
         await _assetItemService.UpdateAsync(id, updateModel);
         return Ok();
     }
 
+    [HttpDelete]
     public async Task<IActionResult> RemoveAsync(Guid id)
     {
         await _assetItemService.RemoveAsync(id);

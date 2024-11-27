@@ -12,16 +12,19 @@ public class AssetItemService : IAssetItemService
         _assetItemRepository = assetItemRepository;
     }
 
-    public async Task<IEnumerable<AssetItem>> GetAllAsync()
+    public async Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync()
     {
         try
         {
             var result = await _assetItemRepository.GetAllAsync();
-            return result;
+            return result.ToErrorOr();
         }
         catch (Exception e)
         {
-            return [];
+            return Error.Failure(
+                "AssetItem.GetAllAsync",
+                $"Failed to get all AssetItems. Exception: {e.Message}"
+            );
         }
     }
 
@@ -33,31 +36,42 @@ public class AssetItemService : IAssetItemService
         }
         catch (Exception e)
         {
-            return Error.Failure("AssetItem.GetOne");
+            return Error.Failure(
+                "AssetItem.GetOneAsync",
+                $"Failed to get AssetItem with ID {id}. Exception: {e.Message}"
+            );
         }
     }
 
-    public async Task UpdateAsync(Guid id, AssetItem updateModel)
+    public async Task<ErrorOr<Success>> UpdateAsync(Guid id, AssetItem updateModel)
     {
         try
         {
             await _assetItemRepository.UpdateAsync(id, updateModel);
+            return Result.Success;
         }
         catch (Exception e)
         {
-            Error.Failure("AssetItem.Update");
+            return Error.Failure(
+                "AssetItem.UpdateAsync",
+                $"Failed to update AssetItem with ID {id}. Exception: {e.Message}"
+            );
         }
     }
 
-    public async Task RemoveAsync(Guid id)
+    public async Task<ErrorOr<Success>> RemoveAsync(Guid id)
     {
         try
         {
             await _assetItemRepository.RemoveAsync(id);
+            return Result.Success;
         }
         catch (Exception e)
         {
-            Error.Failure("AssetItem.Remove");
+            return Error.Failure(
+                "AssetItem.RemoveAsync",
+                $"Failed to remove AssetItem with ID {id}. Exception: {e.Message}"
+            );
         }
     }
 }

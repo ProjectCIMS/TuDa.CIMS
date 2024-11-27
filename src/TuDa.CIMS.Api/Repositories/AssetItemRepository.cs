@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Entities;
 
@@ -6,9 +7,9 @@ namespace TuDa.CIMS.Api.Repositories;
 
 public class AssetItemRepository : IAssetItemRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly CIMSDbContext _context;
 
-    public AssetItemRepository(ApplicationDbContext context)
+    public AssetItemRepository(CIMSDbContext context)
     {
         _context = context;
     }
