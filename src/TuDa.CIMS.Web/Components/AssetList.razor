@@ -1,65 +1,201 @@
-<!-- grid with one column for items -->
+@using TuDa.CIMS.Shared.Entities
+<!-- table for asset list -->
 <div class="container-fluid text-center">
-    <div class="col">
-        @foreach (var item in Items)
+    <table class="table">
+        <thead class="align-middle">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Typ</th>
+            <th scope="col">Raum</th>
+            <th scope="col">Notiz</th>
+            <th scope="col">ArtikelNr</th>
+            <th scope="col">Shop</th>
+            <th scope="col">CAS-Nr</th>
+            <th scope="col">Gefahren</th>
+            <th scope="col">Maßeinheit</th>
+            <th scope="col">Hersteller</th>
+            <th scope="col">SerienNr</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody class="align-middle">
+        @foreach (var assetItem in AssetItems)
         {
-            <div class="row bg-body">
-                <div class="col text-start">@item</div>
-                <div class="col text-end">
-                    <input type="checkbox"
-                           class="form-check-input"
-                           aria-label="...">
-                </div>
-            </div>
+            <tr>
+                <th scope="row">@assetItem.Name</th>
+                <td> @GetItemType(assetItem)</td>
+                <td>@assetItem.Room.Name</td>
+                <td>@assetItem.Note</td>
+                <td>@assetItem.ItemNumber</td>
+                <td>@assetItem.Shop</td>
+                <td>@GetCas(assetItem)</td>
+                <td>
+                    @if (GetHazards(assetItem).Count == 0)
+                    {
+                        <p>-</p>
+                    }
+                    @foreach (var hazard in GetHazards(assetItem))
+                    {
+                        @hazard.Name
+                        @hazard.ImagePath
+                    }
+                </td>
+                <td>@GetUnit(assetItem)</td>
+                <td>@GetManufacturer(assetItem)</td>
+                <td>@GetSerialNumber(assetItem)</td>
+                <td>
+                    <button type="button"
+                            class="btn">
+                        <i class="bi bi-pencil-square"></i>
+                    </button> <!-- TODO: button needs to be added properly -->
+                </td>
+            </tr>
         }
-    </div>
-</div>
+        </tbody>
+    </table>
 
-<!-- pagination -->
-<nav aria-label="Page navigation example">
-    <ul class="pagination">
-        <li class="page-item disabled">
-            <button class="page-link">
-                🡸
-            </button>
-        </li>
-        <li class="page-item active"
-            aria-current="page">
-            <button class="page-link">
-                1
-            </button>
-        </li>
-        <li class="page-item">
-            <button class="page-link">
-                2
-            </button>
-        </li>
-        <li class="page-item">
-            <button class="page-link">
-                3
-            </button>
-        </li>
-        <li class="page-item">
-            <button class="page-link">
-                🡺
-            </button>
-        </li>
-    </ul>
-</nav>
+    <!-- pagination -->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination d-flex justify-content-center">
+            <li class="page-item disabled">
+                <button class="page-link">
+                    🡸
+                </button>
+            </li>
+            <li class="page-item active"
+                aria-current="page">
+                <button class="page-link">
+                    1
+                </button>
+            </li>
+            <li class="page-item">
+                <button class="page-link">
+                    2
+                </button>
+            </li>
+            <li class="page-item">
+                <button class="page-link">
+                    3
+                </button>
+            </li>
+            <li class="page-item">
+                <button class="page-link">
+                    🡺
+                </button>
+            </li>
+        </ul>
+    </nav>
+</div>
 
 @code {
 
     /// <summary>
     /// List of items to be shown
     /// </summary>
-    [Parameter]
-    public required List<string> Items { get; set; } = Examples;
+    private List<AssetItem> AssetItems { get; set; } = SampleValues;
 
-    // TODO: remove the code for the initialization
-    private static readonly List<string> Examples =
+    private static readonly List<AssetItem> SampleValues =
     [
-        "Trockeneis", "Ethanol", "Natriumhydroxid", "Aceton", "Ammoniumchlorid", "Wasserstoffperoxid",
-        "Kaliumpermanganat", "Messzylinder", "Erlenmeyerkolben", "Reagenzglas"
+        new Chemical
+        {
+            Id = new Guid(), Note = "Temperatur: -78,5\u00b0 C",
+            Room = new Room { Id = new Guid(), Name = "Audimax" }, Name = "Trockeneis", Cas = "124-38-9",
+            ItemNumber = "1845", Shop = "Eisladen", Hazards = [new Hazard { Id = new Guid(), Name = "kalt", ImagePath = "" }],
+            Unit = "kg"
+        },
+        new Chemical
+        {
+            Id = new Guid(), Note = "AKA Alkohol",
+            Room = new Room { Id = new Guid(), Name = "Bistro Athene" }, Name = "Ethanol", Cas = "64-17-5",
+            ItemNumber = "1170", Shop = "Taverne", Hazards = [new Hazard { Id = new Guid(), Name = "macht süchtig", ImagePath = "" }],
+            Unit = "l"
+        },
+        new Chemical
+        {
+            Id = new Guid(), Note = "Feststoff",
+            Room = new Room { Id = new Guid(), Name = "Bosch-Hörsaal" }, Name = "Natriumhydroxid", Cas = "1310-73-2",
+            ItemNumber = "1823", Shop = "ALDI", Hazards = [new Hazard { Id = new Guid(), Name = "ätzend", ImagePath = "" }],
+            Unit = "kg"
+        },
+        new Consumable
+        {
+            Id = new Guid(), Note = "zerbrechlich", Room = new Room { Id = new Guid(), Name = "Glashaus/10" },
+            Name = "Reagenzglas", ItemNumber = "2770/30", Shop = "Mediamarkt", Manufacturer = "Glasmacher",
+            SerialNumber = "12345678910"
+        }
     ];
+
+    /// <summary>
+    /// returns type of the given item
+    /// </summary>
+    private string GetItemType(AssetItem assetItem)
+    {
+        return assetItem is Chemical ? "Chemikalie" : "Verbrauchsmaterial";
+    }
+
+    /// <summary>
+    /// returns the CAS number
+    /// </summary>
+    private string GetCas(AssetItem assetItem)
+    {
+        if (assetItem is Chemical chemical)
+        {
+            return chemical.Cas;
+        }
+
+        return "-";
+    }
+
+    /// <summary>
+    /// returns the list of hazards of the item
+    /// </summary>
+    private List<Hazard> GetHazards(AssetItem assetItem)
+    {
+        if (assetItem is Chemical chemical)
+        {
+            return chemical.Hazards;
+        }
+
+        return [];
+    }
+
+    /// <summary>
+    /// returns the unit of the chemical
+    /// </summary>
+    private string GetUnit(AssetItem assetItem)
+    {
+        if (assetItem is Chemical chemical)
+        {
+            return chemical.Unit;
+        }
+
+        return "-";
+    }
+
+    /// <summary>
+    /// returns the manufacturer of the consumable
+    /// </summary>
+    private string GetManufacturer(AssetItem assetItem)
+    {
+        if (assetItem is Consumable consumable)
+        {
+            return consumable.Manufacturer;
+        }
+
+        return "-";
+    }
+
+    /// <summary>
+    /// returns the serial number of the consumable
+    /// </summary>
+    private string GetSerialNumber(AssetItem assetItem)
+    {
+        if (assetItem is Consumable consumable)
+        {
+            return consumable.SerialNumber;
+        }
+
+        return "-";
+    }
 
 }
