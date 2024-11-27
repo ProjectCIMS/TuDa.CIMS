@@ -16,6 +16,10 @@ public class AssetItemController : ControllerBase
         _assetItemService = assetItemService;
     }
 
+    /// <summary>
+    /// Retrieves all AssetItems from the service and returns them in an appropriate HTTP response.
+    /// </summary>
+    /// <returns> a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
@@ -27,6 +31,11 @@ public class AssetItemController : ControllerBase
             );
     }
 
+    /// <summary>
+    /// Retrieves an AssetItems with the specific id from the service and returns it in an appropriate HTTP response.
+    /// </summary>
+    /// <param name="id">the unique id of the AssetItem</param>
+    /// <returns> a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
     [HttpGet]
     public async Task<IActionResult> GetOneAsync(Guid id)
     {
@@ -36,12 +45,26 @@ public class AssetItemController : ControllerBase
         );
     }
 
+    /// <summary>
+    /// Calls the <see cref="IAssetItemService.UpdateAsync"/> function of the service.
+    /// </summary>
+    /// <param name="id">the unique id of the AssetItem</param>
+    /// <param name="updateModel">the model containing the updated values for the AssetItem </param>
+    /// <returns> a 200 OK response </returns>
+
     [HttpPut]
     public async Task<IActionResult> UpdateAsync(Guid id, AssetItem updateModel)
     {
         await _assetItemService.UpdateAsync(id, updateModel);
         return Ok();
     }
+
+    /// <summary>
+    /// Calls the <see cref="IAssetItemService.RemoveAsync"/> function of the service.
+    /// If the update is successful, returns a 200 OK response.
+    ///</summary>
+    /// <param name="id">the unique id of the AssetItem</param>
+    /// <returns> a 200 OK response </returns>
 
     [HttpDelete]
     public async Task<IActionResult> RemoveAsync(Guid id)

@@ -12,6 +12,11 @@ public class AssetItemService : IAssetItemService
         _assetItemRepository = assetItemRepository;
     }
 
+    /// <summary>
+    /// Calls the <see cref="IAssetItemRepository.GetAllAsync"/> function of the repository and handles any error that occurs.
+    /// </summary>
+    /// <returns>  An <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
+    /// or the result of the <see cref="GetAllAsync"/> functionality if successful</returns>>
     public async Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync()
     {
         try
@@ -28,6 +33,12 @@ public class AssetItemService : IAssetItemService
         }
     }
 
+    /// <summary>
+    /// Calls the <see cref="IAssetItemRepository.GetOneAsync"/> function of the repository and handles any error that occurs.
+    /// </summary>
+    /// <param name="id">the unique id of the AssetItem</param>
+    /// <returns>  An <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
+    /// or the result of the <see cref="GetOneAsync"/> functionality if successful</returns>>
     public async Task<ErrorOr<AssetItem>> GetOneAsync(Guid id)
     {
         try
@@ -43,6 +54,13 @@ public class AssetItemService : IAssetItemService
         }
     }
 
+    /// <summary>
+    /// Calls the <see cref="IAssetItemRepository.UpdateAsync"/> function of the repository and handles any error that occurs.
+    /// </summary>
+    /// <param name="id">the unique id of the AssetItem</param>
+    /// <param name="updateModel">the model containing the updated values for the AssetItem </param>
+    /// <returns>  An <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
+    /// or the result of the <see cref="UpdateAsync"/> functionality if successful</returns>>
     public async Task<ErrorOr<Success>> UpdateAsync(Guid id, AssetItem updateModel)
     {
         try
@@ -59,6 +77,12 @@ public class AssetItemService : IAssetItemService
         }
     }
 
+    /// <summary>
+    /// Calls the <see cref="IAssetItemRepository.RemoveAsync"/> function of the repository and handles any error that occurs.
+    /// </summary>
+    /// <param name="id">the unique id of the AssetItem</param>
+    /// <returns>  An <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
+    /// or the result of the <see cref="RemoveAsync"/> functionality if successful</returns>>
     public async Task<ErrorOr<Success>> RemoveAsync(Guid id)
     {
         try
