@@ -17,12 +17,14 @@
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
     <!-- We have to check if we are allowed to use this for free -->
-    <PackageReference Include="QuestPDF" Version="2024.10.3" /> 
-    <PackageReference Include="Scalar.AspNetCore" Version="1.2.36"/>
+    <PackageReference Include="QuestPDF" Version="2024.10.3" />
+    <PackageReference Include="Scalar.AspNetCore" Version="1.2.36" />
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.2.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TuDa.CIMS.Shared\TuDa.CIMS.Shared.csproj"/>
+    <ProjectReference Include="..\..\infrastructure\TuDa.CIMS.ServiceDefaults\TuDa.CIMS.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\TuDa.CIMS.Shared\TuDa.CIMS.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
