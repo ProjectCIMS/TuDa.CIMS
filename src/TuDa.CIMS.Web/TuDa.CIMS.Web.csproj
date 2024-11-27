@@ -31,4 +31,8 @@
     <ProjectReference Include="..\TuDa.CIMS.Shared\TuDa.CIMS.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\infrastructure\TuDa.CIMS.ServiceDefaults\TuDa.CIMS.ServiceDefaults.csproj" />
+  </ItemGroup>
+
 </Project>
