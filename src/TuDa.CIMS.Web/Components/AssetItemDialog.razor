@@ -2,55 +2,59 @@
 
 @page "/modal"
 <button class="btn btn-primary"
-        data-bs-target="createItemDialog"
+        data-bs-target="#createItemDialog"
         data-bs-toggle="modal"
         type="button">
-    Open Modal
+    Create Item
 </button>
 
 @* Modal Content *@
 <div aria-hidden="true"
-     aria-labelledby="createItemDialog"
+     aria-labelledby="createItemDialogLabel"
      class="fade modal"
      id="createItemDialog"
      tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"
-                    id="exampleModalLabel">
-                    Create Item
-                </h5>
-                <button aria-label="Close"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        type="button">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title"
+                id="createItemDialogLabel">
+                Create Item
+            </h5>
+            <button aria-label="Close"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    type="button">
+            </button>
+        </div>
+
+        <div class="modal-body">
+
+            <!-- Button Group -->
+            <div aria-label="Button group"
+                 class="btn-group"
+                 role="group">
+                <button class="btn btn-primary"
+                        @onclick="() => SelectedOption = 1">
+                    Chemical
+                </button>
+                <button class="btn btn-primary"
+                        @onclick="() => SelectedOption = 2">
+                    Consumable
                 </button>
             </div>
 
-            <div class="modal-body">
+            <!-- different inputs dependent on the type of Item -->
+            @if (SelectedOption == 1)
+            {
+                <div class="mt-3">
+                    <h4>Chemical Details</h4>
 
-                <!-- Button Group -->
-                <div aria-label="Button group"
-                     class="btn-group"
-                     role="group">
-                    <button class="btn btn-primary"
-                            @onclick="() => SelectedOption = 1">
-                        Chemical
-                    </button>
-                    <button class="btn btn-primary"
-                            @onclick="() => SelectedOption = 2">
-                        Consumable
-                    </button>
-                </div>
+                    <div class="row">
 
-                <!-- different inputs dependent on the type of Item -->
-                @if (SelectedOption == 1)
-                {
-                    <div class="mt-3">
-                        <h4>Chemical Details</h4>
+                        <!-- Erste Spalte -->
+                        <div class="col-md-6 mb-3">
 
-                        <div class="mb-3">
                             <label class="form-label"
                                    for="chemicalName">
                                 Chemical Name
@@ -59,9 +63,8 @@
                                    id="chemicalName"
                                    placeholder="Enter Chemical Name"
                                    type="text">
-                        </div>
 
-                        <div class="mb-3">
+
                             <label class="form-label"
                                    for="chemicalShop">
                                 Shop
@@ -70,9 +73,8 @@
                                    id="chemicalShop"
                                    placeholder="Enter Shop"
                                    type="text">
-                        </div>
 
-                        <div class="mb-3">
+
                             <label class="form-label"
                                    for="chemicalItemNumber">
                                 Item Number
@@ -81,9 +83,8 @@
                                    id="chemicalItemNumber"
                                    placeholder="Enter ItemNumber"
                                    type="text">
-                        </div>
 
-                        <div class="mb-3">
+
                             <label class="form-label"
                                    for="chemicalNote">
                                 Notes
@@ -92,9 +93,13 @@
                                    id="chemicalNote"
                                    placeholder="Enter Notes"
                                    type="text">
+
                         </div>
 
-                        <div class="mb-3">
+
+                        <!-- Zweite Spalte -->
+                        <div class="col-md-6 mb-3">
+
                             <label class="form-label"
                                    for="chemicalCas">
                                 CAS
@@ -103,9 +108,8 @@
                                    id="chemicalCas"
                                    placeholder="Enter CAS"
                                    type="text">
-                        </div>
 
-                        <div class="mb-3">
+
                             <label class="form-label"
                                    for="chemicalUnit">
                                 Unit
@@ -114,16 +118,21 @@
                                    id="chemicalUnit"
                                    placeholder="Enter Unit"
                                    type="text">
+
+
                         </div>
-
                     </div>
-                }
-                else if (SelectedOption == 2)
-                {
-                    <div class="mt-3">
-                        <h4>Consumable Details</h4>
+                </div>
+            }
+            else if (SelectedOption == 2)
+            {
+                <div class="mt-3">
+                    <h4>Consumable Details</h4>
 
-                        <div class="mb-3">
+                    <div class="row">
+                        <!-- Erste Spalte -->
+                        <div class="col-md-6 mb-3">
+
                             <label class="form-label"
                                    for="consumableName">
                                 Consumable Name
@@ -132,8 +141,8 @@
                                    id="consumableName"
                                    placeholder="Enter Consumable Name"
                                    type="text">
-                        </div>
-                        <div class="mb-3">
+
+
                             <label class="form-label"
                                    for="chemicalShop">
                                 Shop
@@ -142,9 +151,8 @@
                                    id="chemicalShop"
                                    placeholder="Enter Shop"
                                    type="text">
-                        </div>
 
-                        <div class="mb-3">
+
                             <label class="form-label"
                                    for="consumableItemNumber">
                                 Item Number
@@ -153,9 +161,8 @@
                                    id="consumableItemNumber"
                                    placeholder="Enter ItemNumber"
                                    type="text">
-                        </div>
 
-                        <div class="mb-3">
+
                             <label class="form-label"
                                    for="consumableNote">
                                 Notes
@@ -164,9 +171,13 @@
                                    id="consumableNote"
                                    placeholder="Enter Notes"
                                    type="text">
+
                         </div>
 
-                        <div class="mb-3">
+
+
+                        <div class="col-md-6 mb-3">
+
                             <label class="form-label"
                                    for="consumableManufacturer">
                                 Manufacturer
@@ -175,9 +186,8 @@
                                    id="consumableManufacturer"
                                    placeholder="Enter Manufacturer"
                                    type="text">
-                        </div>
 
-                        <div class="mb-3">
+
                             <label class="form-label"
                                    for="consumableSerialNumber">
                                 Serial Number
@@ -186,9 +196,8 @@
                                    id="consumableSerialNumber"
                                    placeholder="Enter Serial Number"
                                    type="text">
-                        </div>
 
-                        <div class="mb-3">
+
                             <label class="form-label"
                                    for="consumableQuantity">
                                 Quantity:
@@ -197,25 +206,27 @@
                                    id="consumableQuantity"
                                    placeholder="Enter Quantity"
                                    type="number">
+
                         </div>
                     </div>
-                }
-            </div >
+                </div>
+            }
+        </div >
 
 
-            <div class="modal-footer">
-                <button class="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                        type="button">
-                    Close
-                </button>
-                <button class="btn btn-primary"
-                        type="button">
-                    Save Changes
-                </button>
-            </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                    type="button">
+                Close
+            </button>
+            <button class="btn btn-primary"
+                    type="button">
+                Save Changes
+            </button>
         </div>
     </div>
+</div>
 </div>
 
 @code {

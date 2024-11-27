@@ -1,17 +1,18 @@
 ﻿@page "/"
 
 <div class="container-fluid ">
-    <div class="row mt-5">
+    <div class="mt-5 row">
         <div class="col-md-2 justify-content-start">
             <Filter/>
         </div>
         <div class="col-md-10 ps-5">
-            <div>
-                <div class="mb-2">
+            <div class=row>
+                <div class="col-md-10 d-flex mb-2">
                     <AssetSearch/>
+                    <AssetItemDialog/>
                 </div>
-                <AssetList/>
             </div>
+            <AssetList/>
         </div>
     </div>
 </div>
