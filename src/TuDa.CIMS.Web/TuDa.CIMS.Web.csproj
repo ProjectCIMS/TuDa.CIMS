@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TuDa.CIMS.Shared\TuDa.CIMS.Shared.csproj" />
+  <ProjectReference Include="..\..\infrastructure\TuDa.CIMS.ServiceDefaults\TuDa.CIMS.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>
