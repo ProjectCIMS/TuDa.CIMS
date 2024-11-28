@@ -4,11 +4,10 @@ using TuDa.CIMS.Web.Components;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.AddRefitClients();
 
 // Add services to the container.
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-
-builder.Services.AddRefitClients(builder.Configuration);
 
 var app = builder.Build();
 
