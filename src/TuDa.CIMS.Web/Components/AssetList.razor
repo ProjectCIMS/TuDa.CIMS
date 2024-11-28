@@ -92,110 +92,116 @@
     /// <summary>
     /// List of items to be shown
     /// </summary>
+    [Parameter]
     private List<AssetItem> AssetItems { get; set; } = SampleValues;
 
     private static readonly List<AssetItem> SampleValues =
     [
         new Chemical
         {
-            Id = new Guid(), Note = "Temperatur: -78,5\u00b0 C",
-            Room = new Room { Id = new Guid(), Name = "Audimax" }, Name = "Trockeneis", Cas = "124-38-9",
-            ItemNumber = "1845", Shop = "Eisladen", Hazards = [new Hazard { Id = new Guid(), Name = "kalt", ImagePath = "" }],
+            Id = new Guid(),
+            Note = "Temperatur: -78,5\u00b0 C",
+            Room = new Room { Id = new Guid(), Name = "Audimax" },
+            Name = "Trockeneis",
+            Cas = "124-38-9",
+            ItemNumber = "1845",
+            Shop = "Eisladen",
+            Hazards = [new Hazard { Id = new Guid(), Name = "kalt", ImagePath = "" }],
             Unit = "kg"
         },
         new Chemical
         {
-            Id = new Guid(), Note = "AKA Alkohol",
-            Room = new Room { Id = new Guid(), Name = "Bistro Athene" }, Name = "Ethanol", Cas = "64-17-5",
-            ItemNumber = "1170", Shop = "Taverne", Hazards = [new Hazard { Id = new Guid(), Name = "macht süchtig", ImagePath = "" }],
+            Id = new Guid(),
+            Note = "AKA Alkohol",
+            Room = new Room { Id = new Guid(), Name = "Bistro Athene" },
+            Name = "Ethanol",
+            Cas = "64-17-5",
+            ItemNumber = "1170",
+            Shop = "Taverne",
+            Hazards = [new Hazard { Id = new Guid(), Name = "macht süchtig", ImagePath = "" }],
             Unit = "l"
         },
         new Chemical
         {
-            Id = new Guid(), Note = "Feststoff",
-            Room = new Room { Id = new Guid(), Name = "Bosch-Hörsaal" }, Name = "Natriumhydroxid", Cas = "1310-73-2",
-            ItemNumber = "1823", Shop = "ALDI", Hazards = [new Hazard { Id = new Guid(), Name = "ätzend", ImagePath = "" }],
+            Id = new Guid(),
+            Note = "Feststoff",
+            Room = new Room { Id = new Guid(), Name = "Bosch-Hörsaal" },
+            Name = "Natriumhydroxid",
+            Cas = "1310-73-2",
+            ItemNumber = "1823",
+            Shop = "ALDI",
+            Hazards = [new Hazard { Id = new Guid(), Name = "ätzend", ImagePath = "" }],
             Unit = "kg"
         },
         new Consumable
         {
-            Id = new Guid(), Note = "zerbrechlich", Room = new Room { Id = new Guid(), Name = "Glashaus/10" },
-            Name = "Reagenzglas", ItemNumber = "2770/30", Shop = "Mediamarkt", Manufacturer = "Glasmacher",
+            Id = new Guid(),
+            Note = "zerbrechlich",
+            Room = new Room { Id = new Guid(), Name = "Glashaus/10" },
+            Name = "Reagenzglas",
+            ItemNumber = "2770/30",
+            Shop = "Mediamarkt",
+            Manufacturer = "Glasmacher",
             SerialNumber = "12345678910"
         }
     ];
 
     /// <summary>
-    /// returns type of the given item
+    /// Returns type of the given item.
     /// </summary>
-    private string GetItemType(AssetItem assetItem)
+    private static string GetItemType(AssetItem assetItem)
     {
         return assetItem is Chemical ? "Chemikalie" : "Verbrauchsmaterial";
     }
 
     /// <summary>
-    /// returns the CAS number
+    /// Returns the CAS number.
     /// </summary>
-    private string GetCas(AssetItem assetItem)
-    {
-        if (assetItem is Chemical chemical)
+    private static string GetCas(AssetItem assetItem)
+        => assetItem switch
         {
-            return chemical.Cas;
-        }
-
-        return "-";
-    }
+            Chemical chemical => chemical.Cas,
+            _ => "-"
+        };
 
     /// <summary>
-    /// returns the list of hazards of the item
+    /// Returns the list of hazards of the item.
     /// </summary>
-    private List<Hazard> GetHazards(AssetItem assetItem)
-    {
-        if (assetItem is Chemical chemical)
+    private static List<Hazard> GetHazards(AssetItem assetItem)
+        => assetItem switch
         {
-            return chemical.Hazards;
-        }
-
-        return [];
-    }
+            Chemical chemical => chemical.Hazards,
+            _ => []
+        };
 
     /// <summary>
-    /// returns the unit of the chemical
+    /// Returns the unit of the chemical.
     /// </summary>
-    private string GetUnit(AssetItem assetItem)
-    {
-        if (assetItem is Chemical chemical)
+    private static string GetUnit(AssetItem assetItem)
+        => assetItem switch
         {
-            return chemical.Unit;
-        }
-
-        return "-";
-    }
+            Chemical chemical => chemical.Unit,
+            _ => "-"
+        };
 
     /// <summary>
-    /// returns the manufacturer of the consumable
+    /// Returns the manufacturer of the consumable.
     /// </summary>
-    private string GetManufacturer(AssetItem assetItem)
-    {
-        if (assetItem is Consumable consumable)
+    private static string GetManufacturer(AssetItem assetItem)
+        => assetItem switch
         {
-            return consumable.Manufacturer;
-        }
-
-        return "-";
-    }
+            Consumable consumable => consumable.Manufacturer,
+            _ => "-"
+        };
 
     /// <summary>
-    /// returns the serial number of the consumable
+    /// Returns the serial number of the consumable.
     /// </summary>
-    private string GetSerialNumber(AssetItem assetItem)
-    {
-        if (assetItem is Consumable consumable)
+    private static string GetSerialNumber(AssetItem assetItem)
+        => assetItem switch
         {
-            return consumable.SerialNumber;
-        }
-
-        return "-";
-    }
+            Consumable consumable => consumable.SerialNumber,
+            _ => "-"
+        };
 
 }
