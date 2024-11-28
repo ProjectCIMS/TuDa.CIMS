@@ -4,7 +4,7 @@ using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Web.Components;
 
-public partial class AssetListPartialClass
+public partial class AssetList
 {
     /// <summary>
     /// List of items to be shown
@@ -16,45 +16,45 @@ public partial class AssetListPartialClass
     [
         new Chemical
         {
-            Id = new Guid(),
+            Id = Guid.Empty,
             Note = "Temperatur: -78,5\u00b0 C",
-            Room = new Room { Id = new Guid(), Name = "Audimax" },
+            Room = new Room { Id = Guid.Empty, Name = "Audimax" },
             Name = "Trockeneis",
             Cas = "124-38-9",
             ItemNumber = "1845",
             Shop = "Eisladen",
-            Hazards = [new Hazard { Id = new Guid(), Name = "kalt", ImagePath = "" }],
+            Hazards = [new Hazard { Id = Guid.Empty, Name = "kalt", ImagePath = "" }],
             Unit = "kg"
         },
         new Chemical
         {
-            Id = new Guid(),
+            Id = Guid.Empty,
             Note = "AKA Alkohol",
-            Room = new Room { Id = new Guid(), Name = "Bistro Athene" },
+            Room = new Room { Id = Guid.Empty, Name = "Bistro Athene" },
             Name = "Ethanol",
             Cas = "64-17-5",
             ItemNumber = "1170",
             Shop = "Taverne",
-            Hazards = [new Hazard { Id = new Guid(), Name = "macht süchtig", ImagePath = "" }],
+            Hazards = [new Hazard { Id = Guid.Empty, Name = "macht süchtig", ImagePath = "" }],
             Unit = "l"
         },
         new Chemical
         {
-            Id = new Guid(),
+            Id = Guid.Empty,
             Note = "Feststoff",
-            Room = new Room { Id = new Guid(), Name = "Bosch-Hörsaal" },
+            Room = new Room { Id = Guid.Empty, Name = "Bosch-Hörsaal" },
             Name = "Natriumhydroxid",
             Cas = "1310-73-2",
             ItemNumber = "1823",
             Shop = "ALDI",
-            Hazards = [new Hazard { Id = new Guid(), Name = "ätzend", ImagePath = "" }],
+            Hazards = [new Hazard { Id = Guid.Empty, Name = "ätzend", ImagePath = "" }],
             Unit = "kg"
         },
         new Consumable
         {
-            Id = new Guid(),
+            Id = Guid.Empty,
             Note = "zerbrechlich",
-            Room = new Room { Id = new Guid(), Name = "Glashaus/10" },
+            Room = new Room { Id = Guid.Empty, Name = "Glashaus/10" },
             Name = "Reagenzglas",
             ItemNumber = "2770/30",
             Shop = "Mediamarkt",
@@ -66,10 +66,13 @@ public partial class AssetListPartialClass
     /// <summary>
     /// Returns type of the given item.
     /// </summary>
-    private static string GetItemType(AssetItem assetItem)
+    private static string GetItemType(AssetItem assetItem) =>
+    assetItem switch
     {
-        return assetItem is Chemical ? "Chemikalie" : "Verbrauchsmaterial";
-    }
+        Chemical => "Chemikalie",
+        Consumable => "Verbrauchsmaterial",
+        _ => "-",
+    };
 
     /// <summary>
     /// Returns the CAS number.
