@@ -1,101 +1,18 @@
-@using TuDa.CIMS.Shared.Entities
-<!-- table for asset list -->
-<div class="container-fluid text-center">
-    <table class="table">
-        <thead class="align-middle">
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Typ</th>
-            <th scope="col">Raum</th>
-            <th scope="col">Notiz</th>
-            <th scope="col">ArtikelNr</th>
-            <th scope="col">Shop</th>
-            <th scope="col">CAS-Nr</th>
-            <th scope="col">Gefahren</th>
-            <th scope="col">Maßeinheit</th>
-            <th scope="col">Hersteller</th>
-            <th scope="col">SerienNr</th>
-            <th scope="col"></th>
-        </tr>
-        </thead>
-        <tbody class="align-middle">
-        @foreach (var assetItem in AssetItems)
-        {
-            <tr>
-                <th scope="row">@assetItem.Name</th>
-                <td> @GetItemType(assetItem)</td>
-                <td>@assetItem.Room.Name</td>
-                <td>@assetItem.Note</td>
-                <td>@assetItem.ItemNumber</td>
-                <td>@assetItem.Shop</td>
-                <td>@GetCas(assetItem)</td>
-                <td>
-                    @if (GetHazards(assetItem).Count == 0)
-                    {
-                        <p>-</p>
-                    }
-                    @foreach (var hazard in GetHazards(assetItem))
-                    {
-                        @hazard.Name
-                        @hazard.ImagePath
-                    }
-                </td>
-                <td>@GetUnit(assetItem)</td>
-                <td>@GetManufacturer(assetItem)</td>
-                <td>@GetSerialNumber(assetItem)</td>
-                <td>
-                    <button type="button"
-                            class="btn">
-                        <i class="bi bi-pencil-square"></i>
-                    </button> <!-- TODO: button needs to be added properly -->
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+using Microsoft.AspNetCore.Components;
+using TuDa.CIMS.Shared.Entities;
 
-    <!-- pagination -->
-    <nav aria-label="Page navigation example">
-        <ul class="pagination d-flex justify-content-center">
-            <li class="page-item disabled">
-                <button class="page-link">
-                    🡸
-                </button>
-            </li>
-            <li class="page-item active"
-                aria-current="page">
-                <button class="page-link">
-                    1
-                </button>
-            </li>
-            <li class="page-item">
-                <button class="page-link">
-                    2
-                </button>
-            </li>
-            <li class="page-item">
-                <button class="page-link">
-                    3
-                </button>
-            </li>
-            <li class="page-item">
-                <button class="page-link">
-                    🡺
-                </button>
-            </li>
-        </ul>
-    </nav>
-</div>
 
-@code {
+namespace TuDa.CIMS.Web.Components;
 
+public partial class AssetListPartialClass
+{
     /// <summary>
     /// List of items to be shown
     /// </summary>
     [Parameter]
-    private List<AssetItem> AssetItems { get; set; } = SampleValues;
+    public List<AssetItem> AssetItems { get; set; } = s_sampleValues;
 
-    private static readonly List<AssetItem> SampleValues =
+    private static readonly List<AssetItem> s_sampleValues =
     [
         new Chemical
         {
@@ -203,5 +120,4 @@
             Consumable consumable => consumable.SerialNumber,
             _ => "-"
         };
-
 }
