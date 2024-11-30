@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Controllers;
@@ -25,10 +26,7 @@ public class AssetItemController : ControllerBase
     {
         return (await _assetItemService.GetAllAsync())
             .ToErrorOr()
-            .Match<IActionResult>(
-                value => Ok(JsonSerializer.Serialize(value)),
-                err => BadRequest(JsonSerializer.Serialize(err))
-            );
+            .Match<IActionResult>(value => Ok(value), err => BadRequest(err));
     }
 
     /// <summary>
@@ -36,37 +34,38 @@ public class AssetItemController : ControllerBase
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
     /// <returns> a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
-    [HttpGet]
+
+    [HttpGet($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> GetOneAsync(Guid id)
     {
         return (await _assetItemService.GetOneAsync(id)).Match<IActionResult>(
             value => Ok(JsonSerializer.Serialize(value)),
-            err => BadRequest(JsonSerializer.Serialize(err))
+            err => BadRequest(err)
         );
     }
 
     /// <summary>
-    /// Calls the <see cref="IAssetItemService.UpdateAsync"/> function of the service.
+    /// Updates an existing AssetItem by its ID using the provided update model.
+    /// If the update is successful, returns a 200 OK response. If an error occurs during the update, an appropriate error response is returned.
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
     /// <param name="updateModel">the model containing the updated values for the AssetItem </param>
-    /// <returns> a 200 OK response </returns>
 
-    [HttpPut]
-    public async Task<IActionResult> UpdateAsync(Guid id, AssetItem updateModel)
+    [HttpPut($"{{{nameof(id)}:guid}}/{{{nameof(updateModel)}:AssetItem}}")]
+    public async Task<IActionResult> UpdateAsync(Guid id, UpdateAssetItemDto updateModel)
     {
         await _assetItemService.UpdateAsync(id, updateModel);
         return Ok();
     }
 
     /// <summary>
-    /// Calls the <see cref="IAssetItemService.RemoveAsync"/> function of the service.
-    /// If the update is successful, returns a 200 OK response.
+    /// Deletes an existing AssetItem by its ID.
+    /// If the removal is successful, returns a 200 OK response.
+    /// If an error occurs during the deletion, an appropriate error response is returned.
     ///</summary>
     /// <param name="id">the unique id of the AssetItem</param>
-    /// <returns> a 200 OK response </returns>
 
-    [HttpDelete]
+    [HttpDelete($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> RemoveAsync(Guid id)
     {
         await _assetItemService.RemoveAsync(id);

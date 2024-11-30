@@ -1,4 +1,5 @@
 ﻿using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Services;
@@ -21,8 +22,7 @@ public class AssetItemService : IAssetItemService
     {
         try
         {
-            var result = await _assetItemRepository.GetAllAsync();
-            return result.ToErrorOr();
+            return (await _assetItemRepository.GetAllAsync()).ToErrorOr();
         }
         catch (Exception e)
         {
@@ -61,12 +61,12 @@ public class AssetItemService : IAssetItemService
     /// <param name="updateModel">the model containing the updated values for the AssetItem </param>
     /// <returns>  An <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
     /// or the result of the <see cref="UpdateAsync"/> functionality if successful</returns>>
-    public async Task<ErrorOr<Success>> UpdateAsync(Guid id, AssetItem updateModel)
+    public async Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateAssetItemDto updateModel)
     {
         try
         {
             await _assetItemRepository.UpdateAsync(id, updateModel);
-            return Result.Success;
+            return Result.Updated;
         }
         catch (Exception e)
         {
@@ -83,12 +83,12 @@ public class AssetItemService : IAssetItemService
     /// <param name="id">the unique id of the AssetItem</param>
     /// <returns>  An <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
     /// or the result of the <see cref="RemoveAsync"/> functionality if successful</returns>>
-    public async Task<ErrorOr<Success>> RemoveAsync(Guid id)
+    public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id)
     {
         try
         {
             await _assetItemRepository.RemoveAsync(id);
-            return Result.Success;
+            return Result.Deleted;
         }
         catch (Exception e)
         {
