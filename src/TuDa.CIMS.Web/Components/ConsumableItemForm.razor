@@ -1,0 +1,46 @@
+﻿@inherits AssetItemForm
+
+@* Consumable Item Form *@
+
+<div class="mt-3">
+
+    <label class="form-label"
+           for="consumableManufacturer">
+        Manufacturer
+    </label>
+    <input @bind="@Manufacturer"
+           class="form-control"
+           id="consumableManufacturer"
+           placeholder="Enter Manufacturer"
+           type="text"/>
+
+    <label class="form-label"
+           for="consumableSerialNumber">
+        Serial Number
+    </label>
+    <input @bind="@SerialNumber"
+           class="form-control"
+           id="consumableSerialNumber"
+           placeholder="Enter Serial Number"
+           type="text"/>
+
+    <label class="form-label"
+           for="consumableQuantity">
+        Quantity
+    </label>
+    <input @bind="@Quantity"
+           class="form-control"
+           id="consumableQuantity"
+           placeholder="Enter Quantity"
+           type="number"/>
+</div>
+
+@code {
+
+// Fields specific to consumables
+    [Parameter] public string Manufacturer { get; set; } = "";
+    [Parameter] public string SerialNumber { get; set; } = "";
+    [Parameter] public int Quantity { get; set; }
+
+
+}

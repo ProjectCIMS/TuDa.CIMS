@@ -1,0 +1,13 @@
+﻿@* Generic odal Button *@
+
+<button class="btn btn-primary"
+        data-bs-target="@ModalTarget"
+        data-bs-toggle="modal"
+        type="button">
+    @ButtonLabel
+</button>
+
+@code {
+    [Parameter] public string? ModalTarget { get; set; } // ID of Modal that should be opened.
+    [Parameter] public string? ButtonLabel { get; set; } // Label of the Button.
+}

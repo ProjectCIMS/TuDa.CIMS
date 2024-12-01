@@ -1,0 +1,43 @@
+﻿@* AssetItemCreateForm *@
+
+<!-- Modal Body -->
+<div class="modal-body">
+    <div aria-label="Button group"
+         class="btn-group"
+         role="group">
+        <button class="btn btn-primary"
+                @onclick="() => SelectedItemType = ItemType.Chemical">
+            Chemical
+        </button>
+        <button class="btn btn-primary"
+                @onclick="() => SelectedItemType = ItemType.Consumable">
+            Consumable
+        </button>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <AssetItemForm/>
+        </div>
+        <div class="col-md-6 mb-3">
+            @if (SelectedItemType == ItemType.Chemical)
+            {
+                <ChemicalItemForm/>
+            }
+            else if (SelectedItemType == ItemType.Consumable)
+            {
+                <ConsumableItemForm/>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private enum ItemType
+    {
+        Chemical,
+        Consumable
+    }
+
+    private ItemType SelectedItemType { get; set; } = ItemType.Chemical; // Default is Chemical.
+}

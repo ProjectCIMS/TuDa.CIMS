@@ -1,0 +1,36 @@
+﻿@inherits AssetItemForm
+
+
+<div class="mt-3">
+
+
+        <label class="form-label"
+               for="chemicalCas">
+            CAS
+        </label>
+        <input @bind="@Cas"
+               class="form-control"
+               id="chemicalCas"
+               placeholder="Enter CAS"
+               type="text"/>
+
+        <label class="form-label"
+               for="chemicalUnit">
+            Unit
+        </label>
+        <input @bind="@Unit"
+               class="form-control"
+               id="chemicalUnit"
+               placeholder="Enter Unit"
+               type="text"/>
+    </div>
+
+
+@code {
+
+    // Fields specific to chemicals
+    [Parameter] public string Cas { get; set; } = "";
+    [Parameter] public string Unit { get; set; } = "";
+
+
+}
