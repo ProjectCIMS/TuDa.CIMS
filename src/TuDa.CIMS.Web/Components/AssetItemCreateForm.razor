@@ -1,4 +1,6 @@
-﻿@* AssetItemCreateForm *@
+﻿@using TuDa.CIMS.Shared.Entities
+
+@* AssetItemCreateForm *@
 
 <!-- Modal Body -->
 <div class="modal-body">
@@ -6,11 +8,11 @@
          class="btn-group"
          role="group">
         <button class="btn btn-primary"
-                @onclick="() => SelectedItemType = ItemType.Chemical">
+                @onclick="SwitchToChemical">
             Chemical
         </button>
         <button class="btn btn-primary"
-                @onclick="() => SelectedItemType = ItemType.Consumable">
+                @onclick="SwitchToConsumable">
             Consumable
         </button>
     </div>
@@ -18,12 +20,14 @@
         <div class="col-md-6 mb-3">
             <AssetItemForm/>
         </div>
+
+        <!-- Which Form to Choose -->
         <div class="col-md-6 mb-3">
-            @if (SelectedItemType == ItemType.Chemical)
+            @if (CreatedAssetItem is Chemical)
             {
                 <ChemicalItemForm/>
             }
-            else if (SelectedItemType == ItemType.Consumable)
+            else if (CreatedAssetItem is Consumable)
             {
                 <ConsumableItemForm/>
             }
@@ -33,11 +37,51 @@
 
 @code {
 
-    private enum ItemType
+    //for Extraction
+    protected static AssetItem? CreatedAssetItem = new Chemical()
     {
-        Chemical,
-        Consumable
+        Name = "",
+        Shop = "",
+        ItemNumber = "",
+        Note = "",
+        Id = Guid.NewGuid(),
+        Room = new Room() { Name = "", Id = Guid.NewGuid() },
+        Hazards = new List<Hazard>(),
+        Cas = "",
+        Unit = ""
+    };
+
+    //Switch to Chemical Asset Item
+    private static void SwitchToChemical()
+    {
+        CreatedAssetItem = new Chemical()
+        {
+            Name = CreatedAssetItem.Name,
+            Shop = CreatedAssetItem.Shop,
+            ItemNumber = CreatedAssetItem.ItemNumber,
+            Note = CreatedAssetItem.Note,
+            Id = CreatedAssetItem.Id,
+            Room = new Room() { Name = CreatedAssetItem.Room.Name, Id = CreatedAssetItem.Room.Id },
+            Hazards = new List<Hazard>(),
+            Cas = "",
+            Unit = ""
+        };
     }
 
-    private ItemType SelectedItemType { get; set; } = ItemType.Chemical; // Default is Chemical.
+    //Switch to Consumable Asset Item
+    private static void SwitchToConsumable()
+    {
+        CreatedAssetItem = new Consumable()
+        {
+            Name = CreatedAssetItem.Name,
+            Shop = CreatedAssetItem.Shop,
+            ItemNumber = CreatedAssetItem.ItemNumber,
+            Note = CreatedAssetItem.Note,
+            Id = CreatedAssetItem.Id,
+            Room = new Room() { Name = CreatedAssetItem.Room.Name, Id = CreatedAssetItem.Room.Id },
+            Manufacturer = "",
+            SerialNumber = ""
+        };
+    }
+
 }
