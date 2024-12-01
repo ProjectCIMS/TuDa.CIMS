@@ -1,0 +1,33 @@
+﻿@using TuDa.CIMS.Shared.Entities
+@inherits AssetItemForm
+
+@* Chemical Item Form *@
+
+<div class="mt-3">
+
+
+    <label class="form-label"
+           for="chemicalCas">
+        CAS
+    </label>
+    <input @bind="@ChemicalAsset.Cas"
+           class="form-control"
+           id="chemicalCas"
+           placeholder="Enter CAS"
+           type="text"/>
+
+    <label class="form-label"
+           for="chemicalUnit">
+        Unit
+    </label>
+    <input @bind="@ChemicalAsset.Unit"
+           class="form-control"
+           id="chemicalUnit"
+           placeholder="Enter Unit"
+           type="text"/>
+</div>
+
+
+@code {
+    private Chemical? ChemicalAsset => CreatedAssetItem as Chemical;
+}

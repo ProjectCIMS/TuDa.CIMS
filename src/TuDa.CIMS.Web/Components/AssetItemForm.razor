@@ -1,0 +1,43 @@
+﻿@inherits AssetItemCreateForm
+
+@* Generic AssetItemForm *@
+
+<label class="form-label"
+       for="name">
+    Name
+</label>
+<input @bind="@CreatedAssetItem.Name"
+       class="form-control"
+       id="name"
+       placeholder="Enter Name"
+       type="text"/>
+
+<label class="form-label"
+       for="shop">
+    Shop
+</label>
+<input @bind="@CreatedAssetItem.Shop"
+       class="form-control"
+       id="shop"
+       placeholder="Enter Shop"
+       type="text"/>
+
+<label class="form-label"
+       for="itemNumber">
+    Item Number
+</label>
+<input @bind="@CreatedAssetItem.ItemNumber"
+       class="form-control"
+       id="itemNumber"
+       placeholder="Enter Item Number"
+       type="text"/>
+
+<label class="form-label"
+       for="notes">
+    Notes
+</label>
+<input @bind="@CreatedAssetItem.Note"
+       class="form-control"
+       id="notes"
+       placeholder="Enter Notes"
+       type="text"/>
