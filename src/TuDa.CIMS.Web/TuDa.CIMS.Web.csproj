@@ -39,12 +39,4 @@
     <ProjectReference Include="..\TuDa.CIMS.Shared\TuDa.CIMS.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-<<<<<<< HEAD
-    <ProjectReference Include="..\..\infrastructure\TuDa.CIMS.ServiceDefaults\TuDa.CIMS.ServiceDefaults.csproj" />
-=======
-    <ProjectReference Include="..\TuDa.CIMS.Shared\TuDa.CIMS.Shared.csproj" />
->>>>>>> 71b96b6 (added project reference + AssetItemDialog)
-  </ItemGroup>
-
 </Project>
