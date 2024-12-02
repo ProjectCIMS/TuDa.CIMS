@@ -1,4 +1,5 @@
-﻿using TuDa.CIMS.Api.Interfaces;
+﻿using System.Runtime.InteropServices.JavaScript;
+using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 
@@ -14,10 +15,10 @@ public class AssetItemService : IAssetItemService
     }
 
     /// <summary>
-    /// Calls the <see cref="IAssetItemRepository.GetAllAsync"/> function of the repository and handles any error that occurs.
+    /// Return an an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
+    /// or the result of the <see cref="GetAllAsync"/> functionality if successful
     /// </summary>
-    /// <returns>  An <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
-    /// or the result of the <see cref="GetAllAsync"/> functionality if successful</returns>>
+
     public async Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync()
     {
         try
@@ -34,11 +35,11 @@ public class AssetItemService : IAssetItemService
     }
 
     /// <summary>
-    /// Calls the <see cref="IAssetItemRepository.GetOneAsync"/> function of the repository and handles any error that occurs.
+    /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
+    /// or the result of the <see cref="GetOneAsync"/> functionality if successful
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
-    /// <returns>  An <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
-    /// or the result of the <see cref="GetOneAsync"/> functionality if successful</returns>>
+
     public async Task<ErrorOr<AssetItem>> GetOneAsync(Guid id)
     {
         try
@@ -47,20 +48,30 @@ public class AssetItemService : IAssetItemService
         }
         catch (Exception e)
         {
-            return Error.Failure(
-                "AssetItem.GetOneAsync",
-                $"Failed to get AssetItem with ID {id}. Exception: {e.Message}"
-            );
+            return e switch
+            {
+                ArgumentNullException => Error.NotFound(
+                    "AssetItem.GetOneAsync",
+                    $"AssetItem with ID {id} was not found. Exception: {e.Message}"
+                ),
+                InvalidOperationException => Error.Forbidden(
+                    "AssetItem.GetOneAsync",
+                    $"The query returned more than one AssetItem with the ID {id}. Ensure the data is consistent and IDs are unique.: {e.Message}"
+                ),
+                _ => Error.Unexpected(
+                    "AssetItem.GetOneAsync",
+                    $"An unexpected error occurred: {e.Message}"
+                ),
+            };
         }
     }
 
     /// <summary>
-    /// Calls the <see cref="IAssetItemRepository.UpdateAsync"/> function of the repository and handles any error that occurs.
+    /// Return an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
+    /// or the result of the <see cref="UpdateAsync"/> functionality if successful
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
     /// <param name="updateModel">the model containing the updated values for the AssetItem </param>
-    /// <returns>  An <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
-    /// or the result of the <see cref="UpdateAsync"/> functionality if successful</returns>>
     public async Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateAssetItemDto updateModel)
     {
         try
@@ -77,11 +88,10 @@ public class AssetItemService : IAssetItemService
     }
 
     /// <summary>
-    /// Calls the <see cref="IAssetItemRepository.RemoveAsync"/> function of the repository and handles any error that occurs.
+    /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
+    /// or the result of the <see cref="RemoveAsync"/> functionality if successful
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
-    /// <returns>  An <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
-    /// or the result of the <see cref="RemoveAsync"/> functionality if successful</returns>>
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id)
     {
         try

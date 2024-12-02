@@ -45,7 +45,7 @@ public class AssetItemRepository : IAssetItemRepository
 
         if (existingItem is null)
         {
-            return Error.NotFound();
+            return Error.NotFound("Assetitem.update", $"AssetItem with ID {id} was not found.");
         }
 
         existingItem.ItemNumber = updateModel.ItemNumber ?? existingItem.ItemNumber;
@@ -65,7 +65,10 @@ public class AssetItemRepository : IAssetItemRepository
                 consumable.SerialNumber = update.SerialNumber ?? consumable.SerialNumber;
                 break;
             default:
-                return Error.NotFound();
+                return Error.NotFound(
+                    "Assetitem.update",
+                    $"The provided update model does not match the type of the AssetItem with ID {id}."
+                );
         }
 
         if (updateModel.RoomId is not null)

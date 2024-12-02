@@ -56,7 +56,7 @@ public class AssetItemController : ControllerBase
     public async Task<IActionResult> UpdateAsync(Guid id, UpdateAssetItemDto updateModel)
     {
         return (await _assetItemService.UpdateAsync(id, updateModel)).Match<IActionResult>(
-            value => Ok(value),
+            _ => Ok(),
             err => BadRequest(err)
         );
     }
@@ -72,7 +72,7 @@ public class AssetItemController : ControllerBase
     public async Task<IActionResult> RemoveAsync(Guid id)
     {
         return (await _assetItemService.RemoveAsync(id)).Match<IActionResult>(
-            value => Ok(value),
+            _ => Ok(),
             err => BadRequest(err)
         );
     }
