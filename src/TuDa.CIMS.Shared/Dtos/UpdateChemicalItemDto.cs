@@ -2,7 +2,7 @@
 
 namespace TuDa.CIMS.Shared.Dtos;
 
-public class UpdateChemicalItemDto : UpdateAssetItemDto
+public record UpdateChemicalItemDto : UpdateAssetItemDto
 {
     /// <summary>
     /// An unique identifier for the chemical.

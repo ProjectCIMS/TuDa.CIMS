@@ -27,9 +27,12 @@ public class AssetItemRepository : IAssetItemRepository
     /// Returns an existing AssetItem with the specific id.
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
-    public async Task<AssetItem> GetOneAsync(Guid id)
+    public async Task<AssetItem?> GetOneAsync(Guid id)
     {
-        return await _context.AssetItems.Where(i => i.Id == id).Include(i => i.Room).SingleAsync();
+        return await _context
+            .AssetItems.Where(i => i.Id == id)
+            .Include(i => i.Room)
+            .SingleOrDefaultAsync();
     }
 
     /// <summary>

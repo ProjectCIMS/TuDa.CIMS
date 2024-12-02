@@ -21,6 +21,7 @@ builder.Services.AddControllers();
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
+app.MapControllers();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

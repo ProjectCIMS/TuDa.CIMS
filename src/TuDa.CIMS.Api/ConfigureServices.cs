@@ -11,6 +11,7 @@ public static class ConfigureServices
     {
         app.MapScalarApiReference(options =>
         {
+            options.Servers = [];
             options
                 .WithTitle("CIMS Api")
                 .WithTheme(ScalarTheme.DeepSpace)

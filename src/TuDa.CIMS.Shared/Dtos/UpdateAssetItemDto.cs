@@ -1,6 +1,11 @@
-﻿namespace TuDa.CIMS.Shared.Dtos;
+﻿using System.Text.Json.Serialization;
 
-public abstract class UpdateAssetItemDto
+namespace TuDa.CIMS.Shared.Dtos;
+
+[JsonPolymorphic]
+[JsonDerivedType(typeof(UpdateChemicalItemDto), nameof(UpdateChemicalItemDto))]
+[JsonDerivedType(typeof(UpdateConsumableItemDto), nameof(UpdateConsumableItemDto))]
+public abstract record UpdateAssetItemDto
 {
     /// <summary>
     /// Notes about the item.

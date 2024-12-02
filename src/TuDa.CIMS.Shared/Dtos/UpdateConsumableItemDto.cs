@@ -1,6 +1,6 @@
 ﻿namespace TuDa.CIMS.Shared.Dtos;
 
-public class UpdateConsumableItemDto : UpdateAssetItemDto
+public record UpdateConsumableItemDto : UpdateAssetItemDto
 {
     /// <summary>
     /// The name of the consumable item.

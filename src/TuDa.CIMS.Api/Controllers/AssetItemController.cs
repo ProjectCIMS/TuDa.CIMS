@@ -76,4 +76,10 @@ public class AssetItemController : ControllerBase
             err => BadRequest(err)
         );
     }
+
+    [HttpGet("test")]
+    public IActionResult Test()
+    {
+        return Ok(JsonSerializer.Serialize<UpdateAssetItemDto>(new UpdateChemicalItemDto()));
+    }
 }

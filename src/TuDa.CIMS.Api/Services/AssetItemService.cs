@@ -44,25 +44,21 @@ public class AssetItemService : IAssetItemService
     {
         try
         {
-            return await _assetItemRepository.GetOneAsync(id);
+            return (await _assetItemRepository.GetOneAsync(id)) switch
+            {
+                null => Error.Failure(
+                    "AssetItem.GetOneAsync",
+                    $"AssetItem with id {id} not found."
+                ),
+                var value => value,
+            };
         }
         catch (Exception e)
         {
-            return e switch
-            {
-                ArgumentNullException => Error.NotFound(
-                    "AssetItem.GetOneAsync",
-                    $"AssetItem with ID {id} was not found. Exception: {e.Message}"
-                ),
-                InvalidOperationException => Error.Forbidden(
-                    "AssetItem.GetOneAsync",
-                    $"The query returned more than one AssetItem with the ID {id}. Ensure the data is consistent and IDs are unique.: {e.Message}"
-                ),
-                _ => Error.Unexpected(
-                    "AssetItem.GetOneAsync",
-                    $"An unexpected error occurred: {e.Message}"
-                ),
-            };
+            return Error.Unexpected(
+                "AssetItem.GetOneAsync",
+                $"An unexpected error occurred: {e.Message}"
+            );
         }
     }
 
