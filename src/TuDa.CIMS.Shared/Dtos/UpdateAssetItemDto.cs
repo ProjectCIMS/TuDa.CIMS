@@ -1,11 +1,11 @@
 ﻿namespace TuDa.CIMS.Shared.Dtos;
 
-public class UpdateAssetItemDto
+public abstract class UpdateAssetItemDto
 {
     /// <summary>
     /// Notes about the item.
     /// </summary>
-    public string? Note { get; set; } = String.Empty;
+    public string? Note { get; set; }
 
     /// <summary>
     /// The room in which the item is located.

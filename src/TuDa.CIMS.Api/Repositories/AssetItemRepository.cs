@@ -27,13 +27,10 @@ public class AssetItemRepository : IAssetItemRepository
     /// Returns an existing AssetItem with the specific id.
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
-    public async Task<AssetItem?> GetOneAsync(Guid id)
+    public async Task<AssetItem> GetOneAsync(Guid id)
     {
         return await _context.AssetItems.Where(i => i.Id == id).Include(i => i.Room).SingleAsync();
     }
-
-    public Task<ErrorOr<Updated>> UpdateAsync(Guid id, AssetItem updateModel) =>
-        throw new NotImplementedException();
 
     /// <summary>
     /// Updates an existing AssetItem with the specified ID using the provided update model.
@@ -51,9 +48,9 @@ public class AssetItemRepository : IAssetItemRepository
             return Error.NotFound();
         }
 
-        existingItem.ItemNumber = updateModel.ItemNumber ?? existingItem.Name;
-        existingItem.Note = updateModel.Note ?? existingItem.Name;
-        existingItem.Shop = updateModel.Shop ?? existingItem.Name;
+        existingItem.ItemNumber = updateModel.ItemNumber ?? existingItem.ItemNumber;
+        existingItem.Note = updateModel.Note ?? existingItem.Note;
+        existingItem.Shop = updateModel.Shop ?? existingItem.Shop;
         existingItem.Name = updateModel.Name ?? existingItem.Name;
 
         switch (existingItem, updateModel)
@@ -67,22 +64,28 @@ public class AssetItemRepository : IAssetItemRepository
                 consumable.Manufacturer = update.Manufacturer ?? consumable.Manufacturer;
                 consumable.SerialNumber = update.SerialNumber ?? consumable.SerialNumber;
                 break;
+            default:
+                return Error.NotFound();
         }
 
-        if (existingItem.Room is null)
+        if (updateModel.RoomId is not null)
         {
-            return Error.NotFound(
-                "Assetitem.update",
-                $"Room id of AssetItem with id {id} not found."
-            );
+            var room = await _context.Rooms.SingleOrDefaultAsync(r => r.Id == updateModel.RoomId);
+            if (room is null)
+            {
+                return Error.NotFound(
+                    "Assetitem.update",
+                    $"Given RoomId {updateModel.RoomId} was not found."
+                );
+            }
+            existingItem.Room = room;
         }
-        var room = await _context.Rooms.SingleOrDefaultAsync(r => r.Id == updateModel.RoomId);
-        existingItem.Room.Id = updateModel.RoomId ?? existingItem.Room.Id;
 
         await _context.SaveChangesAsync();
         return Result.Updated;
     }
 
+    /// <summary>
     ///Removes an AssetItem with the specific id from the database.
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
@@ -91,7 +94,15 @@ public class AssetItemRepository : IAssetItemRepository
         var itemToRemove = await _context
             .AssetItems.Include(i => i.Room)
             .Where(i => i.Id == id)
-            .SingleAsync();
+            .SingleOrDefaultAsync();
+
+        if (itemToRemove is null)
+        {
+            return Error.NotFound(
+                "Assetitem.remove",
+                $"The asset item with the id {id} was not found."
+            );
+        }
         _context.AssetItems.Remove(itemToRemove);
 
         await _context.SaveChangesAsync();

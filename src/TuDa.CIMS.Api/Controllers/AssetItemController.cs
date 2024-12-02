@@ -24,9 +24,10 @@ public class AssetItemController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
-        return (await _assetItemService.GetAllAsync())
-            .ToErrorOr()
-            .Match<IActionResult>(value => Ok(value), err => BadRequest(err));
+        return (await _assetItemService.GetAllAsync()).Match<IActionResult>(
+            value => Ok(value),
+            err => BadRequest(err)
+        );
     }
 
     /// <summary>
@@ -51,11 +52,13 @@ public class AssetItemController : ControllerBase
     /// <param name="id">the unique id of the AssetItem</param>
     /// <param name="updateModel">the model containing the updated values for the AssetItem </param>
 
-    [HttpPut($"{{{nameof(id)}:guid}}/{{{nameof(updateModel)}:AssetItem}}")]
+    [HttpPut($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> UpdateAsync(Guid id, UpdateAssetItemDto updateModel)
     {
-        await _assetItemService.UpdateAsync(id, updateModel);
-        return Ok();
+        return (await _assetItemService.UpdateAsync(id, updateModel)).Match<IActionResult>(
+            value => Ok(value),
+            err => BadRequest(err)
+        );
     }
 
     /// <summary>
@@ -68,7 +71,9 @@ public class AssetItemController : ControllerBase
     [HttpDelete($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> RemoveAsync(Guid id)
     {
-        await _assetItemService.RemoveAsync(id);
-        return Ok();
+        return (await _assetItemService.RemoveAsync(id)).Match<IActionResult>(
+            value => Ok(value),
+            err => BadRequest(err)
+        );
     }
 }

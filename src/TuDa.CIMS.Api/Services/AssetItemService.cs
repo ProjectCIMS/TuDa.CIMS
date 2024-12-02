@@ -65,8 +65,7 @@ public class AssetItemService : IAssetItemService
     {
         try
         {
-            await _assetItemRepository.UpdateAsync(id, updateModel);
-            return Result.Updated;
+            return await _assetItemRepository.UpdateAsync(id, updateModel);
         }
         catch (Exception e)
         {
@@ -87,8 +86,7 @@ public class AssetItemService : IAssetItemService
     {
         try
         {
-            await _assetItemRepository.RemoveAsync(id);
-            return Result.Deleted;
+            return await _assetItemRepository.RemoveAsync(id);
         }
         catch (Exception e)
         {
