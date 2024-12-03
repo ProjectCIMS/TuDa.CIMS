@@ -11,6 +11,7 @@ public static class ConfigureServices
     {
         app.MapScalarApiReference(options =>
         {
+            //This is needed to clear the cashed IPs to work with Aspire.
             options.Servers = [];
             options
                 .WithTitle("CIMS Api")

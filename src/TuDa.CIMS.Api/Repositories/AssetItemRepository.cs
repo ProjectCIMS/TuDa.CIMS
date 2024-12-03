@@ -68,7 +68,7 @@ public class AssetItemRepository : IAssetItemRepository
                 consumable.SerialNumber = update.SerialNumber ?? consumable.SerialNumber;
                 break;
             default:
-                return Error.NotFound(
+                return Error.Failure(
                     "Assetitem.update",
                     $"The provided update model does not match the type of the AssetItem with ID {id}."
                 );

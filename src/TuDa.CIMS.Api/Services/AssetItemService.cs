@@ -46,7 +46,7 @@ public class AssetItemService : IAssetItemService
         {
             return (await _assetItemRepository.GetOneAsync(id)) switch
             {
-                null => Error.Failure(
+                null => Error.NotFound(
                     "AssetItem.GetOneAsync",
                     $"AssetItem with id {id} not found."
                 ),
