@@ -1,8 +1,15 @@
-﻿namespace TuDa.CIMS.Shared.Entities;
+﻿using System.Text.Json.Serialization;
+using TuDa.CIMS.Shared.Dtos;
+
+namespace TuDa.CIMS.Shared.Entities;
 
 /// <summary>
 /// An entity representing an item in the chemical inventory.
 /// </summary>
+
+[JsonPolymorphic]
+[JsonDerivedType(typeof(Chemical), nameof(Chemical))]
+[JsonDerivedType(typeof(Consumable), nameof(Consumable))]
 public abstract record AssetItem
 {
     /// <summary>
