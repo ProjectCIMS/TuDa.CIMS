@@ -19,4 +19,9 @@ public record Hazard
     /// An Image of the hazard.
     /// </summary>
     public string ImagePath { get; set; } = string.Empty;
+
+    /// <summary>
+    /// All chemicals that have this Hazard
+    /// </summary>
+    public List<Chemical> Chemicals { get; set; } = [];
 }
