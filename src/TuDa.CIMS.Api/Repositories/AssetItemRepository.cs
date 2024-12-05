@@ -3,10 +3,11 @@ using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Params;
 
 namespace TuDa.CIMS.Api.Repositories;
 
-public class AssetItemRepository : IAssetItemRepository
+public class  AssetItemRepository : IAssetItemRepository
 {
     private readonly CIMSDbContext _context;
 
@@ -92,7 +93,7 @@ public class AssetItemRepository : IAssetItemRepository
     }
 
     /// <summary>
-    ///Removes an AssetItem with the specific id from the database.
+    /// Removes an AssetItem with the specific id from the database.
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id)
@@ -113,5 +114,17 @@ public class AssetItemRepository : IAssetItemRepository
 
         await _context.SaveChangesAsync();
         return Result.Deleted;
+    }
+
+    /// <summary>
+    /// Returns a paginated list of AssetItems.
+    /// </summary>
+    /// <param name="userParams"></param>
+    /// <returns></returns>
+    public async Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(UserParams userParams)
+    {
+        var query = _context.AssetItems.AsQueryable();
+        var items = await PaginatedResponse<AssetItem>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
+        return items;
     }
 }
