@@ -52,7 +52,7 @@ public class AssetItemController : ControllerBase
     /// <param name="id">the unique id of the AssetItem</param>
     /// <param name="updateModel">the model containing the updated values for the AssetItem </param>
 
-    [HttpPut($"{{{nameof(id)}:guid}}")]
+    [HttpPatch($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> UpdateAsync(Guid id, UpdateAssetItemDto updateModel)
     {
         return (await _assetItemService.UpdateAsync(id, updateModel)).Match<IActionResult>(
