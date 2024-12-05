@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using TuDa.CIMS.Shared.Dtos;
 
 namespace TuDa.CIMS.Shared.Entities;
 
