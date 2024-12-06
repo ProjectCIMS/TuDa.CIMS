@@ -12,17 +12,17 @@ public abstract record UpdateSubstanceDto : UpdateAssetItemDto
     /// <summary>
     /// An unique identifier for the chemical.
     /// </summary>
-    public required string? Cas { get; set; }
+    public string? Cas { get; set; }
 
     /// <summary>
     /// The purity of the item.
     /// </summary>
-    public required double? Purity { get; set; }
+    public double? Purity { get; set; }
 
     /// <summary>
     /// The price unit of the item.
     /// </summary>
-    public required PriceUnits? PriceUnit { get; set; }
+    public PriceUnits? PriceUnit { get; set; }
 
     /// <summary>
     /// A list of hazards associated with the chemical.

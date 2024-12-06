@@ -7,5 +7,5 @@ public record UpdateChemicalDto : UpdateSubstanceDto
     /// <summary>
     /// The binding size of the item.
     /// </summary>
-    public required double? BindingSize { get; set; }
+    public double? BindingSize { get; set; }
 }
