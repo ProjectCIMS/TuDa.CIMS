@@ -3,13 +3,8 @@
 /// <summary>
 /// An entity representing a hazard.
 /// </summary>
-public record Hazard
+public record Hazard : BaseEntity
 {
-    /// <summary>
-    /// An identifier for the hazard.
-    /// </summary>
-    public required Guid Id { get; set; }
-
     /// <summary>
     /// The name of the hazard.
     /// </summary>
@@ -21,7 +16,7 @@ public record Hazard
     public string ImagePath { get; set; } = string.Empty;
 
     /// <summary>
-    /// All chemicals that have this Hazard
+    /// All substances that have this Hazard.
     /// </summary>
-    public List<Chemical> Chemicals { get; set; } = [];
+    public List<Substance> Substances { get; set; } = [];
 }

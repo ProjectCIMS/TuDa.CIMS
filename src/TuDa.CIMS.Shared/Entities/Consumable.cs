@@ -6,9 +6,9 @@
 public record Consumable : AssetItem
 {
     /// <summary>
-    /// The amount of the consumable item.
+    /// The amount available of the consumable.
     /// </summary>
-    public required double Amount { get; set; }
+    public int Amount { get; set; }
 
     /// <summary>
     /// The name of the consumable item.

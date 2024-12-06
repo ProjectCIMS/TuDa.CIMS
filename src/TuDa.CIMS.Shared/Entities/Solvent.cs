@@ -3,4 +3,4 @@
 /// <summary>
 /// An entity representing a solvent.
 /// </summary>
-public record Solvent : Chemical { }
+public record Solvent : Chemical;

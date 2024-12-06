@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using OpenTelemetry.Trace;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.MigrationService;
 
