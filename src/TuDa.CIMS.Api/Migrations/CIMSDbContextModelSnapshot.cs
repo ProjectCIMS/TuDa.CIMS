@@ -45,6 +45,9 @@ namespace TuDa.CIMS.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uuid");
 
@@ -69,9 +72,6 @@ namespace TuDa.CIMS.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ChemicalId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("text");
@@ -80,9 +80,12 @@ namespace TuDa.CIMS.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("SubstanceId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ChemicalId");
+                    b.HasIndex("SubstanceId");
 
                     b.ToTable("Hazards");
                 });
@@ -102,24 +105,12 @@ namespace TuDa.CIMS.Api.Migrations
                     b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Chemical", b =>
-                {
-                    b.HasBaseType("TuDa.CIMS.Shared.Entities.AssetItem");
-
-                    b.Property<string>("Cas")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasDiscriminator().HasValue("Chemical");
-                });
-
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Consumable", b =>
                 {
                     b.HasBaseType("TuDa.CIMS.Shared.Entities.AssetItem");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Manufacturer")
                         .IsRequired()
@@ -130,6 +121,53 @@ namespace TuDa.CIMS.Api.Migrations
                         .HasColumnType("text");
 
                     b.HasDiscriminator().HasValue("Consumable");
+                });
+
+            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Substance", b =>
+                {
+                    b.HasBaseType("TuDa.CIMS.Shared.Entities.AssetItem");
+
+                    b.Property<string>("Cas")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PriceUnit")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Purity")
+                        .HasColumnType("double precision");
+
+                    b.HasDiscriminator().HasValue("Substance");
+                });
+
+            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Chemical", b =>
+                {
+                    b.HasBaseType("TuDa.CIMS.Shared.Entities.Substance");
+
+                    b.Property<double>("BindingSize")
+                        .HasColumnType("double precision");
+
+                    b.HasDiscriminator().HasValue("Chemical");
+                });
+
+            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.GasCylinder", b =>
+                {
+                    b.HasBaseType("TuDa.CIMS.Shared.Entities.Substance");
+
+                    b.Property<double>("Pressure")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Volume")
+                        .HasColumnType("double precision");
+
+                    b.HasDiscriminator().HasValue("GasCylinder");
+                });
+
+            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Solvent", b =>
+                {
+                    b.HasBaseType("TuDa.CIMS.Shared.Entities.Chemical");
+
+                    b.HasDiscriminator().HasValue("Solvent");
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.AssetItem", b =>
@@ -145,12 +183,12 @@ namespace TuDa.CIMS.Api.Migrations
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Hazard", b =>
                 {
-                    b.HasOne("TuDa.CIMS.Shared.Entities.Chemical", null)
+                    b.HasOne("TuDa.CIMS.Shared.Entities.Substance", null)
                         .WithMany("Hazards")
-                        .HasForeignKey("ChemicalId");
+                        .HasForeignKey("SubstanceId");
                 });
 
-            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Chemical", b =>
+            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Substance", b =>
                 {
                     b.Navigation("Hazards");
                 });

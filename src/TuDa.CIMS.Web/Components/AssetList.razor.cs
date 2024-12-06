@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
 
-
 namespace TuDa.CIMS.Web.Components;
 
 public partial class AssetList
@@ -14,113 +13,201 @@ public partial class AssetList
 
     private static readonly List<AssetItem> s_sampleValues =
     [
-        new Chemical
+        new GasCylinder
         {
             Id = Guid.Empty,
-            Note = "Temperatur: -78,5\u00b0 C",
-            Room = new Room { Id = Guid.Empty, Name = "Audimax" },
             Name = "Trockeneis",
-            Cas = "124-38-9",
+            Price = 33,
+            Room = new Room { Id = Guid.Empty, Name = "Audimax" },
             ItemNumber = "1845",
             Shop = "Eisladen",
-            Hazards = [new Hazard { Id = Guid.Empty, Name = "kalt", ImagePath = "" }],
-            Unit = "kg"
+            Note = "Temperatur: -78,5\u00b0 C",
+            Cas = "124-38-9",
+            Purity = 0.8,
+            PriceUnit = PriceUnits.PerKilo,
+            Hazards =
+            [
+                new Hazard
+                {
+                    Id = Guid.Empty,
+                    Name = "kalt",
+                    ImagePath = "",
+                },
+            ],
+            Volume = 2,
+            Pressure = 4,
         },
         new Chemical
         {
             Id = Guid.Empty,
-            Note = "AKA Alkohol",
-            Room = new Room { Id = Guid.Empty, Name = "Bistro Athene" },
             Name = "Ethanol",
-            Cas = "64-17-5",
+            Price = 4.50,
+            Room = new Room { Id = Guid.Empty, Name = "Bistro Athene" },
             ItemNumber = "1170",
             Shop = "Taverne",
-            Hazards = [new Hazard { Id = Guid.Empty, Name = "macht süchtig", ImagePath = "" }],
-            Unit = "l"
+            Note = "AKA Alkohol",
+            Cas = "64-17-5",
+            Purity = 1.33,
+            PriceUnit = PriceUnits.PerLiter,
+            Hazards =
+            [
+                new Hazard
+                {
+                    Id = Guid.Empty,
+                    Name = "macht süchtig",
+                    ImagePath = "",
+                },
+            ],
+            BindingSize = 7,
         },
-        new Chemical
+        new Solvent
         {
             Id = Guid.Empty,
-            Note = "Feststoff",
-            Room = new Room { Id = Guid.Empty, Name = "Bosch-Hörsaal" },
             Name = "Natriumhydroxid",
-            Cas = "1310-73-2",
+            Price = 6.5,
+            Room = new Room { Id = Guid.Empty, Name = "Bosch-Hörsaal" },
             ItemNumber = "1823",
             Shop = "ALDI",
-            Hazards = [new Hazard { Id = Guid.Empty, Name = "ätzend", ImagePath = "" }],
-            Unit = "kg"
+            Note = "Feststoff",
+            Cas = "1310-73-2",
+            Purity = 0.5,
+            PriceUnit = PriceUnits.PerPiece,
+            Hazards =
+            [
+                new Hazard
+                {
+                    Id = Guid.Empty,
+                    Name = "ätzend",
+                    ImagePath = "",
+                },
+            ],
+            BindingSize = 3,
         },
         new Consumable
         {
             Id = Guid.Empty,
-            Note = "zerbrechlich",
-            Room = new Room { Id = Guid.Empty, Name = "Glashaus/10" },
             Name = "Reagenzglas",
+            Price = 5,
+            Room = new Room { Id = Guid.Empty, Name = "Glashaus/10" },
             ItemNumber = "2770/30",
             Shop = "Mediamarkt",
+            Note = "zerbrechlich",
+            Amount = 2,
             Manufacturer = "Glasmacher",
-            SerialNumber = "12345678910"
-        }
+            SerialNumber = "12345678910",
+        },
     ];
 
     /// <summary>
     /// Returns type of the given item.
     /// </summary>
     private static string GetItemType(AssetItem assetItem) =>
-    assetItem switch
-    {
-        Chemical => "Chemikalie",
-        Consumable => "Verbrauchsmaterial",
-        _ => "-",
-    };
+        assetItem switch
+        {
+            Solvent => "Solvent",
+            Chemical => "Chemikalie",
+            Consumable => "Verbrauchsmaterial",
+            GasCylinder => "Gas cylinder",
+            _ => "-",
+        };
 
     /// <summary>
     /// Returns the CAS number.
     /// </summary>
-    private static string GetCas(AssetItem assetItem)
-        => assetItem switch
+    private static string GetCas(AssetItem assetItem) =>
+        assetItem switch
         {
-            Chemical chemical => chemical.Cas,
-            _ => "-"
+            Substance substance => substance.Cas,
+            _ => "-",
+        };
+
+    /// <summary>
+    /// Returns the purity of the item.
+    /// </summary>
+    private static double GetPurity(AssetItem assetItem) =>
+        assetItem switch
+        {
+            Substance substance => substance.Purity,
+            _ => 0,
         };
 
     /// <summary>
     /// Returns the list of hazards of the item.
     /// </summary>
-    private static List<Hazard> GetHazards(AssetItem assetItem)
-        => assetItem switch
+    private static List<Hazard> GetHazards(AssetItem assetItem) =>
+        assetItem switch
         {
             Chemical chemical => chemical.Hazards,
-            _ => []
+            _ => [],
         };
 
     /// <summary>
-    /// Returns the unit of the chemical.
+    /// Returns the price unit of the substance.
     /// </summary>
-    private static string GetUnit(AssetItem assetItem)
-        => assetItem switch
+    private static string GetPriceUnit(AssetItem assetItem) =>
+        assetItem switch
         {
-            Chemical chemical => chemical.Unit,
-            _ => "-"
+            Substance substance => substance.PriceUnit.ToString(),
+            _ => "-",
+        };
+
+    /// <summary>
+    /// Returns the binding size of the chemical or solvent.
+    /// </summary>
+    private static double GetBindingSize(AssetItem assetItem) =>
+        assetItem switch
+        {
+            Chemical chemical => chemical.BindingSize,
+            _ => 0,
+        };
+
+    /// <summary>
+    /// Returns the volume of the pressured gas cylinder.
+    /// </summary>
+    private static double GetVolume(AssetItem assetItem) =>
+        assetItem switch
+        {
+            GasCylinder gasCylinder => gasCylinder.Volume,
+            _ => 0,
+        };
+
+    /// <summary>
+    /// Returns the pressure of the pressured gas cylinder.
+    /// </summary>
+    private static double GetPressure(AssetItem assetItem) =>
+        assetItem switch
+        {
+            GasCylinder gasCylinder => gasCylinder.Pressure,
+            _ => 0,
         };
 
     /// <summary>
     /// Returns the manufacturer of the consumable.
     /// </summary>
-    private static string GetManufacturer(AssetItem assetItem)
-        => assetItem switch
+    private static double GetAmount(AssetItem assetItem) =>
+        assetItem switch
+        {
+            Consumable consumable => consumable.Amount,
+            _ => 0,
+        };
+
+    /// <summary>
+    /// Returns the manufacturer of the consumable.
+    /// </summary>
+    private static string GetManufacturer(AssetItem assetItem) =>
+        assetItem switch
         {
             Consumable consumable => consumable.Manufacturer,
-            _ => "-"
+            _ => "-",
         };
 
     /// <summary>
     /// Returns the serial number of the consumable.
     /// </summary>
-    private static string GetSerialNumber(AssetItem assetItem)
-        => assetItem switch
+    private static string GetSerialNumber(AssetItem assetItem) =>
+        assetItem switch
         {
             Consumable consumable => consumable.SerialNumber,
-            _ => "-"
+            _ => "-",
         };
 }
