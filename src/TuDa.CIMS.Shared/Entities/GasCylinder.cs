@@ -1,17 +1,17 @@
 ﻿namespace TuDa.CIMS.Shared.Entities;
 
 /// <summary>
-/// An entity representing a gas.
+/// An entity representing a gas cylinder.
 /// </summary>
 public record GasCylinder : Substance
 {
     /// <summary>
-    /// The volume of the item.
+    /// The volume of the cylinder.
     /// </summary>
-    public required double Volume { get; set; }
+    public double Volume { get; set; }
 
     /// <summary>
-    /// The pressure of the item.
+    /// The pressure of the cylinder.
     /// </summary>
-    public required double Pressure { get; set; }
-};
+    public double Pressure { get; set; }
+}
