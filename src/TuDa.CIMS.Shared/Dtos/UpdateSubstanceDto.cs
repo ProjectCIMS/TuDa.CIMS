@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Shared.Dtos;
 
@@ -10,7 +11,7 @@ namespace TuDa.CIMS.Shared.Dtos;
 public abstract record UpdateSubstanceDto : UpdateAssetItemDto
 {
     /// <summary>
-    /// An unique identifier for the chemical.
+    /// A unique identifier for the chemical.
     /// </summary>
     public string? Cas { get; set; }
 
