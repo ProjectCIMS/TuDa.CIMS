@@ -8,5 +8,5 @@ public abstract record BaseEntity
     /// Unique id of the entity.
     /// </summary>
     [Key]
-    public Guid Id { get; init; } = Guid.Empty;
+    public Guid Id { get; init; } = Guid.NewGuid();
 }
