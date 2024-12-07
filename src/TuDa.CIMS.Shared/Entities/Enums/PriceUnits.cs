@@ -2,7 +2,7 @@
 
 public enum PriceUnits
 {
-    Liter,
-    Kilo,
+    PerLiter,
+    PerKilo,
     PerPiece,
 }
