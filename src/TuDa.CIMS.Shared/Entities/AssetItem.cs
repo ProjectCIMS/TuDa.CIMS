@@ -1,26 +1,26 @@
 ﻿using System.Text.Json.Serialization;
-using TuDa.CIMS.Shared.Dtos;
 
 namespace TuDa.CIMS.Shared.Entities;
 
 /// <summary>
 /// An entity representing an item in the chemical inventory.
 /// </summary>
-
 [JsonPolymorphic]
-[JsonDerivedType(typeof(Chemical), nameof(Chemical))]
 [JsonDerivedType(typeof(Consumable), nameof(Consumable))]
-public abstract record AssetItem
+[JsonDerivedType(typeof(Chemical), nameof(Chemical))]
+[JsonDerivedType(typeof(Solvent), nameof(Solvent))]
+[JsonDerivedType(typeof(GasCylinder), nameof(GasCylinder))]
+public abstract record AssetItem : BaseEntity
 {
     /// <summary>
-    /// An identifier for the item.
+    /// The name of the item.
     /// </summary>
-    public required Guid Id { get; set; }
+    public required string Name { get; set; }
 
     /// <summary>
-    /// Notes about the item.
+    /// The price of the item.
     /// </summary>
-    public string Note { get; set; } = String.Empty;
+    public double Price { get; set; }
 
     /// <summary>
     /// The room in which the item is located.
@@ -28,17 +28,17 @@ public abstract record AssetItem
     public required Room Room { get; set; }
 
     /// <summary>
-    /// The name of the item.
-    /// </summary>
-    public required string Name { get; set; }
-
-    /// <summary>
     /// The item number of the item.
     /// </summary>
-    public required string ItemNumber { get; set; }
+    public string ItemNumber { get; set; } = string.Empty;
 
     /// <summary>
     /// The shop where the item was purchased.
     /// </summary>
-    public required string Shop { get; set; }
+    public string Shop { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Notes about the item.
+    /// </summary>
+    public string Note { get; set; } = string.Empty;
 }

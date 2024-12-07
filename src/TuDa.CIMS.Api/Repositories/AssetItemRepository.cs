@@ -55,18 +55,41 @@ public class AssetItemRepository : IAssetItemRepository
         existingItem.Note = updateModel.Note ?? existingItem.Note;
         existingItem.Shop = updateModel.Shop ?? existingItem.Shop;
         existingItem.Name = updateModel.Name ?? existingItem.Name;
+        existingItem.Price = updateModel.Price ?? existingItem.Price;
 
         switch (existingItem, updateModel)
         {
-            case (Chemical chemical, UpdateChemicalItemDto update):
+            case (Solvent solvent, UpdateSolventDto update):
+                solvent.Cas = update.Cas ?? solvent.Cas;
+                solvent.Hazards = update.Hazards ?? solvent.Hazards;
+                solvent.PriceUnit = update.PriceUnit ?? solvent.PriceUnit;
+                solvent.BindingSize = update.BindingSize ?? solvent.BindingSize;
+                solvent.Purity = update.Purity ?? solvent.Purity;
+                break;
+
+            case (Chemical chemical, UpdateChemicalDto update):
                 chemical.Cas = update.Cas ?? chemical.Cas;
                 chemical.Hazards = update.Hazards ?? chemical.Hazards;
-                chemical.Unit = update.Unit ?? chemical.Unit;
+                chemical.PriceUnit = update.PriceUnit ?? chemical.PriceUnit;
+                chemical.BindingSize = update.BindingSize ?? chemical.BindingSize;
+                chemical.Purity = update.Purity ?? chemical.Purity;
                 break;
-            case (Consumable consumable, UpdateConsumableItemDto update):
+
+            case (GasCylinder gas, UpdateGasCylinderDto update):
+                gas.Cas = update.Cas ?? gas.Cas;
+                gas.Hazards = update.Hazards ?? gas.Hazards;
+                gas.PriceUnit = update.PriceUnit ?? gas.PriceUnit;
+                gas.Volume = update.Volume ?? gas.Volume;
+                gas.Pressure = update.Pressure ?? gas.Pressure;
+                gas.Purity = update.Purity ?? gas.Purity;
+                break;
+
+            case (Consumable consumable, UpdateConsumableDto update):
+                consumable.Amount = update.Amount ?? consumable.Amount;
                 consumable.Manufacturer = update.Manufacturer ?? consumable.Manufacturer;
                 consumable.SerialNumber = update.SerialNumber ?? consumable.SerialNumber;
                 break;
+
             default:
                 return Error.Failure(
                     "Assetitem.update",

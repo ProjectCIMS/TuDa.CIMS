@@ -1,10 +1,13 @@
 ﻿using System.Text.Json.Serialization;
+using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Shared.Dtos;
 
 [JsonPolymorphic]
-[JsonDerivedType(typeof(UpdateChemicalItemDto), nameof(UpdateChemicalItemDto))]
-[JsonDerivedType(typeof(UpdateConsumableItemDto), nameof(UpdateConsumableItemDto))]
+[JsonDerivedType(typeof(UpdateSolventDto), nameof(UpdateSolventDto))]
+[JsonDerivedType(typeof(UpdateChemicalDto), nameof(UpdateChemicalDto))]
+[JsonDerivedType(typeof(UpdateGasCylinderDto), nameof(UpdateGasCylinderDto))]
+[JsonDerivedType(typeof(UpdateConsumableDto), nameof(UpdateConsumableDto))]
 public abstract record UpdateAssetItemDto
 {
     /// <summary>
@@ -31,4 +34,9 @@ public abstract record UpdateAssetItemDto
     /// The shop where the item was purchased.
     /// </summary>
     public string? Shop { get; set; }
+
+    /// <summary>
+    /// The price of the item.
+    /// </summary>
+    public double? Price { get; set; }
 }

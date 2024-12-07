@@ -1,4 +1,5 @@
 ﻿using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Shared.Dtos;
 
@@ -17,5 +18,5 @@ public record UpdateChemicalItemDto : UpdateAssetItemDto
     /// <summary>
     /// The unit of the chemical.
     /// </summary>
-    public string? Unit { get; set; }
+    public PriceUnits? PriceUnit { get; set; }
 }
