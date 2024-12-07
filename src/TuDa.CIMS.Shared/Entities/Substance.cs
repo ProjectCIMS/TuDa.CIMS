@@ -10,7 +10,7 @@ namespace TuDa.CIMS.Shared.Entities;
 [JsonDerivedType(typeof(Chemical), nameof(Chemical))]
 [JsonDerivedType(typeof(Solvent), nameof(Solvent))]
 [JsonDerivedType(typeof(GasCylinder), nameof(GasCylinder))]
-public abstract record Substance() : AssetItem
+public abstract record Substance : AssetItem
 {
     /// <summary>
     /// A unique identifier for the substance.

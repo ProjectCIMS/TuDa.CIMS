@@ -1,10 +1,13 @@
-﻿using TuDa.CIMS.Shared.Entities.Enums;
+﻿using System.Text.Json.Serialization;
 
 namespace TuDa.CIMS.Shared.Entities;
 
 /// <summary>
 /// An entity representing a person.
 /// </summary>
+[JsonPolymorphic]
+[JsonDerivedType(typeof(Professor), nameof(Professor))]
+[JsonDerivedType(typeof(Student), nameof(Student))]
 public abstract record Person : BaseEntity
 {
     /// <summary>
