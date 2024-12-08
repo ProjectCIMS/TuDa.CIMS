@@ -6,6 +6,11 @@
 public record Consumable : AssetItem
 {
     /// <summary>
+    /// The amount of the consumable item.
+    /// </summary>
+    public required double Amount { get; set; }
+
+    /// <summary>
     /// The name of the consumable item.
     /// </summary>
     public required string Manufacturer { get; set; }

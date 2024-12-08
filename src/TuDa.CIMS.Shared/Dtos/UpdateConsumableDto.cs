@@ -1,7 +1,12 @@
 ﻿namespace TuDa.CIMS.Shared.Dtos;
 
-public record UpdateConsumableItemDto : UpdateAssetItemDto
+public record UpdateConsumableDto : UpdateAssetItemDto
 {
+    /// <summary>
+    /// The amount of the consumable item.
+    /// </summary>
+    public double? Amount { get; set; }
+
     /// <summary>
     /// The name of the consumable item.
     /// </summary>

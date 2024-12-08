@@ -81,7 +81,8 @@ public class Worker(
         var chemical = new Chemical
         {
             Cas = "12-33-34232",
-            Unit = "Liter",
+            PriceUnit = PriceUnits.PerLiter,
+            Price = 6,
             Id = Guid.NewGuid(),
             Room = room,
             Name = "Chemikalie",
@@ -89,6 +90,8 @@ public class Worker(
             Shop = "Chemikalien Shop",
             Hazards = [hazard],
             Note = "Notiz",
+            BindingSize = 0,
+            Purity = 0,
         };
 
         var consumable = new Consumable
@@ -101,8 +104,42 @@ public class Worker(
             ItemNumber = "12345",
             Shop = "Glas Shop",
             Note = "Notiz",
+            Amount = 0,
+            Price = 0,
         };
 
+        var gas = new GasCylinder
+        {
+            Cas = "92-40-36752",
+            PriceUnit = PriceUnits.PerLiter,
+            Price = 9,
+            Id = Guid.NewGuid(),
+            Room = room,
+            Name = "Gas",
+            ItemNumber = "123",
+            Shop = "Chemikalien Shop",
+            Hazards = [hazard],
+            Note = "Notiz",
+            Purity = 0.3,
+            Volume = 4,
+            Pressure = 1,
+        };
+
+        var solvent = new Solvent()
+        {
+            Cas = "47-49-21678",
+            PriceUnit = PriceUnits.PerLiter,
+            Price = 3.5,
+            Id = Guid.NewGuid(),
+            Room = room,
+            Name = "Solvent",
+            ItemNumber = "01",
+            Shop = "Chemikalien Shop",
+            Hazards = [hazard],
+            Note = "Notiz",
+            Purity = 0.6,
+            BindingSize = 3,
+        };
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
@@ -133,6 +170,18 @@ public class Worker(
             {
                 await dbContext.Consumables.AddAsync(consumable, cancellationToken);
                 logger.LogInformation("Seeding Consumables with Id {ConsumablesId}", consumable.Id);
+            }
+
+            if (!await dbContext.Solvents.AnyAsync(cancellationToken))
+            {
+                await dbContext.Solvents.AddAsync(solvent, cancellationToken);
+                logger.LogInformation("Seeding Solvents with Id {SolventsId}", solvent.Id);
+            }
+
+            if (!await dbContext.GasCylinders.AnyAsync(cancellationToken))
+            {
+                await dbContext.GasCylinders.AddAsync(gas, cancellationToken);
+                logger.LogInformation("Seeding Solvents with Id {GasId}", gas.Id);
             }
 
             await dbContext.SaveChangesAsync(cancellationToken);
