@@ -104,10 +104,10 @@ public partial class AssetList
     private static string GetItemType(AssetItem assetItem) =>
         assetItem switch
         {
-            Solvent => "Solvent",
+            Solvent => "Lösungsmittel",
             Chemical => "Chemikalie",
             Consumable => "Verbrauchsmaterial",
-            GasCylinder => "Gas cylinder",
+            GasCylinder => "Druckgasflasche",
             _ => "-",
         };
 
