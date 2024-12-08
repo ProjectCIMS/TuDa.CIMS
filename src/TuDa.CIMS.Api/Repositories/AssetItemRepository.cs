@@ -115,11 +115,11 @@ public class AssetItemRepository : IAssetItemRepository
         return Result.Deleted;
     }
 
-    public async Task<IEnumerable<AssetItem>> SearchAsync(string name)
+    public async Task<IEnumerable<AssetItem>> SearchAsync(string name, string cas)
     {
         return await _context
             .AssetItems.Include(i => i.Room)
-            .Where(i => EF.Functions.Like(i.Name, $"%{name}%"))
+            .Where(i => (EF.Functions.Like(i.Name.ToLower(), $"%{name.ToLower()}%")))
             .ToListAsync();
     }
 }

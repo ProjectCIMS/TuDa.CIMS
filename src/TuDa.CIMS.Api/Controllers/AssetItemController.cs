@@ -77,7 +77,7 @@ public class AssetItemController : ControllerBase
         );
     }
 
-    [HttpGet($"{{{nameof(name)}:string}}")]
+    [HttpGet("{name}")]
     public async Task<IActionResult> SearchAsync(string name)
     {
         return (await _assetItemService.SearchAsync(name)).Match<IActionResult>(
