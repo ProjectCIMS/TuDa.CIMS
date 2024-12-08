@@ -76,4 +76,13 @@ public class AssetItemController : ControllerBase
             err => BadRequest(err)
         );
     }
+
+    [HttpGet($"{{{nameof(name)}:string}}")]
+    public async Task<IActionResult> SearchAsync(string name)
+    {
+        return (await _assetItemService.SearchAsync(name)).Match<IActionResult>(
+            value => Ok(value),
+            err => BadRequest(err)
+        );
+    }
 }

@@ -114,4 +114,12 @@ public class AssetItemRepository : IAssetItemRepository
         await _context.SaveChangesAsync();
         return Result.Deleted;
     }
+
+    public async Task<IEnumerable<AssetItem>> SearchAsync(string name)
+    {
+        return await _context
+            .AssetItems.Include(i => i.Room)
+            .Where(i => EF.Functions.Like(i.Name, $"%{name}%"))
+            .ToListAsync();
+    }
 }

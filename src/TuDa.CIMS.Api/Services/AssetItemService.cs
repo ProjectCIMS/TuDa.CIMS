@@ -102,4 +102,19 @@ public class AssetItemService : IAssetItemService
             );
         }
     }
+
+    public async Task<ErrorOr<IEnumerable<AssetItem>>> SearchAsync(string name)
+    {
+        try
+        {
+            return (await _assetItemRepository.SearchAsync(name)).ToErrorOr();
+        }
+        catch (Exception e)
+        {
+            return Error.Failure(
+                "AssetItem.SearchAsync",
+                $"Failed to search AssetItem with name {name}. Exception: {e.Message}"
+            );
+        }
+    }
 }

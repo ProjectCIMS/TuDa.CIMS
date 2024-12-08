@@ -9,4 +9,5 @@ public interface IAssetItemRepository
     Task<AssetItem?> GetOneAsync(Guid id);
     Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateAssetItemDto updateModel);
     Task<ErrorOr<Deleted>> RemoveAsync(Guid id);
+    Task<IEnumerable<AssetItem>> SearchAsync(string name);
 }
