@@ -3,7 +3,7 @@
 /// <summary>
 /// A class that represents the parameters for pagination.
 /// </summary>
-public class UserParams
+public class AssetItemPaginationQueryParams
 {
     private const int MaxPageSize = 50;
     public int PageNumber { get; set; } = 1;

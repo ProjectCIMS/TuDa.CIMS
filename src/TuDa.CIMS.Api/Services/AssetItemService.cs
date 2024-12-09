@@ -108,11 +108,11 @@ public class AssetItemService : IAssetItemService
     /// </summary>
     /// <param name="userParams"></param>
     /// <returns></returns>
-    public async Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(UserParams userParams)
+    public async Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(AssetItemPaginationQueryParams queryParams)
     {
         try
         {
-            return await _assetItemRepository.GetPaginatedAsync(userParams);
+            return await _assetItemRepository.GetPaginatedAsync(queryParams);
         }
         catch (Exception e)
         {

@@ -82,10 +82,10 @@ public class AssetItemController : ControllerBase
     /// </summary>
     /// <param name="userParams"></param>
     /// <returns></returns>
-    [HttpGet]
-    public async Task<IActionResult> GetPaginatedAsync([FromQuery] UserParams userParams)
+    [HttpGet("paginated")]
+    public async Task<IActionResult> GetPaginatedAsync([FromQuery] AssetItemPaginationQueryParams queryParams)
     {
-        return (await _assetItemService.GetPaginatedAsync(userParams)).Match<IActionResult>(
+        return (await _assetItemService.GetPaginatedAsync(queryParams)).Match<IActionResult>(
             value => Ok(value),
             err => BadRequest(err)
         );
