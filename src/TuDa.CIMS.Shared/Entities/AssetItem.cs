@@ -9,6 +9,8 @@ namespace TuDa.CIMS.Shared.Entities;
 
 [JsonPolymorphic]
 [JsonDerivedType(typeof(Chemical), nameof(Chemical))]
+[JsonDerivedType(typeof(Solvent), nameof(Solvent))]
+[JsonDerivedType(typeof(GasCylinder), nameof(GasCylinder))]
 [JsonDerivedType(typeof(Consumable), nameof(Consumable))]
 public abstract record AssetItem
 {
@@ -41,4 +43,9 @@ public abstract record AssetItem
     /// The shop where the item was purchased.
     /// </summary>
     public required string Shop { get; set; }
+
+    /// <summary>
+    /// The price of the item.
+    /// </summary>
+    public required double Price { get; set; }
 }
