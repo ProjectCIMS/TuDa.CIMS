@@ -1,10 +1,12 @@
 using System.Diagnostics;
+using Bogus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using OpenTelemetry.Trace;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Test.Faker;
 
 namespace TuDa.CIMS.MigrationService;
 
@@ -75,71 +77,25 @@ public class Worker(
 
     private async Task SeedDataAsync(CIMSDbContext dbContext, CancellationToken cancellationToken)
     {
-        var hazard = new Hazard { Id = Guid.NewGuid(), Name = "Hazard" };
-        var room = new Room { Id = Guid.NewGuid(), Name = "Haupt" };
+        Randomizer.Seed = new Random(12345);
 
-        var chemical = new Chemical
-        {
-            Cas = "12-33-34232",
-            PriceUnit = PriceUnits.PerLiter,
-            Price = 6,
-            Id = Guid.NewGuid(),
-            Room = room,
-            Name = "Chemikalie",
-            ItemNumber = "12345",
-            Shop = "Chemikalien Shop",
-            Hazards = [hazard],
-            Note = "Notiz",
-            BindingSize = 0,
-            Purity = 0,
-        };
+        var room = new RoomFaker().Generate();
 
-        var consumable = new Consumable
-        {
-            Manufacturer = "Glasmacher",
-            SerialNumber = "12343842738437293",
-            Id = Guid.NewGuid(),
-            Room = room,
-            Name = "Verbrauchsgegenstand",
-            ItemNumber = "12345",
-            Shop = "Glas Shop",
-            Note = "Notiz",
-            Amount = 0,
-            Price = 0,
-        };
+        var chemical = new ChemicalFaker(room).Generate();
+        var solvent = new SolventFaker().Generate();
+        var gasCylinder = new GasCylinderFaker().Generate();
+        var consumable = new ConsumableFaker(room).Generate();
 
-        var gas = new GasCylinder
-        {
-            Cas = "92-40-36752",
-            PriceUnit = PriceUnits.PerLiter,
-            Price = 9,
-            Id = Guid.NewGuid(),
-            Room = room,
-            Name = "Gas",
-            ItemNumber = "123",
-            Shop = "Chemikalien Shop",
-            Hazards = [hazard],
-            Note = "Notiz",
-            Purity = 0.3,
-            Volume = 4,
-            Pressure = 1,
-        };
+        var professor = new PersonFaker<Professor>(null!).Generate();
+        var students = new PersonFaker<Student>(null!).GenerateBetween(5, 5);
 
-        var solvent = new Solvent()
-        {
-            Cas = "47-49-21678",
-            PriceUnit = PriceUnits.PerLiter,
-            Price = 3.5,
-            Id = Guid.NewGuid(),
-            Room = room,
-            Name = "Solvent",
-            ItemNumber = "01",
-            Shop = "Chemikalien Shop",
-            Hazards = [hazard],
-            Note = "Notiz",
-            Purity = 0.6,
-            BindingSize = 3,
-        };
+        var purchaseEntries = new PurchaseEntryFaker(chemical).GenerateBetween(4, 4);
+        var purchase = new PurchaseFaker(null, purchaseEntries).Generate();
+
+        var workingGroup = new WorkingGroupFaker(professor, students, [purchase]).Generate();
+
+        var consumableTransaction = new ConsumableTransactionFaker(consumable).Generate();
+
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
@@ -147,12 +103,6 @@ public class Worker(
             await using var transaction = await dbContext.Database.BeginTransactionAsync(
                 cancellationToken
             );
-
-            if (!await dbContext.Hazards.AnyAsync(cancellationToken))
-            {
-                await dbContext.Hazards.AddAsync(hazard, cancellationToken);
-                logger.LogInformation("Seeding Hazard with Id {HazardId}", hazard.Id);
-            }
 
             if (!await dbContext.Rooms.AnyAsync(cancellationToken))
             {
@@ -166,22 +116,43 @@ public class Worker(
                 logger.LogInformation("Seeding Chemicals with Id {ChemicalsId}", chemical.Id);
             }
 
+            if (!await dbContext.Solvents.AnyAsync(cancellationToken))
+            {
+                await dbContext.Solvents.AddAsync(solvent, cancellationToken);
+                logger.LogInformation("Seeding Solvents with Id {SolventId}", solvent.Id);
+            }
+
+            if (!await dbContext.GasCylinders.AnyAsync(cancellationToken))
+            {
+                await dbContext.GasCylinders.AddAsync(gasCylinder, cancellationToken);
+                logger.LogInformation("Seeding Chemicals with Id {GasCylinderId}", gasCylinder.Id);
+            }
+
             if (!await dbContext.Consumables.AnyAsync(cancellationToken))
             {
                 await dbContext.Consumables.AddAsync(consumable, cancellationToken);
                 logger.LogInformation("Seeding Consumables with Id {ConsumablesId}", consumable.Id);
             }
 
-            if (!await dbContext.Solvents.AnyAsync(cancellationToken))
+            if (!await dbContext.WorkingGroups.AnyAsync(cancellationToken))
             {
-                await dbContext.Solvents.AddAsync(solvent, cancellationToken);
-                logger.LogInformation("Seeding Solvents with Id {SolventsId}", solvent.Id);
+                await dbContext.WorkingGroups.AddAsync(workingGroup, cancellationToken);
+                logger.LogInformation(
+                    "Seeding Consumables with Id {WorkingGroupId}",
+                    workingGroup.Id
+                );
             }
 
-            if (!await dbContext.GasCylinders.AnyAsync(cancellationToken))
+            if (!await dbContext.ConsumableTransactions.AnyAsync(cancellationToken))
             {
-                await dbContext.GasCylinders.AddAsync(gas, cancellationToken);
-                logger.LogInformation("Seeding Solvents with Id {GasId}", gas.Id);
+                await dbContext.ConsumableTransactions.AddAsync(
+                    consumableTransaction,
+                    cancellationToken
+                );
+                logger.LogInformation(
+                    "Seeding Consumables with Id {ConsumableTransactionId}",
+                    consumableTransaction.Id
+                );
             }
 
             await dbContext.SaveChangesAsync(cancellationToken);

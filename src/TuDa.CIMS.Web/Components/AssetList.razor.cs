@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Web.Components;
 
