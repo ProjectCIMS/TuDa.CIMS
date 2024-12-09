@@ -5,10 +5,10 @@ namespace TuDa.CIMS.Shared.Test.Faker;
 public class PersonFaker<TPerson> : BaseEntityFaker<TPerson>
     where TPerson : Person
 {
-    public PersonFaker(WorkingGroup workingGroup)
+    public PersonFaker(WorkingGroup? workingGroup = null)
     {
-        RuleFor(p => p.Name, t => t.Name.LastName());
-        RuleFor(p => p.FirstName, t => t.Name.FirstName());
-        RuleFor(p => p.WorkingGroup, _ => workingGroup);
+        RuleFor(p => p.Name, f => f.Name.LastName());
+        RuleFor(p => p.FirstName, f => f.Name.FirstName());
+        RuleFor(p => p.WorkingGroup, () => workingGroup ?? new WorkingGroupFaker().Generate());
     }
 }

@@ -90,7 +90,7 @@ public class Worker(
         var students = new PersonFaker<Student>(null!).GenerateBetween(5, 5);
 
         var purchaseEntries = new PurchaseEntryFaker(chemical).GenerateBetween(4, 4);
-        var purchase = new PurchaseFaker(null, purchaseEntries);
+        var purchase = new PurchaseFaker(null, purchaseEntries).Generate();
 
         var workingGroup = new WorkingGroupFaker(professor, students, [purchase]).Generate();
 

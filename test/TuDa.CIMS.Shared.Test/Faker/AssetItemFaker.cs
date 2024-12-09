@@ -7,11 +7,11 @@ public abstract class AssetItemFaker<TAssetItem> : BaseEntityFaker<TAssetItem>
 {
     protected AssetItemFaker(Room? room)
     {
-        RuleFor(c => c.Price, f => f.Random.Double(max: 100));
-        RuleFor(c => c.Room, () => room ?? new RoomFaker());
-        RuleFor(c => c.Name, f => f.Commerce.ProductMaterial());
-        RuleFor(c => c.ItemNumber, f => f.Commerce.Ean8());
-        RuleFor(c => c.Shop, f => f.Company.CompanyName());
-        RuleFor(c => c.Note, f => f.Lorem.Sentence());
+        RuleFor(a => a.Price, f => f.Random.Double(max: 100));
+        RuleFor(a => a.Room, () => room ?? new RoomFaker());
+        RuleFor(a => a.Name, f => f.Commerce.ProductMaterial());
+        RuleFor(a => a.ItemNumber, f => f.Commerce.Ean8());
+        RuleFor(a => a.Shop, f => f.Company.CompanyName());
+        RuleFor(a => a.Note, f => f.Lorem.Sentence());
     }
 }

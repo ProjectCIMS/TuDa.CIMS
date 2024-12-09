@@ -7,10 +7,11 @@ public class PurchaseFaker : BaseEntityFaker<Purchase>
 {
     public PurchaseFaker(
         WorkingGroup? workingGroup = null,
-        List<PurchaseEntry>? purchaseEntries = null
+        List<PurchaseEntry>? purchaseEntries = null,
+        bool? completed = null
     )
     {
-        var completed = new Randomizer().Bool();
+        completed ??= new Randomizer().Bool();
         workingGroup ??= new WorkingGroupFaker();
 
         RuleFor(p => p.WorkingGroup, () => workingGroup);
@@ -19,7 +20,10 @@ public class PurchaseFaker : BaseEntityFaker<Purchase>
             p => p.Entries,
             () => purchaseEntries ?? new PurchaseEntryFaker().GenerateBetween(2, 10)
         );
-        RuleFor(p => p.CompletionDate, f => completed ? f.Date.Recent().ToUniversalTime() : null);
+        RuleFor(
+            p => p.CompletionDate,
+            f => completed.Value ? f.Date.Recent().ToUniversalTime() : null
+        );
         RuleFor(p => p.Completed, () => completed);
     }
 }
