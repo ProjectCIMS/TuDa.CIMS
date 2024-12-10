@@ -1,30 +1,34 @@
 ﻿using System.Text.Json.Serialization;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Shared.Entities;
 
+/// <summary>
+/// An entity representing a substance.
+/// </summary>
 [JsonPolymorphic]
 [JsonDerivedType(typeof(Chemical), nameof(Chemical))]
 [JsonDerivedType(typeof(Solvent), nameof(Solvent))]
 [JsonDerivedType(typeof(GasCylinder), nameof(GasCylinder))]
-public abstract record Substance() : AssetItem
+public abstract record Substance : AssetItem
 {
     /// <summary>
-    /// An unique identifier for the chemical.
+    /// A unique identifier for the substance.
     /// </summary>
     public required string Cas { get; set; }
 
     /// <summary>
-    /// The purity of the item.
+    /// The purity of the substance.
     /// </summary>
-    public required double Purity { get; set; }
+    public double Purity { get; set; }
 
     /// <summary>
-    /// The price unit of the item.
+    /// The unit of measurement for the price of the substance.
     /// </summary>
     public required PriceUnits PriceUnit { get; set; }
 
     /// <summary>
-    /// A list of hazards associated with the chemical.
+    /// A list of hazards associated with the substance.
     /// </summary>
     public List<Hazard> Hazards { get; set; } = [];
 }

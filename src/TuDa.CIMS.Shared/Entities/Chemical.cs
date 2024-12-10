@@ -6,7 +6,7 @@
 public record Chemical : Substance
 {
     /// <summary>
-    /// The binding size of the item.
+    /// The binding size of the chemical.
     /// </summary>
-    public required double BindingSize { get; set; }
+    public double BindingSize { get; set; }
 }
