@@ -26,17 +26,12 @@
 
     <label class="form-label"
            for="consumableQuantity">
-        Quantity
+        Amount
     </label>
-    <input @bind-value="@Quantity"
+    <input @bind-value="@Amount"
            class="form-control"
            id="consumableQuantity"
            placeholder="Enter Quantity"
            type="number"/>
 </div>
 
-@code {
-    //Quantity of Consumable
-    [Parameter] public static int Quantity { get; set; }
-
-}

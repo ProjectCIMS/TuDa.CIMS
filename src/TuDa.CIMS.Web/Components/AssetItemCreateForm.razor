@@ -45,10 +45,12 @@
     protected string ItemNumber = "";
     protected string Note = "";
     protected string Cas = "";
-    protected string Unit = "";
     protected string Manufacturer = "";
     protected string SerialNumber = "";
-
+    protected double Price = 0;
+    protected double Amount = 0;
+    protected double Purity = 0;
+    protected double BindingSize = 0;
 
     /// <summary>
     /// Boolean to differentiate between Chemical and Consumable form
@@ -66,9 +68,12 @@
         Note = "",
         Id = Guid.NewGuid(),
         Room = new Room() { Name = "", Id = Guid.NewGuid() },
+        Price = 0,
         Hazards = new List<Hazard>(),
         Cas = "",
-        Unit = ""
+        Purity = 0,
+        PriceUnit = PriceUnits.PerPiece,
+        BindingSize = 0
     };
 
     /// <summary>
@@ -82,12 +87,14 @@
         Note = "",
         Id = Guid.NewGuid(),
         Room = new Room() { Name = "", Id = Guid.NewGuid() },
+        Price = 0,
         Manufacturer = "",
-        SerialNumber = ""
+        SerialNumber = "",
+        Amount = 0
     };
 
     /// <summary>
-    /// Method to switch to a Chemical
+    /// Method to switch to a Substance
     /// </summary>
     private void SwitchToChemical()
     {
@@ -114,7 +121,8 @@
             _createdChemicalItem.ItemNumber = ItemNumber;
             _createdChemicalItem.Note = Note;
             _createdChemicalItem.Cas = Cas;
-            _createdChemicalItem.Unit = Unit;
+            _createdChemicalItem.Price = Price;
+            _createdChemicalItem.Purity = Purity;
         }
         else
         {
@@ -124,6 +132,8 @@
             _createdConsumableItem.Note = Note;
             _createdConsumableItem.Manufacturer = Manufacturer;
             _createdConsumableItem.SerialNumber = SerialNumber;
+            _createdConsumableItem.Price = Price;
+            _createdConsumableItem.Amount = Amount;
         }
 
         ResetInputs();
@@ -139,9 +149,12 @@
         ItemNumber = string.Empty;
         Note = string.Empty;
         Cas = string.Empty;
-        Unit = string.Empty;
+        Purity = 0;
         Manufacturer = string.Empty;
         SerialNumber = string.Empty;
+        Price = 0;
+        Amount = 0;
+        BindingSize = 0;
     }
 
 

@@ -42,8 +42,17 @@
        placeholder="Enter Notes"
        type="text"/>
 
+<label class="form-label"
+       for="price">
+    Price
+</label>
+<input @bind-value="@Price"
+       class="form-control"
+       id="price"
+       placeholder="Enter Price"
+       type="number"/>
 
-<button class="btn btn-primary"
+<button class="btn btn-primary mt-3"
         @onclick="ResetInputs">
     Clear
 </button>
@@ -59,6 +68,6 @@
         Shop = string.Empty;
         ItemNumber = string.Empty;
         Note = string.Empty;
-
+        Price = 0;
     }
 }
