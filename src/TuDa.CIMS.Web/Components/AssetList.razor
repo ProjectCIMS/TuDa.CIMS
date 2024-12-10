@@ -1,65 +1,87 @@
-<!-- grid with one column for items -->
+<!-- table for asset list -->
 <div class="container-fluid text-center">
-    <div class="col">
-        @foreach (var item in Items)
+    <table class="table">
+        <thead class="align-middle">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Typ</th>
+            <th scope="col">Raum</th>
+            <th scope="col">Notiz</th>
+            <th scope="col">ArtikelNr</th>
+            <th scope="col">Shop</th>
+            <th scope="col">CAS-Nr</th>
+            <th scope="col">Gefahren</th>
+            <th scope="col">Maßeinheit</th>
+            <th scope="col">Hersteller</th>
+            <th scope="col">SerienNr</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody class="align-middle">
+        @foreach (var assetItem in AssetItems)
         {
-            <div class="row bg-body">
-                <div class="col text-start">@item</div>
-                <div class="col text-end">
-                    <input type="checkbox"
-                           class="form-check-input"
-                           aria-label="...">
-                </div>
-            </div>
+            <tr>
+                <th scope="row">@assetItem.Name</th>
+                <td>@GetItemType(assetItem)</td>
+                <td>@assetItem.Room.Name</td>
+                <td>@assetItem.Note</td>
+                <td>@assetItem.ItemNumber</td>
+                <td>@assetItem.Shop</td>
+                <td>@GetCas(assetItem)</td>
+                <td>
+                    @if (GetHazards(assetItem).Count == 0)
+                    {
+                        <p>-</p>
+                    }
+                    @foreach (var hazard in GetHazards(assetItem))
+                    {
+                        @hazard.Name
+                        @hazard.ImagePath
+                    }
+                </td>
+                <td>@GetPriceUnit(assetItem)</td>
+                <td>@GetManufacturer(assetItem)</td>
+                <td>@GetSerialNumber(assetItem)</td>
+                <td>
+                    <button type="button"
+                            class="btn">
+                        <i class="bi bi-pencil-square"></i>
+                    </button> <!-- TODO: button needs to be added properly -->
+                </td>
+            </tr>
         }
-    </div>
+        </tbody>
+    </table>
+
+    <!-- pagination -->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination d-flex justify-content-center">
+            <li class="page-item disabled">
+                <button class="page-link">
+                    🡸
+                </button>
+            </li>
+            <li class="page-item active"
+                aria-current="page">
+                <button class="page-link">
+                    1
+                </button>
+            </li>
+            <li class="page-item">
+                <button class="page-link">
+                    2
+                </button>
+            </li>
+            <li class="page-item">
+                <button class="page-link">
+                    3
+                </button>
+            </li>
+            <li class="page-item">
+                <button class="page-link">
+                    🡺
+                </button>
+            </li>
+        </ul>
+    </nav>
 </div>
-
-<!-- pagination -->
-<nav aria-label="Page navigation example">
-    <ul class="pagination">
-        <li class="page-item disabled">
-            <button class="page-link">
-                🡸
-            </button>
-        </li>
-        <li class="page-item active"
-            aria-current="page">
-            <button class="page-link">
-                1
-            </button>
-        </li>
-        <li class="page-item">
-            <button class="page-link">
-                2
-            </button>
-        </li>
-        <li class="page-item">
-            <button class="page-link">
-                3
-            </button>
-        </li>
-        <li class="page-item">
-            <button class="page-link">
-                🡺
-            </button>
-        </li>
-    </ul>
-</nav>
-
-@code {
-
-    /// <summary>
-    /// List of items to be shown
-    /// </summary>
-    [Parameter]
-    public required List<string> Items { get; set; } = Examples;
-
-    // TODO: remove the code for the initialization
-    private static readonly List<string> Examples =
-    [
-        "Trockeneis", "Ethanol", "Natriumhydroxid", "Aceton", "Ammoniumchlorid", "Wasserstoffperoxid",
-        "Kaliumpermanganat", "Messzylinder", "Erlenmeyerkolben", "Reagenzglas"
-    ];
-
-}

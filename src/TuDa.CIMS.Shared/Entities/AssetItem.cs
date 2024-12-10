@@ -1,8 +1,17 @@
-﻿namespace TuDa.CIMS.Shared.Entities;
+﻿using System.Text.Json.Serialization;
+using TuDa.CIMS.Shared.Dtos;
+
+namespace TuDa.CIMS.Shared.Entities;
 
 /// <summary>
 /// An entity representing an item in the chemical inventory.
 /// </summary>
+
+[JsonPolymorphic]
+[JsonDerivedType(typeof(Chemical), nameof(Chemical))]
+[JsonDerivedType(typeof(Solvent), nameof(Solvent))]
+[JsonDerivedType(typeof(GasCylinder), nameof(GasCylinder))]
+[JsonDerivedType(typeof(Consumable), nameof(Consumable))]
 public abstract record AssetItem
 {
     /// <summary>
@@ -34,4 +43,9 @@ public abstract record AssetItem
     /// The shop where the item was purchased.
     /// </summary>
     public required string Shop { get; set; }
+
+    /// <summary>
+    /// The price of the item.
+    /// </summary>
+    public required double Price { get; set; }
 }
