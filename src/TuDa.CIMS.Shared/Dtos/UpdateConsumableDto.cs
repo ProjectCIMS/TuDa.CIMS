@@ -5,7 +5,7 @@ public record UpdateConsumableDto : UpdateAssetItemDto
     /// <summary>
     /// The amount of the consumable item.
     /// </summary>
-    public double? Amount { get; set; }
+    public int? Amount { get; set; }
 
     /// <summary>
     /// The name of the consumable item.
