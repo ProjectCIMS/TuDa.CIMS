@@ -6,7 +6,7 @@
        for="name">
     Name
 </label>
-<input @bind="@CreatedAssetItem.Name"
+<input @bind-value="@Name"
        class="form-control"
        id="name"
        placeholder="Enter Name"
@@ -16,7 +16,7 @@
        for="shop">
     Shop
 </label>
-<input @bind="@CreatedAssetItem.Shop"
+<input @bind-value="@Shop"
        class="form-control"
        id="shop"
        placeholder="Enter Shop"
@@ -26,7 +26,7 @@
        for="itemNumber">
     Item Number
 </label>
-<input @bind="@CreatedAssetItem.ItemNumber"
+<input @bind-value="@ItemNumber"
        class="form-control"
        id="itemNumber"
        placeholder="Enter Item Number"
@@ -36,8 +36,29 @@
        for="notes">
     Notes
 </label>
-<input @bind="@CreatedAssetItem.Note"
+<input @bind-value="@Note"
        class="form-control"
        id="notes"
        placeholder="Enter Notes"
        type="text"/>
+
+
+<button class="btn btn-primary"
+        @onclick="ResetInputs">
+    Clear
+</button>
+
+@code
+{
+    /// <summary>
+    /// Resets the Input lines of the left Column
+    /// </summary>
+    private void ResetInputs()
+    {
+        Name = string.Empty;
+        Shop = string.Empty;
+        ItemNumber = string.Empty;
+        Note = string.Empty;
+
+    }
+}

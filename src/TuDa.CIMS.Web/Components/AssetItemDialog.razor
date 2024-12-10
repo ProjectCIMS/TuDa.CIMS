@@ -1,4 +1,7 @@
-﻿@* AssetItemDialog *@
+﻿@inherits AssetItemCreateForm
+
+
+@* AssetItemDialog *@
 
 
 <!-- Generic Modal Button -->
@@ -35,12 +38,14 @@
                         type="button">
                     Close
                 </button>
-                <!-- TODO No Function -->
                 <button class="btn btn-primary"
-                        type="button">
+                        type="button"
+                        data-bs-dismiss="modal"
+                        @onclick="SaveChanges">
                     Save Changes
                 </button>
             </div>
         </div>
     </div>
 </div>
+

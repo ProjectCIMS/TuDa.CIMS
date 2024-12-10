@@ -15,6 +15,7 @@
                 @onclick="SwitchToConsumable">
             Consumable
         </button>
+
     </div>
     <div class="row">
         <div class="col-md-6 mb-3">
@@ -23,11 +24,11 @@
 
         <!-- Which Form to Choose -->
         <div class="col-md-6 mb-3">
-            @if (CreatedAssetItem is Chemical)
+            @if (_isChemical)
             {
                 <ChemicalItemForm/>
             }
-            else if (CreatedAssetItem is Consumable)
+            else
             {
                 <ConsumableItemForm/>
             }
@@ -36,9 +37,28 @@
 </div>
 
 @code {
+    /// <summary>
+    /// Temporary Values to bind when inputting
+    /// </summary>
+    protected string Name = "";
+    protected string Shop = "";
+    protected string ItemNumber = "";
+    protected string Note = "";
+    protected string Cas = "";
+    protected string Unit = "";
+    protected string Manufacturer = "";
+    protected string SerialNumber = "";
 
-    //for Extraction
-    protected static AssetItem CreatedAssetItem = new Chemical()
+
+    /// <summary>
+    /// Boolean to differentiate between Chemical and Consumable form
+    /// </summary>
+    private bool _isChemical = true;
+
+    /// <summary>
+    /// For the Extraction of a Chemical Item
+    /// </summary>
+    private Chemical _createdChemicalItem = new Chemical()
     {
         Name = "",
         Shop = "",
@@ -51,37 +71,78 @@
         Unit = ""
     };
 
-    //Switch to Chemical Asset Item
-    private static void SwitchToChemical()
+    /// <summary>
+    /// For the Extraction of a Consumable Item
+    /// </summary>
+    private Consumable _createdConsumableItem = new Consumable()
     {
-        CreatedAssetItem = new Chemical()
-        {
-            Name = CreatedAssetItem.Name,
-            Shop = CreatedAssetItem.Shop,
-            ItemNumber = CreatedAssetItem.ItemNumber,
-            Note = CreatedAssetItem.Note,
-            Id = CreatedAssetItem.Id,
-            Room = new Room() { Name = CreatedAssetItem.Room.Name, Id = CreatedAssetItem.Room.Id },
-            Hazards = new List<Hazard>(),
-            Cas = "",
-            Unit = ""
-        };
+        Name = "",
+        Shop = "",
+        ItemNumber = "",
+        Note = "",
+        Id = Guid.NewGuid(),
+        Room = new Room() { Name = "", Id = Guid.NewGuid() },
+        Manufacturer = "",
+        SerialNumber = ""
+    };
+
+    /// <summary>
+    /// Method to switch to a Chemical
+    /// </summary>
+    private void SwitchToChemical()
+    {
+        _isChemical = true;
     }
 
-    //Switch to Consumable Asset Item
-    private static void SwitchToConsumable()
+    /// <summary>
+    /// Method to switch to a Consumable
+    /// </summary>
+    private void SwitchToConsumable()
     {
-        CreatedAssetItem = new Consumable()
-        {
-            Name = CreatedAssetItem.Name,
-            Shop = CreatedAssetItem.Shop,
-            ItemNumber = CreatedAssetItem.ItemNumber,
-            Note = CreatedAssetItem.Note,
-            Id = CreatedAssetItem.Id,
-            Room = new Room() { Name = CreatedAssetItem.Room.Name, Id = CreatedAssetItem.Room.Id },
-            Manufacturer = "",
-            SerialNumber = ""
-        };
+        _isChemical = false;
     }
+
+    /// <summary>
+    /// Functionality of the Save Button: Bind the Values to the actual Item
+    /// </summary>
+    protected void SaveChanges()
+    {
+        if (_isChemical)
+        {
+            _createdChemicalItem.Name = Name;
+            _createdChemicalItem.Shop = Shop;
+            _createdChemicalItem.ItemNumber = ItemNumber;
+            _createdChemicalItem.Note = Note;
+            _createdChemicalItem.Cas = Cas;
+            _createdChemicalItem.Unit = Unit;
+        }
+        else
+        {
+            _createdConsumableItem.Name = Name;
+            _createdConsumableItem.Shop = Shop;
+            _createdConsumableItem.ItemNumber = ItemNumber;
+            _createdConsumableItem.Note = Note;
+            _createdConsumableItem.Manufacturer = Manufacturer;
+            _createdConsumableItem.SerialNumber = SerialNumber;
+        }
+
+        ResetInputs();
+    }
+
+    /// <summary>
+    /// Resets the Input lines
+    /// </summary>
+    private void ResetInputs()
+    {
+        Name = string.Empty;
+        Shop = string.Empty;
+        ItemNumber = string.Empty;
+        Note = string.Empty;
+        Cas = string.Empty;
+        Unit = string.Empty;
+        Manufacturer = string.Empty;
+        SerialNumber = string.Empty;
+    }
+
 
 }
