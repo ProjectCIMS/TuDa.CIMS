@@ -1,4 +1,5 @@
 using TuDa.CIMS.Shared.Extensions;
+using MudBlazor.Services;
 using TuDa.CIMS.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,8 @@ builder.AddRefitClients();
 
 // Add services to the container.
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 
