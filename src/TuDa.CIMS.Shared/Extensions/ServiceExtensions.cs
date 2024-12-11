@@ -25,35 +25,61 @@ public static class ServiceExtensions
 
         types
             .Where(t => t.GetCustomAttribute<ServiceRegistrationAttribute>() is not null)
-            .Select(t =>
-            {
-                var attr = t.GetCustomAttribute<ServiceRegistrationAttribute>()!;
-                return new Service
-                {
-                    ServiceType = attr.ServiceType ?? t,
-                    ImplementationType =
-                        attr.ImplementationType ?? types.First(i => i.IsAssignableTo(t) && t != i),
-                    Attribute = attr,
-                };
-            })
+            .Select(t => CreateService(t, types))
             .ToList()
             .ForEach(services.AddService);
 
         return services;
     }
 
+    private static Service CreateService(Type t, Type[] types)
+    {
+        var attr = t.GetCustomAttribute<ServiceRegistrationAttribute>()!;
+        if (t.IsInterface)
+        {
+            return new Service
+            {
+                ServiceType = attr.ServiceType ?? t,
+                ImplementationType =
+                    attr.ImplementationType ?? types.First(i => i.IsAssignableTo(t) && t != i),
+                Attribute = attr,
+            };
+        }
+
+        if (t.IsClass)
+        {
+            return new Service
+            {
+                ImplementationType = attr.ImplementationType ?? t,
+                ServiceType =
+                    attr.ServiceType
+                    ?? (
+                        t.GetInterfaces().FirstOrDefault()
+                        ?? throw new ArgumentException(
+                            "Classes need to be derived from another type to be registered."
+                        )
+                    ),
+                Attribute = attr,
+            };
+        }
+
+        throw new ArgumentException(
+            $"A service registration is used on an unsupported type: {t.FullName}. Only interfaces and classes are supported."
+        );
+    }
+
     private static void AddService(this IServiceCollection services, Service service)
     {
         switch (service)
         {
-            case (var sType, var iType, ScopedServiceAttribute):
-                services.AddScoped(sType, iType);
+            case (var sType, var iType, ScopedServiceAttribute attribute):
+                services.AddKeyedScoped(sType, attribute.ServiceKey, iType);
                 break;
-            case (var sType, var iType, SingletonServiceAttribute):
-                services.AddSingleton(sType, iType);
+            case (var sType, var iType, SingletonServiceAttribute attribute):
+                services.AddKeyedSingleton(sType, attribute.ServiceKey, iType);
                 break;
-            case (var sType, var iType, TransientServiceAttribute):
-                services.AddTransient(sType, iType);
+            case (var sType, var iType, TransientServiceAttribute attribute):
+                services.AddKeyedTransient(sType, attribute.ServiceKey, iType);
                 break;
         }
     }
