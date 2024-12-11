@@ -26,6 +26,7 @@ public static class ServiceExtensions
         types
             .Where(t => t.GetCustomAttribute<ServiceRegistrationAttribute>() is not null)
             .Select(t => CreateService(t, types))
+            .Distinct()
             .ToList()
             .ForEach(services.AddService);
 
