@@ -6,12 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddRefitClients();
-builder.AddServices();
 
 // Add services to the container.
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-
 builder.Services.AddMudServices();
+builder.Services.AddServices();
 
 var app = builder.Build();
 
