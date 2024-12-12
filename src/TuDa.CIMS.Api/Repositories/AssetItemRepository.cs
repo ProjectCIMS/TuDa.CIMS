@@ -138,11 +138,25 @@ public class AssetItemRepository : IAssetItemRepository
         return Result.Deleted;
     }
 
-    public async Task<IEnumerable<AssetItem>> SearchAsync(string name, string cas)
+    public async Task<IEnumerable<AssetItem>> SearchAsync(string nameOrCas)
     {
-        return await _context
-            .AssetItems.Include(i => i.Room)
-            .Where(i => (EF.Functions.Like(i.Name.ToLower(), $"%{name.ToLower()}%")))
-            .ToListAsync();
+        IQueryable<AssetItem> query;
+
+        bool isCas = nameOrCas.All(c => char.IsDigit(c) || c == '-');
+
+        if (isCas)
+        {
+            query = _context
+                .AssetItems.OfType<Substance>()
+                .Where(s => EF.Functions.Like(s.Cas, $"{nameOrCas}%"));
+        }
+        else
+        {
+            query = _context.AssetItems.Where(i =>
+                EF.Functions.Like(i.Name.ToLower(), $"{nameOrCas.ToLower()}%")
+            );
+        }
+
+        return await query.Include(i => i.Room).ToListAsync();
     }
 }

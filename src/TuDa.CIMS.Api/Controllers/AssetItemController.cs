@@ -77,10 +77,10 @@ public class AssetItemController : ControllerBase
         );
     }
 
-    [HttpGet("{name}")]
-    public async Task<IActionResult> SearchAsync(string name)
+    [HttpGet("{nameOrCas}")]
+    public async Task<IActionResult> SearchAsync(string nameOrCas)
     {
-        return (await _assetItemService.SearchAsync(name)).Match<IActionResult>(
+        return (await _assetItemService.SearchAsync(nameOrCas)).Match<IActionResult>(
             value => Ok(value),
             err => BadRequest(err)
         );
