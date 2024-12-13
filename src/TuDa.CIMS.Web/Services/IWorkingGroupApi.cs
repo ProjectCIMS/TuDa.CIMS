@@ -10,7 +10,7 @@ namespace TuDa.CIMS.Web.Services;
 /// <summary>
 /// Refit client interface for performing operations on WorkingGroups.
 /// </summary>
-[RefitClient("/api/asset-items")]
+[RefitClient("/api/working-group")]
 public interface IWorkingGroupApi
 {
     /// <summary>
@@ -104,7 +104,7 @@ public interface IWorkingGroupApi
     /// Updates an existing Working Group.
     /// </summary>
     /// <param name="id">The unique identifier of the Working Group to update.</param>
-    /// <param name="updateWorkingGroupDto">The updateAssetItemDto.</param>
+    /// <param name="updateWorkingGroupDto">The updateWorkingGroupDto.</param>
     /// <returns>
     /// A Task representing the asynchronous operation, with a result of <see cref="ErrorOr{T}"/> containing a status indicating the update success.
     /// </returns>
@@ -113,7 +113,7 @@ public interface IWorkingGroupApi
     /// </remarks>
     public async Task<ErrorOr<Updated>> UpdateAsync(
         Guid id,
-        UpdateAssetItemDto updateWorkingGroupDto
+        UpdateWorkingGroupDto updateWorkingGroupDto
     ) =>
         await UpdateAsyncInternal(id, JsonSerializer.Serialize(updateWorkingGroupDto))
             .ToErrorOrAsync<Updated>();
