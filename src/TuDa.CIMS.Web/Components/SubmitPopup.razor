@@ -1,0 +1,54 @@
+@* Submit Popup *@
+<MudDialog>
+    <TitleContent></TitleContent>
+    <DialogContent>
+        <MudContainer>
+            <MudGrid Class="justify-space-between" Style="max-width: 400px;">
+                <MudItem>
+                    <MudText Typo="Typo.h6">Arbeitsgruppe auswählen</MudText>
+                </MudItem>
+                <MudItem Class="d-flex align-items-center" Style="margin-bottom: 300px;">
+                    <MudAutocomplete T="string" Label="Professor" SearchFunc="@Search">
+                        <ItemTemplate>
+                            <MudItem Class="d-flex align-items-center">
+                                <MudButton>
+                                    <MudIcon Icon="@Icons.Material.Outlined.Info" Class="mr-2"></MudIcon>
+                                </MudButton>
+                                <MudText>@context</MudText>
+                            </MudItem>
+                        </ItemTemplate>
+                    </MudAutocomplete>
+                </MudItem>
+                <MudItem>
+                    <MudPaper Style="height: 300px; overflow-y: auto; width: 400px">
+                        <MudContainer>
+                            <MudStack Spacing="2">
+                                <MudText Typo="Typo.body1" Class="mb-2" Style="font-weight: bold; text-align: left;">
+                                    Produktliste
+                                </MudText>
+                                @foreach (var purchaseEntry in PurchaseEntries)
+                                {
+                                    <MudItem Class="d-flex align-items-center">
+                                        <MudButton>
+                                            <MudIcon Icon="@Icons.Material.Outlined.Info" Class="mr-2"></MudIcon>
+                                        </MudButton>
+                                        <MudItem>
+                                            <MudText>@purchaseEntry.AssetItem.Name</MudText>
+                                            <MudText Class="text-secondary">
+                                                @purchaseEntry.Amount @getPriceUnit(@purchaseEntry.AssetItem)
+                                            </MudText>
+                                        </MudItem>
+                                    </MudItem>
+                                }
+                            </MudStack>
+                        </MudContainer>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
