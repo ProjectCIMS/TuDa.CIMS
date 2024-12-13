@@ -35,7 +35,6 @@ public class WorkingGroupController : ControllerBase
     /// </summary>
     /// <param name="id">the unique id of the Working Group</param>
     /// <returns> a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
-
     [HttpGet($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> GetOneAsync(Guid id)
     {
@@ -51,7 +50,6 @@ public class WorkingGroupController : ControllerBase
     /// </summary>
     /// <param name="id">the unique id of the Working Group</param>
     /// <param name="updateModel">the model containing the updated values for the Working Group </param>
-
     [HttpPatch($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel)
     {
@@ -67,7 +65,6 @@ public class WorkingGroupController : ControllerBase
     /// If an error occurs during the deletion, an appropriate error response is returned.
     ///</summary>
     /// <param name="id">the unique id of the Working Group</param>
-
     [HttpDelete($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> RemoveAsync(Guid id)
     {
@@ -76,6 +73,7 @@ public class WorkingGroupController : ControllerBase
             err => BadRequest(err)
         );
     }
+
     /// <summary>
     /// Creates a new Working Group using the provided create model.
     /// If the removal is successful, returns a 201 Created response.
@@ -92,7 +90,4 @@ public class WorkingGroupController : ControllerBase
             err => BadRequest(err)
         );
     }
-
-
 }
-

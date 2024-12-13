@@ -6,7 +6,6 @@ namespace TuDa.CIMS.Api.Services;
 
 public class WorkingGroupService : IWorkingGroupService
 {
-
     private readonly IWorkingGroupRepository _workingGroupRepository;
 
     public WorkingGroupService(IWorkingGroupRepository workingGroupRepository)
@@ -19,7 +18,8 @@ public class WorkingGroupService : IWorkingGroupService
     /// or the result of the <see cref="GetOneAsync"/> functionality if successful
     /// </summary>
     /// <param name="id">the unique id of the Working Group</param>
-    public async Task<ErrorOr<WorkingGroup?>> GetOneAsync(Guid id){
+    public async Task<ErrorOr<WorkingGroup?>> GetOneAsync(Guid id)
+    {
         try
         {
             return (await _workingGroupRepository.GetOneAsync(id)) switch
@@ -44,7 +44,8 @@ public class WorkingGroupService : IWorkingGroupService
     /// Return an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
     /// or the result of the <see cref="GetAllAsync"/> functionality if successful
     /// </summary>
-    public async Task<ErrorOr<IEnumerable<WorkingGroup>>> GetAllAsync() {
+    public async Task<ErrorOr<IEnumerable<WorkingGroup>>> GetAllAsync()
+    {
         try
         {
             return (await _workingGroupRepository.GetAllAsync()).ToErrorOr();
@@ -64,7 +65,8 @@ public class WorkingGroupService : IWorkingGroupService
     /// </summary>
     /// <param name="id">the unique id of the Working Group</param>
     /// <param name="updateModel">the model containing the updated values for the Working Group </param>
-    public async Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel) {
+    public async Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel)
+    {
         try
         {
             return await _workingGroupRepository.UpdateAsync(id, updateModel);
@@ -83,7 +85,8 @@ public class WorkingGroupService : IWorkingGroupService
     /// or the result of the <see cref="RemoveAsync"/> functionality if successful
     /// </summary>
     /// <param name="id">the unique id of the Working Group</param>
-    public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id){
+    public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id)
+    {
         try
         {
             return await _workingGroupRepository.RemoveAsync(id);
