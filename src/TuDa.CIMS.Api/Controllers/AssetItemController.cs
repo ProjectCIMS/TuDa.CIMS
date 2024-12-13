@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Refit;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
@@ -22,9 +23,9 @@ public class AssetItemController : ControllerBase
     /// </summary>
     /// <returns> a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync([Query] string? nameOrCas)
     {
-        return (await _assetItemService.GetAllAsync()).Match<IActionResult>(
+        return (await _assetItemService.GetAllAsync(nameOrCas)).Match<IActionResult>(
             value => Ok(value),
             err => BadRequest(err)
         );
@@ -73,15 +74,6 @@ public class AssetItemController : ControllerBase
     {
         return (await _assetItemService.RemoveAsync(id)).Match<IActionResult>(
             _ => Ok(),
-            err => BadRequest(err)
-        );
-    }
-
-    [HttpGet("{nameOrCas}")]
-    public async Task<IActionResult> SearchAsync(string nameOrCas)
-    {
-        return (await _assetItemService.SearchAsync(nameOrCas)).Match<IActionResult>(
-            value => Ok(value),
             err => BadRequest(err)
         );
     }

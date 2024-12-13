@@ -147,14 +147,12 @@ public class AssetItemRepository : IAssetItemRepository
         if (isCas)
         {
             query = _context
-                .AssetItems.OfType<Substance>()
-                .Where(s => EF.Functions.Like(s.Cas, $"{nameOrCas}%"));
+                .Substances.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
+                .Include(i => i.Hazards);
         }
         else
         {
-            query = _context.AssetItems.Where(i =>
-                EF.Functions.Like(i.Name.ToLower(), $"{nameOrCas.ToLower()}%")
-            );
+            query = _context.AssetItems.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
         }
 
         return await query.Include(i => i.Room).ToListAsync();

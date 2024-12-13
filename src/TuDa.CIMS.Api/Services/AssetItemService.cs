@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices.JavaScript;
+using Refit;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
@@ -19,8 +20,22 @@ public class AssetItemService : IAssetItemService
     /// or the result of the <see cref="GetAllAsync"/> functionality if successful
     /// </summary>
 
-    public async Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync()
+    public async Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync([Query] string? nameOrCas)
     {
+        if (nameOrCas != null)
+        {
+            try
+            {
+                return (await _assetItemRepository.SearchAsync(nameOrCas)).ToErrorOr();
+            }
+            catch (Exception e)
+            {
+                return Error.Failure(
+                    "AssetItem.SearchAsync",
+                    $"Failed to search AssetItem with name {nameOrCas}. Exception: {e.Message}"
+                );
+            }
+        }
         try
         {
             return (await _assetItemRepository.GetAllAsync()).ToErrorOr();
@@ -99,21 +114,6 @@ public class AssetItemService : IAssetItemService
             return Error.Failure(
                 "AssetItem.RemoveAsync",
                 $"Failed to remove AssetItem with ID {id}. Exception: {e.Message}"
-            );
-        }
-    }
-
-    public async Task<ErrorOr<IEnumerable<AssetItem>>> SearchAsync(string nameOrCas)
-    {
-        try
-        {
-            return (await _assetItemRepository.SearchAsync(nameOrCas)).ToErrorOr();
-        }
-        catch (Exception e)
-        {
-            return Error.Failure(
-                "AssetItem.SearchAsync",
-                $"Failed to search AssetItem with name {nameOrCas}. Exception: {e.Message}"
             );
         }
     }
