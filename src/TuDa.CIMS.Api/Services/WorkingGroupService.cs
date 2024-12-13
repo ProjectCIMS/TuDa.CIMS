@@ -7,11 +7,11 @@ namespace TuDa.CIMS.Api.Services;
 public class WorkingGroupService : IWorkingGroupService
 {
 
-    private readonly IWorkingGroupRepository _assetWorkingGroupRepository;
+    private readonly IWorkingGroupRepository _workingGroupRepository;
 
-    public WorkingGroupService(IWorkingGroupRepository assetWorkingGroupRepository)
+    public WorkingGroupService(IWorkingGroupRepository workingGroupRepository)
     {
-        _assetWorkingGroupRepository = assetWorkingGroupRepository;
+        _workingGroupRepository = workingGroupRepository;
     }
 
     /// <summary>
@@ -22,7 +22,7 @@ public class WorkingGroupService : IWorkingGroupService
     public async Task<ErrorOr<WorkingGroup?>> GetOneAsync(Guid id){
         try
         {
-            return (await _assetWorkingGroupRepository.GetOneAsync(id)) switch
+            return (await _workingGroupRepository.GetOneAsync(id)) switch
             {
                 null => Error.NotFound(
                     "WorkingGroups.GetOneAsync",
@@ -47,7 +47,7 @@ public class WorkingGroupService : IWorkingGroupService
     public async Task<ErrorOr<IEnumerable<WorkingGroup>>> GetAllAsync() {
         try
         {
-            return (await _assetWorkingGroupRepository.GetAllAsync()).ToErrorOr();
+            return (await _workingGroupRepository.GetAllAsync()).ToErrorOr();
         }
         catch (Exception e)
         {
@@ -67,7 +67,7 @@ public class WorkingGroupService : IWorkingGroupService
     public async Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel) {
         try
         {
-            return await _assetWorkingGroupRepository.UpdateAsync(id, updateModel);
+            return await _workingGroupRepository.UpdateAsync(id, updateModel);
         }
         catch (Exception e)
         {
@@ -86,7 +86,7 @@ public class WorkingGroupService : IWorkingGroupService
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id){
         try
         {
-            return await _assetWorkingGroupRepository.RemoveAsync(id);
+            return await _workingGroupRepository.RemoveAsync(id);
         }
         catch (Exception e)
         {
@@ -101,7 +101,7 @@ public class WorkingGroupService : IWorkingGroupService
     {
         try
         {
-            return await _assetWorkingGroupRepository.CreateAsync(createModel);
+            return await _workingGroupRepository.CreateAsync(createModel);
         }
         catch (Exception e)
         {
