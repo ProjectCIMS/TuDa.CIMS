@@ -96,15 +96,14 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// <returns></returns>
     public async Task<ErrorOr<Created>> CreateAsync(CreateWorkingGroupDto createModel)
     {
-
         var professor = await _context.Professors.FindAsync(createModel.Professor.Id);
         if (professor == null)
         {
             // Error if the professor for the new Working Group doesn't exist in the Professor table
             return Error.NotFound(
-                    "WorkingGroups.create",
-                    $"The professor with the id {createModel.Professor.Id} was not found."
-                );
+                "WorkingGroups.create",
+                $"The professor with the id {createModel.Professor.Id} was not found."
+            );
         }
 
 
