@@ -6,6 +6,7 @@ using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Extensions;
 using TuDa.CIMS.Web.Services;
 
+
 namespace TuDa.CIMS.Web.Services;
 
 /// <summary>
@@ -41,8 +42,10 @@ public interface IAssetItemApi
     /// <returns>
     /// A Task representing the asynchronous operation, with a result of <see cref="ErrorOr{T}"/> containing an IEnumerable of AssetItems if successful.
     /// </returns>
+
     public async Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync(string? nameOrCas = null) =>
         await GetAllAsyncInternal(nameOrCas).ToErrorOrAsync();
+
 
     /// <summary>
     /// Internal method to retrieve all AssetItems.
@@ -55,6 +58,7 @@ public interface IAssetItemApi
     protected Task<IApiResponse<IEnumerable<AssetItem>>> GetAllAsyncInternal(
         [Query] string? nameOrCas
     );
+
 
     /// <summary>
     /// Creates a new AssetItem.
