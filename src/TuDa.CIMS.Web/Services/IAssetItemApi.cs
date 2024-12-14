@@ -133,10 +133,4 @@ public interface IAssetItemApi
     [Patch("/{id}")]
     [Headers("Content-Type: application/json; charset=utf-8")]
     protected Task<IApiResponse> UpdateAsyncInternal(Guid id, [Body] string updateAssetItemDto);
-
-    public async Task<ErrorOr<IEnumerable<AssetItem>>> SearchAsync(String nameOrCas) =>
-        await SearchAsyncInternal(nameOrCas).ToErrorOrAsync();
-
-    [Get("/{nameOrCas}")]
-    protected Task<IApiResponse<IEnumerable<AssetItem>>> SearchAsyncInternal(String nameOrCas);
 }

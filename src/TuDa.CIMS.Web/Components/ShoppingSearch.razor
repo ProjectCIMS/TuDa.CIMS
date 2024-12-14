@@ -1,17 +1,17 @@
 ﻿@page "/SearchBar"
-<MudGrid>
-    <MudItem xs="12">
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" sm="8" md="8">
         <MudAutocomplete
-
-            @ref="_autocomplete"
-                         Clearable="@true"
-                         AdornmentIcon="@Icons.Material.Filled.Search"
-                         AdornmentColor="@Color.Primary"
-                         Label="Items"
-                         SearchFunc="@Search"
-                         ToStringFunc="@ToString"
-                         Variant="Variant.Filled"
-                        ShowProgressIndicator="true"
-                         ValueChanged="@(item => SelectAssetItem(item))"/>
+            @bind-Value="selectedItem":
+            Clearable="@true"
+            AdornmentIcon="@Icons.Material.Filled.Search"
+            AdornmentColor="@Color.Primary"
+            Label="Items"
+            SearchFunc="@Search"
+            ToStringFunc="@ToString"
+            Variant="Variant.Filled"
+            Dense=true
+            ShowProgressIndicator="true">
+        </MudAutocomplete>
     </MudItem>
 </MudGrid>
