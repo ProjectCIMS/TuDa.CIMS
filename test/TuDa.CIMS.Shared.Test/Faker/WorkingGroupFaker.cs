@@ -11,10 +11,10 @@ public class WorkingGroupFaker : BaseEntityFaker<WorkingGroup>
         List<Purchase>? purchases = null
     )
     {
-        RuleFor(g => g.Professor, (_, wg) => professor ?? new PersonFaker<Professor>(wg));
+        RuleFor(g => g.Professor, () => professor ?? new PersonFaker<Professor>());
         RuleFor(
             g => g.Students,
-            (_, wg) => students ?? new PersonFaker<Student>(wg).GenerateBetween(3, 5)
+            () => students ?? new PersonFaker<Student>().GenerateBetween(3, 5)
         );
         RuleFor(g => g.PhoneNumber, f => f.Phone.PhoneNumber());
         RuleFor(
