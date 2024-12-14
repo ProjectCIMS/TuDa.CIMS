@@ -9,11 +9,6 @@ namespace TuDa.CIMS.Shared.Entities;
 public record Purchase : BaseEntity
 {
     /// <summary>
-    /// The working group that purchased the items.
-    /// </summary>
-    public required WorkingGroup WorkingGroup { get; set; }
-
-    /// <summary>
     /// The person that purchase the items.
     /// </summary>
     public required Person Buyer { get; set; }
