@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using OpenTelemetry.Trace;
 using TuDa.CIMS.Api.Database;
+using TuDa.CIMS.ExcelImporter;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Test.Faker;
 
@@ -79,12 +80,10 @@ public class Worker(
     {
         Randomizer.Seed = new Random(12345);
 
-        var room = new RoomFaker().Generate();
-
-        var chemical = new ChemicalFaker(room).Generate();
-        var solvent = new SolventFaker().Generate();
-        var gasCylinder = new GasCylinderFaker().Generate();
-        var consumable = new ConsumableFaker(room).Generate();
+        (Consumable consumable, Chemical chemical) = await SeedAssetItem(
+            dbContext,
+            cancellationToken
+        );
 
         var professor = new PersonFaker<Professor>().Generate();
         var students = new PersonFaker<Student>().GenerateBetween(5, 5);
@@ -104,6 +103,68 @@ public class Worker(
                 cancellationToken
             );
 
+            if (!await dbContext.WorkingGroups.AnyAsync(cancellationToken))
+            {
+                await dbContext.WorkingGroups.AddAsync(workingGroup, cancellationToken);
+                logger.LogInformation(
+                    "Seeding Consumables with Id {WorkingGroupId}",
+                    workingGroup.Id
+                );
+            }
+
+            if (!await dbContext.ConsumableTransactions.AnyAsync(cancellationToken))
+            {
+                await dbContext.ConsumableTransactions.AddAsync(
+                    consumableTransaction,
+                    cancellationToken
+                );
+                logger.LogInformation(
+                    "Seeding Consumables with Id {ConsumableTransactionId}",
+                    consumableTransaction.Id
+                );
+            }
+
+            await dbContext.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+        });
+    }
+
+    private async Task<(Consumable, Chemical)> SeedAssetItem(
+        CIMSDbContext dbContext,
+        CancellationToken cancellationToken
+    )
+    {
+        var room = new RoomFaker().Generate();
+
+        Chemical chemical;
+        Consumable consumable;
+        try
+        {
+            var reader = new AssetItemsExcelReader("./AssetItems.xlsx");
+            var assetItems = reader.ReadAssetItems().ToList();
+
+            var strategy = dbContext.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () =>
+            {
+                if (!await dbContext.AssetItems.ContainsAsync(assetItems[0], cancellationToken))
+                {
+                    await dbContext.AssetItems.AddRangeAsync(assetItems, cancellationToken);
+                    await dbContext.SaveChangesAsync(cancellationToken);
+                }
+            });
+
+            chemical = assetItems.OfType<Chemical>().First();
+            consumable = assetItems.OfType<Consumable>().First();
+        }
+        catch
+        {
+            logger.LogWarning("No excel file found in path './AssetItems.xlsx'");
+            logger.LogWarning("Generating fake data");
+
+            chemical = new ChemicalFaker(room).Generate();
+            Solvent solvent = new SolventFaker().Generate();
+            GasCylinder gasCylinder = new GasCylinderFaker().Generate();
+            consumable = new ConsumableFaker(room).Generate();
             if (!await dbContext.Rooms.AnyAsync(cancellationToken))
             {
                 await dbContext.Rooms.AddAsync(room, cancellationToken);
@@ -133,30 +194,8 @@ public class Worker(
                 await dbContext.Consumables.AddAsync(consumable, cancellationToken);
                 logger.LogInformation("Seeding Consumables with Id {ConsumablesId}", consumable.Id);
             }
+        }
 
-            if (!await dbContext.WorkingGroups.AnyAsync(cancellationToken))
-            {
-                await dbContext.WorkingGroups.AddAsync(workingGroup, cancellationToken);
-                logger.LogInformation(
-                    "Seeding Consumables with Id {WorkingGroupId}",
-                    workingGroup.Id
-                );
-            }
-
-            if (!await dbContext.ConsumableTransactions.AnyAsync(cancellationToken))
-            {
-                await dbContext.ConsumableTransactions.AddAsync(
-                    consumableTransaction,
-                    cancellationToken
-                );
-                logger.LogInformation(
-                    "Seeding Consumables with Id {ConsumableTransactionId}",
-                    consumableTransaction.Id
-                );
-            }
-
-            await dbContext.SaveChangesAsync(cancellationToken);
-            await transaction.CommitAsync(cancellationToken);
-        });
+        return (consumable, chemical);
     }
 }
