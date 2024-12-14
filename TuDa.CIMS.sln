@@ -30,6 +30,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TuDa.CIMS.ServiceDefaults",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.MigrationService", "infrastructure\TuDa.CIMS.MigrationService\TuDa.CIMS.MigrationService.csproj", "{06216752-C73E-4496-9899-B8FE77871137}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.ExcelImporter", "infrastructure\TuDa.CIMS.ExcelImporter\TuDa.CIMS.ExcelImporter.csproj", "{FEE3854D-2321-48DA-ADCB-CF95BFF0F9D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +74,10 @@ Global
 		{06216752-C73E-4496-9899-B8FE77871137}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06216752-C73E-4496-9899-B8FE77871137}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06216752-C73E-4496-9899-B8FE77871137}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEE3854D-2321-48DA-ADCB-CF95BFF0F9D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEE3854D-2321-48DA-ADCB-CF95BFF0F9D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEE3854D-2321-48DA-ADCB-CF95BFF0F9D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEE3854D-2321-48DA-ADCB-CF95BFF0F9D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,6 +92,7 @@ Global
 		{294A7181-ABB2-4F79-8FAD-8AE533A857AC} = {75B40CC1-517E-4A53-8993-23F59613AA30}
 		{010B5E27-E764-4C39-9BD5-645604184711} = {75B40CC1-517E-4A53-8993-23F59613AA30}
 		{06216752-C73E-4496-9899-B8FE77871137} = {75B40CC1-517E-4A53-8993-23F59613AA30}
+		{FEE3854D-2321-48DA-ADCB-CF95BFF0F9D7} = {75B40CC1-517E-4A53-8993-23F59613AA30}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B490D6E1-3A6B-4BEA-AC94-F5B81C53D618}
