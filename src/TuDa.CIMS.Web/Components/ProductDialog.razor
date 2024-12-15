@@ -1,10 +1,9 @@
-﻿@using TuDa.CIMS.Shared.Entities
-@using TuDa.CIMS.Shared.Entities.Enums
-
-<!-- The Dialog for Amount Input -->
+﻿<!-- The Dialog for Amount Input -->
 <MudDialog>
     <TitleContent>
-        Amount Input
+        <MudText Typo="Typo.h5">
+            Amount Input
+        </MudText>
     </TitleContent>
     <DialogContent>
         <!-- Product View -->
@@ -17,30 +16,8 @@
                             <MudItem xs="12">
                                 <MudText Typo="Typo.subtitle1">@Product.Name</MudText>
                             </MudItem>
-                            <!-- €/Unit -->
-                            @if (Product is Substance substance)
-                            {
-                                <MudItem xs="12">
-                                    <MudText Typo="Typo.subtitle2">
-                                        @{
-                                            string priceDescription = substance.PriceUnit switch
-                                            {
-                                                PriceUnits.PerKilo => $"{substance.Price}€/Kg",
-                                                PriceUnits.PerLiter => $"{substance.Price}€/L",
-                                                PriceUnits.PerPiece => $"{substance.Price}€/Stück",
-                                                _ => $"{substance.Price}€ {substance.PriceUnit}"
-                                            };
-                                        }
-                                        @priceDescription
-                                    </MudText>
-                                </MudItem>
-                            }
-                            else
-                            {
-                                <MudItem xs="12">
-                                    <MudText Typo="Typo.subtitle2">@($"{Product.Price}€/Stück")</MudText>
-                                </MudItem>
-                            }
+                            <!-- € per Unit -->
+                            <PriceView Product="@Product"/>
                         </MudGrid>
                     </MudCardContent>
                 </MudCard>
@@ -54,6 +31,7 @@
             </MudItem>
         </MudGrid>
     </DialogContent>
+
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
         <MudButton Color="Color.Primary"
@@ -62,37 +40,3 @@
         </MudButton>
     </DialogActions>
 </MudDialog>
-
-@code {
-    [CascadingParameter] private MudDialogInstance _productDialog { get; set; }
-
-    // Product to be shown in Dialog
-    [Parameter] public AssetItem Product { get; set; }
-
-    // Amount of Product
-    [Parameter] public int Amount { get; set; }
-
-    // Simple Functions to Submit and Cancel the Action
-    private void Submit() => _productDialog.Close(DialogResult.Ok(Amount));
-    private void Cancel() => _productDialog.Cancel();
-
-
-    /// <summary>
-    /// Method to add Product to Product List
-    /// </summary>
-    private void AddProduct()
-    {
-        // Logic to add the product goes here
-        // For now, just close the dialog after clicking "Add"
-        if (Amount > 0)
-        {
-            Console.WriteLine($"Product added with quantity: {Amount}");
-            Submit();
-        }
-        else
-        {
-            Console.WriteLine("Quantity must be greater than 0");
-        }
-    }
-
-}
