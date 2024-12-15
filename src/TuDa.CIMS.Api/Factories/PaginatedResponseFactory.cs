@@ -3,7 +3,7 @@ using TuDa.CIMS.Shared.Dtos;
 
 namespace TuDa.CIMS.Api.Factories;
 
-public class PaginatedResponseFactory<T>
+public static class PaginatedResponseFactory<T>
 {
     /// <summary>
     /// method to create a paginated response.
