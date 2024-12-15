@@ -86,8 +86,8 @@ public class Worker(
         var gasCylinder = new GasCylinderFaker().Generate();
         var consumable = new ConsumableFaker(room).Generate();
 
-        var professor = new PersonFaker<Professor>(null!).Generate();
-        var students = new PersonFaker<Student>(null!).GenerateBetween(5, 5);
+        var professor = new PersonFaker<Professor>().Generate();
+        var students = new PersonFaker<Student>().GenerateBetween(5, 5);
 
         var purchaseEntries = new PurchaseEntryFaker(chemical).GenerateBetween(4, 4);
         var purchase = new PurchaseFaker(null, purchaseEntries).Generate();
