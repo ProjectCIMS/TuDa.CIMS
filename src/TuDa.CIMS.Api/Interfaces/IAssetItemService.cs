@@ -6,7 +6,7 @@ namespace TuDa.CIMS.Api.Interfaces;
 
 public interface IAssetItemService
 {
-    Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync([Query] string? nameOrCas);
+    Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync(string? nameOrCas);
     Task<ErrorOr<AssetItem>> GetOneAsync(Guid id);
     Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateAssetItemDto updateModel);
     Task<ErrorOr<Deleted>> RemoveAsync(Guid id);

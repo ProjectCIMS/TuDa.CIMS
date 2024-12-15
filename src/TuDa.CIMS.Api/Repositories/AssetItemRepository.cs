@@ -148,10 +148,9 @@ public class AssetItemRepository : IAssetItemRepository
 
         bool isCas = nameOrCas.All(c => char.IsDigit(c) || c == '-');
 
-        //TODO fix include hazards
         if (isCas)
         {
-            query = _context.Substances.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"));
+            query = _context.Substances.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%")).Include(s => s.Hazards);
         }
         else
         {

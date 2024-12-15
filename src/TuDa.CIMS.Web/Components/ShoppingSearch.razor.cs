@@ -10,7 +10,6 @@ namespace TuDa.CIMS.Web.Components;
 public partial class ShoppingSearch : ComponentBase
 {
     private readonly IAssetItemApi _assetItemApi;
-    private AssetItem selectedItem;
 
     /// <summary>
     /// Event that is called when an <see cref="AssetItem"/> is selected.

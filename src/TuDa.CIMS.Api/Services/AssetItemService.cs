@@ -20,7 +20,7 @@ public class AssetItemService : IAssetItemService
     /// or the result of the <see cref="GetAllAsync"/> functionality if successful or if nameOrCas is set the <see cref="SearchAsync"/> functionality.
     /// </summary>
 
-    public async Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync([Query] string? nameOrCas)
+    public async Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync(string? nameOrCas)
     {
         try
         {
