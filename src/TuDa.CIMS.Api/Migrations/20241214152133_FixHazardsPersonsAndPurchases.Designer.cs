@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TuDa.CIMS.Api.Database;
@@ -11,9 +12,11 @@ using TuDa.CIMS.Api.Database;
 namespace TuDa.CIMS.Api.Migrations
 {
     [DbContext(typeof(CIMSDbContext))]
-    partial class CIMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241214152133_FixHazardsPersonsAndPurchases")]
+    partial class FixHazardsPersonsAndPurchases
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
