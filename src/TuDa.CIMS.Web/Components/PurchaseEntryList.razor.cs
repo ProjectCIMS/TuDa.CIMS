@@ -8,17 +8,24 @@ namespace TuDa.CIMS.Web.Components;
 /// A Blazor component, that visualizes <see cref="PurchaseEntry"/>.
 /// This uses MudBlazor's <see cref="MudDataGrid{T}"/>.
 /// </summary>
-/// <param name="dialogService">Instance of MudBlazor's <see cref="DialogService"/>.</param>
-public partial class PurchaseEntryList(IDialogService dialogService) : ComponentBase
+public partial class PurchaseEntryList : ComponentBase
 {
     /// <summary>
     /// A list of <see cref="PurchaseEntry"/> that will be shown in the list.
     /// </summary>
     [Parameter]
-    public required List<PurchaseEntry> Entries { get; set; }
+    public List<PurchaseEntry> Entries { get; set; } = [];
 
-    // ReSharper disable once ReplaceWithPrimaryConstructorParameter
-    private readonly IDialogService _dialogService = dialogService;
+    private readonly IDialogService _dialogService;
+
+    /// <summary>
+    /// Constructor of <see cref="PurchaseEntryList"/>.
+    /// </summary>
+    /// <param name="dialogService">Instance of MudBlazor's <see cref="DialogService"/>.</param>
+    public PurchaseEntryList(IDialogService dialogService)
+    {
+        _dialogService = dialogService;
+    }
 
     /// <summary>
     /// Removes an entry when the user accept the dialog.
