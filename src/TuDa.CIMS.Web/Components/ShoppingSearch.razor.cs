@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
 
@@ -10,6 +11,7 @@ namespace TuDa.CIMS.Web.Components;
 public partial class ShoppingSearch : ComponentBase
 {
     private readonly IAssetItemApi _assetItemApi;
+    private MudAutocomplete<AssetItem> _autocomplete;
 
     /// <summary>
     /// Event that is called when an <see cref="AssetItem"/> is selected.
@@ -20,6 +22,13 @@ public partial class ShoppingSearch : ComponentBase
     public ShoppingSearch(IAssetItemApi api)
     {
         _assetItemApi = api;
+    }
+
+    /// Invoke to clear text
+    private async Task SelectAssetItem(AssetItem item)
+    {
+        await _autocomplete.ResetAsync();
+        await AssetItemSelected.InvokeAsync(item);
     }
 
     private async Task<IEnumerable<AssetItem>> Search(string nameOrCas, CancellationToken token)
