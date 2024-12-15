@@ -31,6 +31,8 @@ public class CIMSDbContext : DbContext
 
     #endregion
 
+    public DbSet<Person> Persons { get; set; }
+
     public DbSet<Hazard> Hazards { get; init; }
     public DbSet<Room> Rooms { get; init; }
     public DbSet<ConsumableTransaction> ConsumableTransactions { get; set; }
