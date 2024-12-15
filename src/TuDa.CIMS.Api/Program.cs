@@ -16,6 +16,8 @@ builder.Services.AddOpenApi();
 //builder.Services.ConfigureDbContext(builder.Configuration);
 builder.Services.AddScoped<IAssetItemRepository, AssetItemRepository>();
 builder.Services.AddScoped<IAssetItemService, AssetItemService>();
+builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+builder.Services.AddScoped<IPurchaseService, PurchaseService>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
