@@ -19,9 +19,4 @@ public abstract record Person : BaseEntity
     /// The first name of the person.
     /// </summary>
     public string FirstName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// The working group the person is member of.
-    /// </summary>
-    public required WorkingGroup WorkingGroup { get; set; }
 }

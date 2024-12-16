@@ -14,9 +14,4 @@ public record Hazard : BaseEntity
     /// An Image of the hazard.
     /// </summary>
     public string ImagePath { get; set; } = string.Empty;
-
-    /// <summary>
-    /// All substances that have this Hazard.
-    /// </summary>
-    public List<Substance> Substances { get; set; } = [];
 }

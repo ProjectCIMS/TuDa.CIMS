@@ -37,4 +37,29 @@ public class CIMSDbContext : DbContext
 
     public CIMSDbContext(DbContextOptions<CIMSDbContext> options)
         : base(options) { }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder
+            .Entity<Substance>()
+            .HasMany(s => s.Hazards)
+            .WithMany()
+            .UsingEntity<Dictionary<string, object>>(
+                "SubstanceHazard", // Join table name
+                j =>
+                    j.HasOne<Hazard>() // Hazard side of the join table
+                        .WithMany()
+                        .HasForeignKey("HazardId")
+                        .OnDelete(DeleteBehavior.Cascade), // Configure deletion behavior
+                j =>
+                    j.HasOne<Substance>() // Substance side of the join table
+                        .WithMany()
+                        .HasForeignKey("SubstanceId")
+                        .OnDelete(DeleteBehavior.Cascade), // Configure deletion behavior
+                j =>
+                {
+                    j.HasKey("SubstanceId", "HazardId"); // Composite primary key
+                }
+            );
+    }
 }
