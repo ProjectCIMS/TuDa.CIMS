@@ -1,8 +1,7 @@
 ﻿using TuDa.CIMS.Shared.Entities;
-
 namespace TuDa.CIMS.Shared.Dtos;
 
-public abstract record CreatePurchaseDto
+public record CreatePurchaseDto
 {
     /// <summary>
     /// The working group that purchased the items.

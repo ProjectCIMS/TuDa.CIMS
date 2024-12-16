@@ -76,7 +76,7 @@ public class PurchaseService : IPurchaseService
     {
         try
         {
-            return (await _purchaseRepository.RemoveAsync(id));
+            return await _purchaseRepository.RemoveAsync(id);
         }
         catch (Exception ex)
         {

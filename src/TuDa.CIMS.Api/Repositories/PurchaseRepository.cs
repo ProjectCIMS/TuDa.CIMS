@@ -39,6 +39,7 @@ public class PurchaseRepository : IPurchaseRepository
             .Where(i => i.Id == id)
             .Include(i => i.WorkingGroup)
             .Include(x => x.Entries)
+            .Include(x => x.Buyer)
             .SingleOrDefaultAsync();
     }
 
@@ -52,20 +53,16 @@ public class PurchaseRepository : IPurchaseRepository
     {
         var existingItem = await _context
             .Purchases
+            .Where(i => i.Id == id)
             .Include(purchase => purchase.WorkingGroup)
             .Include(y => y.Entries)
             .Include(y => y.Buyer)
-            .SingleOrDefaultAsync(i => i.Id == id);
+            .SingleOrDefaultAsync();
 
         if (existingItem is null)
         {
             return Error.NotFound("Purchase.update", $"Purchase with ID {id} was not found.");
         }
-
-        existingItem.WorkingGroup = updateModel.WorkingGroup ?? existingItem.WorkingGroup;
-        existingItem.Buyer = updateModel.Buyer ?? existingItem.Buyer;
-        existingItem.Signature = updateModel.Signature ?? existingItem.Signature;
-        existingItem.Entries = updateModel.Entries ?? existingItem.Entries;
 
         if (updateModel.WorkingGroup is not null)
         {
@@ -102,6 +99,14 @@ public class PurchaseRepository : IPurchaseRepository
 
             existingItem.Entries = entries;
         }
+
+        existingItem.WorkingGroup = updateModel.WorkingGroup ?? existingItem.WorkingGroup;
+        existingItem.Buyer = updateModel.Buyer ?? existingItem.Buyer;
+        existingItem.Signature = updateModel.Signature ?? existingItem.Signature;
+        existingItem.Entries = updateModel.Entries ?? existingItem.Entries;
+        existingItem.CompletionDate = updateModel.CompletionDate ?? existingItem.CompletionDate;
+        existingItem.Completed = updateModel.Completed ?? existingItem.Completed;
+
 
         await _context.SaveChangesAsync();
 
