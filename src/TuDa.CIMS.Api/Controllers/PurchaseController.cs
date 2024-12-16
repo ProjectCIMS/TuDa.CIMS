@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Controllers;
 
@@ -83,7 +84,7 @@ public class PurchaseController : ControllerBase
     public async Task<IActionResult> CreateAsync([FromBody] CreatePurchaseDto createModel)
     {
         return (await _purchaseService.CreateAsync(createModel)).Match<IActionResult>(
-            created => Ok(new { Data = created }),
+            created => Ok(created),
             error => BadRequest(error)
         );
     }
