@@ -51,7 +51,6 @@
     protected string Manufacturer = "";
     protected string SerialNumber = "";
     protected double Price = 0;
-    protected int ConsumableAmount = 0;
     protected double Purity = 0;
     protected double BindingSize = 0;
 
@@ -136,7 +135,6 @@
             _createdConsumableItem.Manufacturer = Manufacturer;
             _createdConsumableItem.SerialNumber = SerialNumber;
             _createdConsumableItem.Price = Price;
-            _createdConsumableItem.Amount = ConsumableAmount;
         }
 
         ResetInputs();
@@ -156,7 +154,6 @@
         Manufacturer = string.Empty;
         SerialNumber = string.Empty;
         Price = 0;
-        ConsumableAmount = 0;
         BindingSize = 0;
     }
 
