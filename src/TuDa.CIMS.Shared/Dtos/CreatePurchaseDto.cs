@@ -1,12 +1,7 @@
-﻿using System.Collections;
-using System.Numerics;
+﻿using TuDa.CIMS.Shared.Entities;
+namespace TuDa.CIMS.Shared.Dtos;
 
-namespace TuDa.CIMS.Shared.Entities;
-
-/// <summary>
-/// An entity representing a purchase in the system.
-/// </summary>
-public record Purchase : BaseEntity
+public record CreatePurchaseDto
 {
     /// <summary>
     /// The working group that purchased the items.
@@ -40,14 +35,4 @@ public record Purchase : BaseEntity
     /// If the purchase is actually completed.
     /// </summary>
     public bool Completed { get; set; }
-
-    #region Methods
-
-    /// <summary>
-    /// Calculates the TotalPrice of this purchase.
-    /// </summary>
-    public double TotalPrice => Entries.Aggregate(0.0, (total, entry) => total + entry.TotalPrice);
-
-
-    #endregion
 }
