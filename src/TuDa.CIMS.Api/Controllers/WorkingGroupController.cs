@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
 
-
 namespace TuDa.CIMS.Api.Controllers;
 
 [ApiController]
@@ -86,7 +85,7 @@ public class WorkingGroupController : ControllerBase
         var result = await _workingGroupService.CreateAsync(createModel);
 
         return result.Match<IActionResult>(
-            _ => CreatedAtAction(String.Empty, null),
+            value => CreatedAtAction("", value),
             err => BadRequest(err)
         );
     }

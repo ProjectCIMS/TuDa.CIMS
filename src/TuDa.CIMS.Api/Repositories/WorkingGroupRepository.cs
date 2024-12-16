@@ -22,7 +22,12 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// <returns></returns>
     public async Task<WorkingGroup?> GetOneAsync(Guid id)
     {
-        return await _context.WorkingGroups.Where(i => i.Id == id).SingleOrDefaultAsync();
+        return await _context
+            .WorkingGroups.Where(i => i.Id == id)
+            .Include(workingGroup => workingGroup.Professor)
+            .Include(workingGroup => workingGroup.Students)
+            .Include(workingGroup => workingGroup.Purchases)
+            .SingleOrDefaultAsync();
     }
 
     /// <summary>
@@ -30,11 +35,12 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// </summary>
     public async Task<IEnumerable<WorkingGroup>> GetAllAsync()
     {
-        return await _context.WorkingGroups.Include(workingGroup => workingGroup.Professor)
-            .Include(workingGroup => workingGroup.Students).Include(workingGroup => workingGroup.Purchases)
+        return await _context
+            .WorkingGroups.Include(workingGroup => workingGroup.Professor)
+            .Include(workingGroup => workingGroup.Students)
+            .Include(workingGroup => workingGroup.Purchases)
             .ToListAsync();
     }
-
 
     /// <summary>
     /// Updates an existing Working Group with the specified id using the provided update model.
@@ -44,20 +50,24 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     public async Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel)
     {
         var existingItem = await _context
-            .WorkingGroups.Include(workingGroup => workingGroup.Professor)
-            .Include(workingGroup => workingGroup.Students).Include(workingGroup => workingGroup.Purchases)
-            .SingleOrDefaultAsync(i => i.Id == id);
+            .WorkingGroups.Where(i => i.Id == id)
+            .Include(workingGroup => workingGroup.Professor)
+            .Include(workingGroup => workingGroup.Students)
+            .Include(workingGroup => workingGroup.Purchases)
+            .SingleOrDefaultAsync();
 
         if (existingItem is null)
         {
-            return Error.NotFound("WorkingGroups.update", $"Working Group with id {id} was not found.");
+            return Error.NotFound(
+                "WorkingGroups.update",
+                $"Working Group with id {id} was not found."
+            );
         }
 
-        existingItem.Professor = updateModel.Professor;
-        existingItem.Students = updateModel.Students;
-        existingItem.PhoneNumber = updateModel.PhoneNumber;
-        existingItem.Purchases = updateModel.Purchases;
-
+        existingItem.Professor = updateModel.Professor ?? existingItem.Professor;
+        existingItem.Students = updateModel.Students ?? existingItem.Students;
+        existingItem.PhoneNumber = updateModel.PhoneNumber ?? existingItem.PhoneNumber;
+        existingItem.Purchases = updateModel.Purchases ?? existingItem.Purchases;
 
         await _context.SaveChangesAsync();
         return Result.Updated;
@@ -70,10 +80,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// <returns></returns>
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id)
     {
-        var itemToRemove = await _context
-            .WorkingGroups.Include(workingGroup => workingGroup.Professor)
-            .Include(workingGroup => workingGroup.Students).Include(workingGroup => workingGroup.Purchases)
-            .SingleOrDefaultAsync(i => i.Id == id);
+        var itemToRemove = await _context.WorkingGroups.SingleOrDefaultAsync(i => i.Id == id);
 
         if (itemToRemove is null)
         {
@@ -106,12 +113,8 @@ public class WorkingGroupRepository : IWorkingGroupRepository
             );
         }
 
-
         var studentIds = createModel.Students.Select(s => s.Id).ToList();
-        var students = await _context.Students
-            .Where(s => studentIds.Contains(s.Id))
-            .ToListAsync();
-
+        var students = await _context.Students.Where(s => studentIds.Contains(s.Id)).ToListAsync();
 
         if (students.Count != createModel.Students.Count)
         {
@@ -128,7 +131,6 @@ public class WorkingGroupRepository : IWorkingGroupRepository
             Professor = createModel.Professor,
             PhoneNumber = createModel.PhoneNumber,
             Students = createModel.Students,
-            Purchases = createModel.Purchases
         };
 
         _context.WorkingGroups.Add(workingGroup);
