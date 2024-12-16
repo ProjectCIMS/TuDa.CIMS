@@ -17,7 +17,7 @@
                                 <MudText Typo="Typo.subtitle1">@Product.Name</MudText>
                             </MudItem>
                             <!-- € per Unit -->
-                            <PriceView Product="@Product"/>
+                            <ShoppingCartPriceView Product="@Product"/>
                         </MudGrid>
                     </MudCardContent>
                 </MudCard>
@@ -25,16 +25,22 @@
             <!-- Amount Input -->
             <MudItem xs="12">
                 <MudTextField @bind-Value="Amount"
+                              Error="@isError"
+                              ErrorText="Amount must be a positive number"
+                              InputMode="@InputMode.numeric"
+                              InputType="@InputType.Number"
                               Label="Amount"
-                              Min="1"
-                              Type="number"/>
+                              T="int"/>
             </MudItem>
         </MudGrid>
     </DialogContent>
 
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary"
+        <MudButton Color="Color.Error"
+                   OnClick="Cancel">
+            Cancel
+        </MudButton>
+        <MudButton Color="Color.Success"
                    OnClick="AddProduct">
             Add
         </MudButton>

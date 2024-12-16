@@ -12,7 +12,7 @@
 
 @code {
 
-    private Task OpenDialogAsync()
+    private async Task OpenDialogAsync()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
@@ -33,13 +33,13 @@
             BindingSize = 0
         };
 
+        // Set Parameters
         var parameters = new DialogParameters
         {
             { "Product", product },
-            { "Amount", 1 } // Initial Value _amount
         };
 
-        return DialogService.ShowAsync<ProductDialog>("Amount Input", parameters, options);
+        var dialog = await DialogService.ShowAsync<ShoppingCartProductDialog>("Amount Input", parameters, options);
     }
 
 }
