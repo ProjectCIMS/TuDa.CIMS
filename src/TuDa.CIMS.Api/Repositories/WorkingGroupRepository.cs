@@ -106,11 +106,16 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         var professor = await _context.Professors.FindAsync(createModel.Professor.Id);
         if (professor == null)
         {
-            // Error if the professor for the new Working Group doesn't exist in the Professor table
-            return Error.NotFound(
-                "WorkingGroups.create",
-                $"The professor with the id {createModel.Professor.Id} was not found."
-            );
+            // If the professor doesn't exist, create a new one
+            professor = new Professor
+            {
+                Id = createModel.Professor.Id,
+                Name = createModel.Professor.Name,
+                FirstName = createModel.Professor.FirstName,
+                WorkingGroup = createModel.Professor.WorkingGroup,
+            };
+            _context.Professors.Add(professor);
+            await _context.SaveChangesAsync();
         }
 
         var studentIds = createModel.Students.Select(s => s.Id).ToList();
@@ -119,13 +124,27 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         if (students.Count != createModel.Students.Count)
         {
             var missingStudentIds = studentIds.Except(students.Select(s => s.Id)).ToList();
-            // Error if a student exists in the createModel but not in the database students table
-            return Error.NotFound(
-                "WorkingGroups.create",
-                $"One or more students were not found. Missing students with ids: {string.Join(", ", missingStudentIds)}"
-            );
+            var missingStudents = createModel
+                .Students.Where(s => missingStudentIds.Contains(s.Id))
+                .ToList();
+
+            // Create new students for the missing IDs
+            foreach (var student in missingStudents)
+            {
+                _context.Students.Add(
+                    new Student
+                    {
+                        Id = student.Id,
+                        Name = student.Name,
+                        FirstName = student.FirstName,
+                        WorkingGroup = student.WorkingGroup,
+                    }
+                );
+            }
+            await _context.SaveChangesAsync();
         }
 
+        // Create the WorkingGroup after ensuring all related entities exist
         var workingGroup = new WorkingGroup
         {
             Professor = createModel.Professor,
