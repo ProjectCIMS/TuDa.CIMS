@@ -1,4 +1,5 @@
 ﻿@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Entities.Enums
 
 @* AssetItemCreateForm *@
 
@@ -135,7 +136,7 @@
             _createdConsumableItem.Manufacturer = Manufacturer;
             _createdConsumableItem.SerialNumber = SerialNumber;
             _createdConsumableItem.Price = Price;
-            _createdConsumableItem.Amount = Amount;
+            _createdConsumableItem.Amount = (int)Amount;
         }
 
         ResetInputs();
