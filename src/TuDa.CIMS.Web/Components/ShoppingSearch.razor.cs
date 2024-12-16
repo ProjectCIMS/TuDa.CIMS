@@ -11,7 +11,7 @@ namespace TuDa.CIMS.Web.Components;
 public partial class ShoppingSearch : ComponentBase
 {
     private readonly IAssetItemApi _assetItemApi;
-    private MudAutocomplete<AssetItem> _autocomplete;
+    private MudAutocomplete<AssetItem> _autocomplete = null!; // Is set by blazor component
 
     /// <summary>
     /// Event that is called when an <see cref="AssetItem"/> is selected.
@@ -25,7 +25,7 @@ public partial class ShoppingSearch : ComponentBase
     }
 
     /// Invoke to clear text
-    private async Task SelectAssetItem(AssetItem item)
+    private async Task AssetItemSelectedInternal(AssetItem item)
     {
         await _autocomplete.ResetAsync();
         await AssetItemSelected.InvokeAsync(item);
@@ -45,6 +45,7 @@ public partial class ShoppingSearch : ComponentBase
         item switch
         {
             Substance substance => $"{substance.Name} ({substance.Cas})",
+            null => "",
             _ => item.Name,
         };
 }

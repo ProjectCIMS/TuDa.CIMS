@@ -1,6 +1,8 @@
-﻿<MudGrid Justify="Justify.Center">
+﻿@using TuDa.CIMS.Shared.Entities
+<MudGrid Justify="Justify.Center">
     <MudItem xs="12" sm="8" md="8">
         <MudAutocomplete
+            T="AssetItem"
             @ref="_autocomplete"
             Clearable="@true"
             AdornmentIcon="@Icons.Material.Filled.Search"
@@ -8,6 +10,7 @@
             Label="Items"
             SearchFunc="@Search"
             ToStringFunc="@ToString"
+            ValueChanged="@AssetItemSelectedInternal"
             Variant="Variant.Filled"
             Dense=true
             ShowProgressIndicator="true">
