@@ -76,4 +76,13 @@ public class AssetItemController : ControllerBase
             err => BadRequest(err)
         );
     }
+
+    [HttpPut]
+    public async Task<IActionResult> CreateAsync(CreateAssetItemDto createModel)
+    {
+        return (await _assetItemService.CreateAsync(createModel)).Match<IActionResult>(
+            _ => Ok(),
+            err => BadRequest(err)
+        );
+    }
 }

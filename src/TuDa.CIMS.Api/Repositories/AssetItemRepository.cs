@@ -137,4 +137,92 @@ public class AssetItemRepository : IAssetItemRepository
         await _context.SaveChangesAsync();
         return Result.Deleted;
     }
+
+    public async Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel)
+    {
+        // Überprüfen, ob der Raum existiert, falls eine RoomId übergeben wurde
+        if (createModel.Room is not null)
+        {
+            var room = await _context.Rooms.SingleOrDefaultAsync(r => r.Id == createModel.Room.Id);
+            if (room is null)
+            {
+                return Error.NotFound(
+                    "Assetitem.create",
+                    $"Given RoomId {createModel.Room.Id} was not found."
+                );
+            }
+        }
+
+        // Neues AssetItem erstellen
+        AssetItem newItem = createModel switch
+        {
+            CreateSolventDto solvent => new Solvent
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = createModel.Room,
+                Cas = solvent.Cas,
+                Hazards = solvent.Hazards,
+                PriceUnit = solvent.PriceUnit,
+                BindingSize = solvent.BindingSize,
+                Purity = solvent.Purity
+            },
+            CreateChemicalDto chemical => new Chemical
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = createModel.Room,
+                Cas = chemical.Cas,
+                Hazards = chemical.Hazards,
+                PriceUnit = chemical.PriceUnit,
+                BindingSize = chemical.BindingSize,
+                Purity = chemical.Purity
+            },
+            CreateGasCylinderDto gas => new GasCylinder
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = createModel.Room,
+                Cas = gas.Cas,
+                Hazards = gas.Hazards,
+                PriceUnit = gas.PriceUnit,
+                Volume = gas.Volume,
+                Pressure = gas.Pressure,
+                Purity = gas.Purity
+            },
+            CreateConsumableDto consumable => new Consumable
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = createModel.Room,
+                Amount = consumable.Amount,
+                Manufacturer = consumable.Manufacturer,
+                SerialNumber = consumable.SerialNumber
+            },
+            _ => throw new ArgumentException(
+                "Unsupported create model type",
+                nameof(createModel)
+            )
+        };
+        // Das neue AssetItem in die Datenbank hinzufügen
+        await _context.AssetItems.AddAsync(newItem);
+
+        // Änderungen in der Datenbank speichern
+        await _context.SaveChangesAsync();
+
+        // Rückgabe des Erfolgsstatus
+        return Result.Created;
+    }
 }
