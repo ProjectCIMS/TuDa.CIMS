@@ -9,6 +9,11 @@ namespace TuDa.CIMS.Shared.Entities;
 public record Purchase : BaseEntity
 {
     /// <summary>
+    /// The working group that purchased the items.
+    /// </summary>
+    public required WorkingGroup WorkingGroup { get; set; }
+
+    /// <summary>
     /// The person that purchase the items.
     /// </summary>
     public required Person Buyer { get; set; }
@@ -42,6 +47,7 @@ public record Purchase : BaseEntity
     /// Calculates the TotalPrice of this purchase.
     /// </summary>
     public double TotalPrice => Entries.Aggregate(0.0, (total, entry) => total + entry.TotalPrice);
+
 
     #endregion
 }
