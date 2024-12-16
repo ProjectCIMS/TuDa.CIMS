@@ -140,7 +140,6 @@ public class AssetItemRepository : IAssetItemRepository
 
     public async Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel)
     {
-        // Überprüfen, ob der Raum existiert, falls eine RoomId übergeben wurde
         if (createModel.Room is not null)
         {
             var room = await _context.Rooms.SingleOrDefaultAsync(r => r.Id == createModel.Room.Id);
@@ -153,7 +152,6 @@ public class AssetItemRepository : IAssetItemRepository
             }
         }
 
-        // Neues AssetItem erstellen
         AssetItem newItem = createModel switch
         {
             CreateSolventDto solvent => new Solvent
@@ -216,13 +214,8 @@ public class AssetItemRepository : IAssetItemRepository
                 nameof(createModel)
             )
         };
-        // Das neue AssetItem in die Datenbank hinzufügen
         await _context.AssetItems.AddAsync(newItem);
-
-        // Änderungen in der Datenbank speichern
         await _context.SaveChangesAsync();
-
-        // Rückgabe des Erfolgsstatus
         return Result.Created;
     }
 }
