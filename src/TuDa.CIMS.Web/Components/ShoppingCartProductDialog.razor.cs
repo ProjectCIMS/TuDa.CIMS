@@ -10,19 +10,18 @@ public partial class ShoppingCartProductDialog
     public required MudDialogInstance ProductDialog { get; set; }
 
     [Inject]
-    public required ILogger<ShoppingCartProductDialog> Logger { get; set; }
+    private ILogger<ShoppingCartProductDialog> Logger { get; set; }
 
     // Product to be shown in Dialog.
     [Parameter]
     public required AssetItem Product { get; set; }
 
-    //Purchase Entry to add to the List
-    public PurchaseEntry? PurchaseEntry { get; set; }
-    public static List<PurchaseEntry> Entries { get; set; } = [];
+    [Parameter]
+    public EventCallback<int> OnAmountSubmitted { get; set; }
 
     // Amount of Product
     public int Amount { get; set; } = 1;
-    private bool isError => Amount <= 0;
+    private bool IsError => Amount <= 0;
 
     // Simple Functions to Submit and Cancel the Action.
     private void Submit() => ProductDialog.Close(DialogResult.Ok(Amount));
@@ -32,20 +31,12 @@ public partial class ShoppingCartProductDialog
     /// <summary>
     /// Method to add Product to Product List.
     /// </summary>
-    private void AddProduct()
+    private async Task AddProduct()
     {
         if (Amount > 0)
         {
             Logger.LogInformation($"Product added with quantity: {Amount}");
-
-            PurchaseEntry = new PurchaseEntry()
-            {
-                Amount = Amount,
-                AssetItem = Product,
-                PricePerItem = Product.Price,
-            };
-
-            Entries.Add(PurchaseEntry);
+            await OnAmountSubmitted.InvokeAsync(Amount);
             Submit();
         }
         else
