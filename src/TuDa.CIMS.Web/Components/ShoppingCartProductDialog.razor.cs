@@ -17,7 +17,7 @@ public partial class ShoppingCartProductDialog
     public required AssetItem Product { get; set; }
 
     //Purchase Entry to add to the List
-    public PurchaseEntry PurchaseEntry { get; set; }
+    public PurchaseEntry? PurchaseEntry { get; set; }
     public static List<PurchaseEntry> Entries { get; set; } = [];
 
     // Amount of Product
