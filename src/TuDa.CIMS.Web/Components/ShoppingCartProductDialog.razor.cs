@@ -16,9 +16,6 @@ public partial class ShoppingCartProductDialog
     [Parameter]
     public required AssetItem Product { get; set; }
 
-    [Parameter]
-    public EventCallback<int> OnAmountSubmitted { get; set; }
-
     // Amount of Product
     public int Amount { get; set; } = 1;
     private bool IsError => Amount <= 0;
@@ -29,14 +26,15 @@ public partial class ShoppingCartProductDialog
     private void Cancel() => ProductDialog.Cancel();
 
     /// <summary>
-    /// Method to add Product to Product List.
+    /// Check if Amount is higher than 0.
+    /// false: dialog will not be closed.
+    /// true: submit will be successful.
     /// </summary>
-    private async Task AddProduct()
+    private void CheckAndSubmit()
     {
         if (Amount > 0)
         {
             Logger.LogInformation($"Product added with quantity: {Amount}");
-            await OnAmountSubmitted.InvokeAsync(Amount);
             Submit();
         }
         else
