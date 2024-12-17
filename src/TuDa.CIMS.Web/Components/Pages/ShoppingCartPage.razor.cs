@@ -54,7 +54,14 @@ public partial class ShoppingCartPage
         var parameters = new DialogParameters
         {
             { "PurchaseEntries", Entries },
-            { "WorkingGroups", new List<WorkingGroup>()}
+            {
+                "WorkingGroups",
+                new List<WorkingGroup>()
+                {
+                    new() { Professor = new Professor { Name = "Heiter" } },
+                    new() { Professor = new Professor { Name = "Kaiser" } },
+                }
+            },
         };
 
         var dialog = await DialogService.ShowAsync<ShoppingCartSubmitPopup>(
