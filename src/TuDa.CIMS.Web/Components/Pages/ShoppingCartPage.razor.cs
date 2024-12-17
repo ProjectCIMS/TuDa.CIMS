@@ -48,21 +48,20 @@ public partial class ShoppingCartPage
         }
     }
 
-    // TODO: Cannot access a disposed object error
     private async Task OpenSubmitDialogAsync()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         var parameters = new DialogParameters
         {
-            { "Entries", Entries },
-            { "Working Groups", new List<WorkingGroup>() },
+            { "PurchaseEntries", Entries },
+            { "WorkingGroups", new List<WorkingGroup>()}
         };
 
-        /*var dialog = await DialogService.ShowAsync<ShoppingCartSubmitPopup>(
+        var dialog = await DialogService.ShowAsync<ShoppingCartSubmitPopup>(
             "Submit Input",
             parameters,
             options
-        );*/
+        );
     }
 
     private void AddProductEntry(int amount)
