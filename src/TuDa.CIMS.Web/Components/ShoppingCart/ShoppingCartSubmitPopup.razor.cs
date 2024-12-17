@@ -1,53 +1,34 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
-using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 public partial class ShoppingCartSubmitPopup
 {
     /// <summary>
-    /// Returns the name of a given working group.
+    /// PurchaseEntries of the Purchase.
     /// </summary>
-    private static string ToString(WorkingGroup workingGroup) =>
-        workingGroup switch
-        {
-            null => "",
-            _ => workingGroup.Professor.Name,
-        };
-
-    public WorkingGroup WorkingGroup { get; set; }
-
     [Parameter]
-    public List<WorkingGroup> WorkingGroups { get; set; }
+    public required List<PurchaseEntry> PurchaseEntries { get; set; }
 
     /// <summary>
-    /// Search for the selection of the working group.
+    /// List of available WorkingGroups.
+    /// TODO: Replace with WorkingGroupApi and move to WorkingGroupSelection.
     /// </summary>
-    private Task<IEnumerable<WorkingGroup>> Search(
-        string searchText,
-        CancellationToken cancellationToken
-    )
-    {
-        return Task.FromResult(
-            WorkingGroups.Where(w =>
-                string.IsNullOrWhiteSpace(searchText)
-                || w.Professor.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)
-            )
-        );
-    }
+    [Parameter]
+    public required List<WorkingGroup> WorkingGroups { get; set; }
 
     /// <summary>
     /// CascadingParamter MudDialag.
     /// </summary>
     [CascadingParameter]
-    private MudDialogInstance MudDialog { get; set; }
+    private MudDialogInstance MudDialog { get; set; } = null!;
 
     /// <summary>
-    /// Closes the MudDialog.
+    /// The selected working group.
     /// </summary>
-    private void Submit() => MudDialog.Close(DialogResult.Ok(WorkingGroup));
+    private WorkingGroup WorkingGroup { get; set; } = null!;
 
     /// <summary>
     /// Cancels the MudDialog.
@@ -55,25 +36,7 @@ public partial class ShoppingCartSubmitPopup
     private void Cancel() => MudDialog.Cancel();
 
     /// <summary>
-    /// List of purchase entries to be shown.
+    /// Closes the MudDialog.
     /// </summary>
-    [Parameter]
-    public required List<PurchaseEntry> PurchaseEntries { get; set; }
-
-    /// <summary>
-    /// Returns the amount with the respective price unit of the given purchase entry as a string.
-    /// </summary>
-    private static string GetAmountText(PurchaseEntry purchaseEntry) =>
-        $"{purchaseEntry.Amount}"
-        + purchaseEntry.AssetItem switch
-        {
-            Substance substance => substance.PriceUnit switch
-            {
-                PriceUnits.PerKilo => " kg",
-                PriceUnits.PerLiter => " l",
-                PriceUnits.PerPiece => " Stück",
-                _ => $" {substance.PriceUnit}",
-            },
-            _ => " Stück",
-        };
+    private void Submit() => MudDialog.Close(DialogResult.Ok(WorkingGroup));
 }
