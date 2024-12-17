@@ -10,7 +10,7 @@ public record PurchaseEntry : BaseEntity
     /// <summary>
     /// The amount of purchased items.
     /// </summary>
-    public required uint Amount { get; set; }
+    public required int Amount { get; set; }
 
     /// <summary>
     /// The current item price when the purchase is done.

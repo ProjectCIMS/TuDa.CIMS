@@ -20,7 +20,7 @@ public partial class ShoppingCartProductDialog
     public static List<PurchaseEntry> Entries { get; set; } = [];
 
     // Amount of Product
-    public uint Amount { get; set; } = 1;
+    public int Amount { get; set; } = 1;
     private bool isError => Amount <= 0;
 
     // Simple Functions to Submit and Cancel the Action.

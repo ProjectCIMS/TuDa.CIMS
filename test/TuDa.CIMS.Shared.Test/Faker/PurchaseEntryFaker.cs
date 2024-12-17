@@ -21,7 +21,7 @@ public class PurchaseEntryFaker : BaseEntityFaker<PurchaseEntry>
                     }
                 )
         );
-        RuleFor(e => e.Amount, f => f.Random.UInt(min: 1, max: 40));
+        RuleFor(e => e.Amount, f => f.Random.Int(min: 1, max: 40));
         RuleFor(e => e.PricePerItem, f => f.Random.Double(max: 50));
     }
 }
