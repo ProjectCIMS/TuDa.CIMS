@@ -137,4 +137,26 @@ public class AssetItemRepository : IAssetItemRepository
         await _context.SaveChangesAsync();
         return Result.Deleted;
     }
+
+    /// <summary>
+    ///Returns a list of matching AssetItem based on the provided name or CAS number.
+    /// </summary>
+    /// <param name="nameOrCas"></param>
+    public async Task<IEnumerable<AssetItem>> SearchAsync(string nameOrCas)
+    {
+        IQueryable<AssetItem> query;
+
+        bool isCas = nameOrCas.All(c => char.IsDigit(c) || c == '-');
+
+        if (isCas)
+        {
+            query = _context.Substances.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%")).Include(s => s.Hazards);
+        }
+        else
+        {
+            query = _context.AssetItems.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
+        }
+
+        return await query.Include(i => i.Room).ToListAsync();
+    }
 }
