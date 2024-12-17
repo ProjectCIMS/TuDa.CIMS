@@ -16,6 +16,9 @@ public partial class ShoppingCartProductDialog
     [Parameter]
     public required AssetItem Product { get; set; }
 
+    public PurchaseEntry PurchaseEntry { get; set; }
+    public static List<PurchaseEntry> Entries { get; set; } = [];
+
     // Amount of Product
     public uint Amount { get; set; } = 1;
     private bool isError => Amount <= 0;
@@ -30,11 +33,18 @@ public partial class ShoppingCartProductDialog
     /// </summary>
     private void AddProduct()
     {
-        // Logic to add the product goes here.
-        // For now, just close the dialog after clicking "Add".
         if (Amount > 0)
         {
             Logger.LogInformation($"Product added with quantity: {Amount}");
+
+            PurchaseEntry = new PurchaseEntry()
+            {
+                Amount = Amount,
+                AssetItem = Product,
+                PricePerItem = Product.Price,
+            };
+
+            Entries.Add(PurchaseEntry);
             Submit();
         }
         else
