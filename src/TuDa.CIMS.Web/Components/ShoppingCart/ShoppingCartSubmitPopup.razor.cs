@@ -69,9 +69,11 @@ public partial class ShoppingCartSubmitPopup
         {
             Substance substance => substance.PriceUnit switch
             {
-                PriceUnits.PerKilo => " kg",
-                PriceUnits.PerLiter => " l",
-                PriceUnits.PerPiece => " Stück",
+                MeasurementUnits.KiloGram => " kg",
+                MeasurementUnits.Liter => " l",
+                MeasurementUnits.Piece => " Stück",
+                MeasurementUnits.MilliLiter => "ml",
+                MeasurementUnits.Gram => "g",
                 _ => $" {substance.PriceUnit}",
             },
             _ => " Stück",

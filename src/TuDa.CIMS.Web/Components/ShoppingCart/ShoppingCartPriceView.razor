@@ -21,9 +21,11 @@
     {
         Substance substance => $"{substance.Price}€/" + substance.PriceUnit switch
         {
-            PriceUnits.PerKilo => "kg",
-            PriceUnits.PerLiter => "l",
-            PriceUnits.PerPiece => "Stück",
+            MeasurementUnits.KiloGram => "kg",
+            MeasurementUnits.Liter => "l",
+            MeasurementUnits.Piece => "Stück",
+            MeasurementUnits.MilliLiter => "ml",
+            MeasurementUnits.Gram => "g",
             _ => $"{substance.Price}€ {substance.PriceUnit}"
         },
         _ => $"{Product.Price}€/Stück"
