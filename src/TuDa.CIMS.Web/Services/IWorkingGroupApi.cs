@@ -23,7 +23,6 @@ public interface IWorkingGroupApi
     public async Task<ErrorOr<WorkingGroup>> GetAsync(Guid id) =>
         await GetAsyncInternal(id).ToErrorOrAsync();
 
-
     /// <summary>
     /// Internal method to retrieve a Working Group by its unique identifier.
     /// </summary>
@@ -57,15 +56,15 @@ public interface IWorkingGroupApi
     /// <summary>
     /// Creates a new Working Group.
     /// </summary>
-    /// <param name="item">The Working Group to create.</param>
+    /// <param name="createModel">The model containing the updated values for the Working Group.</param>
     /// <returns>
     /// A Task representing the asynchronous operation, with a result of <see cref="ErrorOr{T}"/> containing the unique identifier of the created Working Group if successful.
     /// </returns>
     /// <remarks>
     /// Uses <see cref="JsonSerializer"/> to ensure proper serialization of polymorphic types.
     /// </remarks>
-    public async Task<ErrorOr<Guid>> CreateAsync(WorkingGroup item) =>
-        await CreateAsyncInternal(JsonSerializer.Serialize(item)).ToErrorOrAsync();
+    public async Task<ErrorOr<Guid>> CreateAsync(CreateWorkingGroupDto createModel) =>
+        await CreateAsyncInternal(JsonSerializer.Serialize(createModel)).ToErrorOrAsync();
 
     /// <summary>
     /// Internal method to create a new Working Group.

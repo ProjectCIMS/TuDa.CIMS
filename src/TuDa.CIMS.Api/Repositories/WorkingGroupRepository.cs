@@ -99,7 +99,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// <summary>
     /// Creates a Working Group and adds it to the database.
     /// </summary>
-    /// <param name="createModel">the model containing the updated values for the Working Group</param>
+    /// <param name="createModel">The model containing the updated values for the Working Group</param>
     /// <returns></returns>
     public async Task<ErrorOr<Created>> CreateAsync(CreateWorkingGroupDto createModel)
     {
