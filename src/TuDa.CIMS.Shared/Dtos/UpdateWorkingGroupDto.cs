@@ -23,4 +23,14 @@ public record UpdateWorkingGroupDto
     /// All purchases done by the group.
     /// </summary>
     public List<Purchase>? Purchases { get; set; } = [];
+
+    /// <summary>
+    /// Students to be added to the group.
+    /// </summary>
+    public List<Student>? AddStudentsList { get; set; } = [];
+
+    /// <summary>
+    /// Students to be removed from the group.
+    /// </summary>
+    public List<Student>? RemoveStudentsList { get; set; } = [];
 }
