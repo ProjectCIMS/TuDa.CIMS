@@ -17,7 +17,7 @@ public partial class ShoppingCartProductDialog
     public required AssetItem Product { get; set; }
 
     // Amount of Product
-    public int Amount { get; set; } = 1;
+    public uint Amount { get; set; } = 1;
     private bool isError => Amount <= 0;
 
     // Simple Functions to Submit and Cancel the Action.
