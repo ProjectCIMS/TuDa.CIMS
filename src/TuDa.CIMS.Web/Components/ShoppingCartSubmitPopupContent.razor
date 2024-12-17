@@ -1,0 +1,42 @@
+@using TuDa.CIMS.Shared.Entities
+@*ShoppingCart SubmitPopup Content*@
+<MudItem Class="d-flex align-items-center" Style="margin-bottom: 300px;">
+    <MudAutocomplete T="WorkingGroup"
+                     Label="Professor"
+                     @bind-Value="WorkingGroup"
+                     SearchFunc="@Search"
+                     ToStringFunc="@ToString">
+        <ItemTemplate>
+            <MudItem Class="d-flex align-items-center">
+                <MudIconButton Icon="@Icons.Material.Outlined.Info" Class="mr-2">
+                </MudIconButton>
+                <MudText>@context.Professor.Name</MudText>
+            </MudItem>
+        </ItemTemplate>
+    </MudAutocomplete>
+</MudItem>
+<MudItem>
+    <!-- Purchase List -->
+    <MudPaper Height="300px" Width="400px" Style="overflow-y: auto;">
+        <MudContainer>
+            <MudStack Spacing="2">
+                <MudText Typo="Typo.h6" Class="mb-2" Align="Align.Left">
+                    Produktliste
+                </MudText>
+                @foreach (var purchaseEntry in PurchaseEntries)
+                {
+                    <MudItem Class="d-flex align-items-center">
+                        <MudIconButton Icon="@Icons.Material.Outlined.Info" Class="mr-2">
+                        </MudIconButton>
+                        <MudItem>
+                            <MudText>@purchaseEntry.AssetItem.Name</MudText>
+                            <MudText Class="mud-text-secondary">
+                                @GetAmountText(@purchaseEntry)
+                            </MudText>
+                        </MudItem>
+                    </MudItem>
+                }
+            </MudStack>
+        </MudContainer>
+    </MudPaper>
+</MudItem>

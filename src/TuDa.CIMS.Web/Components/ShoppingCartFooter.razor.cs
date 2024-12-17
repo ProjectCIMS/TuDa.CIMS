@@ -7,8 +7,8 @@ namespace TuDa.CIMS.Web.Components;
 /// <summary>
 /// Class for the shopping cart footer
 /// </summary>
-/// <param name="dialogService"></param>
-public partial class ShoppingCartFooter() : ComponentBase
+
+public partial class ShoppingCartFooter : ComponentBase
 {
     /// <summary>
     /// Parameter for the purchase
