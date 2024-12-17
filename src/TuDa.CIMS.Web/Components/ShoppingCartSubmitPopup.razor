@@ -27,7 +27,7 @@
                     <MudPaper Height="300px" Width="400px" Style="overflow-y: auto;">
                         <MudContainer>
                             <MudStack Spacing="2">
-                                <MudText Typo="Typo.body1" Class="mb-2" Style="font-weight: bold; text-align: left;">
+                                <MudText Typo="Typo.h6" Class="mb-2"  Align="Align.Left">
                                     Produktliste
                                 </MudText>
                                 @foreach (var purchaseEntry in PurchaseEntries)
@@ -37,8 +37,8 @@
                                         </MudIconButton>
                                         <MudItem>
                                             <MudText>@purchaseEntry.AssetItem.Name</MudText>
-                                            <MudText Class="text-secondary">
-                                                @GetPriceText(@purchaseEntry.AssetItem)
+                                            <MudText Class="mud-text-secondary">
+                                                @GetAmountText(@purchaseEntry)
                                             </MudText>
                                         </MudItem>
                                     </MudItem>
