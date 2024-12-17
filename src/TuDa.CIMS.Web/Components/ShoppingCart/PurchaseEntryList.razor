@@ -5,11 +5,13 @@
     <MudDataGrid Items="@Entries"
                  FixedHeader="@true"
                  SortMode="SortMode.None"
+                 Height="60vh"
                  Hover="@true">
 
         <Columns>
             <PropertyColumn Title="Name"
                             Property="@(entry => entry.AssetItem.Name)"
+                            HeaderClass="col-6"
                             CellClass="col-6"/>
             <PropertyColumn Title="Anzahl"
                             Property="@(entry => entry.Amount)"/>
