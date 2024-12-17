@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Web.Components.ShoppingCart;
 
 namespace TuDa.CIMS.Web.Components.Pages;
 

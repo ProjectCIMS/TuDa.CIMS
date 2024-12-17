@@ -2,7 +2,7 @@
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 
-namespace TuDa.CIMS.Web.Components;
+namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 /// <summary>
 /// A Blazor component, that visualizes <see cref="PurchaseEntry"/>.

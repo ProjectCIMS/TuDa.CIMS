@@ -3,7 +3,7 @@ using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 
-namespace TuDa.CIMS.Web.Components;
+namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 public partial class ShoppingCartSubmitPopup
 {
@@ -25,12 +25,17 @@ public partial class ShoppingCartSubmitPopup
     /// <summary>
     /// Search for the selection of the working group.
     /// </summary>
-    private Task<IEnumerable<WorkingGroup>> Search(string searchText, CancellationToken cancellationToken)
+    private Task<IEnumerable<WorkingGroup>> Search(
+        string searchText,
+        CancellationToken cancellationToken
+    )
     {
-        return Task.FromResult(WorkingGroups
-            .Where(w =>
-                string.IsNullOrWhiteSpace(searchText) ||
-                w.Professor.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
+        return Task.FromResult(
+            WorkingGroups.Where(w =>
+                string.IsNullOrWhiteSpace(searchText)
+                || w.Professor.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+            )
+        );
     }
 
     /// <summary>
@@ -59,15 +64,16 @@ public partial class ShoppingCartSubmitPopup
     /// Returns the amount with the respective price unit of the given purchase entry as a string.
     /// </summary>
     private static string GetAmountText(PurchaseEntry purchaseEntry) =>
-        $"{purchaseEntry.Amount}" + purchaseEntry.AssetItem switch
+        $"{purchaseEntry.Amount}"
+        + purchaseEntry.AssetItem switch
         {
             Substance substance => substance.PriceUnit switch
             {
                 PriceUnits.PerKilo => " kg",
                 PriceUnits.PerLiter => " l",
                 PriceUnits.PerPiece => " Stück",
-                _ => $" {substance.PriceUnit}"
+                _ => $" {substance.PriceUnit}",
             },
-            _ => " Stück"
+            _ => " Stück",
         };
 }
