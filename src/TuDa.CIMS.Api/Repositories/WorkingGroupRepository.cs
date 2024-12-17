@@ -112,7 +112,6 @@ public class WorkingGroupRepository : IWorkingGroupRepository
                 Id = createModel.Professor.Id,
                 Name = createModel.Professor.Name,
                 FirstName = createModel.Professor.FirstName,
-                WorkingGroup = createModel.Professor.WorkingGroup,
             };
             _context.Professors.Add(professor);
             await _context.SaveChangesAsync();
@@ -137,7 +136,6 @@ public class WorkingGroupRepository : IWorkingGroupRepository
                         Id = student.Id,
                         Name = student.Name,
                         FirstName = student.FirstName,
-                        WorkingGroup = student.WorkingGroup,
                     }
                 );
             }
