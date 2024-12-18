@@ -146,7 +146,7 @@ public class Worker(
             var strategy = dbContext.Database.CreateExecutionStrategy();
             await strategy.ExecuteAsync(async () =>
             {
-                if (!await dbContext.AssetItems.ContainsAsync(assetItems[0], cancellationToken))
+                if (!await dbContext.AssetItems.AnyAsync(cancellationToken))
                 {
                     await dbContext.AssetItems.AddRangeAsync(assetItems, cancellationToken);
                     await dbContext.SaveChangesAsync(cancellationToken);
