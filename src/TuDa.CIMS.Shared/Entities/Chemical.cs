@@ -1,4 +1,6 @@
-﻿namespace TuDa.CIMS.Shared.Entities;
+﻿using TuDa.CIMS.Shared.Entities.Enums;
+
+namespace TuDa.CIMS.Shared.Entities;
 
 /// <summary>
 /// An entity representing a chemical.
