@@ -2,13 +2,63 @@
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using TuDa.CIMS.Api.Models;
+using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Api.Documents;
 
 public class InvoiceCoverDocument : IDocument
 {
+    /// <summary>
+    /// Logo of the organization to present in the heading.
+    /// </summary>
     private readonly Image _logo;
+
+    /// <summary>
+    /// The invoice, that should be used.
+    /// </summary>
     private readonly Invoice _invoice;
+
+    /// <summary>
+    /// The number of the Invoice. Presented in the content heading.
+    /// </summary>
+    public string InvoiceNumber { private get; init; } = string.Empty;
+
+    /// <summary>
+    /// Due date of the invoice. Presented in the summary.
+    /// </summary>
+    public DateOnly DueDate { private get; init; }
+
+    /// <summary>
+    /// Issue date of the invoice. Presented on the right side.
+    /// </summary>
+    public DateOnly IssueDate { private get; init; } = DateOnly.FromDateTime(DateTime.Now);
+
+    /// <summary>
+    /// Address of the Issuer. Used as address block on the right side.
+    /// </summary>
+    public Address IssuerAddress { private get; init; } =
+        new() { Street = "Peter-Grünberg-Str.", HouseNumber = "8" };
+
+    /// <summary>
+    /// Email of the Issuer. Used as address block on the right side.
+    /// </summary>
+    public string IssuerEmail { private get; init; } = "annette.przewosnik@tu-darmstadt.de";
+
+    /// <summary>
+    /// Telephone number of the Issuer. Used as address block on the right side.
+    /// </summary>
+    public string IssuerTelephoneNumber { private get; init; } = "+49 6151 16 - 23795";
+
+    /// <summary>
+    /// Number of the cost center the money is needed to be transfered to.
+    /// </summary>
+    public string CostCenterNumber { private get; init; } = "070087";
+
+    /// <summary>
+    /// Number of the project the money is for.
+    /// </summary>
+    public string ProjectNumber { private get; init; } = "58000373";
 
     #region Colors
 
@@ -23,6 +73,7 @@ public class InvoiceCoverDocument : IDocument
         _logo = logo;
     }
 
+    /// <inheritdoc />
     public void Compose(IDocumentContainer container)
     {
         container.Page(page =>
@@ -69,14 +120,20 @@ public class InvoiceCoverDocument : IDocument
         {
             column
                 .Item()
-                .Text("TU Darmstadt | Peter-Grünberg-Str. 8 | 64287 Darmstadt")
+                .Text(
+                    "TU Darmstadt | "
+                        + $"{IssuerAddress.Street} {IssuerAddress.HouseNumber} | "
+                        + $"{IssuerAddress.ZipCode} {IssuerAddress.City}"
+                )
                 .FontSize(7)
                 .FontColor(_blue);
 
-            column.Item().PaddingTop(15).Text("Herrn");
-            column.Item().Text($"Prof. Dr. {Placeholders.Name()}");
-            column.Item().Text("Strasse");
-            column.Item().Text("TU Darmstadt");
+            var professor = _invoice.Professor;
+
+            column.Item().PaddingTop(15).Text(professor.Gender.ToSalution());
+            column.Item().Text($"{professor.Title} {professor.FirstName} {professor.Name}");
+            column.Item().Text($"{professor.Address.Street} {professor.Address.HouseNumber}");
+            column.Item().Text($"{professor.Address.ZipCode} {professor.Address.City}");
         });
     }
 
@@ -91,9 +148,9 @@ public class InvoiceCoverDocument : IDocument
             column
                 .Item()
                 .PaddingTop(70)
-                .Text("bis zum 16.09.2024 auf die Kostenstelle 070087 oder");
+                .Text($"bis zum {DueDate} auf die Kostenstelle {CostCenterNumber} oder");
 
-            column.Item().Text("Kostenstelle 070087 / Projekt 58000373.");
+            column.Item().Text($"Kostenstelle {CostCenterNumber} / Projekt {ProjectNumber}.");
         });
     }
 
@@ -104,7 +161,7 @@ public class InvoiceCoverDocument : IDocument
             row.RelativeItem()
                 .Column(column =>
                 {
-                    column.Item().Text("Rechnung-Nr. 01/2024").Bold();
+                    column.Item().Text($"Rechnung-Nr. {InvoiceNumber}").Bold();
                     column
                         .Item()
                         .PaddingTop(50)
@@ -128,19 +185,19 @@ public class InvoiceCoverDocument : IDocument
                     .FontSize(10)
                     .FontColor(_blue);
 
-                column.Item().PaddingTop(15).Text("Peter-Grünberg-Str. 8").FontSize(8);
-
-                column.Item().Text("64287 Darmstadt").FontSize(8);
-
-                column.Item().PaddingTop(15).Text("Tel. +49 6151 16 - 23795").FontSize(8);
-
-                column.Item().Text("annette.przewosnik@tu-darmstadt.de").FontSize(8);
-
                 column
                     .Item()
                     .PaddingTop(15)
-                    .Text(DateOnly.FromDateTime(DateTime.Now).ToString())
+                    .Text($"{IssuerAddress.Street} {IssuerAddress.HouseNumber}")
                     .FontSize(8);
+
+                column.Item().Text($"{IssuerAddress.ZipCode} {IssuerAddress.City}").FontSize(8);
+
+                column.Item().PaddingTop(15).Text($"Tel: {IssuerTelephoneNumber}").FontSize(8);
+
+                column.Item().Text(IssuerEmail).FontSize(8);
+
+                column.Item().PaddingTop(15).Text(IssueDate.ToString()).FontSize(8);
             });
     }
 
