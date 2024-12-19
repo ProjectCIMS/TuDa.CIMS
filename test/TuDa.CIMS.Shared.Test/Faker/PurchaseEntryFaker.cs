@@ -3,14 +3,23 @@ using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Shared.Test.Faker;
 
-public class PurchaseEntryFaker : BaseEntityFaker<PurchaseEntry>
+public class PurchaseEntryFaker<T, TAssetItem> : BaseEntityFaker<T>
+    where T : PurchaseEntry
+    where TAssetItem : AssetItem
 {
-    public PurchaseEntryFaker(AssetItem? assetItem = null)
+    public PurchaseEntryFaker(TAssetItem assetItem)
+        : this(null, assetItem) { }
+
+    public PurchaseEntryFaker(
+        AssetItemFaker<TAssetItem>? assetItemFaker = null,
+        TAssetItem? assetItem = null
+    )
     {
         RuleFor(
             e => e.AssetItem,
             f =>
-                assetItem
+                assetItemFaker
+                ?? assetItem
                 ?? f.PickRandom(
                     new List<AssetItem>
                     {
@@ -24,4 +33,14 @@ public class PurchaseEntryFaker : BaseEntityFaker<PurchaseEntry>
         RuleFor(e => e.Amount, f => f.Random.Int(min: 1, max: 40));
         RuleFor(e => e.PricePerItem, f => f.Random.Double(max: 50));
     }
+}
+
+public class PurchaseEntryFaker<TAssetItem>(
+    AssetItemFaker<TAssetItem>? assetItemFaker = null,
+    TAssetItem? assetItem = null
+) : PurchaseEntryFaker<PurchaseEntry, TAssetItem>(assetItemFaker, assetItem)
+    where TAssetItem : AssetItem
+{
+    public PurchaseEntryFaker(TAssetItem assetItem)
+        : this(null, assetItem) { }
 }
