@@ -151,7 +151,7 @@ public class AssetItemRepository : IAssetItemRepository
     {
         var query = _context.AssetItems.AsQueryable();
         return await PaginatedResponseFactory<AssetItem>.CreateAsync(query, queryParams.PageNumber, queryParams.PageSize);
-
+    }
     ///Returns a list of matching AssetItem based on the provided name or CAS number.
     /// </summary>
     /// <param name="nameOrCas"></param>
