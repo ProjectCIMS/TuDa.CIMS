@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Params;
 
 namespace TuDa.CIMS.Api.Controllers;
 
@@ -34,7 +36,6 @@ public class AssetItemController : ControllerBase
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
     /// <returns> a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
-
     [HttpGet($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> GetOneAsync(Guid id)
     {
@@ -66,12 +67,27 @@ public class AssetItemController : ControllerBase
     /// If an error occurs during the deletion, an appropriate error response is returned.
     ///</summary>
     /// <param name="id">the unique id of the AssetItem</param>
-
     [HttpDelete($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> RemoveAsync(Guid id)
     {
         return (await _assetItemService.RemoveAsync(id)).Match<IActionResult>(
             _ => Ok(),
+            err => BadRequest(err)
+        );
+    }
+
+    /// <summary>
+    /// Returns a paginated response of AssetItems based on the provided user parameters.
+    /// If the operation is successful, returns a 200 OK response.
+    /// If an error occurs during the operation, an appropriate error response is returned.
+    /// </summary>
+    /// <param name="userParams"></param>
+    /// <returns></returns>
+    [HttpGet("paginated")]
+    public async Task<IActionResult> GetPaginatedAsync([FromQuery] AssetItemPaginationQueryParams queryParams)
+    {
+        return (await _assetItemService.GetPaginatedAsync(queryParams)).Match<IActionResult>(
+            value => Ok(value),
             err => BadRequest(err)
         );
     }
