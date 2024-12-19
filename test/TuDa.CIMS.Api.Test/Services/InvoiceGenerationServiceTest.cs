@@ -30,10 +30,10 @@ public class InvoiceGenerationServiceTest
 
         purchase.Entries =
         [
-            new PurchaseEntryFaker(consumable),
-            new PurchaseEntryFaker(chemical),
-            new PurchaseEntryFaker(solvent),
-            new PurchaseEntryFaker(gas),
+            new PurchaseEntryFaker<Consumable>(consumable),
+            new PurchaseEntryFaker<Chemical>(chemical),
+            new PurchaseEntryFaker<Solvent>(solvent),
+            new PurchaseEntryFaker<GasCylinder>(gas),
         ];
         workingGroup.Purchases = [purchase];
 
@@ -87,10 +87,10 @@ public class InvoiceGenerationServiceTest
                 {
                     Entries =
                     [
-                        new PurchaseEntryFaker(consumable),
-                        new PurchaseEntryFaker(chemical),
-                        new PurchaseEntryFaker(solvent),
-                        new PurchaseEntryFaker(gas),
+                        new PurchaseEntryFaker<Consumable>(consumable),
+                        new PurchaseEntryFaker<Chemical>(chemical),
+                        new PurchaseEntryFaker<Solvent>(solvent),
+                        new PurchaseEntryFaker<GasCylinder>(gas),
                     ],
                 }
             )
