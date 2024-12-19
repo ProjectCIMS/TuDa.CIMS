@@ -52,30 +52,33 @@ public record Invoice
     /// Gets the total price of all entries in the invoice.
     /// </summary>
     public double TotalPrice =>
-        ConsumablesTotalPrice + ChemicalsTotalPrice + SolventsTotalPrice + GasCylindersTotalPrice;
+        ConsumablesTotalPrice()
+        + ChemicalsTotalPrice()
+        + SolventsTotalPrice()
+        + GasCylindersTotalPrice();
 
     /// <summary>
     /// Gets the total price of all consumable entries in the invoice.
     /// </summary>
-    public double ConsumablesTotalPrice =>
+    public double ConsumablesTotalPrice() =>
         Consumables.Aggregate(0.0, (state, entry) => state + entry.TotalPrice);
 
     /// <summary>
     /// Gets the total price of all chemical entries in the invoice.
     /// </summary>
-    public double ChemicalsTotalPrice =>
+    public double ChemicalsTotalPrice() =>
         Chemicals.Aggregate(0.0, (state, entry) => state + entry.TotalPrice);
 
     /// <summary>
     /// Gets the total price of all solvent entries in the invoice.
     /// </summary>
-    public double SolventsTotalPrice =>
+    public double SolventsTotalPrice() =>
         Solvents.Aggregate(0.0, (state, entry) => state + entry.TotalPrice);
 
     /// <summary>
     /// Gets the total price of all gas cylinder entries in the invoice.
     /// </summary>
-    public double GasCylindersTotalPrice =>
+    public double GasCylindersTotalPrice() =>
         GasCylinders.Aggregate(0.0, (state, entry) => state + entry.TotalPrice);
 
     #endregion
