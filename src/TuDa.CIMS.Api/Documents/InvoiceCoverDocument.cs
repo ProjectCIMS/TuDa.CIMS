@@ -38,7 +38,7 @@ public class InvoiceCoverDocument : IDocument
     /// Address of the Issuer. Used as address block on the right side.
     /// </summary>
     public Address IssuerAddress { private get; init; } =
-        new() { Street = "Peter-Grünberg-Str.", HouseNumber = "8" };
+        new() { Street = "Peter-Grünberg-Str.", BuildingNumber = "8" };
 
     /// <summary>
     /// Email of the Issuer. Used as address block on the right side.
@@ -122,7 +122,7 @@ public class InvoiceCoverDocument : IDocument
                 .Item()
                 .Text(
                     "TU Darmstadt | "
-                        + $"{IssuerAddress.Street} {IssuerAddress.HouseNumber} | "
+                        + $"{IssuerAddress.Street} {IssuerAddress.BuildingNumber} | "
                         + $"{IssuerAddress.ZipCode} {IssuerAddress.City}"
                 )
                 .FontSize(7)
@@ -132,7 +132,7 @@ public class InvoiceCoverDocument : IDocument
 
             column.Item().PaddingTop(15).Text(professor.Gender.ToSalution());
             column.Item().Text($"{professor.Title} {professor.FirstName} {professor.Name}");
-            column.Item().Text($"{professor.Address.Street} {professor.Address.HouseNumber}");
+            column.Item().Text($"{professor.Address.Street} {professor.Address.BuildingNumber}");
             column.Item().Text($"{professor.Address.ZipCode} {professor.Address.City}");
         });
     }
@@ -188,7 +188,7 @@ public class InvoiceCoverDocument : IDocument
                 column
                     .Item()
                     .PaddingTop(15)
-                    .Text($"{IssuerAddress.Street} {IssuerAddress.HouseNumber}")
+                    .Text($"{IssuerAddress.Street} {IssuerAddress.BuildingNumber}")
                     .FontSize(8);
 
                 column.Item().Text($"{IssuerAddress.ZipCode} {IssuerAddress.City}").FontSize(8);

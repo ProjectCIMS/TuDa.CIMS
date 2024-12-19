@@ -1,6 +1,6 @@
 ﻿namespace TuDa.CIMS.Shared.Entities;
 
-public record Address
+public record Address : BaseEntity
 {
     /// <summary>
     /// City of the address.
@@ -18,7 +18,7 @@ public record Address
     public required string Street { get; set; }
 
     /// <summary>
-    /// House number of the address.
+    /// Building number of the address.
     /// </summary>
-    public required string HouseNumber { get; set; }
+    public required string BuildingNumber { get; set; }
 }
