@@ -91,7 +91,7 @@ public class Worker(
 
         var workingGroup = new WorkingGroupFaker(professor, students, []).Generate();
 
-        var purchaseEntries = new PurchaseEntryFaker(chemical).GenerateBetween(4, 4);
+        var purchaseEntries = new PurchaseEntryFaker<AssetItem>().GenerateBetween(4, 4);
         var purchase = new PurchaseFaker(workingGroup, purchaseEntries).Generate();
         workingGroup.Purchases.Add(purchase);
 
