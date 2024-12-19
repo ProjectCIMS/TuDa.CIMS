@@ -1,5 +1,4 @@
 using QuestPDF;
-using QuestPDF.Companion;
 using QuestPDF.Infrastructure;
 using TuDa.CIMS.Api;
 using TuDa.CIMS.Api.Database;
@@ -16,7 +15,6 @@ builder.AddNpgsqlDbContext<CIMSDbContext>("CIMS");
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
-//builder.Services.ConfigureDbContext(builder.Configuration);
 builder.Services.AddScoped<IAssetItemRepository, AssetItemRepository>();
 builder.Services.AddScoped<IAssetItemService, AssetItemService>();
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
