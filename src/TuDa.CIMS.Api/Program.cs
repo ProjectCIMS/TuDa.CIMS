@@ -16,6 +16,8 @@ builder.Services.AddOpenApi();
 //builder.Services.ConfigureDbContext(builder.Configuration);
 builder.Services.AddScoped<IAssetItemRepository, AssetItemRepository>();
 builder.Services.AddScoped<IAssetItemService, AssetItemService>();
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<IInvoiceGenerationService, InvoiceGenerationService>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
@@ -33,4 +35,3 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 await app.RunAsync();
-
