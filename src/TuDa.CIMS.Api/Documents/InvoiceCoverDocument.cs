@@ -1,9 +1,8 @@
 ﻿using QuestPDF.Fluent;
-using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using TuDa.CIMS.Api.Models;
-using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
+using TuDa.CIMS.Shared.Models;
 
 namespace TuDa.CIMS.Api.Documents;
 
@@ -19,46 +18,7 @@ public class InvoiceCoverDocument : IDocument
     /// </summary>
     private readonly Invoice _invoice;
 
-    /// <summary>
-    /// The number of the Invoice. Presented in the content heading.
-    /// </summary>
-    public string InvoiceNumber { private get; init; } = string.Empty;
-
-    /// <summary>
-    /// Due date of the invoice. Presented in the summary.
-    /// </summary>
-    public DateOnly DueDate { private get; init; }
-
-    /// <summary>
-    /// Issue date of the invoice. Presented on the right side.
-    /// </summary>
-    public DateOnly IssueDate { private get; init; } = DateOnly.FromDateTime(DateTime.Now);
-
-    /// <summary>
-    /// Address of the Issuer. Used as address block on the right side.
-    /// </summary>
-    public Address IssuerAddress { private get; init; } =
-        new() { Street = "Peter-Grünberg-Str.", BuildingNumber = "8" };
-
-    /// <summary>
-    /// Email of the Issuer. Used as address block on the right side.
-    /// </summary>
-    public string IssuerEmail { private get; init; } = "annette.przewosnik@tu-darmstadt.de";
-
-    /// <summary>
-    /// Telephone number of the Issuer. Used as address block on the right side.
-    /// </summary>
-    public string IssuerTelephoneNumber { private get; init; } = "+49 6151 16 - 23795";
-
-    /// <summary>
-    /// Number of the cost center the money is needed to be transfered to.
-    /// </summary>
-    public string CostCenterNumber { private get; init; } = "070087";
-
-    /// <summary>
-    /// Number of the project the money is for.
-    /// </summary>
-    public string ProjectNumber { private get; init; } = "58000373";
+    private readonly AdditionalInvoiceInformation _information;
 
     #region Colors
 
@@ -67,10 +27,15 @@ public class InvoiceCoverDocument : IDocument
 
     #endregion
 
-    public InvoiceCoverDocument(Invoice invoice, Image logo)
+    public InvoiceCoverDocument(
+        Invoice invoice,
+        Image logo,
+        AdditionalInvoiceInformation information
+    )
     {
         _invoice = invoice;
         _logo = logo;
+        _information = information;
     }
 
     /// <inheritdoc />
@@ -122,8 +87,8 @@ public class InvoiceCoverDocument : IDocument
                 .Item()
                 .Text(
                     "TU Darmstadt | "
-                        + $"{IssuerAddress.Street} {IssuerAddress.BuildingNumber} | "
-                        + $"{IssuerAddress.ZipCode} {IssuerAddress.City}"
+                        + $"{_information.IssuerAddress.Street} {_information.IssuerAddress.BuildingNumber} | "
+                        + $"{_information.IssuerAddress.ZipCode} {_information.IssuerAddress.City}"
                 )
                 .FontSize(7)
                 .FontColor(_blue);
@@ -148,9 +113,15 @@ public class InvoiceCoverDocument : IDocument
             column
                 .Item()
                 .PaddingTop(70)
-                .Text($"bis zum {DueDate} auf die Kostenstelle {CostCenterNumber} oder");
+                .Text(
+                    $"bis zum {_information.DueDate} auf die Kostenstelle {_information.CostCenterNumber} oder"
+                );
 
-            column.Item().Text($"Kostenstelle {CostCenterNumber} / Projekt {ProjectNumber}.");
+            column
+                .Item()
+                .Text(
+                    $"Kostenstelle {_information.CostCenterNumber} / Projekt {_information.ProjectNumber}."
+                );
         });
     }
 
@@ -161,7 +132,7 @@ public class InvoiceCoverDocument : IDocument
             row.RelativeItem()
                 .Column(column =>
                 {
-                    column.Item().Text($"Rechnung-Nr. {InvoiceNumber}").Bold();
+                    column.Item().Text($"Rechnung-Nr. {_information.InvoiceNumber}").Bold();
                     column
                         .Item()
                         .PaddingTop(50)
@@ -188,16 +159,25 @@ public class InvoiceCoverDocument : IDocument
                 column
                     .Item()
                     .PaddingTop(15)
-                    .Text($"{IssuerAddress.Street} {IssuerAddress.BuildingNumber}")
+                    .Text(
+                        $"{_information.IssuerAddress.Street} {_information.IssuerAddress.BuildingNumber}"
+                    )
                     .FontSize(8);
 
-                column.Item().Text($"{IssuerAddress.ZipCode} {IssuerAddress.City}").FontSize(8);
+                column
+                    .Item()
+                    .Text($"{_information.IssuerAddress.ZipCode} {_information.IssuerAddress.City}")
+                    .FontSize(8);
 
-                column.Item().PaddingTop(15).Text($"Tel: {IssuerTelephoneNumber}").FontSize(8);
+                column
+                    .Item()
+                    .PaddingTop(15)
+                    .Text($"Tel: {_information.IssuerTelephoneNumber}")
+                    .FontSize(8);
 
-                column.Item().Text(IssuerEmail).FontSize(8);
+                column.Item().Text(_information.IssuerEmail).FontSize(8);
 
-                column.Item().PaddingTop(15).Text(IssueDate.ToString()).FontSize(8);
+                column.Item().PaddingTop(15).Text(_information.IssueDate.ToString()).FontSize(8);
             });
     }
 
@@ -215,7 +195,7 @@ public class InvoiceCoverDocument : IDocument
                         {
                             row.AutoItem().Text("Chemikalien: ").AlignLeft();
                             row.RelativeItem()
-                                .Text($"{_invoice.ChemicalsTotalPrice:F2} €")
+                                .Text($"{_invoice.ChemicalsTotalPrice():F2} €")
                                 .AlignRight();
                         });
 
@@ -227,7 +207,7 @@ public class InvoiceCoverDocument : IDocument
                         {
                             row.AutoItem().Text("Laborgeräte: ").AlignLeft();
                             row.RelativeItem()
-                                .Text($"{_invoice.ConsumablesTotalPrice:F2} €")
+                                .Text($"{_invoice.ConsumablesTotalPrice():F2} €")
                                 .AlignRight();
                         });
 
@@ -239,7 +219,7 @@ public class InvoiceCoverDocument : IDocument
                         {
                             row.AutoItem().Text("Lösungsmittel: ").AlignLeft();
                             row.RelativeItem()
-                                .Text($"{_invoice.SolventsTotalPrice:F2} €")
+                                .Text($"{_invoice.SolventsTotalPrice():F2} €")
                                 .AlignRight();
                         });
 
@@ -251,7 +231,7 @@ public class InvoiceCoverDocument : IDocument
                         {
                             row.AutoItem().Text("Technische Gase: ").AlignLeft();
                             row.RelativeItem()
-                                .Text($"{_invoice.GasCylindersTotalPrice:F2} €")
+                                .Text($"{_invoice.GasCylindersTotalPrice():F2} €")
                                 .AlignRight();
                         });
 
@@ -262,7 +242,10 @@ public class InvoiceCoverDocument : IDocument
                     .Row(row =>
                     {
                         row.AutoItem().Text("Gesamtsumme: ").Bold().AlignLeft();
-                        row.RelativeItem().Text($"{_invoice.TotalPrice:F2} €").Bold().AlignRight();
+                        row.RelativeItem()
+                            .Text($"{_invoice.TotalPrice():F2} €")
+                            .Bold()
+                            .AlignRight();
                     });
             });
     }
