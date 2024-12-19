@@ -19,6 +19,7 @@ builder.Services.AddScoped<IAssetItemRepository, AssetItemRepository>();
 builder.Services.AddScoped<IAssetItemService, AssetItemService>();
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IInvoiceGenerationService, InvoiceGenerationService>();
+builder.Services.AddScoped<IDocumentGenerationService, DocumentGenerationService>();
 builder.Services.AddControllers();
 
 // Setup QuestPdf License
