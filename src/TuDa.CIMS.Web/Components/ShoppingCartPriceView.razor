@@ -1,0 +1,32 @@
+﻿@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Entities.Enums
+
+<!--Product Price per Unit-->
+<MudItem xs="12">
+    <MudText Typo="Typo.subtitle2">
+        @PriceText(Product)
+    </MudText>
+</MudItem>
+
+@code {
+    // Product to be shown in Dialog.
+    [Parameter] public required AssetItem Product { get; set; }
+
+    /// <summary>
+    /// Method to check which price unit to display in dialog.
+    /// </summary>
+    /// <param name="product">The Product to be shown in Dialog</param>
+    /// <returns></returns>
+    private string PriceText(AssetItem product) => product switch
+    {
+        Substance substance => $"{substance.Price}€/" + substance.PriceUnit switch
+        {
+            PriceUnits.PerKilo => "kg",
+            PriceUnits.PerLiter => "l",
+            PriceUnits.PerPiece => "Stück",
+            _ => $"{substance.Price}€ {substance.PriceUnit}"
+        },
+        _ => $"{Product.Price}€/Stück"
+    };
+
+}

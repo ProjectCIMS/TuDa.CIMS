@@ -23,9 +23,9 @@ public class AssetItemController : ControllerBase
     /// </summary>
     /// <returns> a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync([FromQuery] string? nameOrCas)
     {
-        return (await _assetItemService.GetAllAsync()).Match<IActionResult>(
+        return (await _assetItemService.GetAllAsync(nameOrCas)).Match<IActionResult>(
             value => Ok(value),
             err => BadRequest(err)
         );
@@ -51,7 +51,8 @@ public class AssetItemController : ControllerBase
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
     /// <param name="updateModel">the model containing the updated values for the AssetItem </param>
-    [HttpPut($"{{{nameof(id)}:guid}}")]
+
+    [HttpPatch($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> UpdateAsync(Guid id, UpdateAssetItemDto updateModel)
     {
         return (await _assetItemService.UpdateAsync(id, updateModel)).Match<IActionResult>(
