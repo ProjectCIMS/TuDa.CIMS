@@ -1,7 +1,7 @@
-﻿using Mapster;
-using TuDa.CIMS.Api.Interfaces;
+﻿using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Api.Models;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Models;
 
 namespace TuDa.CIMS.Api.Services;
 
@@ -16,19 +16,28 @@ public class InvoiceGenerationService : IInvoiceGenerationService
 
     public async Task<ErrorOr<Invoice>> CollectInvoiceForWorkingGroup(
         Guid workingGroupId,
-        DateOnly beginDate,
-        DateOnly endDate
+        DateOnly? beginDate,
+        DateOnly? endDate
     )
     {
         try
         {
-            var purchasesInTimePeriod = await _invoiceRepository.GetPurchasesInTimePeriod(
-                workingGroupId,
-                beginDate.ToDateTime(TimeOnly.MinValue),
-                endDate.ToDateTime(TimeOnly.MinValue)
-            );
+            beginDate ??= DateOnly.MinValue;
+            endDate ??= DateOnly.MaxValue;
 
             var professor = await _invoiceRepository.GetProfessorOfWorkingGroup(workingGroupId);
+
+            if (professor is null)
+                return Error.NotFound(
+                    $"{nameof(InvoiceGenerationService)}.{nameof(CollectInvoiceForWorkingGroup)}",
+                    $"WorkingGroup with id {workingGroupId} does not exist."
+                );
+
+            var purchasesInTimePeriod = await _invoiceRepository.GetPurchasesInTimePeriod(
+                workingGroupId,
+                beginDate.Value.ToDateTime(TimeOnly.MinValue).ToUniversalTime(),
+                endDate.Value.ToDateTime(TimeOnly.MinValue).ToUniversalTime()
+            );
 
             var invoiceEntries = purchasesInTimePeriod
                 .SelectMany(MapPurchaseToInvoiceEntries)
@@ -36,8 +45,8 @@ public class InvoiceGenerationService : IInvoiceGenerationService
 
             return new Invoice
             {
-                BeginDate = beginDate,
-                EndDate = endDate,
+                BeginDate = beginDate.Value,
+                EndDate = endDate.Value,
                 Professor = professor,
                 Consumables = invoiceEntries[typeof(Consumable)].ToList(),
                 Chemicals = invoiceEntries[typeof(Chemical)].ToList(),
@@ -53,6 +62,23 @@ public class InvoiceGenerationService : IInvoiceGenerationService
             );
         }
     }
+
+    public Task<ErrorOr<InvoiceStatistics>> GetInvoiceStatistics(
+        Guid workingGroupId,
+        DateOnly? beginDate,
+        DateOnly? endDate
+    ) =>
+        CollectInvoiceForWorkingGroup(workingGroupId, beginDate, endDate)
+            .Match(
+                value => new InvoiceStatistics
+                {
+                    TotalPriceChemicals = value.ChemicalsTotalPrice(),
+                    TotalPriceConsumables = value.ConsumablesTotalPrice(),
+                    TotalPriceSolvents = value.SolventsTotalPrice(),
+                    TotalPriceGasCylinders = value.SolventsTotalPrice(),
+                },
+                ErrorOr<InvoiceStatistics>.From
+            );
 
     private static List<InvoiceEntry> MapPurchaseToInvoiceEntries(Purchase purchase) =>
         purchase

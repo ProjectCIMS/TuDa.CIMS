@@ -11,5 +11,5 @@ public interface IInvoiceRepository
         DateTime endDate
     );
 
-    public Task<Professor> GetProfessorOfWorkingGroup(Guid workingGroupId);
+    public Task<Professor?> GetProfessorOfWorkingGroup(Guid workingGroupId);
 }
