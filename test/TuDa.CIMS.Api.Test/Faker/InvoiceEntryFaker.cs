@@ -18,7 +18,7 @@ public class InvoiceEntryFaker<TAssetItem> : PurchaseEntryFaker<InvoiceEntry, TA
     )
         : base(assetItem)
     {
-        RuleFor(e => e.PurchaseDate, f => f.Date.RecentDateOnly());
+        RuleFor(e => e.PurchaseDate, f => f.Date.PastDateOnly());
         RuleFor(
             e => e.Buyer,
             f => f.PickRandom<Person>(new ProfessorFaker(), new PersonFaker<Student>())

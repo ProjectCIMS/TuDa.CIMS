@@ -1,5 +1,4 @@
 using QuestPDF;
-using QuestPDF.Companion;
 using QuestPDF.Infrastructure;
 using TuDa.CIMS.Api;
 using TuDa.CIMS.Api.Database;

@@ -31,8 +31,7 @@
     <Content Include="..\.dockerignore">
       <Link>.dockerignore</Link>
     </Content>
-    
-    <Content Include=".\tuda_logo.png" CopyToOutputDirectory="PreserveNewest"/>
+
   </ItemGroup>
 
 </Project>

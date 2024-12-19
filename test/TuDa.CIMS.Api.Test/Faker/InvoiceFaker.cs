@@ -12,15 +12,15 @@ public class InvoiceFaker : Faker<Invoice>
         RuleFor(i => i.Professor, () => new ProfessorFaker());
         RuleFor(i => i.BeginDate, f => f.Date.PastDateOnly());
         RuleFor(i => i.EndDate, f => f.Date.FutureDateOnly());
-        RuleFor(i => i.Chemicals, () => new InvoiceEntryFaker<Chemical>().GenerateBetween(0, 30));
+        RuleFor(i => i.Chemicals, () => new InvoiceEntryFaker<Chemical>().GenerateBetween(0, 50));
         RuleFor(
             i => i.Consumables,
-            () => new InvoiceEntryFaker<Consumable>().GenerateBetween(0, 30)
+            () => new InvoiceEntryFaker<Consumable>().GenerateBetween(0, 50)
         );
-        RuleFor(i => i.Solvents, () => new InvoiceEntryFaker<Solvent>().GenerateBetween(0, 30));
+        RuleFor(i => i.Solvents, () => new InvoiceEntryFaker<Solvent>().GenerateBetween(0, 50));
         RuleFor(
             i => i.GasCylinders,
-            () => new InvoiceEntryFaker<GasCylinder>().GenerateBetween(0, 30)
+            () => new InvoiceEntryFaker<GasCylinder>().GenerateBetween(0, 50)
         );
     }
 }
