@@ -1,3 +1,6 @@
+using QuestPDF;
+using QuestPDF.Companion;
+using QuestPDF.Infrastructure;
 using TuDa.CIMS.Api;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
@@ -20,6 +23,8 @@ builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IInvoiceGenerationService, InvoiceGenerationService>();
 builder.Services.AddControllers();
 
+// Setup QuestPdf License
+Settings.License = LicenseType.Community;
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
