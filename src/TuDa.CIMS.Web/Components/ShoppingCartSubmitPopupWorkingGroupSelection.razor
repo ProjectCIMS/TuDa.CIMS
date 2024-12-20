@@ -1,0 +1,18 @@
+@using TuDa.CIMS.Shared.Entities
+@*ShoppingCart SubmitPopup WorkingGroup Selection*@
+<MudItem Class="d-flex align-items-center" Style="margin-bottom: 300px;">
+    <MudAutocomplete T="WorkingGroup"
+                     Label="Professor"
+                     @bind-Value="WorkingGroup"
+                     SearchFunc="@Search"
+                     ToStringFunc="@ToString">
+        <ItemTemplate>
+            <MudItem Class="d-flex align-items-center">
+                <MudIconButton Icon="@Icons.Material.Outlined.Info" Class="mr-2">
+                </MudIconButton>
+                <MudText>@context.Professor.Name</MudText>
+            </MudItem>
+        </ItemTemplate>
+    </MudAutocomplete>
+</MudItem>
+
