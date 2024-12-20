@@ -1,0 +1,24 @@
+﻿@using SignaturePad
+@inject IJSRuntime JS
+
+@page "/sign"
+
+<MudContainer Class="align-center justify-content-center-">
+    <MudSpacer/>
+    <SignaturePad @bind-Value="Value"
+                  style="width: 100%"/>
+    <MudButton OnClick="WriteSignature">Bestätigen</MudButton>
+    <MudSpacer/>
+</MudContainer>
+
+@code {
+    private byte[] Value { get; set; } = [];
+
+    public string SignatureAsBase64 => System.Text.Encoding.UTF8.GetString(Value);
+
+    private void WriteSignature()
+    {
+        Console.WriteLine(SignatureAsBase64);
+    }
+}
+
