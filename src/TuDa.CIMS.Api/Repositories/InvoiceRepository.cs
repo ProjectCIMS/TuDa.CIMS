@@ -1,0 +1,41 @@
+﻿using Microsoft.EntityFrameworkCore;
+using TuDa.CIMS.Api.Database;
+using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared.Entities;
+
+namespace TuDa.CIMS.Api.Repositories;
+
+public class InvoiceRepository : IInvoiceRepository
+{
+    private readonly CIMSDbContext _context;
+
+    public InvoiceRepository(CIMSDbContext context)
+    {
+        _context = context;
+    }
+
+    public Task<List<Purchase>> GetPurchasesInTimePeriod(
+        Guid workingGroupId,
+        DateTime beginDate,
+        DateTime endDate
+    ) =>
+        _context
+            .WorkingGroups.Where(wg => wg.Id == workingGroupId)
+            .Include(wg => wg.Purchases)
+            .SelectMany(wg => wg.Purchases)
+            .Where(p =>
+                (p.Completed && p.CompletionDate != null)
+                && (p.CompletionDate.Value >= beginDate && p.CompletionDate.Value <= endDate)
+            )
+            .Include(p => p.Entries)
+            .ThenInclude(e => e.AssetItem)
+            .Include(p => p.Buyer)
+            .ToListAsync();
+
+    public Task<Professor?> GetProfessorOfWorkingGroup(Guid workingGroupId) =>
+        _context
+            .WorkingGroups.Where(wg => wg.Id == workingGroupId)
+            .Include(wg => wg.Professor.Address)
+            .Select(wg => wg.Professor)
+            .SingleOrDefaultAsync();
+}

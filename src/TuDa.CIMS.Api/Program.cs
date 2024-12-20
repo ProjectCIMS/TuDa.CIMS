@@ -1,3 +1,5 @@
+using QuestPDF;
+using QuestPDF.Infrastructure;
 using TuDa.CIMS.Api;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
@@ -13,11 +15,15 @@ builder.AddNpgsqlDbContext<CIMSDbContext>("CIMS");
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
-//builder.Services.ConfigureDbContext(builder.Configuration);
 builder.Services.AddScoped<IAssetItemRepository, AssetItemRepository>();
 builder.Services.AddScoped<IAssetItemService, AssetItemService>();
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<IInvoiceGenerationService, InvoiceGenerationService>();
+builder.Services.AddScoped<IDocumentGenerationService, DocumentGenerationService>();
 builder.Services.AddControllers();
 
+// Setup QuestPdf License
+Settings.License = LicenseType.Community;
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
@@ -33,4 +39,3 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 await app.RunAsync();
-
