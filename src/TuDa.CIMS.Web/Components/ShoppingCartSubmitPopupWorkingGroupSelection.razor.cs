@@ -4,7 +4,7 @@ using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Web.Components;
 
-public partial class ShoppingCartSubmitPopupContent
+public partial class ShoppingCartSubmitPopupWorkingGroupSelection
 {
     /// <summary>
     /// CascadingParameter for working group.
@@ -31,28 +31,6 @@ public partial class ShoppingCartSubmitPopupContent
         {
             null => "",
             _ => workingGroup.Professor.Name,
-        };
-
-    /// <summary>
-    /// List of purchase entries to be shown.
-    /// </summary>
-    [Parameter]
-    public static List<PurchaseEntry> PurchaseEntries { get; set; }
-
-    /// <summary>
-    /// Returns the amount with the respective price unit of the given purchase entry as a string.
-    /// </summary>
-    private static string GetAmountText(PurchaseEntry purchaseEntry) =>
-        $"{purchaseEntry.Amount}" + purchaseEntry.AssetItem switch
-        {
-            Substance substance => substance.PriceUnit switch
-            {
-                PriceUnits.PerKilo => " kg",
-                PriceUnits.PerLiter => " l",
-                PriceUnits.PerPiece => " Stück",
-                _ => $" {substance.PriceUnit}"
-            },
-            _ => " Stück"
         };
 
     /// <summary>
