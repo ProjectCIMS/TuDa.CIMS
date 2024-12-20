@@ -9,6 +9,8 @@ public record AdditionalInvoiceInformation
     /// </summary>
     public required string InvoiceNumber { get; init; } = string.Empty;
 
+    public required string ImageAsBase64 { get; set; }
+
     /// <summary>
     /// Due date of the invoice. Presented in the summary.
     /// </summary>

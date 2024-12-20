@@ -122,6 +122,10 @@ public class InvoiceCoverDocument : IDocument
                 .Text(
                     $"Kostenstelle {_information.CostCenterNumber} / Projekt {_information.ProjectNumber}."
                 );
+
+            column
+                .Item()
+                .Image(Image.FromBinaryData(Convert.FromBase64String(_information.ImageAsBase64)));
         });
     }
 
