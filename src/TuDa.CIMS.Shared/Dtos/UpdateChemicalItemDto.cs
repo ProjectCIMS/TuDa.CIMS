@@ -18,5 +18,5 @@ public record UpdateChemicalItemDto : UpdateAssetItemDto
     /// <summary>
     /// The unit of the chemical.
     /// </summary>
-    public PriceUnits? PriceUnit { get; set; }
+    public MeasurementUnits? PriceUnit { get; set; }
 }
