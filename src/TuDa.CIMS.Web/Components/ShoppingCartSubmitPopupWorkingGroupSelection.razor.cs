@@ -9,18 +9,30 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection
     /// <summary>
     /// CascadingParameter for working group.
     /// </summary>
-    [CascadingParameter]
-    public WorkingGroup WorkingGroup { get; set; }
+    [Parameter]
+    public required WorkingGroup WorkingGroup { get; set; }
+
+    /// <summary>
+    /// List of working groups.
+    /// TODO: Need to be replaced by WorkingGroupApi
+    /// </summary>
+    [Parameter]
+    public List<WorkingGroup> WorkingGroups { get; set; } = [];
 
     /// <summary>
     /// Search for the selection of the working group.
     /// </summary>
-    private Task<IEnumerable<WorkingGroup>> Search(string searchText, CancellationToken cancellationToken)
+    private Task<IEnumerable<WorkingGroup>> Search(
+        string searchText,
+        CancellationToken cancellationToken
+    )
     {
-        return Task.FromResult(WorkingGroups
-            .Where(w =>
-                string.IsNullOrWhiteSpace(searchText) ||
-                w.Professor.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
+        return Task.FromResult(
+            WorkingGroups.Where(w =>
+                string.IsNullOrWhiteSpace(searchText)
+                || w.Professor.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+            )
+        );
     }
 
     /// <summary>
@@ -32,10 +44,4 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection
             null => "",
             _ => workingGroup.Professor.Name,
         };
-
-    /// <summary>
-    /// List of working groups.
-    /// </summary>
-    [Parameter]
-    public List<WorkingGroup> WorkingGroups { get; set; }
 }
