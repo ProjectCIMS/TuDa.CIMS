@@ -1,12 +1,14 @@
 ﻿using System.Runtime.InteropServices.JavaScript;
 using Refit;
 using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Params;
 
 namespace TuDa.CIMS.Api.Services;
 
+[ScopedService]
 public class AssetItemService : IAssetItemService
 {
     private readonly IAssetItemRepository _assetItemRepository;
