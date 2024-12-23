@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TuDa.CIMS.Api.Database;
@@ -11,9 +12,11 @@ using TuDa.CIMS.Api.Database;
 namespace TuDa.CIMS.Api.Migrations
 {
     [DbContext(typeof(CIMSDbContext))]
-    partial class CIMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241214143424_PurityToString")]
+    partial class PurityToString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,19 +25,19 @@ namespace TuDa.CIMS.Api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SubstanceHazard", b =>
+            modelBuilder.Entity("HazardSubstance", b =>
                 {
-                    b.Property<Guid>("SubstanceId")
+                    b.Property<Guid>("HazardsId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("HazardId")
+                    b.Property<Guid>("SubstancesId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("SubstanceId", "HazardId");
+                    b.HasKey("HazardsId", "SubstancesId");
 
-                    b.HasIndex("HazardId");
+                    b.HasIndex("SubstancesId");
 
-                    b.ToTable("SubstanceHazard");
+                    b.ToTable("HazardSubstance");
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.AssetItem", b =>
@@ -172,7 +175,7 @@ namespace TuDa.CIMS.Api.Migrations
                         .IsRequired()
                         .HasColumnType("bytea");
 
-                    b.Property<Guid?>("WorkingGroupId")
+                    b.Property<Guid>("WorkingGroupId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -241,7 +244,8 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfessorId");
+                    b.HasIndex("ProfessorId")
+                        .IsUnique();
 
                     b.ToTable("WorkingGroups");
                 });
@@ -293,7 +297,7 @@ namespace TuDa.CIMS.Api.Migrations
                 {
                     b.HasBaseType("TuDa.CIMS.Shared.Entities.Person");
 
-                    b.Property<Guid?>("WorkingGroupId")
+                    b.Property<Guid>("WorkingGroupId")
                         .HasColumnType("uuid");
 
                     b.HasIndex("WorkingGroupId");
@@ -331,17 +335,17 @@ namespace TuDa.CIMS.Api.Migrations
                     b.HasDiscriminator().HasValue("Solvent");
                 });
 
-            modelBuilder.Entity("SubstanceHazard", b =>
+            modelBuilder.Entity("HazardSubstance", b =>
                 {
                     b.HasOne("TuDa.CIMS.Shared.Entities.Hazard", null)
                         .WithMany()
-                        .HasForeignKey("HazardId")
+                        .HasForeignKey("HazardsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TuDa.CIMS.Shared.Entities.Substance", null)
                         .WithMany()
-                        .HasForeignKey("SubstanceId")
+                        .HasForeignKey("SubstancesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -376,11 +380,15 @@ namespace TuDa.CIMS.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TuDa.CIMS.Shared.Entities.WorkingGroup", null)
+                    b.HasOne("TuDa.CIMS.Shared.Entities.WorkingGroup", "WorkingGroup")
                         .WithMany("Purchases")
-                        .HasForeignKey("WorkingGroupId");
+                        .HasForeignKey("WorkingGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Buyer");
+
+                    b.Navigation("WorkingGroup");
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.PurchaseEntry", b =>
@@ -401,8 +409,8 @@ namespace TuDa.CIMS.Api.Migrations
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.WorkingGroup", b =>
                 {
                     b.HasOne("TuDa.CIMS.Shared.Entities.Professor", "Professor")
-                        .WithMany()
-                        .HasForeignKey("ProfessorId")
+                        .WithOne("WorkingGroup")
+                        .HasForeignKey("TuDa.CIMS.Shared.Entities.WorkingGroup", "ProfessorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -411,9 +419,13 @@ namespace TuDa.CIMS.Api.Migrations
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Student", b =>
                 {
-                    b.HasOne("TuDa.CIMS.Shared.Entities.WorkingGroup", null)
+                    b.HasOne("TuDa.CIMS.Shared.Entities.WorkingGroup", "WorkingGroup")
                         .WithMany("Students")
-                        .HasForeignKey("WorkingGroupId");
+                        .HasForeignKey("WorkingGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WorkingGroup");
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Purchase", b =>
@@ -426,6 +438,12 @@ namespace TuDa.CIMS.Api.Migrations
                     b.Navigation("Purchases");
 
                     b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Professor", b =>
+                {
+                    b.Navigation("WorkingGroup")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

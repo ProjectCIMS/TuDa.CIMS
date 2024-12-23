@@ -6,13 +6,16 @@
     <DialogContent>
         <MudContainer>
             <MudGrid Justify="Justify.SpaceBetween">
-                <ShoppingCartSubmitPopupWorkingGroupSelection/>
-                <ShoppingCartSubmitPopupPurchaseList/>
+                <ShoppingCartSubmitPopupWorkingGroupSelection WorkingGroup="@WorkingGroup"
+                                                              WorkingGroups="@WorkingGroups"/>
+                <ShoppingCartSubmitPopupPurchaseList PurchaseEntries="@PurchaseEntries"/>
             </MudGrid>
         </MudContainer>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        <MudButton Color="Color.Primary"
+                   OnClick="Submit">Ok
+        </MudButton>
     </DialogActions>
 </MudDialog>

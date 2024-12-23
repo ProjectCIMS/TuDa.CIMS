@@ -10,7 +10,7 @@ public partial class ShoppingCartProductDialog
     public required MudDialogInstance ProductDialog { get; set; }
 
     [Inject]
-    private ILogger<ShoppingCartProductDialog> Logger { get; set; }
+    private ILogger<ShoppingCartProductDialog> Logger { get; set; } = null!;
 
     // Product to be shown in Dialog.
     [Parameter]
