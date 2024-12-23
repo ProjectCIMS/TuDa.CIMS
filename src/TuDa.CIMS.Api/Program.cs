@@ -17,7 +17,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<IAssetItemRepository, AssetItemRepository>();
 builder.Services.AddScoped<IAssetItemService, AssetItemService>();
 builder.Services.AddControllers();
-
+builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+builder.Services.AddScoped<IPurchaseService, PurchaseService>();
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
