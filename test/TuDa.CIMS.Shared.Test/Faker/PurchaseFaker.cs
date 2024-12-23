@@ -14,7 +14,6 @@ public class PurchaseFaker : BaseEntityFaker<Purchase>
         completed ??= new Randomizer().Bool();
         workingGroup ??= new WorkingGroupFaker();
 
-        RuleFor(p => p.WorkingGroup, () => workingGroup);
         RuleFor(p => p.Buyer, f => f.PickRandom(workingGroup.Students));
         RuleFor(
             p => p.Entries,

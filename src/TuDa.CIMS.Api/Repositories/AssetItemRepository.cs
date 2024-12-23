@@ -4,6 +4,8 @@ using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Params;
+using TuDa.CIMS.Api.Factories;
 
 namespace TuDa.CIMS.Api.Repositories;
 
@@ -109,6 +111,7 @@ public class AssetItemRepository : IAssetItemRepository
                     $"Given RoomId {updateModel.RoomId} was not found."
                 );
             }
+
             existingItem.Room = room;
         }
 
@@ -117,7 +120,7 @@ public class AssetItemRepository : IAssetItemRepository
     }
 
     /// <summary>
-    ///Removes an AssetItem with the specific id from the database.
+    /// Removes an AssetItem with the specific id from the database.
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id)
@@ -134,9 +137,41 @@ public class AssetItemRepository : IAssetItemRepository
                 $"The asset item with the id {id} was not found."
             );
         }
+
         _context.AssetItems.Remove(itemToRemove);
 
         await _context.SaveChangesAsync();
         return Result.Deleted;
+    }
+
+    /// <summary>
+    /// Returns a paginated list of AssetItems.
+    /// </summary>
+    /// <param name="userParams"></param>
+    /// <returns></returns>
+    public async Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(AssetItemPaginationQueryParams queryParams)
+    {
+        var query = _context.AssetItems.AsQueryable();
+        return await PaginatedResponseFactory<AssetItem>.CreateAsync(query, queryParams.PageNumber, queryParams.PageSize);
+    }
+    ///Returns a list of matching AssetItem based on the provided name or CAS number.
+    /// </summary>
+    /// <param name="nameOrCas"></param>
+    public async Task<IEnumerable<AssetItem>> SearchAsync(string nameOrCas)
+    {
+        IQueryable<AssetItem> query;
+
+        bool isCas = nameOrCas.All(c => char.IsDigit(c) || c == '-');
+
+        if (isCas)
+        {
+            query = _context.Substances.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%")).Include(s => s.Hazards);
+        }
+        else
+        {
+            query = _context.AssetItems.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
+        }
+
+        return await query.Include(i => i.Room).ToListAsync();
     }
 }

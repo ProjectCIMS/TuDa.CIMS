@@ -1,0 +1,164 @@
+﻿@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Entities.Enums
+
+@* AssetItemCreateForm *@
+
+<!-- Modal Body -->
+<div class="modal-body">
+    <div aria-label="Button group"
+         class="btn-group"
+         role="group">
+        <button class="btn btn-primary"
+                @onclick="SwitchToChemical">
+            Chemical
+        </button>
+        <button class="btn btn-primary"
+                @onclick="SwitchToConsumable">
+            Consumable
+        </button>
+
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <AssetItemForm/>
+        </div>
+
+        <!-- Which Form to Choose -->
+        <div class="col-md-6 mb-3">
+            @if (_isChemical)
+            {
+                <ChemicalItemForm/>
+            }
+            else
+            {
+                <ConsumableItemForm/>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+
+    /// <summary>
+    /// Temporary Values to bind when inputting
+    /// </summary>
+    protected string Name = "";
+
+    protected string Shop = "";
+    protected string ItemNumber = "";
+    protected string Note = "";
+    protected string Cas = "";
+    protected string Manufacturer = "";
+    protected string SerialNumber = "";
+    protected double Price = 0;
+    protected int ConsumableAmount = 0;
+    protected double Purity = 0;
+    protected double BindingSize = 0;
+
+    /// <summary>
+    /// Boolean to differentiate between Chemical and Consumable form
+    /// </summary>
+    private bool _isChemical = true;
+
+    /// <summary>
+    /// For the Extraction of a Chemical Item
+    /// </summary>
+    private Chemical _createdChemicalItem = new Chemical()
+    {
+        Name = "",
+        Shop = "",
+        ItemNumber = "",
+        Note = "",
+        Id = Guid.NewGuid(),
+        Room = new Room() { Name = "", Id = Guid.NewGuid() },
+        Price = 0,
+        Hazards = new List<Hazard>(),
+        Cas = "",
+        Purity = 0,
+        PriceUnit = PriceUnits.PerPiece,
+        BindingSize = 0
+    };
+
+    /// <summary>
+    /// For the Extraction of a Consumable Item
+    /// </summary>
+    private Consumable _createdConsumableItem = new Consumable()
+    {
+        Name = "",
+        Shop = "",
+        ItemNumber = "",
+        Note = "",
+        Id = Guid.NewGuid(),
+        Room = new Room() { Name = "", Id = Guid.NewGuid() },
+        Price = 0,
+        Manufacturer = "",
+        SerialNumber = "",
+        Amount = 0
+    };
+
+    /// <summary>
+    /// Method to switch to a Substance
+    /// </summary>
+    private void SwitchToChemical()
+    {
+        _isChemical = true;
+    }
+
+    /// <summary>
+    /// Method to switch to a Consumable
+    /// </summary>
+    private void SwitchToConsumable()
+    {
+        _isChemical = false;
+    }
+
+    /// <summary>
+    /// Functionality of the Save Button: Bind the Values to the actual Item
+    /// </summary>
+    protected void SaveChanges()
+    {
+        if (_isChemical)
+        {
+            _createdChemicalItem.Name = Name;
+            _createdChemicalItem.Shop = Shop;
+            _createdChemicalItem.ItemNumber = ItemNumber;
+            _createdChemicalItem.Note = Note;
+            _createdChemicalItem.Cas = Cas;
+            _createdChemicalItem.Price = Price;
+            _createdChemicalItem.Purity = Purity;
+        }
+        else
+        {
+            _createdConsumableItem.Name = Name;
+            _createdConsumableItem.Shop = Shop;
+            _createdConsumableItem.ItemNumber = ItemNumber;
+            _createdConsumableItem.Note = Note;
+            _createdConsumableItem.Manufacturer = Manufacturer;
+            _createdConsumableItem.SerialNumber = SerialNumber;
+            _createdConsumableItem.Price = Price;
+            _createdConsumableItem.Amount = ConsumableAmount;
+        }
+
+        ResetInputs();
+    }
+
+    /// <summary>
+    /// Resets the Input lines
+    /// </summary>
+    private void ResetInputs()
+    {
+        Name = string.Empty;
+        Shop = string.Empty;
+        ItemNumber = string.Empty;
+        Note = string.Empty;
+        Cas = string.Empty;
+        Purity = 0;
+        Manufacturer = string.Empty;
+        SerialNumber = string.Empty;
+        Price = 0;
+        ConsumableAmount = 0;
+        BindingSize = 0;
+    }
+
+
+}
