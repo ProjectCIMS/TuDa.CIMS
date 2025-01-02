@@ -20,7 +20,7 @@ public abstract record Substance : AssetItem
     /// <summary>
     /// The purity of the substance.
     /// </summary>
-    public string Purity { get; set; }
+    public string Purity { get; set; } = string.Empty;
 
     /// <summary>
     /// The unit of measurement for the price of the substance.
