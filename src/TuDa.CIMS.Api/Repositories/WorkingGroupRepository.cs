@@ -99,9 +99,9 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// <summary>
     /// Creates a Working Group and adds it to the database.
     /// </summary>
-    /// <param name="createModel">The model containing the updated values for the Working Group</param>
+    /// <param name="createModel">The model containing the  values for the newly created Working Group</param>
     /// <returns></returns>
-    public async Task<ErrorOr<Created>> CreateAsync(CreateWorkingGroupDto createModel)
+    public async Task<ErrorOr<WorkingGroup>> CreateAsync(CreateWorkingGroupDto createModel)
     {
         var professor = await _context.Professors.FindAsync(createModel.Professor.Id);
         if (professor == null)
@@ -152,6 +152,72 @@ public class WorkingGroupRepository : IWorkingGroupRepository
 
         _context.WorkingGroups.Add(workingGroup);
         await _context.SaveChangesAsync();
-        return Result.Created;
+        return workingGroup;
+    }
+
+    /// <summary>
+    /// Updates the Working Group by deleting a Student from the Members.
+    /// </summary>
+    /// <param name="id">the specific id of the Working Group</param>
+    /// <param name="updateModel">The model containing the updated values for the Working Group</param>
+    /// <returns></returns>
+    public async Task<ErrorOr<Updated>> DeleteStudentsAsync(Guid id, UpdateWorkingGroupDto updateModel)
+    {
+        var existingItem = await _context
+            .WorkingGroups.Where(i => i.Id == id)
+            .Include(workingGroup => workingGroup.Professor)
+            .Include(workingGroup => workingGroup.Students)
+            .Include(workingGroup => workingGroup.Purchases)
+            .SingleOrDefaultAsync();
+
+        if (existingItem is null)
+        {
+            return Error.NotFound(
+                "WorkingGroups.update",
+                $"Working Group with id {id} was not found."
+            );
+        }
+
+        foreach (var student in updateModel.RemoveStudentsList)
+        {
+            existingItem.Students.Remove(student);
+        }
+
+
+        await _context.SaveChangesAsync();
+        return Result.Updated;
+    }
+
+    /// <summary>
+    /// Updates the Working Group by adding a Student from the Members.
+    /// </summary>
+    /// <param name="id">the specific id of the Working Group</param>
+    /// <param name="updateModel">The model containing the updated values for the Working Group</param>
+    /// <returns></returns>
+    public async Task<ErrorOr<Updated>> AddStudentsAsync(Guid id, UpdateWorkingGroupDto updateModel)
+    {
+        var existingItem = await _context
+            .WorkingGroups.Where(i => i.Id == id)
+            .Include(workingGroup => workingGroup.Professor)
+            .Include(workingGroup => workingGroup.Students)
+            .Include(workingGroup => workingGroup.Purchases)
+            .SingleOrDefaultAsync();
+
+        if (existingItem is null)
+        {
+            return Error.NotFound(
+                "WorkingGroups.update",
+                $"Working Group with id {id} was not found."
+            );
+        }
+
+        foreach (var student in updateModel.AddStudentsList)
+        {
+            existingItem.Students.Add(student);
+        }
+
+
+        await _context.SaveChangesAsync();
+        return Result.Updated;
     }
 }

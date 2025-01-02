@@ -100,7 +100,13 @@ public class WorkingGroupService : IWorkingGroupService
         }
     }
 
-    public async Task<ErrorOr<Created>> CreateAsync(CreateWorkingGroupDto createModel)
+    /// <summary>
+    /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
+    /// or the result of the <see cref="CreateAsync"/> functionality if successful
+    /// </summary>
+    /// <param name="createModel">the model containing the values for the newly created Working Group</param>
+    /// <returns></returns>
+    public async Task<ErrorOr<WorkingGroup>> CreateAsync(CreateWorkingGroupDto createModel)
     {
         try
         {
@@ -111,6 +117,51 @@ public class WorkingGroupService : IWorkingGroupService
             return Error.Failure(
                 "WorkingGroups.CreateAsync",
                 $"Failed to create Working Group. Exception: {e.Message}"
+            );
+        }
+    }
+
+    /// <summary>
+    /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
+    /// or the result of the <see cref="AddStudentsAsync"/> functionality if successful
+    /// </summary>
+    /// <param name="id">the unique id of the Working Group</param>
+    /// <param name="updateModel">the model containing the updated values for the Working Group</param>
+    /// <returns></returns>
+    public async Task<ErrorOr<Updated>> AddStudentsAsync(Guid id, UpdateWorkingGroupDto updateModel)
+    {
+        try
+        {
+            return await _workingGroupRepository.AddStudentsAsync(id, updateModel);
+        }
+        catch (Exception e)
+        {
+            return Error.Failure(
+                "Working Group.AddStudentsAsync",
+                $"Failed to add Students to Working Group with ID {id}. Exception: {e.Message}"
+            );
+        }
+    }
+
+
+    /// <summary>
+    /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
+    /// or the result of the <see cref="DeleteStudentsAsync"/> functionality if successful
+    /// </summary>
+    /// <param name="id">the unique id of the Working Group</param>
+    /// <param name="updateModel">the model containing the updated values for the Working Group</param>
+    /// <returns></returns>
+    public async Task<ErrorOr<Updated>> DeleteStudentsAsync(Guid id, UpdateWorkingGroupDto updateModel)
+    {
+        try
+        {
+            return await _workingGroupRepository.DeleteStudentsAsync(id, updateModel);
+        }
+        catch (Exception e)
+        {
+            return Error.Failure(
+                "Working Group.DeleteStudentsAsync",
+                $"Failed to remove Students from Working Group with ID {id}. Exception: {e.Message}"
             );
         }
     }
