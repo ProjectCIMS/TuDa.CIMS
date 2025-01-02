@@ -7,17 +7,28 @@ namespace TuDa.CIMS.Web.Components;
 public partial class ShoppingCartSubmitPopup
 {
     /// <summary>
-    /// Parameter for the working group.
+    /// PurchaseEntries of the Purchase.
     /// </summary>
     [Parameter]
-    public WorkingGroup WorkingGroup { get; set; }
+    public required List<PurchaseEntry> PurchaseEntries { get; set; }
+
+    /// <summary>
+    /// List of available WorkingGroups.
+    /// TODO: Replace with WorkingGroupApi and move to WorkingGroupSelection.
+    /// </summary>
+    [Parameter]
+    public required List<WorkingGroup> WorkingGroups { get; set; }
 
     /// <summary>
     /// CascadingParamter MudDialag.
     /// </summary>
     [CascadingParameter]
-    private MudDialogInstance MudDialog { get; set; }
+    private MudDialogInstance MudDialog { get; set; } = null!;
 
+    /// <summary>
+    /// The selected working group.
+    /// </summary>
+    private WorkingGroup WorkingGroup { get; set; } = null!;
 
     /// <summary>
     /// Cancels the MudDialog.
