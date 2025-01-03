@@ -1,0 +1,20 @@
+﻿@page "/3"
+
+@code {
+    private List<(string Date, string Price)> items = new List<(string, string)>
+    {
+        ("DATUM", "Preis")
+    };
+}
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="p-4 rounded-xl white" Style="border: 1px solid #ddd;">
+    <MudStack Spacing="2" Class="mb-4">
+        @foreach (var item in items)
+        {
+            <MudContainer Class="d-flex justify-content-between align-center p-2 rounded-md bg-white rounded-xl" Style="border: 1px solid #ddd;">
+                <MudText Typo="Typo.body1">@item.Date</MudText>
+                <MudText Typo="Typo.body1">@item.Price</MudText>
+            </MudContainer>
+        }
+    </MudStack>
+</MudContainer>
