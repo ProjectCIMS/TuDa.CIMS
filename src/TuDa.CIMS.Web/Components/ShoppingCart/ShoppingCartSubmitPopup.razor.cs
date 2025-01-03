@@ -30,6 +30,12 @@ public partial class ShoppingCartSubmitPopup
     /// </summary>
     private WorkingGroup WorkingGroup { get; set; } = null!;
 
+
+    /// <summary>
+    /// The selected student.
+    /// </summary>
+    private Student Student { get; set; } = null!;
+
     /// <summary>
     /// Cancels the MudDialog.
     /// </summary>
