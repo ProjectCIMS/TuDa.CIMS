@@ -19,4 +19,9 @@ public abstract record Person : BaseEntity
     /// The first name of the person.
     /// </summary>
     public string FirstName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The gender of the person.
+    /// </summary>
+    public required string Gender { get; set; }
 }
