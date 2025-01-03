@@ -21,6 +21,7 @@ public class CIMSDbContext : DbContext
     public DbSet<WorkingGroup> WorkingGroups { get; set; }
     public DbSet<Professor> Professors { get; set; }
     public DbSet<Student> Students { get; set; }
+    public DbSet<Person> Persons { get; set; }
 
     #endregion
 
