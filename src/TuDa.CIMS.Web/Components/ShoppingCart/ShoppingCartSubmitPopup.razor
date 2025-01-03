@@ -1,5 +1,3 @@
-@using TuDa.CIMS.Shared.Entities
-
 @namespace TuDa.CIMS.Web.Components.ShoppingCart
 
 @* Submit Popup *@
@@ -10,8 +8,8 @@
     <DialogContent>
         <MudContainer>
             <MudGrid Justify="Justify.SpaceBetween">
-                <ShoppingCartSubmitPopupWorkingGroupSelection/>
-                <ShoppingCartSubmitPopupPurchaseList/>
+                <ShoppingCartSubmitPopupWorkingGroupSelection WorkingGroups="WorkingGroups"/>
+                <ShoppingCartSubmitPopupPurchaseList PurchaseEntries="PurchaseEntries"/>
             </MudGrid>
         </MudContainer>
     </DialogContent>

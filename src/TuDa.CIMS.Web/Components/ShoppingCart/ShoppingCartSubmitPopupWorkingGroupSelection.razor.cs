@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 
-namespace TuDa.CIMS.Web.Components;
+namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 public partial class ShoppingCartSubmitPopupWorkingGroupSelection
 {
@@ -15,12 +15,17 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection
     /// <summary>
     /// Search for the selection of the working group.
     /// </summary>
-    private Task<IEnumerable<WorkingGroup>> Search(string searchText, CancellationToken cancellationToken)
+    private Task<IEnumerable<WorkingGroup>> Search(
+        string searchText,
+        CancellationToken cancellationToken
+    )
     {
-        return Task.FromResult(WorkingGroups
-            .Where(w =>
-                string.IsNullOrWhiteSpace(searchText) ||
-                w.Professor.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
+        return Task.FromResult(
+            WorkingGroups.Where(w =>
+                string.IsNullOrWhiteSpace(searchText)
+                || w.Professor.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+            )
+        );
     }
 
     /// <summary>
@@ -37,5 +42,5 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection
     /// List of working groups.
     /// </summary>
     [Parameter]
-    public List<WorkingGroup> WorkingGroups { get; set; }
+    public required List<WorkingGroup> WorkingGroups { get; set; }
 }
