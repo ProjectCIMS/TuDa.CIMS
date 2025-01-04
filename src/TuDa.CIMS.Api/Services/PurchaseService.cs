@@ -54,25 +54,6 @@ public class PurchaseService : IPurchaseService
         }
     }
 
-    /// <summary>
-    /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
-    /// or the result of the <see cref="UpdateAsync"/> functionality if successful
-    /// </summary>
-    /// <param name="id">the unique id of the purchase</param>
-    /// <param name="workingGroupId">the unique id of a workinggroup</param>
-    /// <param name="updateModel">the model containing the updated values for the purchase</param>
-    /// <returns></returns>
-    public async Task<ErrorOr<Updated>> UpdateAsync(Guid id, Guid workingGroupId, UpdatePurchaseDto updateModel)
-    {
-        try
-        {
-            return await _purchaseRepository.UpdateAsync(id, workingGroupId, updateModel);
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure("PurchaseService.UpdateAsync", ex.Message);
-        }
-    }
 
     /// <summary>
     /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
@@ -104,7 +85,7 @@ public class PurchaseService : IPurchaseService
     {
         try
         {
-            return (await _purchaseRepository.CreateAsync(workingGroupId, createModel));
+            return await _purchaseRepository.CreateAsync(workingGroupId, createModel);
         }
         catch (Exception ex)
         {

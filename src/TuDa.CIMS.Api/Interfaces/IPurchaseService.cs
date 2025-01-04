@@ -7,7 +7,6 @@ public interface IPurchaseService
 {
     Task<ErrorOr<IEnumerable<Purchase>>> GetAllAsync(Guid workingGroupId);
     Task<ErrorOr<Purchase>> GetOneAsync(Guid id, Guid workingGroupId);
-    Task<ErrorOr<Updated>> UpdateAsync(Guid id, Guid workingGroupId, UpdatePurchaseDto updateModel);
     Task<ErrorOr<Deleted>> RemoveAsync( Guid id, Guid workingGroupId);
     Task<ErrorOr<Created>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel);
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
@@ -27,6 +28,7 @@ public class PurchaseRepository : IPurchaseRepository
             .SelectMany(i => i.Purchases)
             .Include(i => i.Buyer)
             .Include(i => i.Entries)
+            .ThenInclude(i => i.AssetItem)
             .ToListAsync();
     }
 
@@ -44,66 +46,8 @@ public class PurchaseRepository : IPurchaseRepository
             .Where(i => i.Id == id)
             .Include(i => i.Buyer)
             .Include(i => i.Entries)
+            .ThenInclude(i => i.AssetItem)
             .SingleOrDefaultAsync();
-    }
-
-    /// <summary>
-    /// Updates an existing purchase by its ID using the provided update model.
-    /// </summary>
-    /// <param name="id">the specific ID of the purchase</param>
-    /// <param name="workingGroupId">the specific id of a workinggroup</param>
-    /// <param name="updateModel">the model containing the update values for the purchase </param>
-    /// <returns></returns>
-    public async Task<ErrorOr<Updated>> UpdateAsync(Guid id, Guid workingGroupId, UpdatePurchaseDto updateModel)
-    {
-        var existingItem = await _context
-            .WorkingGroups
-            .Where(i => i.Id == workingGroupId)
-            .SelectMany(i => i.Purchases)
-            .Where(i => i.Id == id)
-            .Include(i => i.Buyer)
-            .Include(i => i.Entries)
-            .SingleOrDefaultAsync();
-
-        if (existingItem is null)
-        {
-            return Error.NotFound("Purchase.update", $"Purchase with ID {id} was not found.");
-        }
-
-
-        if (updateModel.Buyer is not null)
-        {
-            var buyer = await _context.Persons.SingleOrDefaultAsync(r => r.Id == updateModel.Buyer.Id);
-            if (buyer is null)
-            {
-                return Error.NotFound("Purchase.update", $"Person with ID {updateModel.Buyer.Id} was not found.");
-            }
-
-            existingItem.Buyer = buyer;
-        }
-
-        if (updateModel.Entries is not null)
-        {
-            var entries = await _context.PurchaseEntries
-                .Where(x => updateModel.Entries.Select(y => y.Id).Contains(x.Id)).ToListAsync();
-            if (entries.Count != updateModel.Entries.Count)
-            {
-                return Error.NotFound("Purchase.update", $"Some of the PurchaseEntries were not found.");
-            }
-
-            existingItem.Entries = entries;
-        }
-
-        existingItem.Buyer = updateModel.Buyer ?? existingItem.Buyer;
-        existingItem.Signature = updateModel.Signature ?? existingItem.Signature;
-        existingItem.Entries = updateModel.Entries ?? existingItem.Entries;
-        existingItem.CompletionDate = updateModel.CompletionDate ?? existingItem.CompletionDate;
-        existingItem.Completed = updateModel.Completed ?? existingItem.Completed;
-
-
-        await _context.SaveChangesAsync();
-
-        return new Updated();
     }
 
     /// <summary>
@@ -141,20 +85,28 @@ public class PurchaseRepository : IPurchaseRepository
     public async Task<ErrorOr<Created>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel)
     {
         var workingGroup = await _context.WorkingGroups.SingleOrDefaultAsync(r => r.Id == workingGroupId);
+
         if (workingGroup is null)
         {
             return Error.NotFound("Purchase.create",
                 $"WorkingGroup with ID {workingGroupId} was not found.");
         }
 
+        var buyer = await _context.Persons.SingleOrDefaultAsync(r => r.Id == createModel.Buyer);
+
+        if (buyer is null)
+        {
+            return Error.NotFound("Purchase.create", $"Person with ID {createModel.Buyer} was not found.");
+        }
+
         var newPurchase = new Purchase
         {
-            Buyer = createModel.Buyer,
+            Buyer = buyer,
             Signature = createModel.Signature,
             CompletionDate = createModel.CompletionDate,
-            Entries = createModel.Entries,
-            Completed = createModel.Completed
+
         };
+
 
         workingGroup.Purchases.Add(newPurchase);
         await _context.SaveChangesAsync();
