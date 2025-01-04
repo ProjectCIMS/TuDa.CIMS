@@ -10,12 +10,12 @@
 
         <!-- Purchase Entry List -->
         <MudItem xs="12" sm="12" md="12">
-            <PurchaseEntryList Entries="Entries"/>
+            <PurchaseEntryList Purchase="@Purchase" AssetItemDeleted="_=>StateHasChanged()"/>
         </MudItem>
 
         <!-- Shopping Cart Footer  -->
         <MudItem xs="12" sm="12" md="12">
-            <ShoppingCartFooter Purchase="Purchase" OnCheckout="OpenSubmitDialogAsync"/>
+            <ShoppingCartFooter Purchase="@Purchase" OnCheckout="OpenSubmitDialogAsync"/>
         </MudItem>
     </MudGrid>
 </MudContainer>

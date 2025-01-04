@@ -10,13 +10,9 @@ public partial class ShoppingCartPage
     [Inject]
     public required IDialogService DialogService { get; set; }
 
-    private PurchaseEntry? PurchaseEntry { get; set; }
-    private static List<PurchaseEntry> Entries { get; set; } = [];
-
     private Purchase Purchase { get; set; } =
-        new Purchase
+        new()
         {
-            Entries = Entries,
             Buyer = new Student { FirstName = "John", Name = "John Doe" },
         };
 
@@ -53,8 +49,15 @@ public partial class ShoppingCartPage
         var options = new DialogOptions { CloseOnEscapeKey = true };
         var parameters = new DialogParameters
         {
-            { "PurchaseEntries", Entries },
-            { "WorkingGroups", new List<WorkingGroup>()}
+            { "PurchaseEntries", Purchase.Entries },
+            {
+                "WorkingGroups",
+                new List<WorkingGroup>()
+                {
+                    new() { Professor = new Professor { Name = "Heiter" } },
+                    new() { Professor = new Professor { Name = "Kaiser" } },
+                }
+            },
         };
 
         var dialog = await DialogService.ShowAsync<ShoppingCartSubmitPopup>(
@@ -62,17 +65,22 @@ public partial class ShoppingCartPage
             parameters,
             options
         );
+
+        if (await dialog.GetReturnValueAsync<WorkingGroup>() is not null)
+        {
+            Purchase = new Purchase { Buyer = new Student { Name = "Jon" } };
+        }
     }
 
     private void AddProductEntry(int amount)
     {
-        PurchaseEntry = new PurchaseEntry()
-        {
-            Amount = amount,
-            AssetItem = Product,
-            PricePerItem = Product.Price,
-        };
-
-        Entries.Add(PurchaseEntry);
+        Purchase.Entries.Add(
+            new PurchaseEntry()
+            {
+                Amount = amount,
+                AssetItem = Product,
+                PricePerItem = Product.Price,
+            }
+        );
     }
 }
