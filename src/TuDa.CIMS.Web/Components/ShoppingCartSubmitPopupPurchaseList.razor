@@ -1,0 +1,25 @@
+<!-- Purchase List -->
+<MudItem>
+    <MudPaper Height="300px" Width="400px" Style="overflow-y: auto; margin-bottom: 2px;">
+        <MudContainer>
+            <MudStack Spacing="2">
+                <MudText Typo="Typo.h6" Class="mb-2" Align="Align.Left">
+                    Produktliste
+                </MudText>
+                @foreach (var purchaseEntry in PurchaseEntries)
+                {
+                    <MudItem Class="d-flex align-items-center">
+                        <MudIconButton Icon="@Icons.Material.Outlined.Info" Class="mr-2">
+                        </MudIconButton>
+                        <MudItem>
+                            <MudText>@purchaseEntry.AssetItem.Name</MudText>
+                            <MudText Class="mud-text-secondary">
+                                @GetAmountText(@purchaseEntry)
+                            </MudText>
+                        </MudItem>
+                    </MudItem>
+                }
+            </MudStack>
+        </MudContainer>
+    </MudPaper>
+</MudItem>

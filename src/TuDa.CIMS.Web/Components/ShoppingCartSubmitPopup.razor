@@ -1,0 +1,22 @@
+@* Submit Popup *@
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Arbeitsgruppe auswählen</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudContainer>
+            <MudGrid Justify="Justify.SpaceBetween">
+                <ShoppingCartSubmitPopupWorkingGroupSelection WorkingGroup="@WorkingGroup"
+                                                              WorkingGroups="@WorkingGroups"/>
+                <ShoppingCartSubmitPopupPurchaseList PurchaseEntries="@PurchaseEntries"/>
+            </MudGrid>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary"
+                   OnClick="Submit">
+            Ok
+        </MudButton>
+    </DialogActions>
+</MudDialog>
