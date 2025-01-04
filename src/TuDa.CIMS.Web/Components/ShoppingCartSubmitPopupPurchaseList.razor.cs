@@ -10,7 +10,7 @@ public partial class ShoppingCartSubmitPopupPurchaseList
     /// List of purchase entries to be shown.
     /// </summary>
     [Parameter]
-    public required List<PurchaseEntry> PurchaseEntries { get; set; }
+    public required List<PurchaseEntry> PurchaseListEntries { get; set; }
 
     /// <summary>
     /// Returns the amount with the respective price unit of the given purchase entry as a string.

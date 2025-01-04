@@ -17,7 +17,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection
     /// TODO: Need to be replaced by WorkingGroupApi
     /// </summary>
     [Parameter]
-    public List<WorkingGroup> WorkingGroups { get; set; } = [];
+    public List<WorkingGroup> ListOfWorkingGroups { get; set; } = [];
 
     /// <summary>
     /// Search for the selection of the working group.
@@ -28,7 +28,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection
     )
     {
         return Task.FromResult(
-            WorkingGroups.Where(w =>
+            ListOfWorkingGroups.Where(w =>
                 string.IsNullOrWhiteSpace(searchText)
                 || w.Professor.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)
             )
