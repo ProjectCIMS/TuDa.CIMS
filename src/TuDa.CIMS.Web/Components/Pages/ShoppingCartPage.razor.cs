@@ -9,16 +9,18 @@ public partial class ShoppingCartPage
 {
     [Inject] private IDialogService DialogService { get; set; } = null!;
 
-    private Purchase Purchase { get; set; } = null!;
+    private Purchase Purchase { get; set; } =
+        new()
+        {
+            Buyer = new Student { FirstName = "John", Name = "John Doe" },
+        };
 
-    public required AssetItem Product { get; set; }
-
-    private async Task OpenDialogAsync(AssetItem assetItem)
+    private async Task OpenDialogAsync(AssetItem product)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
         // Set Parameters
-        var parameters = new DialogParameters { { "Product", assetItem } };
+        var parameters = new DialogParameters { { "Product", product } };
 
         var dialog = await DialogService.ShowAsync<ShoppingCartProductDialog>(
             "Mengenangabe",
@@ -29,10 +31,10 @@ public partial class ShoppingCartPage
 
         if (result is { Canceled: false })
         {
-            int amount = (int) result.Data!;
+            int amount = (int)result.Data!;
             if (amount > 0)
             {
-                AddProductEntry(amount, assetItem);
+                AddProductEntry(amount, product);
             }
         }
     }
@@ -63,18 +65,18 @@ public partial class ShoppingCartPage
         var workingGroup = await dialog.GetReturnValueAsync<WorkingGroup>();
         if (await dialog.GetReturnValueAsync<WorkingGroup>() is not null)
         {
-           //Purchase does not have a working group attribute
+            //Purchase does not have a working group attribute
         }
     }
 
-    private void AddProductEntry(int amount, AssetItem assetItem)
+    private void AddProductEntry(int amount, AssetItem product)
     {
         Purchase.Entries.Add(
             new PurchaseEntry()
             {
                 Amount = amount,
-                AssetItem = assetItem,
-                PricePerItem = Product.Price,
+                AssetItem = product,
+                PricePerItem = product.Price
             }
         );
     }
