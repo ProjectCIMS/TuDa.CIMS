@@ -1,34 +1,21 @@
 ﻿@inherits AssetItemForm
 @* Consumable Item Form *@
 
-<div class="mt-3">
 
-    <label class="form-label"
-           for="consumableManufacturer">
-        Manufacturer
-    </label>
-    <input @bind-value="@Manufacturer"
-           class="form-control"
-           id="consumableManufacturer"
-           placeholder="Enter Manufacturer"
-           type="text"/>
+    <MudTextField @bind-Value="Cas"
+                  Label="CAS"
+                  Placeholder="Enter CAS"
+                  Variant="Variant.Filled"
+                  FullWidth/>
 
-    <label class="form-label"
-           for="consumableSerialNumber">
-        Serial Number
-    </label>
-    <input @bind-value="@SerialNumber"
-           class="form-control"
-           id="consumableSerialNumber"
-           placeholder="Enter Serial Number"
-           type="text"/>
+    <MudNumericField @bind-Value="Purity"
+                     Label="Purity"
+                     Placeholder="Enter Purity"
+                     Variant="Variant.Filled"
+                     FullWidth/>
 
-    <label class="form-label"
-           for="amount">
-        Amount
-    </label>
-    <input @bind-value="@ConsumableAmount"
-           class="form-control"
-           id="amount"
-           type="number"/>
-</div>
+    <MudNumericField @bind-Value="BindingSize"
+                     Label="Binding Size"
+                     Placeholder="Enter Binding Size"
+                     Variant="Variant.Filled"
+                     FullWidth/>

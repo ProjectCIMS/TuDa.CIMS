@@ -1,50 +1,42 @@
 ﻿@inherits AssetItemCreateForm
 
 
-@* AssetItemDialog *@
+<!-- AssetItemDialog -->
+
+<MudDialog>
+    <TitleContent>
+        <MudContainer Class="d-flex justify-content-between align-items-center"
+                      Style="padding: 0; margin: 0; width: 100%;">
+            <MudText Typo="Typo.h6">
+                Create Item
+            </MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                           Color="Color.Inherit"
+                           @onclick="Cancel"/>
+        </MudContainer>
+    </TitleContent>
+    <!-- Modal Body -->
+    <DialogContent>
+        <AssetItemCreateForm/>
+    </DialogContent>
+    <!-- Modal Footer -->
+    <DialogActions>
+        <MudButton OnClick="Cancel"
+                   Color="Color.Secondary">
+            Close
+        </MudButton>
+        <MudButton OnClick="SaveChanges"
+                   Color="Color.Primary">
+            Save Changes
+        </MudButton>
+    </DialogActions>
+
+</MudDialog>
+
+@code {
+    [CascadingParameter] public required MudDialogInstance ProductDialog { get; set; }
+
+    private void Cancel() => ProductDialog.Cancel();
 
 
-<!-- Generic Modal Button -->
-<ModalButton ButtonLabel="Create Item"
-             ModalTarget="#createItemDialog"/>
-
-<!-- Modal Header -->
-<div aria-hidden="true"
-     aria-labelledby="createItemDialogLabel"
-     class="fade modal"
-     id="createItemDialog"
-     tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"
-                    id="createItemDialogLabel">
-                    Create Item
-                </h5>
-                <button aria-label="Close"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        type="button">
-                </button>
-            </div>
-
-            <!-- Modal Body -->
-            <AssetItemCreateForm/>
-
-            <!-- Modal Footer -->
-            <div class="modal-footer">
-                <button class="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                        type="button">
-                    Close
-                </button>
-                <button class="btn btn-primary"
-                        data-bs-dismiss="modal"
-                        @onclick="SaveChanges"
-                        type="button">
-                    Save Changes
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+}
