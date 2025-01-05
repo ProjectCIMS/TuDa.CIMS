@@ -3,39 +3,35 @@
 
 @* AssetItemCreateForm *@
 
-<!-- Modal Body -->
-<div class="modal-body">
-    <div aria-label="Button group"
-         class="btn-group"
-         role="group">
-        <button class="btn btn-primary"
-                @onclick="SwitchToChemical">
-            Chemical
-        </button>
-        <button class="btn btn-primary"
-                @onclick="SwitchToConsumable">
-            Consumable
-        </button>
 
-    </div>
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <AssetItemForm/>
-        </div>
+    <!-- Modal Body -->
+        <MudButtonGroup>
+            <MudButton Color="Color.Primary" @onclick="SwitchToChemical">
+                Chemical
+            </MudButton>
+            <MudButton Color="Color.Primary" @onclick="SwitchToConsumable">
+                Consumable
+            </MudButton>
+        </MudButtonGroup>
 
-        <!-- Which Form to Choose -->
-        <div class="col-md-6 mb-3">
-            @if (_isChemical)
-            {
-                <ChemicalItemForm/>
-            }
-            else
-            {
-                <ConsumableItemForm/>
-            }
-        </div>
-    </div>
-</div>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <AssetItemForm/>
+            </MudItem>
+
+            <!-- Which Form to Choose -->
+            <MudItem xs="12" md="6">
+                @if (_isChemical)
+                {
+                    <ChemicalItemForm/>
+                }
+                else
+                {
+                    <ConsumableItemForm/>
+                }
+            </MudItem>
+        </MudGrid>
+
 
 @code {
 

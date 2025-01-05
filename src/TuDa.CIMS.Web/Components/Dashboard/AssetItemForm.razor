@@ -2,59 +2,44 @@
 
 @* Generic AssetItemForm *@
 
-<label class="form-label"
-       for="name">
-    Name
-</label>
-<input @bind-value="@Name"
-       class="form-control"
-       id="name"
-       placeholder="Enter Name"
-       type="text"/>
+<MudForm>
+    <MudTextField @bind-Value="Name"
+                  Label="Name"
+                  Placeholder="Enter Name"
+                  Variant="Variant.Filled"
+                  FullWidth />
 
-<label class="form-label"
-       for="shop">
-    Shop
-</label>
-<input @bind-value="@Shop"
-       class="form-control"
-       id="shop"
-       placeholder="Enter Shop"
-       type="text"/>
+    <MudTextField @bind-Value="Shop"
+                  Label="Shop"
+                  Placeholder="Enter Shop"
+                  Variant="Variant.Filled"
+                  FullWidth />
 
-<label class="form-label"
-       for="itemNumber">
-    Item Number
-</label>
-<input @bind-value="@ItemNumber"
-       class="form-control"
-       id="itemNumber"
-       placeholder="Enter Item Number"
-       type="text"/>
+    <MudTextField @bind-Value="ItemNumber"
+                  Label="Item Number"
+                  Placeholder="Enter Item Number"
+                  Variant="Variant.Filled"
+                  FullWidth />
 
-<label class="form-label"
-       for="notes">
-    Notes
-</label>
-<input @bind-value="@Note"
-       class="form-control"
-       id="notes"
-       placeholder="Enter Notes"
-       type="text"/>
+    <MudTextField @bind-Value="Note"
+                  Label="Notes"
+                  Placeholder="Enter Notes"
+                  Variant="Variant.Filled"
+                  FullWidth />
 
-<label class="form-label"
-       for="price">
-    Price
-</label>
-<input @bind-value="@Price"
-       class="form-control"
-       id="price"
-       type="number"/>
+    <MudTextField @bind-Value="Price"
+                  Label="Price"
+                  Placeholder="Enter Price"
+                  Variant="Variant.Filled"
+                  InputType="InputType.Number"
+                  FullWidth />
 
-<button class="btn btn-primary mt-3"
-        @onclick="ResetInputs">
-    Clear
-</button>
+    <MudButton Color="Color.Primary"
+               Class="mt-3"
+               @onclick="ResetInputs">
+        Clear
+    </MudButton>
+</MudForm>
 
 @code
 {
