@@ -10,7 +10,7 @@
 
         <!-- Purchase Entry List -->
         <MudItem xs="12" sm="12" md="12">
-            <PurchaseEntryList Purchase="@Purchase" AssetItemDeleted="_=>StateHasChanged()"/>
+            <PurchaseEntryList Purchase="@Purchase" AssetItemDeleted="@(_ => StateHasChanged())"/>
         </MudItem>
 
         <!-- Shopping Cart Footer  -->

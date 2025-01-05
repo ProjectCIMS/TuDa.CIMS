@@ -7,28 +7,21 @@ namespace TuDa.CIMS.Web.Components.Pages;
 
 public partial class ShoppingCartPage
 {
-    [Inject]
-    public required IDialogService DialogService { get; set; }
+    [Inject] private IDialogService DialogService { get; set; } = null!;
 
-    private Purchase Purchase { get; set; } =
-        new()
-        {
-            Buyer = new Student { FirstName = "John", Name = "John Doe" },
-        };
+    private Purchase Purchase { get; set; } = null!;
 
     public required AssetItem Product { get; set; }
 
     private async Task OpenDialogAsync(AssetItem assetItem)
     {
-        Product = assetItem;
-
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
         // Set Parameters
         var parameters = new DialogParameters { { "Product", assetItem } };
 
         var dialog = await DialogService.ShowAsync<ShoppingCartProductDialog>(
-            "Amount Input",
+            "Mengenangabe",
             parameters,
             options
         );
@@ -36,10 +29,10 @@ public partial class ShoppingCartPage
 
         if (result is { Canceled: false })
         {
-            int? amount = result.Data as int?;
+            int amount = (int) result.Data!;
             if (amount > 0)
             {
-                AddProductEntry(amount.Value);
+                AddProductEntry(amount, assetItem);
             }
         }
     }
@@ -51,6 +44,7 @@ public partial class ShoppingCartPage
         {
             { "PurchaseEntries", Purchase.Entries },
             {
+                // TODO: remove it when Working Groups are finished
                 "WorkingGroups",
                 new List<WorkingGroup>()
                 {
@@ -61,24 +55,25 @@ public partial class ShoppingCartPage
         };
 
         var dialog = await DialogService.ShowAsync<ShoppingCartSubmitPopup>(
-            "Submit Input",
+            "Einkauf Bestätigen",
             parameters,
             options
         );
 
+        var workingGroup = await dialog.GetReturnValueAsync<WorkingGroup>();
         if (await dialog.GetReturnValueAsync<WorkingGroup>() is not null)
         {
-            Purchase = new Purchase { Buyer = new Student { Name = "Jon" } };
+           //Purchase does not have a working group attribute
         }
     }
 
-    private void AddProductEntry(int amount)
+    private void AddProductEntry(int amount, AssetItem assetItem)
     {
         Purchase.Entries.Add(
             new PurchaseEntry()
             {
                 Amount = amount,
-                AssetItem = Product,
+                AssetItem = assetItem,
                 PricePerItem = Product.Price,
             }
         );

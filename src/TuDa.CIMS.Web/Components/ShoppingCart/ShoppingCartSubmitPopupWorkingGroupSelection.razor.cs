@@ -6,11 +6,15 @@ namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 public partial class ShoppingCartSubmitPopupWorkingGroupSelection
 {
+    [Parameter]
+    public required WorkingGroup WorkingGroup { get; set; }
+
     /// <summary>
-    /// CascadingParameter for working group.
+    /// List of working groups.
+    /// TODO: Need to be replaced by WorkingGroupApi
     /// </summary>
-    [CascadingParameter]
-    public WorkingGroup WorkingGroup { get; set; }
+    [Parameter]
+    public List<WorkingGroup> ListOfWorkingGroups { get; set; } = [];
 
     /// <summary>
     /// Search for the selection of the working group.
@@ -21,7 +25,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection
     )
     {
         return Task.FromResult(
-            WorkingGroups.Where(w =>
+            ListOfWorkingGroups.Where(w =>
                 string.IsNullOrWhiteSpace(searchText)
                 || w.Professor.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)
             )
@@ -38,9 +42,4 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection
             _ => workingGroup.Professor.Name,
         };
 
-    /// <summary>
-    /// List of working groups.
-    /// </summary>
-    [Parameter]
-    public required List<WorkingGroup> WorkingGroups { get; set; }
 }
