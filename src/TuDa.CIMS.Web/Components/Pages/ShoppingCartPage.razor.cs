@@ -7,13 +7,10 @@ namespace TuDa.CIMS.Web.Components.Pages;
 
 public partial class ShoppingCartPage
 {
-    [Inject] private IDialogService DialogService { get; set; } = null!;
+    [Inject]
+    private IDialogService DialogService { get; set; } = null!;
 
-    private Purchase Purchase { get; set; } =
-        new()
-        {
-            Buyer = new Student { FirstName = "John", Name = "John Doe" },
-        };
+    private Purchase Purchase { get; set; } = new() { Buyer = null! };
 
     private async Task OpenDialogAsync(AssetItem product)
     {
@@ -76,7 +73,7 @@ public partial class ShoppingCartPage
             {
                 Amount = amount,
                 AssetItem = product,
-                PricePerItem = product.Price
+                PricePerItem = product.Price,
             }
         );
     }
