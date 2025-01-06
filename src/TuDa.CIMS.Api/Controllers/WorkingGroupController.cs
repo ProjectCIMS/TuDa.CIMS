@@ -84,9 +84,6 @@ public class WorkingGroupController : ControllerBase
     {
         var result = await _workingGroupService.CreateAsync(createModel);
 
-        return result.Match<IActionResult>(
-            value => CreatedAtAction("", value),
-            err => BadRequest(err)
-        );
+        return result.Match<IActionResult>(_ => Ok(), err => BadRequest(err));
     }
 }
