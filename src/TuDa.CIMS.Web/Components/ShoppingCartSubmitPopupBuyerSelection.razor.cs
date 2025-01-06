@@ -40,7 +40,7 @@ public partial class ShoppingCartSubmitPopupBuyerSelection : ComponentBase
         buyer switch
         {
             null => "",
-            _ => buyer.Name,
+            _ => $"{buyer.Name} {buyer.FirstName}",
         };
 }
 
