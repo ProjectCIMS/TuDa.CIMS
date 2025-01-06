@@ -67,7 +67,12 @@ public partial class ShoppingCartPage
     private void AddProductEntry(int amount, AssetItem product)
     {
         Purchase.Entries.Add(
-            new PurchaseEntry(product, amount) { AssetItem = product, Amount = amount }
+            new PurchaseEntry()
+            {
+                Amount = amount,
+                AssetItem = product,
+                PricePerItem = product.Price,
+            }
         );
     }
 }
