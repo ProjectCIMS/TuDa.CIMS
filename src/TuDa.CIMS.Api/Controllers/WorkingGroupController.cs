@@ -89,34 +89,4 @@ public class WorkingGroupController : ControllerBase
             err => BadRequest(err)
         );
     }
-
-    /// <summary>
-    /// Updates an existing Working Group by its ID using the provided update model.
-    /// If the update is successful, returns a 200 OK response. If an error occurs during the update, an appropriate error response is returned.
-    /// </summary>
-    /// <param name="id">the unique id of the Working Group</param>
-    /// <param name="updateModel">the model containing the updated values for the Working Group </param>
-    [HttpPatch($"{{{nameof(id)}:guid}}")]
-    public async Task<IActionResult> AddStudentsAsync(Guid id, UpdateWorkingGroupDto updateModel)
-    {
-        return (await _workingGroupService.AddStudentsAsync(id, updateModel)).Match<IActionResult>(
-            _ => Ok(),
-            err => BadRequest(err)
-        );
-    }
-
-    /// <summary>
-    /// Updates an existing Working Group by its ID using the provided update model.
-    /// If the update is successful, returns a 200 OK response. If an error occurs during the update, an appropriate error response is returned.
-    /// </summary>
-    /// <param name="id">the unique id of the Working Group</param>
-    /// <param name="updateModel">the model containing the updated values for the Working Group </param>
-    [HttpPatch($"{{{nameof(id)}:guid}}")]
-    public async Task<IActionResult> DeleteStudentsAsync(Guid id, UpdateWorkingGroupDto updateModel)
-    {
-        return (await _workingGroupService.DeleteStudentsAsync(id, updateModel)).Match<IActionResult>(
-            _ => Ok(),
-            err => BadRequest(err)
-        );
-    }
 }

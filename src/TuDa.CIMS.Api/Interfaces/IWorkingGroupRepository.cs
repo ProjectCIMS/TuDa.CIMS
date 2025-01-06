@@ -11,7 +11,4 @@ public interface IWorkingGroupRepository
     Task<ErrorOr<Deleted>> RemoveAsync(Guid id);
 
     Task<ErrorOr<WorkingGroup>> CreateAsync(CreateWorkingGroupDto createModel);
-    Task<ErrorOr<Updated>> AddStudentsAsync(Guid id, UpdateWorkingGroupDto updateModel);
-
-    Task<ErrorOr<Updated>> DeleteStudentsAsync(Guid id, UpdateWorkingGroupDto updateModel);
 }

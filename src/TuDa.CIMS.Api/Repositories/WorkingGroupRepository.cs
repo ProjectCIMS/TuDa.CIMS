@@ -65,9 +65,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         }
 
         existingItem.Professor = updateModel.Professor ?? existingItem.Professor;
-        existingItem.Students = updateModel.Students ?? existingItem.Students;
         existingItem.PhoneNumber = updateModel.PhoneNumber ?? existingItem.PhoneNumber;
-        existingItem.Purchases = updateModel.Purchases ?? existingItem.Purchases;
 
         await _context.SaveChangesAsync();
         return Result.Updated;
@@ -117,107 +115,15 @@ public class WorkingGroupRepository : IWorkingGroupRepository
             await _context.SaveChangesAsync();
         }
 
-        var studentIds = createModel.Students.Select(s => s.Id).ToList();
-        var students = await _context.Students.Where(s => studentIds.Contains(s.Id)).ToListAsync();
-
-        if (students.Count != createModel.Students.Count)
-        {
-            var missingStudentIds = studentIds.Except(students.Select(s => s.Id)).ToList();
-            var missingStudents = createModel
-                .Students.Where(s => missingStudentIds.Contains(s.Id))
-                .ToList();
-
-            // Create new students for the missing IDs
-            foreach (var student in missingStudents)
-            {
-                _context.Students.Add(
-                    new Student
-                    {
-                        Id = student.Id,
-                        Name = student.Name,
-                        FirstName = student.FirstName,
-                    }
-                );
-            }
-            await _context.SaveChangesAsync();
-        }
-
         // Create the WorkingGroup after ensuring all related entities exist
         var workingGroup = new WorkingGroup
         {
             Professor = createModel.Professor,
             PhoneNumber = createModel.PhoneNumber,
-            Students = createModel.Students,
         };
 
         _context.WorkingGroups.Add(workingGroup);
         await _context.SaveChangesAsync();
         return workingGroup;
-    }
-
-    /// <summary>
-    /// Updates the Working Group by deleting a Student from the Members.
-    /// </summary>
-    /// <param name="id">the specific id of the Working Group</param>
-    /// <param name="updateModel">The model containing the updated values for the Working Group</param>
-    /// <returns></returns>
-    public async Task<ErrorOr<Updated>> DeleteStudentsAsync(Guid id, UpdateWorkingGroupDto updateModel)
-    {
-        var existingItem = await _context
-            .WorkingGroups.Where(i => i.Id == id)
-            .Include(workingGroup => workingGroup.Professor)
-            .Include(workingGroup => workingGroup.Students)
-            .Include(workingGroup => workingGroup.Purchases)
-            .SingleOrDefaultAsync();
-
-        if (existingItem is null)
-        {
-            return Error.NotFound(
-                "WorkingGroups.update",
-                $"Working Group with id {id} was not found."
-            );
-        }
-
-        foreach (var student in updateModel.RemoveStudentsList)
-        {
-            existingItem.Students.Remove(student);
-        }
-
-
-        await _context.SaveChangesAsync();
-        return Result.Updated;
-    }
-
-    /// <summary>
-    /// Updates the Working Group by adding a Student from the Members.
-    /// </summary>
-    /// <param name="id">the specific id of the Working Group</param>
-    /// <param name="updateModel">The model containing the updated values for the Working Group</param>
-    /// <returns></returns>
-    public async Task<ErrorOr<Updated>> AddStudentsAsync(Guid id, UpdateWorkingGroupDto updateModel)
-    {
-        var existingItem = await _context
-            .WorkingGroups.Where(i => i.Id == id)
-            .Include(workingGroup => workingGroup.Professor)
-            .Include(workingGroup => workingGroup.Students)
-            .Include(workingGroup => workingGroup.Purchases)
-            .SingleOrDefaultAsync();
-
-        if (existingItem is null)
-        {
-            return Error.NotFound(
-                "WorkingGroups.update",
-                $"Working Group with id {id} was not found."
-            );
-        }
-
-        foreach (var student in updateModel.AddStudentsList)
-        {
-            existingItem.Students.Add(student);
-        }
-
-
-        await _context.SaveChangesAsync();
-        return Result.Updated;
     }
 }
