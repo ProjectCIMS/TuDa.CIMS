@@ -59,22 +59,15 @@ public partial class ShoppingCartPage
             options
         );
 
-        /** TODO : Send Working Group, Buyer and Purchase to API
-        var workingGroup = await dialog.GetReturnValueAsync<WorkingGroup>();
-        if (await dialog.GetReturnValueAsync<WorkingGroup>() is not null)
-        {
-        }*/
+        // TODO: Send Working Group, Buyer and Purchase to API
+        // var workingGroup = await dialog.GetReturnValueAsync<WorkingGroup>();
+        // if (await dialog.GetReturnValueAsync<WorkingGroup>() is not null){}
     }
 
     private void AddProductEntry(int amount, AssetItem product)
     {
         Purchase.Entries.Add(
-            new PurchaseEntry()
-            {
-                Amount = amount,
-                AssetItem = product,
-                PricePerItem = product.Price,
-            }
+            new PurchaseEntry(product, amount) { AssetItem = product, Amount = amount }
         );
     }
 }

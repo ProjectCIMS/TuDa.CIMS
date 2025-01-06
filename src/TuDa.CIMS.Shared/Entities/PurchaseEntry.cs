@@ -1,21 +1,21 @@
 ﻿namespace TuDa.CIMS.Shared.Entities;
 
-public record PurchaseEntry : BaseEntity
+public record PurchaseEntry(AssetItem AssetItem, int Amount) : BaseEntity
 {
     /// <summary>
     /// The purchased asset item.
     /// </summary>
-    public required AssetItem AssetItem { get; set; }
+    public required AssetItem AssetItem { get; set; } = AssetItem;
 
     /// <summary>
     /// The amount of purchased items.
     /// </summary>
-    public required int Amount { get; set; }
+    public required int Amount { get; set; } = Amount;
 
     /// <summary>
     /// The current item price when the purchase is done.
     /// </summary>
-    public required double PricePerItem { get; set; }
+    public double PricePerItem { get; set; } = AssetItem.Price;
 
     #region Methods
 
