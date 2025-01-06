@@ -82,8 +82,9 @@ public class WorkingGroupController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync(CreateWorkingGroupDto createModel)
     {
-        var result = await _workingGroupService.CreateAsync(createModel);
-
-        return result.Match<IActionResult>(_ => Ok(), err => BadRequest(err));
+        return (await _workingGroupService.CreateAsync(createModel)).Match<IActionResult>(
+            _ => Ok(),
+            err => BadRequest(err)
+        );
     }
 }
