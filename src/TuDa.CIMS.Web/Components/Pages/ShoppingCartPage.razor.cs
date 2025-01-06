@@ -59,11 +59,11 @@ public partial class ShoppingCartPage
             options
         );
 
+        /** TODO : Send Working Group, Buyer and Purchase to API
         var workingGroup = await dialog.GetReturnValueAsync<WorkingGroup>();
         if (await dialog.GetReturnValueAsync<WorkingGroup>() is not null)
         {
-            //Purchase does not have a working group attribute
-        }
+        }*/
     }
 
     private void AddProductEntry(int amount, AssetItem product)
