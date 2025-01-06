@@ -1,4 +1,4 @@
-﻿﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
 
@@ -56,7 +56,7 @@ public class PurchaseController : ControllerBase
     public async Task<IActionResult> RemoveAsync(Guid id, Guid workingGroupId)
     {
         return (await _purchaseService.RemoveAsync(id, workingGroupId)).Match<IActionResult>(
-            _ => Ok(_),
+            _ => Ok(),
             error => BadRequest(error)
         );
     }
@@ -72,7 +72,7 @@ public class PurchaseController : ControllerBase
     public async Task<IActionResult> CreateAsync(Guid workingGroupId, [FromBody] CreatePurchaseDto createModel)
     {
         return (await _purchaseService.CreateAsync(workingGroupId, createModel)).Match<IActionResult>(
-            created => Ok(created),
+            _ => Ok(),
             error => BadRequest(error)
         );
     }

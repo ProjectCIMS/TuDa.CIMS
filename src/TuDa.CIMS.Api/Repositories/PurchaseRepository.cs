@@ -84,7 +84,8 @@ public class PurchaseRepository : IPurchaseRepository
     /// <returns></returns>
     public async Task<ErrorOr<Created>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel)
     {
-        var workingGroup = await _context.WorkingGroups.SingleOrDefaultAsync(r => r.Id == workingGroupId);
+        var workingGroup = await _context.WorkingGroups.Include(i => i.Purchases)
+            .SingleOrDefaultAsync(r => r.Id == workingGroupId);
 
         if (workingGroup is null)
         {
@@ -104,9 +105,11 @@ public class PurchaseRepository : IPurchaseRepository
             Buyer = buyer,
             Signature = createModel.Signature,
             CompletionDate = createModel.CompletionDate,
-
+            Entries = createModel.Entries?.Select(e => new PurchaseEntry
+            {
+                AssetItem = e.AssetItem, Amount = e.Amount, PricePerItem = e.PricePerItem
+            }).ToList() ?? []
         };
-
 
         workingGroup.Purchases.Add(newPurchase);
         await _context.SaveChangesAsync();
