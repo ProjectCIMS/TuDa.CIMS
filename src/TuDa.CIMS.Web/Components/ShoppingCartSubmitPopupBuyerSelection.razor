@@ -1,13 +1,13 @@
-﻿<h3>ShoppingCartSubmitPopupBuyerSelection</h3>
-
+﻿@page "/buyer"
 @using TuDa.CIMS.Shared.Entities
 @*ShoppingCart SubmitPopup WorkingGroup Selection*@
-<MudItem Class="d-flex align-items-center">
-    <MudAutocomplete T="Student"
-                     Label="Professor"
-                     @bind-Value="Student"
+<MudItem Class="d-flex align-items-center" >
+    <MudAutocomplete T="Person"
+                     Label="Käufer"
+                     @bind-Value="Buyer"
                      SearchFunc="@Search"
                      ToStringFunc="@ToString">
+
         <ItemTemplate>
             <MudItem Class="d-flex align-items-center">
                 <MudIconButton Icon="@Icons.Material.Outlined.Info" Class="mr-2">
