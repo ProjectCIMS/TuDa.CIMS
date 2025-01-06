@@ -28,13 +28,24 @@ public partial class ShoppingCartSubmitPopup
     /// <summary>
     /// The selected working group.
     /// </summary>
-    private WorkingGroup WorkingGroup { get; set; } = null!;
-
+    private WorkingGroup WorkingGroup { get; set; } = new ()
+    {
+        Professor = new Professor
+        {
+            Name = "Mustermann",
+            FirstName = "Max"
+        },
+        Students = new()
+        {
+            new Student { Name = "Alice" },
+            new Student { Name = "Bob" }
+        }
+    };
 
     /// <summary>
-    /// The selected student.
+    /// The selected buyer.
     /// </summary>
-    private Student Student { get; set; } = null!;
+    private Person Buyer { get; set; } = null!;
 
     /// <summary>
     /// Cancels the MudDialog.

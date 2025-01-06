@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Web.Components;
@@ -9,35 +10,37 @@ public partial class ShoppingCartSubmitPopupBuyerSelection : ComponentBase
     /// CascadingParameter for working group.
     /// </summary>
     [Parameter]
-    public required WorkingGroup WorkingGroup { get; set; }
+    public  WorkingGroup? WorkingGroup { get; set; }
 
     [Parameter]
-    public required Student Student { get; set; }
+    public required Person Buyer { get; set; }
 
     /// <summary>
     /// Search for the selection of the student.
     /// </summary>
-    private Task<IEnumerable<Student>> Search(
+    private Task<IEnumerable<Person>> Search(
         string searchText,
         CancellationToken cancellationToken
     )
     {
-        return Task.FromResult(
-            WorkingGroup.Students.Where(s =>
-                string.IsNullOrWhiteSpace(searchText)
-                || s.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)
-            )
-        );
+        if (WorkingGroup != null)
+        {
+            var result = WorkingGroup.Students
+                .Where(s => (EF.Functions.Like(s.Name.ToLower(), $"{searchText.ToLower()}%")) || (EF.Functions.Like(s.FirstName.ToLower(), $"{searchText.ToLower()}%")) )
+                .Cast<Person>();
+            return Task.FromResult(result);
+        }
+        return Task.FromResult(Enumerable.Empty<Person>());
     }
 
     /// <summary>
     /// Returns the name of a given student.
     /// </summary>
-    private static string ToString(Student student) =>
-        student switch
+    private static string ToString(Person buyer) =>
+        buyer switch
         {
             null => "",
-            _ => student.Name,
+            _ => buyer.Name,
         };
 }
 
