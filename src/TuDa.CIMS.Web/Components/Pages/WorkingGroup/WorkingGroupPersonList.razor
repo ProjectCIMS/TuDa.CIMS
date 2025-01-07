@@ -1,18 +1,29 @@
-﻿@page "/2"
+﻿@page "/"
 
-<MudContainer MaxWidth="MaxWidth.Small" Class="p-4 rounded-xl d-flex flex-column bg-white justify-content-between" Style="border: 1px solid #ddd;">
-    <MudStack Spacing="2" Class="mb-4">
-        @foreach (var item in items)
-        {
-            <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex justify-content-start align-center p-3 rounded-xl border-1">
-                <MudChip T="string" Size="Size.Large" Style="background: linear-gradient(135deg, #ffe6e6, #f9dede); border: 1px solid #f5c2c2;">
-                    @item
-                </MudChip>
-            </MudContainer>
-        }
-    </MudStack>
-    <MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick="AddItem" Class="ms-auto mt-auto bg-">
-        Hinzufügen
-    </MudButton>
+<MudContainer MaxWidth="MaxWidth.Small">
+    <MudDataGrid Items="@Persons"
+                 FixedHeader="@true"
+                 SortMode="SortMode.None"
+                 Hover="@true">
+        <Columns>
+            <PropertyColumn
+                Property="@(p => p.FirstName)"
+                Title="Vorname"/>
+            <PropertyColumn
+                Property="@(p => p.Name)"
+                Title="Nachname"/>
+            <PropertyColumn
+                Property="@(p => p.)"
+                Title="E-Mail"/>
+            <TemplateColumn CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudIconButton Size="@Size.Small"
+                                   Icon="@Icons.Material.Outlined.Delete"
+                                   @onclick="@()"/>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
 </MudContainer>
+
 
