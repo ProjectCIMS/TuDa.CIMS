@@ -65,7 +65,7 @@ public class WorkingGroupService : IWorkingGroupService
     /// </summary>
     /// <param name="id">the unique id of the Working Group</param>
     /// <param name="updateModel">the model containing the updated values for the Working Group </param>
-    public async Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel)
+    public async Task<ErrorOr<WorkingGroup>> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel)
     {
         try
         {
@@ -75,7 +75,7 @@ public class WorkingGroupService : IWorkingGroupService
         {
             return Error.Failure(
                 "WorkingGroups.UpdateAsync",
-                $"Failed to update Working Group with ID {id}. Exception: {e.Message}"
+                $"Failed to update Working Group with ID {id}. Exception: {e.Message + e.InnerException}"
             );
         }
     }

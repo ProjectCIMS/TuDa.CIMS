@@ -7,7 +7,7 @@ public interface IWorkingGroupRepository
 {
     Task<WorkingGroup?> GetOneAsync(Guid id);
     Task<IEnumerable<WorkingGroup>> GetAllAsync();
-    Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel);
+    Task<ErrorOr<WorkingGroup>> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel);
     Task<ErrorOr<Deleted>> RemoveAsync(Guid id);
 
     Task<ErrorOr<WorkingGroup>> CreateAsync(CreateWorkingGroupDto createModel);

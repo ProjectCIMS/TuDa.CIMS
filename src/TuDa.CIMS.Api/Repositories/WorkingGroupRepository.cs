@@ -47,13 +47,11 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// </summary>
     /// <param name="id">the specific id of the Working Group</param>
     /// <param name="updateModel">the model containing the updated values for the Working Group </param>
-    public async Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel)
+    public async Task<ErrorOr<WorkingGroup>> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel)
     {
         var existingItem = await _context
             .WorkingGroups.Where(i => i.Id == id)
             .Include(workingGroup => workingGroup.Professor)
-            .Include(workingGroup => workingGroup.Students)
-            .Include(workingGroup => workingGroup.Purchases)
             .SingleOrDefaultAsync();
 
         if (existingItem is null)
@@ -64,11 +62,13 @@ public class WorkingGroupRepository : IWorkingGroupRepository
             );
         }
 
-        existingItem.Professor = updateModel.Professor ?? existingItem.Professor;
+        existingItem.Professor.Name = updateModel.Professor!.Name ?? existingItem.Professor.Name;
+        existingItem.Professor.FirstName =
+            updateModel.Professor.FirstName ?? existingItem.Professor.FirstName;
         existingItem.PhoneNumber = updateModel.PhoneNumber ?? existingItem.PhoneNumber;
 
         await _context.SaveChangesAsync();
-        return Result.Updated;
+        return existingItem;
     }
 
     /// <summary>
@@ -78,7 +78,12 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// <returns></returns>
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id)
     {
-        var itemToRemove = await _context.WorkingGroups.SingleOrDefaultAsync(i => i.Id == id);
+        var itemToRemove = await _context
+            .WorkingGroups.Where(i => i.Id == id)
+            .Include(workingGroup => workingGroup.Professor)
+            .Include(workingGroup => workingGroup.Students)
+            .Include(workingGroup => workingGroup.Purchases)
+            .SingleOrDefaultAsync();
 
         if (itemToRemove is null)
         {
@@ -107,7 +112,6 @@ public class WorkingGroupRepository : IWorkingGroupRepository
             // If the professor doesn't exist, create a new one
             professor = new Professor
             {
-                Id = createModel.Professor.Id,
                 Name = createModel.Professor.Name,
                 FirstName = createModel.Professor.FirstName,
             };

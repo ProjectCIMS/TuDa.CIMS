@@ -52,7 +52,7 @@ public class WorkingGroupController : ControllerBase
     public async Task<IActionResult> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel)
     {
         return (await _workingGroupService.UpdateAsync(id, updateModel)).Match<IActionResult>(
-            _ => Ok(),
+            value => Ok(value),
             err => BadRequest(err)
         );
     }
