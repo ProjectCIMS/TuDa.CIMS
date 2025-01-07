@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 
-namespace TuDa.CIMS.Web.Components;
+namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 public partial class ShoppingCartSubmitPopupPurchaseList
 {
@@ -10,7 +10,7 @@ public partial class ShoppingCartSubmitPopupPurchaseList
     /// List of purchase entries to be shown.
     /// </summary>
     [Parameter]
-    public required List<PurchaseEntry> PurchaseEntries { get; set; }
+    public required List<PurchaseEntry> PurchaseListEntries { get; set; }
 
     /// <summary>
     /// Returns the amount with the respective price unit of the given purchase entry as a string.
@@ -20,6 +20,6 @@ public partial class ShoppingCartSubmitPopupPurchaseList
         + purchaseEntry.AssetItem switch
         {
             Substance substance => substance.PriceUnit.ToAbbrevation(),
-            _ => " Stück",
+            _ => "Stück",
         };
 }

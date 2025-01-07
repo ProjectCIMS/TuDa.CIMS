@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 
-namespace TuDa.CIMS.Web.Components;
+namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 /// <summary>
 /// Class for the shopping cart footer
