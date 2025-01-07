@@ -1,0 +1,17 @@
+﻿@page "/"
+@using TuDa.CIMS.Shared.Entities
+
+<MudDataGrid T="Purchase" Class="w-25 h-25 rounded-xl" Bordered="true" Items="@Purchases.Take(4)">
+    <Columns>
+        <PropertyColumn Property="x => x.CompletionDate"/>
+        <PropertyColumn Property="x => x.TotalPrice"/>
+        <MudDataGridColumn T="Purchase" Title="Details">
+            <CellTemplate Context="purchase">
+                <MudButton
+                    StartIcon="@Icons.Material.Filled.Info"
+                    OnClick="@(NavigateToPurchase)">
+                </MudButton>
+            </CellTemplate>
+        </MudDataGridColumn>
+    </Columns>
+</MudDataGrid>
