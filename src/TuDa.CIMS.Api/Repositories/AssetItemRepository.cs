@@ -3,6 +3,8 @@ using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Params;
+using TuDa.CIMS.Api.Factories;
 
 namespace TuDa.CIMS.Api.Repositories;
 
@@ -107,6 +109,7 @@ public class AssetItemRepository : IAssetItemRepository
                     $"Given RoomId {updateModel.RoomId} was not found."
                 );
             }
+
             existingItem.Room = room;
         }
 
@@ -115,7 +118,7 @@ public class AssetItemRepository : IAssetItemRepository
     }
 
     /// <summary>
-    ///Removes an AssetItem with the specific id from the database.
+    /// Removes an AssetItem with the specific id from the database.
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id)
@@ -132,90 +135,41 @@ public class AssetItemRepository : IAssetItemRepository
                 $"The asset item with the id {id} was not found."
             );
         }
+
         _context.AssetItems.Remove(itemToRemove);
 
         await _context.SaveChangesAsync();
         return Result.Deleted;
     }
 
-    public async Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel)
+    /// <summary>
+    /// Returns a paginated list of AssetItems.
+    /// </summary>
+    /// <param name="userParams"></param>
+    /// <returns></returns>
+    public async Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(AssetItemPaginationQueryParams queryParams)
     {
-        if (createModel.Room is not null)
+        var query = _context.AssetItems.AsQueryable();
+        return await PaginatedResponseFactory<AssetItem>.CreateAsync(query, queryParams.PageNumber, queryParams.PageSize);
+    }
+    ///Returns a list of matching AssetItem based on the provided name or CAS number.
+    /// </summary>
+    /// <param name="nameOrCas"></param>
+    public async Task<IEnumerable<AssetItem>> SearchAsync(string nameOrCas)
+    {
+        IQueryable<AssetItem> query;
+
+        bool isCas = nameOrCas.All(c => char.IsDigit(c) || c == '-');
+
+        if (isCas)
         {
-            var room = await _context.Rooms.SingleOrDefaultAsync(r => r.Id == createModel.Room.Id);
-            if (room is null)
-            {
-                return Error.NotFound(
-                    "Assetitem.create",
-                    $"Given RoomId {createModel.Room.Id} was not found."
-                );
-            }
+            query = _context.Substances.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%")).Include(s => s.Hazards);
+        }
+        else
+        {
+            query = _context.AssetItems.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
         }
 
-        AssetItem newItem = createModel switch
-        {
-            CreateSolventDto solvent => new Solvent
-            {
-                ItemNumber = createModel.ItemNumber,
-                Name = createModel.Name,
-                Note = createModel.Note,
-                Price = createModel.Price,
-                Shop = createModel.Shop,
-                Room = createModel.Room,
-                Cas = solvent.Cas,
-                Hazards = solvent.Hazards,
-                PriceUnit = solvent.PriceUnit,
-                BindingSize = solvent.BindingSize,
-                Purity = solvent.Purity
-            },
-            CreateChemicalDto chemical => new Chemical
-            {
-                ItemNumber = createModel.ItemNumber,
-                Name = createModel.Name,
-                Note = createModel.Note,
-                Price = createModel.Price,
-                Shop = createModel.Shop,
-                Room = createModel.Room,
-                Cas = chemical.Cas,
-                Hazards = chemical.Hazards,
-                PriceUnit = chemical.PriceUnit,
-                BindingSize = chemical.BindingSize,
-                Purity = chemical.Purity
-            },
-            CreateGasCylinderDto gas => new GasCylinder
-            {
-                ItemNumber = createModel.ItemNumber,
-                Name = createModel.Name,
-                Note = createModel.Note,
-                Price = createModel.Price,
-                Shop = createModel.Shop,
-                Room = createModel.Room,
-                Cas = gas.Cas,
-                Hazards = gas.Hazards,
-                PriceUnit = gas.PriceUnit,
-                Volume = gas.Volume,
-                Pressure = gas.Pressure,
-                Purity = gas.Purity
-            },
-            CreateConsumableDto consumable => new Consumable
-            {
-                ItemNumber = createModel.ItemNumber,
-                Name = createModel.Name,
-                Note = createModel.Note,
-                Price = createModel.Price,
-                Shop = createModel.Shop,
-                Room = createModel.Room,
-                Amount = consumable.Amount,
-                Manufacturer = consumable.Manufacturer,
-                SerialNumber = consumable.SerialNumber
-            },
-            _ => throw new ArgumentException(
-                "Unsupported create model type",
-                nameof(createModel)
-            )
-        };
-        await _context.AssetItems.AddAsync(newItem);
-        await _context.SaveChangesAsync();
-        return Result.Created;
+        return await query.Include(i => i.Room).ToListAsync();
     }
 }

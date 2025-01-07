@@ -1,0 +1,50 @@
+﻿<!-- The Dialog for Amount Input -->
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5">
+            Eingeben der Menge
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <!-- Product View -->
+        <MudGrid>
+            <MudItem xs="12">
+                <MudCard>
+                    <MudCardContent>
+                        <MudGrid>
+                            <!-- Product Name -->
+                            <MudItem xs="12">
+                                <MudText Typo="Typo.subtitle1">@Product.Name</MudText>
+                            </MudItem>
+                            <!-- € per Unit -->
+                            <ShoppingCartPriceView Product="@Product"/>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+            <!-- Amount Input -->
+            <MudItem xs="12">
+                <MudTextField @bind-Value="Amount"
+                              Error="@IsError"
+                              ErrorText="Die Menge muss größer als 0 betragen!"
+                              InputMode="@InputMode.numeric"
+                              InputType="@InputType.Number"
+                              Label="Menge"
+                              T="int"/>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Color="Color.Error"
+                   OnClick="Cancel">
+            Abbrechen
+        </MudButton>
+        <MudButton Color="Color.Success"
+                   OnClick="CheckAndSubmit">
+            Hinzufügen
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+

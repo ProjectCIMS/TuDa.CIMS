@@ -20,12 +20,12 @@ public abstract record Substance : AssetItem
     /// <summary>
     /// The purity of the substance.
     /// </summary>
-    public double Purity { get; set; }
+    public string Purity { get; set; } = string.Empty;
 
     /// <summary>
     /// The unit of measurement for the price of the substance.
     /// </summary>
-    public required PriceUnits PriceUnit { get; set; }
+    public required MeasurementUnits PriceUnit { get; set; }
 
     /// <summary>
     /// A list of hazards associated with the substance.

@@ -1,0 +1,31 @@
+﻿@* Purchase Entry List *@
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MudDataGrid Items="@Purchase.Entries"
+                 FixedHeader="@true"
+                 SortMode="SortMode.None"
+                 Height="60vh"
+                 Hover="@true">
+
+        <Columns>
+            <PropertyColumn Title="Name"
+                            Property="@(entry => entry.AssetItem.Name)"
+                            HeaderClass="col-6"
+                            CellClass="col-6"/>
+            <PropertyColumn Title="Anzahl"
+                            Property="@(entry => entry.Amount)"/>
+            <PropertyColumn Title="Stückpreis"
+                            Property="@(entry => entry.PricePerItem)"
+                            Format="F"/>
+            <PropertyColumn Title="Gesamtpreis"
+                            Property="@(entry => entry.TotalPrice)"
+                            Format="F"/>
+            <TemplateColumn CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudIconButton Size="@Size.Small"
+                                   Icon="@Icons.Material.Outlined.Delete"
+                                   @onclick="@(() => RemoveEntry(context.Item!))"/>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+</MudContainer>

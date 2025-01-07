@@ -51,8 +51,8 @@
     protected string Manufacturer = "";
     protected string SerialNumber = "";
     protected double Price = 0;
-    protected int Amount = 0;
-    protected double Purity = 0;
+    protected int ConsumableAmount = 0;
+    protected string Purity = "";
     protected double BindingSize = 0;
 
     /// <summary>
@@ -74,8 +74,8 @@
         Price = 0,
         Hazards = new List<Hazard>(),
         Cas = "",
-        Purity = 0,
-        PriceUnit = PriceUnits.PerPiece,
+        Purity = "",
+        PriceUnit = MeasurementUnits.Piece,
         BindingSize = 0
     };
 
@@ -136,7 +136,7 @@
             _createdConsumableItem.Manufacturer = Manufacturer;
             _createdConsumableItem.SerialNumber = SerialNumber;
             _createdConsumableItem.Price = Price;
-            _createdConsumableItem.Amount = Amount;
+            _createdConsumableItem.Amount = ConsumableAmount;
         }
 
         ResetInputs();
@@ -152,11 +152,11 @@
         ItemNumber = string.Empty;
         Note = string.Empty;
         Cas = string.Empty;
-        Purity = 0;
+        Purity = "";
         Manufacturer = string.Empty;
         SerialNumber = string.Empty;
         Price = 0;
-        Amount = 0;
+        ConsumableAmount = 0;
         BindingSize = 0;
     }
 
