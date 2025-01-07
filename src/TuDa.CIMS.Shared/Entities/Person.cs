@@ -24,6 +24,6 @@ public abstract record Person : BaseEntity
     /// <summary>
     /// The gender of the person.
     /// </summary>
-    public required Gender Salutation { get; set; }
+    public Gender Salutation { get; set; } = Gender.Divers;
 }
 
