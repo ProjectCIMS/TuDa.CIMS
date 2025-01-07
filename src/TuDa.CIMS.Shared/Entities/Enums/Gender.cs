@@ -3,5 +3,6 @@
 public enum Gender
 {
     Herr,
-    Frau
+    Frau,
+    Divers
 }
