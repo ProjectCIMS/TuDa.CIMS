@@ -28,19 +28,7 @@ public partial class ShoppingCartSubmitPopup
     /// <summary>
     /// The selected working group.
     /// </summary>
-    private WorkingGroup WorkingGroup { get; set; } = new ()
-    {
-        Professor = new Professor
-        {
-            Name = "Mustermann",
-            FirstName = "Max"
-        },
-        Students = new()
-        {
-            new Student { Name = "Alice" },
-            new Student { Name = "Bob" }
-        }
-    };
+    public WorkingGroup? WorkingGroup { get; set; } = null;
 
     /// <summary>
     /// The selected buyer.

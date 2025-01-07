@@ -47,7 +47,10 @@ public partial class ShoppingCartPage
                 "WorkingGroups",
                 new List<WorkingGroup>()
                 {
-                    new() { Professor = new Professor { Name = "Heiter" } },
+                    new() { Professor = new Professor { Name = "Heiter" }, Students = [new Student()
+                    {
+                        Name = "test"
+                    }]},
                     new() { Professor = new Professor { Name = "Kaiser" } },
                 }
             },
