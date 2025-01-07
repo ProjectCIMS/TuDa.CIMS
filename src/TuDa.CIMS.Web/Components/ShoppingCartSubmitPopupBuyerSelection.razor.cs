@@ -10,7 +10,7 @@ public partial class ShoppingCartSubmitPopupBuyerSelection : ComponentBase
     /// CascadingParameter for working group.
     /// </summary>
     [Parameter]
-    public  WorkingGroup? WorkingGroup { get; set; }
+    public WorkingGroup? WorkingGroup { get; set; }
 
     [Parameter]
     public required Person Buyer { get; set; }
@@ -18,19 +18,25 @@ public partial class ShoppingCartSubmitPopupBuyerSelection : ComponentBase
     /// <summary>
     /// Search for the selection of the student.
     /// </summary>
-    private Task<IEnumerable<Person>> Search(
-        string searchText,
-        CancellationToken cancellationToken
-    )
+    private async Task<IEnumerable<Person>> Search(string searchText, CancellationToken cancellationToken)
     {
-        if (WorkingGroup != null)
+        if (WorkingGroup == null)
         {
-            var result = WorkingGroup.Students
-                .Where(s => (EF.Functions.Like(s.Name.ToLower(), $"{searchText.ToLower()}%")) || (EF.Functions.Like(s.FirstName.ToLower(), $"{searchText.ToLower()}%")) )
-                .Cast<Person>();
-            return Task.FromResult(result);
+            return [];
         }
-        return Task.FromResult(Enumerable.Empty<Person>());
+
+        var result = new List<Person>();
+        result.AddRange(
+            WorkingGroup.Students.Where(s =>
+                string.IsNullOrWhiteSpace(searchText)
+                || s.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+            )
+        );
+        if (WorkingGroup.Professor.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+        {
+            result.Add(WorkingGroup.Professor);
+        }
+        return result;
     }
 
     /// <summary>
@@ -43,4 +49,3 @@ public partial class ShoppingCartSubmitPopupBuyerSelection : ComponentBase
             _ => $"{buyer.Name} {buyer.FirstName}",
         };
 }
-
