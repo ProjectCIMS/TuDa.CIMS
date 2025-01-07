@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Shared.Entities;
 
@@ -18,11 +19,11 @@ public partial class ShoppingCartSubmitPopupBuyerSelection : ComponentBase
     /// <summary>
     /// Search for the selection of the student.
     /// </summary>
-    private async Task<IEnumerable<Person>> Search(string searchText, CancellationToken cancellationToken)
+    private Task<IEnumerable<Person>> Search(string searchText, CancellationToken cancellationToken)
     {
         if (WorkingGroup == null)
         {
-            return [];
+            return Task.FromResult<IEnumerable<Person>>([]);
         }
 
         var result = new List<Person>();
@@ -36,7 +37,7 @@ public partial class ShoppingCartSubmitPopupBuyerSelection : ComponentBase
         {
             result.Add(WorkingGroup.Professor);
         }
-        return result;
+        return Task.FromResult<IEnumerable<Person>>(result);
     }
 
     /// <summary>
