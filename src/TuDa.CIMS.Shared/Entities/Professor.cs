@@ -10,7 +10,17 @@ public record Professor : Person
     /// <summary>
     /// The address of the professor.
     /// </summary>
-    public string Address { get; set; } = string.Empty;
+    public string StreetAndNumber { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The zip code of the city.
+    /// </summary>
+    public int? ZipCode { get; set; } = null;
+
+    /// <summary>
+    /// The city of the professors address.
+    /// </summary>
+    public string City { get; set; } = string.Empty;
 
     /// <summary>
     /// The phone number of the professor.
