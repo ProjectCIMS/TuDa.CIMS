@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 
-namespace TuDa.CIMS.Web.Components;
+namespace TuDa.CIMS.Web.Components.Dashboard;
 
 public partial class AssetList
 {
@@ -24,8 +24,8 @@ public partial class AssetList
             Shop = "Eisladen",
             Note = "Temperatur: -78,5\u00b0 C",
             Cas = "124-38-9",
-            Purity = 0.8,
-            PriceUnit = PriceUnits.PerKilo,
+            Purity = "0.8",
+            PriceUnit = MeasurementUnits.KiloGram,
             Hazards =
             [
                 new Hazard
@@ -48,8 +48,8 @@ public partial class AssetList
             Shop = "Taverne",
             Note = "AKA Alkohol",
             Cas = "64-17-5",
-            Purity = 1.33,
-            PriceUnit = PriceUnits.PerLiter,
+            Purity = "1.33",
+            PriceUnit = MeasurementUnits.Liter,
             Hazards =
             [
                 new Hazard
@@ -71,8 +71,8 @@ public partial class AssetList
             Shop = "ALDI",
             Note = "Feststoff",
             Cas = "1310-73-2",
-            Purity = 0.5,
-            PriceUnit = PriceUnits.PerPiece,
+            Purity = "0.5",
+            PriceUnit = MeasurementUnits.Piece,
             Hazards =
             [
                 new Hazard
@@ -125,11 +125,11 @@ public partial class AssetList
     /// <summary>
     /// Returns the purity of the item.
     /// </summary>
-    private static double GetPurity(AssetItem assetItem) =>
+    private static string GetPurity(AssetItem assetItem) =>
         assetItem switch
         {
             Substance substance => substance.Purity,
-            _ => 0,
+            _ => "-",
         };
 
     /// <summary>

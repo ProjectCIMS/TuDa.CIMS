@@ -2,7 +2,7 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h5">
-            Amount Input
+            Eingeben der Menge
         </MudText>
     </TitleContent>
     <DialogContent>
@@ -26,10 +26,10 @@
             <MudItem xs="12">
                 <MudTextField @bind-Value="Amount"
                               Error="@IsError"
-                              ErrorText="Amount must be a positive number"
+                              ErrorText="Die Menge muss größer als 0 betragen!"
                               InputMode="@InputMode.numeric"
                               InputType="@InputType.Number"
-                              Label="Amount"
+                              Label="Menge"
                               T="int"/>
             </MudItem>
         </MudGrid>
@@ -38,11 +38,11 @@
     <DialogActions>
         <MudButton Color="Color.Error"
                    OnClick="Cancel">
-            Cancel
+            Abbrechen
         </MudButton>
         <MudButton Color="Color.Success"
                    OnClick="CheckAndSubmit">
-            Add
+            Hinzufügen
         </MudButton>
     </DialogActions>
 </MudDialog>
