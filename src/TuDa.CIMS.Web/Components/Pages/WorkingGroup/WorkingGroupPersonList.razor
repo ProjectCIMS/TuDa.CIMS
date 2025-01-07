@@ -1,29 +1,35 @@
 ﻿@page "/"
 
-<MudContainer MaxWidth="MaxWidth.Small">
+<MudContainer MaxWidth="MaxWidth.Small" Class="bg-white">
     <MudDataGrid Items="@Persons"
                  FixedHeader="@true"
                  SortMode="SortMode.None"
                  Hover="@true">
         <Columns>
+            @*
+            <PropertyColumn
+                Property="@(p => p.Salutation)"
+                Title="Anrede"/>
+            *@
             <PropertyColumn
                 Property="@(p => p.FirstName)"
                 Title="Vorname"/>
             <PropertyColumn
                 Property="@(p => p.Name)"
                 Title="Nachname"/>
-            <PropertyColumn
-                Property="@(p => p.)"
-                Title="E-Mail"/>
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
                     <MudIconButton Size="@Size.Small"
-                                   Icon="@Icons.Material.Outlined.Delete"
-                                   @onclick="@()"/>
+                                   Icon="@Icons.Material.Outlined.Edit"
+                                   @onclick="@(EditBuyer)"/>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
+    <div Class="d-flex justify-content-end">
+    <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@RemoveBuyer">Löschen</MudButton>
+    <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="@AddBuyer">Hinzufügen</MudButton>
+    </div>
 </MudContainer>
 
 
