@@ -18,7 +18,7 @@ public class CreateSubstanceDto:CreateAssetItemDto
     /// <summary>
     /// The price unit of the item.
     /// </summary>
-    public PriceUnits PriceUnit { get; set; }
+    public MeasurementUnits PriceUnit { get; set; }
 
     /// <summary>
     /// A list of hazards associated with the chemical.
