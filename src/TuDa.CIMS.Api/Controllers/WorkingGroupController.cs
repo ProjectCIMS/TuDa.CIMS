@@ -38,7 +38,7 @@ public class WorkingGroupController : ControllerBase
     public async Task<IActionResult> GetOneAsync(Guid id)
     {
         return (await _workingGroupService.GetOneAsync(id)).Match<IActionResult>(
-            value => Ok(JsonSerializer.Serialize(value)),
+            value => Ok(value),
             err => BadRequest(err)
         );
     }
