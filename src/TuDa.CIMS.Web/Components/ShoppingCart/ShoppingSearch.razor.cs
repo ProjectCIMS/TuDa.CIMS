@@ -3,7 +3,7 @@ using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
 
-namespace TuDa.CIMS.Web.Components;
+namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 /// <summary>
 ///Represents a component that allows users to search for and select an <see cref="AssetItem"/> on the ShoppingCart Page.

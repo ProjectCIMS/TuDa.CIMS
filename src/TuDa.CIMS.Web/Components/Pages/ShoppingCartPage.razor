@@ -1,0 +1,22 @@
+﻿@page "/shop"
+@using TuDa.CIMS.Web.Components.ShoppingCart
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudGrid>
+        <!-- Shopping Search Bar -->
+        <MudItem xs="12" sm="12" md="12" Class="mt-4">
+            <ShoppingSearch AssetItemSelected="OpenDialogAsync"/>
+        </MudItem>
+
+        <!-- Purchase Entry List -->
+        <MudItem xs="12" sm="12" md="12">
+            <PurchaseEntryList Purchase="@Purchase" AssetItemDeleted="@(_ => StateHasChanged())"/>
+        </MudItem>
+
+        <!-- Shopping Cart Footer  -->
+        <MudItem xs="12" sm="12" md="12">
+            <ShoppingCartFooter Purchase="@Purchase" OnCheckout="OpenSubmitDialogAsync"/>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
