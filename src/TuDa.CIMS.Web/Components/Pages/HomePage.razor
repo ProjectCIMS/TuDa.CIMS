@@ -4,6 +4,7 @@
 
     protected override void OnInitialized()
     {
+        // This will automatically navigate the user to the assetList if the homepage is entered
         _navigationManager.NavigateTo("asset-list", replace: true);
     }
 }

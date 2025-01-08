@@ -34,7 +34,7 @@
                         Title="Raum"/>
         <PropertyColumn Property="@(x => GetPriceText(x))"
                         Title="Preis"/>
-        <TemplateColumn CellClass="d-flex justify-end">
+        <TemplateColumn>
             <CellTemplate>
                 <MudIconButton Size="@Size.Small"
                                Icon="@Icons.Material.Outlined.Edit"
@@ -43,7 +43,7 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="AssetItem"/>
+        <MudDataGridPager RowsPerPageString="Produkte pro Seite:" T="AssetItem"/>
     </PagerContent>
 </MudDataGrid>
 
