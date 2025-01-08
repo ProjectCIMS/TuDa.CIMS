@@ -2,7 +2,8 @@
 
 public enum Gender
 {
-    Herr,
-    Frau,
-    Divers
+    Male,
+    Female,
+    Divers,
+    Unknown
 }
