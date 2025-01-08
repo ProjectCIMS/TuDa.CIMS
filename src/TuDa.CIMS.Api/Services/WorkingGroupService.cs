@@ -1,9 +1,11 @@
 ﻿using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Services;
 
+[ScopedService]
 public class WorkingGroupService : IWorkingGroupService
 {
     private readonly IWorkingGroupRepository _workingGroupRepository;

@@ -82,7 +82,7 @@ public class WorkingGroupController : ControllerBase
     public async Task<IActionResult> CreateAsync(CreateWorkingGroupDto createModel)
     {
         return (await _workingGroupService.CreateAsync(createModel)).Match<IActionResult>(
-            _ => Ok(),
+            value => Ok(value),
             err => BadRequest(err)
         );
     }
