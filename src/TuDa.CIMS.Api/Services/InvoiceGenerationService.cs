@@ -1,10 +1,12 @@
 ﻿using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Api.Models;
+using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Models;
 
 namespace TuDa.CIMS.Api.Services;
 
+[ScopedService]
 public class InvoiceGenerationService : IInvoiceGenerationService
 {
     private readonly IInvoiceRepository _invoiceRepository;
