@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Web.Components;
