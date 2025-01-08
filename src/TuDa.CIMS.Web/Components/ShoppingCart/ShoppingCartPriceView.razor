@@ -9,6 +9,7 @@
 </MudItem>
 
 @code {
+
     // Product to be shown in Dialog.
     [Parameter] public required AssetItem Product { get; set; }
 
@@ -19,13 +20,7 @@
     /// <returns></returns>
     private string PriceText(AssetItem product) => product switch
     {
-        Substance substance => $"{substance.Price}€/" + substance.PriceUnit switch
-        {
-            PriceUnits.PerKilo => "kg",
-            PriceUnits.PerLiter => "l",
-            PriceUnits.PerPiece => "Stück",
-            _ => $"{substance.Price}€ {substance.PriceUnit}"
-        },
+        Substance substance => $"{substance.Price}€/{substance.PriceUnit.ToAbbrevation()}",
         _ => $"{Product.Price}€/Stück"
     };
 

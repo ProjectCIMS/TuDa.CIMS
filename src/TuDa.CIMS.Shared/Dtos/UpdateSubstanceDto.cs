@@ -18,12 +18,12 @@ public abstract record UpdateSubstanceDto : UpdateAssetItemDto
     /// <summary>
     /// The purity of the item.
     /// </summary>
-    public double? Purity { get; set; }
+    public string? Purity { get; set; }
 
     /// <summary>
     /// The price unit of the item.
     /// </summary>
-    public PriceUnits? PriceUnit { get; set; }
+    public MeasurementUnits? PriceUnit { get; set; }
 
     /// <summary>
     /// A list of hazards associated with the chemical.

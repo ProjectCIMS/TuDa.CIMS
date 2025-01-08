@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 
-namespace TuDa.CIMS.Web.Components;
+namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 /// <summary>
 /// Class for the shopping cart footer
 /// </summary>
-/// <param name="dialogService"></param>
-public partial class ShoppingCartFooter() : ComponentBase
+
+public partial class ShoppingCartFooter : ComponentBase
 {
     /// <summary>
     /// Parameter for the purchase
