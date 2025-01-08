@@ -146,7 +146,7 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Person");
+                    b.ToTable("Persons");
 
                     b.HasDiscriminator().HasValue("Person");
 

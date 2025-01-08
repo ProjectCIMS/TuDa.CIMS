@@ -12,8 +12,8 @@ using TuDa.CIMS.Api.Database;
 namespace TuDa.CIMS.Api.Migrations
 {
     [DbContext(typeof(CIMSDbContext))]
-    [Migration("20250108183843_AddWorkingGroupCascadingDelete")]
-    partial class AddWorkingGroupCascadingDelete
+    [Migration("20250108192227_AddWorkingGroupCascadingDeleteAndPerson")]
+    partial class AddWorkingGroupCascadingDeleteAndPerson
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -149,7 +149,7 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Person");
+                    b.ToTable("Persons");
 
                     b.HasDiscriminator().HasValue("Person");
 

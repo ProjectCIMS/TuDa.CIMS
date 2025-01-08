@@ -77,7 +77,7 @@ public class WorkingGroupService : IWorkingGroupService
         {
             return Error.Failure(
                 "WorkingGroups.UpdateAsync",
-                $"Failed to update Working Group with ID {id}. Exception: {e.Message + e.InnerException}"
+                $"Failed to update Working Group with ID {id}. Exception: {e.Message}"
             );
         }
     }
