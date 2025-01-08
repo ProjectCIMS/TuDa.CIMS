@@ -62,9 +62,9 @@ public class WorkingGroupRepository : IWorkingGroupRepository
             );
         }
 
-        existingItem.Professor.Name = updateModel.Professor!.Name ?? existingItem.Professor.Name;
+        existingItem.Professor.Name = updateModel.Professor?.Name ?? existingItem.Professor.Name;
         existingItem.Professor.FirstName =
-            updateModel.Professor.FirstName ?? existingItem.Professor.FirstName;
+            updateModel.Professor?.FirstName ?? existingItem.Professor.FirstName;
         existingItem.PhoneNumber = updateModel.PhoneNumber ?? existingItem.PhoneNumber;
 
         await _context.SaveChangesAsync();
@@ -116,7 +116,6 @@ public class WorkingGroupRepository : IWorkingGroupRepository
                 FirstName = createModel.Professor.FirstName,
             };
             _context.Professors.Add(professor);
-            await _context.SaveChangesAsync();
         }
 
         // Create the WorkingGroup after ensuring all related entities exist
