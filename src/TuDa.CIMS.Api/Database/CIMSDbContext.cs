@@ -41,6 +41,22 @@ public class CIMSDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
+            .Entity<WorkingGroup>()
+            .HasMany(p => p.Purchases)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder
+            .Entity<WorkingGroup>()
+            .HasMany(p => p.Students)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder
+            .Entity<WorkingGroup>()
+            .HasOne(p => p.Professor)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder
             .Entity<Substance>()
             .HasMany(s => s.Hazards)
             .WithMany()

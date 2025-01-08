@@ -80,9 +80,6 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     {
         var itemToRemove = await _context
             .WorkingGroups.Where(i => i.Id == id)
-            .Include(workingGroup => workingGroup.Professor)
-            .Include(workingGroup => workingGroup.Students)
-            .Include(workingGroup => workingGroup.Purchases)
             .SingleOrDefaultAsync();
 
         if (itemToRemove is null)
