@@ -2,10 +2,12 @@
 using QuestPDF.Infrastructure;
 using TuDa.CIMS.Api.Documents;
 using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Models;
 
 namespace TuDa.CIMS.Api.Services;
 
+[ScopedService]
 public class DocumentGenerationService : IDocumentGenerationService
 {
     private readonly IInvoiceGenerationService _invoiceService;
