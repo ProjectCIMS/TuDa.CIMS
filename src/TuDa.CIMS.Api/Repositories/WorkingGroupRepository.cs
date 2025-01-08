@@ -52,6 +52,8 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         var existingItem = await _context
             .WorkingGroups.Where(i => i.Id == id)
             .Include(workingGroup => workingGroup.Professor)
+            .Include(workingGroup => workingGroup.Students)
+            .Include(workingGroup => workingGroup.Purchases)
             .SingleOrDefaultAsync();
 
         if (existingItem is null)
