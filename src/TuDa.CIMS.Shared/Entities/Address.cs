@@ -1,5 +1,4 @@
 ﻿namespace TuDa.CIMS.Shared.Entities;
-
 public class Address
 {
     /// <summary>
@@ -10,7 +9,7 @@ public class Address
     /// <summary>
     /// The number of the street.
     /// </summary>
-    public int Number { get; set; } = 0;
+    public int Number { get; set; }
 
     /// <summary>
     /// The zip code of the city.
