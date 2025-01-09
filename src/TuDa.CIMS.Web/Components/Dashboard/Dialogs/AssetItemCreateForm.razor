@@ -1,0 +1,47 @@
+﻿@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Entities.Enums
+
+@* AssetItemCreateForm *@
+
+
+<!-- Modal Body -->
+<MudChipSet T="Color" @bind-SelectedValue="_selectedColor" CheckMark SelectionMode="@_selectionMode" Class="my-4">
+    <MudChip Text="purple" Color="Color.Primary" Value="@Color.Primary" @onclick="SwitchToChemical">
+        Chemical
+    </MudChip>
+    <MudChip Text="pink" Color="Color.Secondary" Value="@Color.Secondary" @onclick="SwitchToConsumable">
+        Consumable
+    </MudChip>
+    <MudChip Text="blue" Color="Color.Info" Value="@Color.Info" @onclick="SwitchToGasCylinder">
+        Gas Cylinder
+    </MudChip>
+    <MudChip Text="green" Color="Color.Success" Value="@Color.Success" @onclick="SwitchToSolvent">
+        Solvent
+    </MudChip>
+</MudChipSet>
+
+<MudGrid>
+    <MudItem xs="12" md="6">
+        <AssetItemForm/>
+    </MudItem>
+
+    <!-- Which Form to Choose -->
+    <MudItem xs="12" md="6">
+        @switch (_selectedItemType)
+        {
+            case ItemType.Chemical:
+                <ChemicalItemForm/>
+                break;
+            case ItemType.Consumable:
+                <ConsumableItemForm/>
+                break;
+            case ItemType.GasCylinder:
+                <GasCylinderItemForm/>
+                break;
+            case ItemType.Solvent:
+                <ChemicalItemForm/>
+                break;
+        }
+    </MudItem>
+</MudGrid>
+

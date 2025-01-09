@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 
 namespace TuDa.CIMS.Web.Components.Pages;
 

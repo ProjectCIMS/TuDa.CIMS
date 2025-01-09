@@ -1,52 +1,11 @@
-﻿@using TuDa.CIMS.Shared.Entities
-@using TuDa.CIMS.Shared.Entities.Enums
+﻿using MudBlazor;
+using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
-@* AssetItemCreateForm *@
+namespace TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 
-
-<!-- Modal Body -->
-<MudChipSet T="Color" @bind-SelectedValue="SelectedColor" CheckMark SelectionMode="@SelectionMode" Class="my-4">
-    <MudChip Text="purple" Color="Color.Primary" Value="@Color.Primary" @onclick="SwitchToChemical">
-        Chemical
-    </MudChip>
-    <MudChip Text="pink" Color="Color.Secondary" Value="@Color.Secondary" @onclick="SwitchToConsumable">
-        Consumable
-    </MudChip>
-    <MudChip Text="blue" Color="Color.Info" Value="@Color.Info" @onclick="SwitchToGasCylinder">
-        Gas Cylinder
-    </MudChip>
-    <MudChip Text="green" Color="Color.Success" Value="@Color.Success" @onclick="SwitchToSolvent">
-        Solvent
-    </MudChip>
-</MudChipSet>
-
-<MudGrid>
-    <MudItem xs="12" md="6">
-        <AssetItemForm/>
-    </MudItem>
-
-    <!-- Which Form to Choose -->
-    <MudItem xs="12" md="6">
-        @switch (_selectedItemType)
-        {
-            case ItemType.Chemical:
-                <ChemicalItemForm/>
-                break;
-            case ItemType.Consumable:
-                <ConsumableItemForm/>
-                break;
-            case ItemType.GasCylinder:
-                <GasCylinderItemForm/>
-                break;
-            case ItemType.Solvent:
-                <ChemicalItemForm/>
-                break;
-        }
-    </MudItem>
-</MudGrid>
-
-
-@code {
+public partial class AssetItemCreateForm
+{
     /// <summary>
     /// To choose from the different forms for inputting
     /// </summary>
@@ -60,11 +19,11 @@
         Chemical,
         Consumable,
         GasCylinder,
-        Solvent
+        Solvent,
     }
 
-    public SelectionMode SelectionMode = SelectionMode.SingleSelection;
-    public Color SelectedColor;
+    private SelectionMode _selectionMode = SelectionMode.SingleSelection;
+    private Color _selectedColor;
 
     /// <summary>
     /// Temporary Values to bind when inputting
@@ -82,7 +41,6 @@
     protected double BindingSize = 0;
     protected double Volume = 0;
     protected double Pressure = 0;
-
 
     /// <summary>
     /// Method to switch to a Substance
@@ -104,6 +62,7 @@
     {
         _selectedItemType = ItemType.GasCylinder;
     }
+
     private void SwitchToSolvent()
     {
         _selectedItemType = ItemType.Solvent;
@@ -125,22 +84,22 @@
         Cas = "",
         Purity = "",
         PriceUnit = MeasurementUnits.Piece,
-        BindingSize = 0
+        BindingSize = 0,
     };
 
     private Consumable _createdConsumableItem = new Consumable()
-        {
-            Name = "",
-            Shop = "",
-            ItemNumber = "",
-            Note = "",
-            Id = Guid.NewGuid(),
-            Room = new Room() { Name = "", Id = Guid.NewGuid() },
-            Price = 0,
-            Manufacturer = "",
-            SerialNumber = "",
-            Amount = 0
-        };
+    {
+        Name = "",
+        Shop = "",
+        ItemNumber = "",
+        Note = "",
+        Id = Guid.NewGuid(),
+        Room = new Room() { Name = "", Id = Guid.NewGuid() },
+        Price = 0,
+        Manufacturer = "",
+        SerialNumber = "",
+        Amount = 0,
+    };
 
     private GasCylinder _createdGasCylinder = new GasCylinder()
     {
@@ -156,7 +115,7 @@
         Purity = "",
         PriceUnit = MeasurementUnits.Piece,
         Volume = 0,
-        Pressure = 0
+        Pressure = 0,
     };
 
     private Solvent _createdSolventItem = new Solvent()
@@ -172,9 +131,8 @@
         Cas = "",
         Purity = "",
         PriceUnit = MeasurementUnits.Piece,
-        BindingSize = 0
+        BindingSize = 0,
     };
-
 
     /// <summary>
     /// Functionality of the Save Button: Bind the Values to the actual Item
@@ -191,7 +149,8 @@
                 _createdChemicalItem.Cas = Cas;
                 _createdChemicalItem.Price = Price;
                 _createdChemicalItem.Purity = Purity;
-                break;;
+                break;
+                ;
 
             case ItemType.Consumable:
                 _createdConsumableItem.Name = Name;
@@ -202,7 +161,8 @@
                 _createdConsumableItem.SerialNumber = SerialNumber;
                 _createdConsumableItem.Price = Price;
                 _createdConsumableItem.Amount = ConsumableAmount;
-                break;;
+                break;
+                ;
 
             case ItemType.GasCylinder:
                 _createdGasCylinder.Name = Name;
@@ -224,8 +184,8 @@
                 _createdSolventItem.Cas = Cas;
                 _createdSolventItem.Price = Price;
                 _createdSolventItem.Purity = Purity;
-                break;;
+                break;
+                ;
         }
     }
-
 }
