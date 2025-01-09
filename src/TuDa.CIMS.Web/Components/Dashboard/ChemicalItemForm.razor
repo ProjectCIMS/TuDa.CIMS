@@ -2,7 +2,7 @@
 @* Substance Item Form *@
 
 
-
+<MudForm>
     <MudTextField @bind-Value="Cas"
                   Label="CAS"
                   Placeholder="Enter CAS"
@@ -21,3 +21,22 @@
                      Variant="Variant.Filled"
                      FullWidth/>
 
+    <MudButton Color="Color.Primary"
+               Class="mt-3"
+               @onclick="ResetChemicalInputs">
+        Clear
+    </MudButton>
+</MudForm>
+
+@code
+{
+    /// <summary>
+    /// Resets the Input lines
+    /// </summary>
+    protected void ResetChemicalInputs()
+    {
+        Cas = string.Empty;
+        Purity = "";
+        BindingSize = 0;
+    }
+}

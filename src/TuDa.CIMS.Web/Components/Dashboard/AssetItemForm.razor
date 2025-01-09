@@ -7,33 +7,32 @@
                   Label="Name"
                   Placeholder="Enter Name"
                   Variant="Variant.Filled"
-                  FullWidth />
+                  FullWidth/>
 
     <MudTextField @bind-Value="Shop"
                   Label="Shop"
                   Placeholder="Enter Shop"
                   Variant="Variant.Filled"
-                  FullWidth />
+                  FullWidth/>
 
     <MudTextField @bind-Value="ItemNumber"
                   Label="Item Number"
                   Placeholder="Enter Item Number"
                   Variant="Variant.Filled"
-                  FullWidth />
+                  FullWidth/>
 
     <MudTextField @bind-Value="Note"
                   Label="Notes"
                   Placeholder="Enter Notes"
                   Variant="Variant.Filled"
-                  FullWidth />
+                  FullWidth/>
 
     <MudTextField @bind-Value="Price"
                   Label="Price"
                   Placeholder="Enter Price"
                   Variant="Variant.Filled"
                   InputType="InputType.Number"
-                  FullWidth />
-
+                  FullWidth/>
     <MudButton Color="Color.Primary"
                Class="mt-3"
                @onclick="ResetInputs">
@@ -41,12 +40,14 @@
     </MudButton>
 </MudForm>
 
+
+
 @code
 {
     /// <summary>
-    /// Resets the Input lines of the left Column
+    /// Resets the Input lines
     /// </summary>
-    private void ResetInputs()
+    protected void ResetInputs()
     {
         Name = string.Empty;
         Shop = string.Empty;
