@@ -5,14 +5,14 @@
 
 
     <!-- Modal Body -->
-        <MudButtonGroup>
-            <MudButton Color="Color.Primary" @onclick="SwitchToChemical">
+        <MudChipSet T="Color" @bind-SelectedValue="SelectedColor" CheckMark SelectionMode="@SelectionMode" Class="my-4">
+            <MudChip Text="purple" Color="Color.Primary" Value="@Color.Primary" @onclick="SwitchToChemical">
                 Chemical
-            </MudButton>
-            <MudButton Color="Color.Primary" @onclick="SwitchToConsumable">
+            </MudChip>
+            <MudChip Text="pink" Color="Color.Secondary" Value="@Color.Secondary" @onclick="SwitchToConsumable">
                 Consumable
-            </MudButton>
-        </MudButtonGroup>
+            </MudChip>
+        </MudChipSet>
 
         <MudGrid>
             <MudItem xs="12" md="6">
@@ -33,13 +33,14 @@
         </MudGrid>
 
 
-@code {
+    @code {
+        public SelectionMode SelectionMode = SelectionMode.SingleSelection;
+        public Color SelectedColor;
 
     /// <summary>
     /// Temporary Values to bind when inputting
     /// </summary>
     protected string Name = "";
-
     protected string Shop = "";
     protected string ItemNumber = "";
     protected string Note = "";
@@ -134,27 +135,6 @@
             _createdConsumableItem.Price = Price;
             _createdConsumableItem.Amount = ConsumableAmount;
         }
-
-        ResetInputs();
     }
-
-    /// <summary>
-    /// Resets the Input lines
-    /// </summary>
-    private void ResetInputs()
-    {
-        Name = string.Empty;
-        Shop = string.Empty;
-        ItemNumber = string.Empty;
-        Note = string.Empty;
-        Cas = string.Empty;
-        Purity = "";
-        Manufacturer = string.Empty;
-        SerialNumber = string.Empty;
-        Price = 0;
-        ConsumableAmount = 0;
-        BindingSize = 0;
-    }
-
 
 }
