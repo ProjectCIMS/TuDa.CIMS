@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
 
-namespace TuDa.CIMS.Web.Components.Pages.WorkingGroup;
+namespace TuDa.CIMS.Web.Components.WorkingGroup;
 
 public partial class WorkingGroupPurchaseList : ComponentBase
 {

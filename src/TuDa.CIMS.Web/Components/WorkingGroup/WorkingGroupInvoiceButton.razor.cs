@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace TuDa.CIMS.Web.Components.Pages.WorkingGroup;
+namespace TuDa.CIMS.Web.Components.WorkingGroup;
 
 public partial class WorkingGroupInvoiceButton : ComponentBase
 {

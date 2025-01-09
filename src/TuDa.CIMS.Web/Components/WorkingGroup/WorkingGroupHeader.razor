@@ -1,11 +1,9 @@
-﻿@page "/2"
+﻿@page "/{workingGroupId}"
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex justify-content-between align-center p-3 rounded-xl white">
     @Professor
-    <MudIconButton Icon="@Icons.Material.Filled.Edit" Disabled="true"></MudIconButton>
+    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="EditProfessor" Disabled="true"></MudIconButton>
     <MudButton Class="align-items-end" Variant="Variant.Outlined">
         Deaktivieren
     </MudButton>
 </MudContainer>
-
-
