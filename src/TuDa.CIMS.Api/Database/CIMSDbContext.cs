@@ -36,7 +36,9 @@ public class CIMSDbContext : DbContext
     public DbSet<ConsumableTransaction> ConsumableTransactions { get; set; }
 
     public CIMSDbContext(DbContextOptions<CIMSDbContext> options)
-        : base(options) { }
+        : base(options)
+    {
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -61,5 +63,18 @@ public class CIMSDbContext : DbContext
                     j.HasKey("SubstanceId", "HazardId"); // Composite primary key
                 }
             );
+
+        modelBuilder.Entity<Professor>(entity =>
+        {
+            entity.OwnsOne(p => p.Address, address =>
+            {
+                address.Property(a => a.Street);
+                address.Property(a => a.Number);
+                address.Property(a => a.ZipCode);
+                address.Property(a => a.City);
+
+                address.ToTable("Professors");
+            });
+        });
     }
 }
