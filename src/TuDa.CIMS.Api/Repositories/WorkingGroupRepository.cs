@@ -21,7 +21,6 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// Returns an existing Working Group with the specific id.
     /// </summary>
     /// <param name="id">the specific id of the Working Group</param>
-    /// <returns></returns>
     public async Task<WorkingGroup?> GetOneAsync(Guid id)
     {
         return await _context
@@ -49,6 +48,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// </summary>
     /// <param name="id">the specific id of the Working Group</param>
     /// <param name="updateModel">the model containing the updated values for the Working Group </param>
+    /// <returns>Returns an Error or the updated Working Group</returns>
     public async Task<ErrorOr<WorkingGroup>> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel)
     {
         var existingItem = await _context
@@ -79,7 +79,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// Removes a Working Group with the specific id from the database.
     /// </summary>
     /// <param name="id">the specific id of the Working Group</param>
-    /// <returns></returns>
+    /// <returns>Returns that the Working Group was successfully deleted</returns>
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id)
     {
         var itemToRemove = await _context
@@ -103,8 +103,8 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// <summary>
     /// Creates a Working Group and adds it to the database.
     /// </summary>
-    /// <param name="createModel">The model containing the  values for the newly created Working Group</param>
-    /// <returns></returns>
+    /// <param name="createModel">The model containing the values for the newly created Working Group</param>
+    /// <returns>Returns an Error or the created Working Group</returns>
     public async Task<ErrorOr<WorkingGroup>> CreateAsync(CreateWorkingGroupDto createModel)
     {
         var professor = await _context.Professors.FindAsync(createModel.Professor.Id);

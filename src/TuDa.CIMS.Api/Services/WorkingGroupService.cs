@@ -107,7 +107,6 @@ public class WorkingGroupService : IWorkingGroupService
     /// or the result of the <see cref="CreateAsync"/> functionality if successful
     /// </summary>
     /// <param name="createModel">the model containing the values for the newly created Working Group</param>
-    /// <returns></returns>
     public async Task<ErrorOr<WorkingGroup>> CreateAsync(CreateWorkingGroupDto createModel)
     {
         try

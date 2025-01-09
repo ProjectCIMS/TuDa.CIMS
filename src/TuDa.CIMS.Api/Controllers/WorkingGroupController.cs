@@ -44,7 +44,8 @@ public class WorkingGroupController : ControllerBase
 
     /// <summary>
     /// Updates an existing Working Group by its ID using the provided update model.
-    /// If the update is successful, returns a 200 OK response. If an error occurs during the update, an appropriate error response is returned.
+    /// If the update is successful, returns a 200 OK response and the Working Group.
+    /// If an error occurs during the update, an appropriate error response is returned.
     /// </summary>
     /// <param name="id">the unique id of the Working Group</param>
     /// <param name="updateModel">the model containing the updated values for the Working Group </param>
@@ -74,7 +75,7 @@ public class WorkingGroupController : ControllerBase
 
     /// <summary>
     /// Creates a new Working Group using the provided create model.
-    /// If the removal is successful, returns a 201 Created response and the Working Group.
+    /// If the removal is successful, returns a 200 OK response and the Working Group.
     /// If an error occurs during the deletion, an appropriate error response is returned.
     /// </summary>
     /// <param name="createModel">the model containing the data for the new Working Group</param>
