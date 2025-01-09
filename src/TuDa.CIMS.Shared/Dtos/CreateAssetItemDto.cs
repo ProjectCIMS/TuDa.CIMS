@@ -23,7 +23,7 @@ public class CreateAssetItemDto
     /// <summary>
     /// The room in which the item is located.
     /// </summary>
-    public required Room Room { get; set; }
+    public required Guid RoomId { get; set; }
 
     /// <summary>
     /// The item number of the item.

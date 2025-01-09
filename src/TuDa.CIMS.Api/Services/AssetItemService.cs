@@ -130,4 +130,19 @@ public class AssetItemService : IAssetItemService
             );
         }
     }
+
+    public async Task<ErrorOr<Created>> CreateAsync( CreateAssetItemDto createModel)
+    {
+        try
+        {
+            return await _assetItemRepository.CreateAsync (createModel);
+        }
+        catch (Exception e)
+        {
+            return Error.Failure(
+                "AssetItem.CreateAsync",
+                $"Failed to create AssetItem. Exception: {e.Message}"
+            );
+        }
+    }
 }

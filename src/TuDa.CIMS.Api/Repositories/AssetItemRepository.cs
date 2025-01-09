@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api.Database;
+using TuDa.CIMS.Api.Factories;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Params;
-using TuDa.CIMS.Api.Factories;
 
 namespace TuDa.CIMS.Api.Repositories;
 
@@ -147,11 +147,18 @@ public class AssetItemRepository : IAssetItemRepository
     /// </summary>
     /// <param name="userParams"></param>
     /// <returns></returns>
-    public async Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(AssetItemPaginationQueryParams queryParams)
+    public async Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(
+        AssetItemPaginationQueryParams queryParams
+    )
     {
         var query = _context.AssetItems.AsQueryable();
-        return await PaginatedResponseFactory<AssetItem>.CreateAsync(query, queryParams.PageNumber, queryParams.PageSize);
+        return await PaginatedResponseFactory<AssetItem>.CreateAsync(
+            query,
+            queryParams.PageNumber,
+            queryParams.PageSize
+        );
     }
+
     ///Returns a list of matching AssetItem based on the provided name or CAS number.
     /// </summary>
     /// <param name="nameOrCas"></param>
@@ -163,7 +170,9 @@ public class AssetItemRepository : IAssetItemRepository
 
         if (isCas)
         {
-            query = _context.Substances.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%")).Include(s => s.Hazards);
+            query = _context
+                .Substances.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
+                .Include(s => s.Hazards);
         }
         else
         {
@@ -171,5 +180,136 @@ public class AssetItemRepository : IAssetItemRepository
         }
 
         return await query.Include(i => i.Room).ToListAsync();
+    }
+
+    public async Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel)
+    {
+        var room = await _context.Rooms.SingleOrDefaultAsync(r => r.Id == createModel.RoomId);
+        if (room is null)
+        {
+            return Error.NotFound(
+                "Assetitem.create",
+                $"Given RoomId {createModel.RoomId} was not found."
+            );
+        }
+
+        List<Hazard> hazards = [];
+        switch (createModel)
+        {
+            case CreateSolventDto createSolvent:
+                {
+                    foreach (var hazardId in createSolvent.Hazards)
+                    {
+                        var hazard = await _context.Hazards.SingleOrDefaultAsync(h => h.Id != hazardId);
+                        if (hazard is null)
+                        {
+                            return Error.NotFound(
+                                "Assetitem.create",
+                                $"Given HazardId {hazardId} was not found."
+                            );
+                        }
+                        hazards.Add(hazard);
+                    }
+
+                    break;
+                }
+            case CreateGasCylinderDto createGasCylinder:
+                {
+                    foreach (var hazardId in createGasCylinder.Hazards)
+                    {
+                         var hazard = await _context.Hazards.SingleOrDefaultAsync(h => h.Id != hazardId);
+                        if (hazard is null)
+                        {
+                            return Error.NotFound(
+                                "Assetitem.create",
+                                $"Given HazardId {hazardId} was not found."
+                            );
+                        }
+                        hazards.Add(hazard);
+                    }
+
+                    break;
+                }
+            case CreateChemicalDto createChemical:
+                {
+                    foreach (var hazardId in createChemical.Hazards)
+                    {
+                        var hazard = await _context.Hazards.SingleOrDefaultAsync(h => h.Id != hazardId);
+                        if (hazard is null)
+                        {
+                            return Error.NotFound(
+                                "Assetitem.create",
+                                $"Given HazardId {hazardId} was not found."
+                            );
+                        }
+                        hazards.Add(hazard);
+                    }
+
+                    break;
+                }
+        }
+
+        AssetItem newItem = createModel switch
+        {
+            CreateSolventDto solvent => new Solvent
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = room,
+                Cas = solvent.Cas,
+                Hazards = hazards,
+                PriceUnit = solvent.PriceUnit,
+                BindingSize = solvent.BindingSize,
+                Purity = solvent.Purity,
+            },
+            CreateChemicalDto chemical => new Chemical
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = room,
+                Cas = chemical.Cas,
+                Hazards = hazards,
+                PriceUnit = chemical.PriceUnit,
+                BindingSize = chemical.BindingSize,
+                Purity = chemical.Purity,
+            },
+            CreateGasCylinderDto gas => new GasCylinder
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = room,
+                Cas = gas.Cas,
+                Hazards = hazards,
+                PriceUnit = gas.PriceUnit,
+                Volume = gas.Volume,
+                Pressure = gas.Pressure,
+                Purity = gas.Purity,
+            },
+            CreateConsumableDto consumable => new Consumable
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = room,
+                Amount = consumable.Amount,
+                Manufacturer = consumable.Manufacturer,
+                SerialNumber = consumable.SerialNumber,
+            },
+            _ => throw new ArgumentException("Unsupported create model type", nameof(createModel)),
+        };
+        await _context.AssetItems.AddAsync(newItem);
+        await _context.SaveChangesAsync();
+        return Result.Created;
     }
 }
