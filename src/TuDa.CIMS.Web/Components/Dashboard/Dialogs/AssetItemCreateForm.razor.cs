@@ -1,4 +1,5 @@
-﻿using MudBlazor;
+﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 
@@ -22,8 +23,7 @@ public partial class AssetItemCreateForm
         Solvent,
     }
 
-    private SelectionMode _selectionMode = SelectionMode.SingleSelection;
-    private Color _selectedColor;
+    private readonly SelectionMode _selectionMode = SelectionMode.SingleSelection;
 
     /// <summary>
     /// Temporary Values to bind when inputting
@@ -41,6 +41,8 @@ public partial class AssetItemCreateForm
     protected double BindingSize = 0;
     protected double Volume = 0;
     protected double Pressure = 0;
+    protected Room Room = new Room() { Name = string.Empty };
+    protected MeasurementUnits PriceUnit = MeasurementUnits.Piece;
 
     /// <summary>
     /// Method to switch to a Substance
@@ -69,123 +71,90 @@ public partial class AssetItemCreateForm
     }
 
     /// <summary>
-    /// Items to be created
+    /// Item after clicking "Änderungen speichern" Button
     /// </summary>
-    private Chemical _createdChemicalItem = new Chemical()
-    {
-        Name = "",
-        Shop = "",
-        ItemNumber = "",
-        Note = "",
-        Id = Guid.NewGuid(),
-        Room = new Room() { Name = "", Id = Guid.NewGuid() },
-        Price = 0,
-        Hazards = new List<Hazard>(),
-        Cas = "",
-        Purity = "",
-        PriceUnit = MeasurementUnits.Piece,
-        BindingSize = 0,
-    };
+    protected AssetItem savedItem;
 
-    private Consumable _createdConsumableItem = new Consumable()
-    {
-        Name = "",
-        Shop = "",
-        ItemNumber = "",
-        Note = "",
-        Id = Guid.NewGuid(),
-        Room = new Room() { Name = "", Id = Guid.NewGuid() },
-        Price = 0,
-        Manufacturer = "",
-        SerialNumber = "",
-        Amount = 0,
-    };
+    [Parameter]
+    public EventCallback<AssetItem> OnSaveComplete { get; set; }
 
-    private GasCylinder _createdGasCylinder = new GasCylinder()
+    protected async Task HandleSave()
     {
-        Name = "",
-        Shop = "",
-        ItemNumber = "",
-        Note = "",
-        Id = Guid.NewGuid(),
-        Room = new Room() { Name = "", Id = Guid.NewGuid() },
-        Price = 0,
-        Hazards = new List<Hazard>(),
-        Cas = "",
-        Purity = "",
-        PriceUnit = MeasurementUnits.Piece,
-        Volume = 0,
-        Pressure = 0,
-    };
+        savedItem = SaveChanges();
 
-    private Solvent _createdSolventItem = new Solvent()
-    {
-        Name = "",
-        Shop = "",
-        ItemNumber = "",
-        Note = "",
-        Id = Guid.NewGuid(),
-        Room = new Room() { Name = "", Id = Guid.NewGuid() },
-        Price = 0,
-        Hazards = new List<Hazard>(),
-        Cas = "",
-        Purity = "",
-        PriceUnit = MeasurementUnits.Piece,
-        BindingSize = 0,
-    };
+        if (OnSaveComplete.HasDelegate)
+        {
+            await OnSaveComplete.InvokeAsync(savedItem);
+        }
+    }
 
     /// <summary>
-    /// Functionality of the Save Button: Bind the Values to the actual Item
+    /// Functionality of the "Änderungen speichern" Button: Bind the Values to the actual Item
     /// </summary>
-    protected void SaveChanges()
+    protected AssetItem SaveChanges()
     {
         switch (_selectedItemType)
         {
             case ItemType.Chemical:
-                _createdChemicalItem.Name = Name;
-                _createdChemicalItem.Shop = Shop;
-                _createdChemicalItem.ItemNumber = ItemNumber;
-                _createdChemicalItem.Note = Note;
-                _createdChemicalItem.Cas = Cas;
-                _createdChemicalItem.Price = Price;
-                _createdChemicalItem.Purity = Purity;
-                break;
-                ;
+                return savedItem = new Chemical
+                {
+                    Name = Name,
+                    Shop = Shop,
+                    ItemNumber = ItemNumber,
+                    Note = Note,
+                    Cas = Cas,
+                    Price = Price,
+                    Purity = Purity,
+                    PriceUnit = PriceUnit,
+                    Room = Room,
+                };
 
             case ItemType.Consumable:
-                _createdConsumableItem.Name = Name;
-                _createdConsumableItem.Shop = Shop;
-                _createdConsumableItem.ItemNumber = ItemNumber;
-                _createdConsumableItem.Note = Note;
-                _createdConsumableItem.Manufacturer = Manufacturer;
-                _createdConsumableItem.SerialNumber = SerialNumber;
-                _createdConsumableItem.Price = Price;
-                _createdConsumableItem.Amount = ConsumableAmount;
-                break;
-                ;
+                return savedItem = new Consumable
+                {
+                    Name = Name,
+                    Shop = Shop,
+                    ItemNumber = ItemNumber,
+                    Note = Note,
+                    Manufacturer = Manufacturer,
+                    SerialNumber = SerialNumber,
+                    Price = Price,
+                    Amount = ConsumableAmount,
+                    Room = Room,
+                };
 
             case ItemType.GasCylinder:
-                _createdGasCylinder.Name = Name;
-                _createdGasCylinder.Shop = Shop;
-                _createdGasCylinder.ItemNumber = ItemNumber;
-                _createdGasCylinder.Note = Note;
-                _createdGasCylinder.Cas = Cas;
-                _createdGasCylinder.Purity = Purity;
-                _createdGasCylinder.Price = Price;
-                _createdGasCylinder.Volume = Volume;
-                _createdGasCylinder.Pressure = Pressure;
-                break;
+                return savedItem = new GasCylinder
+                {
+                    Name = Name,
+                    Shop = Shop,
+                    ItemNumber = ItemNumber,
+                    Note = Note,
+                    Cas = Cas,
+                    Purity = Purity,
+                    Price = Price,
+                    Volume = Volume,
+                    Pressure = Pressure,
+                    Room = Room,
+                    PriceUnit = PriceUnit,
+                };
 
             case ItemType.Solvent:
-                _createdSolventItem.Name = Name;
-                _createdSolventItem.Shop = Shop;
-                _createdSolventItem.ItemNumber = ItemNumber;
-                _createdSolventItem.Note = Note;
-                _createdSolventItem.Cas = Cas;
-                _createdSolventItem.Price = Price;
-                _createdSolventItem.Purity = Purity;
-                break;
-                ;
+                return savedItem = new Solvent
+                {
+                    Name = Name,
+                    Shop = Shop,
+                    ItemNumber = ItemNumber,
+                    Note = Note,
+                    Cas = Cas,
+                    Price = Price,
+                    Purity = Purity,
+                    Room = Room,
+                    PriceUnit = PriceUnit,
+                };
+
+            default:
+                return savedItem;
         }
     }
 }

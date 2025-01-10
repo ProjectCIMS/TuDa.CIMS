@@ -1,42 +1,64 @@
-﻿@inherits AssetItemForm
+﻿@using TuDa.CIMS.Shared.Entities.Enums
+@inherits AssetItemForm
 @* Substance Item Form *@
 
 
 <MudForm>
-    <MudTextField @bind-Value="Cas"
+    <MudTextField @bind-Value="FormCas"
                   Label="CAS"
-                  Placeholder="Enter CAS"
+                  Placeholder="CAS eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
-    <MudNumericField @bind-Value="Purity"
-                     Label="Purity"
-                     Placeholder="Enter Purity"
+    <MudTextField @bind-Value="FormPurity"
+                     Label="Reinheit"
+                     Placeholder="Reinheit eingeben"
                      Variant="Variant.Filled"
                      FullWidth/>
 
-    <MudNumericField @bind-Value="BindingSize"
-                     Label="Binding Size"
-                     Placeholder="Enter Binding Size"
+    <MudNumericField @bind-Value="FormBindingSize"
+                     Label="Größe des Gebindes"
+                     Placeholder="Gebindengröße eingeben"
                      Variant="Variant.Filled"
                      FullWidth/>
+
+    <!-- MudSelect for selecting measurement unit -->
+    <MudSelect @bind-Value="FormPriceUnit"
+               Label="Maß auswählen"
+               Variant="Variant.Filled"
+               FullWidth>
+        <MudSelectItem Value="MeasurementUnits.Gram">Gramm</MudSelectItem>
+        <MudSelectItem Value="MeasurementUnits.KiloGram">Kilogramm</MudSelectItem>
+        <MudSelectItem Value="MeasurementUnits.MilliLiter">Milliliter</MudSelectItem>
+        <MudSelectItem Value="MeasurementUnits.Liter">Liter</MudSelectItem>
+        <MudSelectItem Value="MeasurementUnits.Piece">Stück</MudSelectItem>
+    </MudSelect>
 
     <MudButton Color="Color.Primary"
                Class="mt-3"
                @onclick="ResetChemicalInputs">
-        Clear
+        Leeren
     </MudButton>
 </MudForm>
 
 @code
 {
+    [Parameter] public MeasurementUnits FormPriceUnit { get; set; }
+
+    [Parameter] public string FormCas { get; set; } = string.Empty;
+
+    [Parameter] public string FormPurity { get; set; } = string.Empty;
+
+    [Parameter] public double FormBindingSize { get; set; }
+
     /// <summary>
     /// Resets the Input lines
     /// </summary>
     protected void ResetChemicalInputs()
     {
-        Cas = string.Empty;
-        Purity = "";
-        BindingSize = 0;
+        FormCas = string.Empty;
+        FormPurity = "";
+        FormBindingSize = 0;
     }
+
 }

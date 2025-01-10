@@ -5,24 +5,29 @@
 
 
 <!-- Modal Body -->
-<MudChipSet T="Color" @bind-SelectedValue="_selectedColor" CheckMark SelectionMode="@_selectionMode" Class="my-4">
-    <MudChip Text="purple" Color="Color.Primary" Value="@Color.Primary" @onclick="SwitchToChemical">
-        Chemical
+<MudChipSet T="ItemType" @bind-SelectedValue="_selectedItemType" CheckMark SelectionMode="@_selectionMode" Class="my-4">
+    <MudChip Color="Color.Primary" Value="ItemType.Chemical">
+        Chemikalie
     </MudChip>
-    <MudChip Text="pink" Color="Color.Secondary" Value="@Color.Secondary" @onclick="SwitchToConsumable">
-        Consumable
+    <MudChip Color="Color.Secondary" Value="ItemType.Consumable">
+        Verbrauchsmaterial
     </MudChip>
-    <MudChip Text="blue" Color="Color.Info" Value="@Color.Info" @onclick="SwitchToGasCylinder">
-        Gas Cylinder
+    <MudChip Color="Color.Info" Value="ItemType.GasCylinder">
+        Gasflasche
     </MudChip>
-    <MudChip Text="green" Color="Color.Success" Value="@Color.Success" @onclick="SwitchToSolvent">
-        Solvent
+    <MudChip Color="Color.Success" Value="ItemType.Solvent">
+        Lösung
     </MudChip>
 </MudChipSet>
 
 <MudGrid>
     <MudItem xs="12" md="6">
-        <AssetItemForm/>
+        <AssetItemForm FormName="@Name"
+                       FormNote="@Note"
+                       FormShop="@Shop"
+                       FormItemNumber="@ItemNumber"
+                       FormPrice="@Price"
+                       FormRoom="Room"/>
     </MudItem>
 
     <!-- Which Form to Choose -->
@@ -30,16 +35,29 @@
         @switch (_selectedItemType)
         {
             case ItemType.Chemical:
-                <ChemicalItemForm/>
+                <ChemicalItemForm
+                    FormCas="@Cas"
+                    FormPurity="@Purity"
+                    FormBindingSize="@BindingSize"
+                    FormPriceUnit="@PriceUnit"/>
                 break;
             case ItemType.Consumable:
-                <ConsumableItemForm/>
+                <ConsumableItemForm
+                    FormManufacturer="@Manufacturer"
+                    FormSerialNumber="@SerialNumber"
+                    FormConsumableAmount="@ConsumableAmount"/>
                 break;
             case ItemType.GasCylinder:
-                <GasCylinderItemForm/>
+                <GasCylinderItemForm
+                    FormPressure="@Pressure"
+                    FormVolume="@Volume"/>
                 break;
             case ItemType.Solvent:
-                <ChemicalItemForm/>
+                <ChemicalItemForm
+                    FormCas="@Cas"
+                    FormPurity="@Purity"
+                    FormBindingSize="@BindingSize"
+                    FormPriceUnit="@PriceUnit"/>
                 break;
         }
     </MudItem>

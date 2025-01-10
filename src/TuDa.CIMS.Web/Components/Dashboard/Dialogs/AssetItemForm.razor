@@ -1,42 +1,51 @@
-﻿@inherits AssetItemCreateForm
+﻿@using TuDa.CIMS.Shared.Entities
+@inherits AssetItemCreateForm
 
 @* Generic AssetItemForm *@
 
 <MudForm>
-    <MudTextField @bind-Value="Name"
+    <MudTextField @bind-Value="FormName"
                   Label="Name"
-                  Placeholder="Enter Name"
+                  Placeholder="Name eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
-    <MudTextField @bind-Value="Shop"
+    <MudTextField @bind-Value="FormShop"
                   Label="Shop"
-                  Placeholder="Enter Shop"
+                  Placeholder="Shop eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
-    <MudTextField @bind-Value="ItemNumber"
-                  Label="Item Number"
-                  Placeholder="Enter Item Number"
+    <MudTextField @bind-Value="FormItemNumber"
+                  Label="Produktnummer"
+                  Placeholder="Produktnummer eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
-    <MudTextField @bind-Value="Note"
-                  Label="Notes"
-                  Placeholder="Enter Notes"
+    <MudTextField @bind-Value="FormNote"
+                  Label="Notiz"
+                  Placeholder="Notiz eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
-    <MudTextField @bind-Value="Price"
-                  Label="Price"
-                  Placeholder="Enter Price"
+    <MudNumericField @bind-Value="FormPrice"
+                  Label="Preis"
+                  Placeholder="Preis eingeben"
                   Variant="Variant.Filled"
                   InputType="InputType.Number"
                   FullWidth/>
+
+    <MudTextField @bind-Value="FormRoom.Name"
+                  Label="Raumname"
+                  Placeholder="Raumname eingeben"
+                  Variant="Variant.Filled"
+                  InputType="InputType.Text"
+                  FullWidth/>
+
     <MudButton Color="Color.Primary"
                Class="mt-3"
                @onclick="ResetInputs">
-        Clear
+        Leeren
     </MudButton>
 </MudForm>
 
@@ -44,15 +53,34 @@
 
 @code
 {
+
+    [Parameter]
+    public string FormName { get; set; } = string.Empty;
+
+    [Parameter]
+    public string FormShop { get; set; } = string.Empty;
+
+    [Parameter]
+    public string FormItemNumber { get; set; } = string.Empty;
+
+    [Parameter]
+    public string FormNote { get; set; } = string.Empty;
+
+    [Parameter]
+    public double FormPrice { get; set; } = 0;
+
+    [Parameter] public Room FormRoom { get; set; } = new Room(){ Name = string.Empty };
+
     /// <summary>
     /// Resets the Input lines
     /// </summary>
     protected void ResetInputs()
     {
-        Name = string.Empty;
-        Shop = string.Empty;
-        ItemNumber = string.Empty;
-        Note = string.Empty;
-        Price = 0;
+        FormName = string.Empty;
+        FormShop = string.Empty;
+        FormItemNumber = string.Empty;
+        FormNote = string.Empty;
+        FormPrice = 0;
+        FormRoom.Name = string.Empty;
     }
 }

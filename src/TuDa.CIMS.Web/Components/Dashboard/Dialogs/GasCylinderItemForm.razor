@@ -4,13 +4,13 @@
     <ChemicalItemForm/>
 
 
-    <MudNumericField @bind-Value="Volume"
+    <MudNumericField @bind-Value="FormVolume"
                      Label="Volume"
                      Placeholder="Enter Volume"
                      Variant="Variant.Filled"
                      FullWidth/>
 
-    <MudNumericField @bind-Value="Pressure"
+    <MudNumericField @bind-Value="FormPressure"
                      Label="Pressure"
                      Placeholder="Enter Pressure"
                      Variant="Variant.Filled"
@@ -19,18 +19,24 @@
     <MudButton Color="Color.Primary"
                Class="mt-3"
                @onclick="ResetGasCylinderInputs">
-        Clear
+        Leeren
     </MudButton>
 </MudForm>
 
 @code
 {
+    [Parameter]
+    public double FormVolume { get; set; } = 0;
+
+    [Parameter]
+    public double FormPressure { get; set; } = 0;
+
     /// <summary>
     /// Resets the Input lines
     /// </summary>
     protected void ResetGasCylinderInputs()
     {
-        Volume = 0;
-        Pressure = 0;
+        FormVolume = 0;
+        FormPressure = 0;
     }
 }
