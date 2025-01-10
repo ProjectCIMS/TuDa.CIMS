@@ -2,40 +2,48 @@
 @* Consumable Item Form *@
 
 <MudForm>
-    <MudTextField @bind-Value="Manufacturer"
-                  Label="Manufacturer"
-                  Placeholder="Enter Manufacturer"
+    <MudTextField @bind-Value="FormManufacturer"
+                  Label=Hersteller
+                  Placeholder="Hersteller eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
-    <MudTextField @bind-Value="SerialNumber"
-                  Label="SerialNumber"
-                  Placeholder="Enter Serial Number"
+    <MudTextField @bind-Value="FormSerialNumber"
+                  Label="Seriennummer"
+                  Placeholder="Seriennummer eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
-    <MudNumericField @bind-Value="ConsumableAmount"
-                     Label="Amount"
-                     Placeholder="Enter Amount"
+    <MudNumericField @bind-Value="FormConsumableAmount"
+                     Label="Menge"
+                     Placeholder="Menge eingeben"
                      Variant="Variant.Filled"
                      FullWidth/>
 
     <MudButton Color="Color.Primary"
                Class="mt-3"
                @onclick="ResetConsumableInputs">
-        Clear
+        Leeren
     </MudButton>
 </MudForm>
 
 @code
 {
+    [Parameter]
+    public string FormManufacturer { get; set; } = string.Empty;
+
+    [Parameter]
+    public string FormSerialNumber { get; set; } = string.Empty;
+
+    [Parameter]
+    public int FormConsumableAmount { get; set; } = 0;
     /// <summary>
     /// Resets the Input lines
     /// </summary>
     protected void ResetConsumableInputs()
     {
-        Manufacturer = string.Empty;
-        SerialNumber = string.Empty;
-        ConsumableAmount = 0;
+        FormManufacturer = string.Empty;
+        FormSerialNumber = string.Empty;
+        FormConsumableAmount = 0;
     }
 }
