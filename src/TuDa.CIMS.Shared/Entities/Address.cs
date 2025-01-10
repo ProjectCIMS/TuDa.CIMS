@@ -1,5 +1,7 @@
-﻿namespace TuDa.CIMS.Shared.Entities;
-public class Address
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TuDa.CIMS.Shared.Entities;
+public record Address : BaseEntity
 {
     /// <summary>
     /// The street of the professor.

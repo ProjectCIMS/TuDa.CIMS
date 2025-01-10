@@ -21,6 +21,7 @@ public class CIMSDbContext : DbContext
     public DbSet<WorkingGroup> WorkingGroups { get; set; }
     public DbSet<Professor> Professors { get; set; }
     public DbSet<Student> Students { get; set; }
+    public DbSet<Address> Addresses { get; set; }
 
     #endregion
 
@@ -63,18 +64,5 @@ public class CIMSDbContext : DbContext
                     j.HasKey("SubstanceId", "HazardId"); // Composite primary key
                 }
             );
-
-        modelBuilder.Entity<Professor>(entity =>
-        {
-            entity.OwnsOne(p => p.Address, address =>
-            {
-                address.Property(a => a.Street);
-                address.Property(a => a.Number);
-                address.Property(a => a.ZipCode);
-                address.Property(a => a.City);
-
-                address.ToTable("Professors");
-            });
-        });
     }
 }

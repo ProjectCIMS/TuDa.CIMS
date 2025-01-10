@@ -6,11 +6,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TuDa.CIMS.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class AddMissingPersonFields : Migration
+    public partial class AddAdress : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<Guid>(
+                name: "AddressId",
+                table: "Person",
+                type: "uuid",
+                nullable: true);
+
             migrationBuilder.AddColumn<string>(
                 name: "Email",
                 table: "Person",
@@ -36,11 +42,20 @@ namespace TuDa.CIMS.Api.Migrations
                 type: "text",
                 nullable: true);
 
+            migrationBuilder.AlterColumn<string>(
+                name: "Purity",
+                table: "AssetItems",
+                type: "text",
+                nullable: true,
+                oldClrType: typeof(double),
+                oldType: "double precision",
+                oldNullable: true);
+
             migrationBuilder.CreateTable(
-                name: "Professors",
+                name: "Addresses",
                 columns: table => new
                 {
-                    ProfessorId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Street = table.Column<string>(type: "text", nullable: false),
                     Number = table.Column<int>(type: "integer", nullable: false),
                     ZipCode = table.Column<string>(type: "text", nullable: false),
@@ -48,21 +63,40 @@ namespace TuDa.CIMS.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Professors", x => x.ProfessorId);
-                    table.ForeignKey(
-                        name: "FK_Professors_Person_ProfessorId",
-                        column: x => x.ProfessorId,
-                        principalTable: "Person",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Person_AddressId",
+                table: "Person",
+                column: "AddressId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Person_Addresses_AddressId",
+                table: "Person",
+                column: "AddressId",
+                principalTable: "Addresses",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Person_Addresses_AddressId",
+                table: "Person");
+
             migrationBuilder.DropTable(
-                name: "Professors");
+                name: "Addresses");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Person_AddressId",
+                table: "Person");
+
+            migrationBuilder.DropColumn(
+                name: "AddressId",
+                table: "Person");
 
             migrationBuilder.DropColumn(
                 name: "Email",
@@ -79,6 +113,15 @@ namespace TuDa.CIMS.Api.Migrations
             migrationBuilder.DropColumn(
                 name: "Title",
                 table: "Person");
+
+            migrationBuilder.AlterColumn<double>(
+                name: "Purity",
+                table: "AssetItems",
+                type: "double precision",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "text",
+                oldNullable: true);
         }
     }
 }
