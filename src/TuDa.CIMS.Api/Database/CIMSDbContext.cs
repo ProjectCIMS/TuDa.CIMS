@@ -22,6 +22,7 @@ public class CIMSDbContext : DbContext
     public DbSet<Professor> Professors { get; set; }
     public DbSet<Student> Students { get; set; }
     public DbSet<Address> Addresses { get; set; }
+    public DbSet<Person> Persons { get; set; }
 
     #endregion
 
@@ -43,6 +44,24 @@ public class CIMSDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Purchase>().HasMany(p => p.Entries).WithOne().OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder
+            .Entity<WorkingGroup>()
+            .HasMany(p => p.Purchases)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder
+            .Entity<WorkingGroup>()
+            .HasMany(p => p.Students)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder
+            .Entity<WorkingGroup>()
+            .HasOne(p => p.Professor)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder
             .Entity<Substance>()
             .HasMany(s => s.Hazards)
