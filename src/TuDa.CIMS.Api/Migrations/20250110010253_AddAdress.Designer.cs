@@ -12,8 +12,8 @@ using TuDa.CIMS.Api.Database;
 namespace TuDa.CIMS.Api.Migrations
 {
     [DbContext(typeof(CIMSDbContext))]
-    [Migration("20250109162536_AddMissingPersonFields")]
-    partial class AddMissingPersonFields
+    [Migration("20250110010253_AddAdress")]
+    partial class AddAdress
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,6 +38,32 @@ namespace TuDa.CIMS.Api.Migrations
                     b.HasIndex("HazardId");
 
                     b.ToTable("SubstanceHazard");
+                });
+
+            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Address", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.AssetItem", b =>
@@ -292,6 +318,9 @@ namespace TuDa.CIMS.Api.Migrations
                 {
                     b.HasBaseType("TuDa.CIMS.Shared.Entities.Person");
 
+                    b.Property<Guid>("AddressId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
@@ -303,6 +332,8 @@ namespace TuDa.CIMS.Api.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.HasIndex("AddressId");
 
                     b.HasDiscriminator().HasValue("Professor");
                 });
@@ -429,36 +460,13 @@ namespace TuDa.CIMS.Api.Migrations
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Professor", b =>
                 {
-                    b.OwnsOne("TuDa.CIMS.Shared.Entities.Address", "Address", b1 =>
-                        {
-                            b1.Property<Guid>("ProfessorId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<int>("Number")
-                                .HasColumnType("integer");
-
-                            b1.Property<string>("Street")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<string>("ZipCode")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.HasKey("ProfessorId");
-
-                            b1.ToTable("Professors", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("ProfessorId");
-                        });
-
-                    b.Navigation("Address")
+                    b.HasOne("TuDa.CIMS.Shared.Entities.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Student", b =>
