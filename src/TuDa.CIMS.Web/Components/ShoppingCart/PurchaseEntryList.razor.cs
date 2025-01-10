@@ -2,7 +2,7 @@
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 
-namespace TuDa.CIMS.Web.Components;
+namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 /// <summary>
 /// A Blazor component, that visualizes <see cref="PurchaseEntry"/>.
@@ -14,7 +14,10 @@ public partial class PurchaseEntryList : ComponentBase
     /// A list of <see cref="PurchaseEntry"/> that will be shown in the list.
     /// </summary>
     [Parameter]
-    public List<PurchaseEntry> Entries { get; set; } = [];
+    public required Purchase Purchase { get; set; }
+
+    [Parameter]
+    public EventCallback<AssetItem> AssetItemDeleted { get; set; }
 
     private readonly IDialogService _dialogService;
 
@@ -43,7 +46,8 @@ public partial class PurchaseEntryList : ComponentBase
 
         if (await _dialogService.ShowMessageBox(messageBox) ?? false)
         {
-            Entries.Remove(entry);
+            Purchase.Entries.Remove(entry);
+            await AssetItemDeleted.InvokeAsync();
         }
     }
 }

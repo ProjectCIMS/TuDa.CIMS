@@ -1,11 +1,14 @@
 ﻿using System.Runtime.InteropServices.JavaScript;
 using Refit;
 using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Params;
 
 namespace TuDa.CIMS.Api.Services;
 
+[ScopedService]
 public class AssetItemService : IAssetItemService
 {
     private readonly IAssetItemRepository _assetItemRepository;
@@ -19,7 +22,6 @@ public class AssetItemService : IAssetItemService
     /// Return an an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
     /// or the result of the <see cref="GetAllAsync"/> functionality if successful or if nameOrCas is set the <see cref="SearchAsync"/> functionality.
     /// </summary>
-
     public async Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync(string? nameOrCas)
     {
         try
@@ -47,7 +49,6 @@ public class AssetItemService : IAssetItemService
     /// or the result of the <see cref="GetOneAsync"/> functionality if successful
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
-
     public async Task<ErrorOr<AssetItem>> GetOneAsync(Guid id)
     {
         try
@@ -107,6 +108,27 @@ public class AssetItemService : IAssetItemService
             return Error.Failure(
                 "AssetItem.RemoveAsync",
                 $"Failed to remove AssetItem with ID {id}. Exception: {e.Message}"
+            );
+        }
+    }
+
+    /// <summary>
+    /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
+    /// or the result of the <see cref="GetPaginatedAsync"/> functionality if successful
+    /// </summary>
+    /// <param name="userParams"></param>
+    /// <returns></returns>
+    public async Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(AssetItemPaginationQueryParams queryParams)
+    {
+        try
+        {
+            return await _assetItemRepository.GetPaginatedAsync(queryParams);
+        }
+        catch (Exception e)
+        {
+            return Error.Failure(
+                "AssetItem.GetPaginatedAsync",
+                $"Failed to get paginated AssetItems. Exception: {e.Message}"
             );
         }
     }

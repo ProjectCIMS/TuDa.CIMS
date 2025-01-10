@@ -46,7 +46,7 @@ public static class ApiResponseExtension
             exception.Message,
             new Dictionary<string, object>
             {
-                { "url", exception.Uri.ToString() },
+                { "url", exception.Uri?.ToString() ?? "None" },
                 { "method", exception.HttpMethod },
                 { "data", exception.Data },
             }
