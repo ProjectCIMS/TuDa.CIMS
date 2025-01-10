@@ -1,16 +1,43 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
-
+using TuDa.CIMS.Web.Services;
+/// TODO: Add dialog
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
+
 public partial class WorkingGroupHeader : ComponentBase
 {
-    [Parameter] public required Professor Professor { get; set;}
+    private readonly IWorkingGroupApi _workingGroupApi;
 
-    public required Guid workingGroupId { get; set; }
+    [Parameter] public required Professor Professor { get; set; }
 
+    [Parameter] public string ProfessorName { get; set; } = String.Empty;
+
+    public Guid workingGroupId { get; set; }
+
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+
+    private Guid GetIdFromUrl()
+    {
+        var uri = NavigationManager.Uri.Split('/');
+        var idString = uri[^1];
+        return Guid.Parse(idString);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var workingGroup = await _workingGroupApi.GetAsync(workingGroupId);
+        ProfessorName = workingGroup.Value.Professor.Name;
+        Professor = workingGroup.Value.Professor;
+
+        await base.OnInitializedAsync();
+    }
+
+    public void GetWorkingGroupId()
+    {
+        workingGroupId = GetIdFromUrl();
+    }
 
     public void EditProfessor()
     {
-        /// use API update function here
     }
- }
+}
