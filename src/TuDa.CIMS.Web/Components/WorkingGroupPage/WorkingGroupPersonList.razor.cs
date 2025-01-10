@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
 
-namespace TuDa.CIMS.Web.Components.WorkingGroup;
-
+namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 public partial class WorkingGroupPersonList : ComponentBase
 {
     public List<Person> Persons{get;set;} = [];
