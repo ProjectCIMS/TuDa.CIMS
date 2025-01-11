@@ -34,7 +34,7 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasIndex("HazardId");
 
-                    b.ToTable("SubstanceHazard");
+                    b.ToTable("SubstanceHazard", (string)null);
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Address", b =>
@@ -60,7 +60,7 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.AssetItem", b =>
@@ -100,7 +100,7 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("AssetItems");
+                    b.ToTable("AssetItems", (string)null);
 
                     b.HasDiscriminator().HasValue("AssetItem");
 
@@ -129,7 +129,7 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasIndex("ConsumableId");
 
-                    b.ToTable("ConsumableTransactions");
+                    b.ToTable("ConsumableTransactions", (string)null);
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Hazard", b =>
@@ -148,7 +148,7 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Hazards");
+                    b.ToTable("Hazards", (string)null);
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Person", b =>
@@ -175,7 +175,7 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Persons");
+                    b.ToTable("Persons", (string)null);
 
                     b.HasDiscriminator().HasValue("Person");
 
@@ -210,7 +210,7 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasIndex("WorkingGroupId");
 
-                    b.ToTable("Purchases");
+                    b.ToTable("Purchases", (string)null);
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.PurchaseEntry", b =>
@@ -237,7 +237,7 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasIndex("PurchaseId");
 
-                    b.ToTable("PurchaseEntries");
+                    b.ToTable("PurchaseEntries", (string)null);
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Room", b =>
@@ -252,7 +252,7 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.WorkingGroup", b =>
@@ -260,10 +260,6 @@ namespace TuDa.CIMS.Api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -277,7 +273,7 @@ namespace TuDa.CIMS.Api.Migrations
                     b.HasIndex("ProfessorId")
                         .IsUnique();
 
-                    b.ToTable("WorkingGroups");
+                    b.ToTable("WorkingGroups", (string)null);
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Consumable", b =>
