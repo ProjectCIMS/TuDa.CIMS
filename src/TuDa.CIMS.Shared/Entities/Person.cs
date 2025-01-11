@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Shared.Entities;
 
@@ -19,4 +20,9 @@ public abstract record Person : BaseEntity
     /// The first name of the person.
     /// </summary>
     public string FirstName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The gender of the person.
+    /// </summary>
+    public Gender Gender { get; set; } = Gender.Unknown;
 }

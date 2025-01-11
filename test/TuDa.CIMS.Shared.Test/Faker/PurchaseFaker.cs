@@ -6,13 +6,12 @@ namespace TuDa.CIMS.Shared.Test.Faker;
 public class PurchaseFaker : BaseEntityFaker<Purchase>
 {
     public PurchaseFaker(
-        WorkingGroup? workingGroup = null,
+        WorkingGroup workingGroup,
         List<PurchaseEntry>? purchaseEntries = null,
         bool? completed = null
     )
     {
         completed ??= new Randomizer().Bool();
-        workingGroup ??= new WorkingGroupFaker();
 
         RuleFor(p => p.Buyer, f => f.PickRandom(workingGroup.Students));
         RuleFor(
