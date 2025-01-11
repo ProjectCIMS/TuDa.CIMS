@@ -47,7 +47,7 @@ public class ConsumableTransactionController : ControllerBase
     /// </summary>
     /// <param name="createModel"></param>
 
-    [HttpPatch($"{{{nameof(id)}:guid}}")]
+    [HttpPost]
     public async Task<IActionResult> CreateAsync(CreateConsumableTransactionDto createModel)
     {
         return (await _consumableTransactionService.CreateAsync(createModel)).Match<IActionResult>(
