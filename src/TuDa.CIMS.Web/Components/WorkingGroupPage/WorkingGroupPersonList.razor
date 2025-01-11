@@ -6,14 +6,12 @@
                  SortMode="SortMode.None"
                  Hover="@true">
         <Columns>
-            @*
-            <PropertyColumn
-                Property="@(p => p.Salutation)"
-                Title="Anrede"/>
-            *@
             <PropertyColumn
                 Property="@(p => p.FirstName)"
                 Title="Vorname"/>
+            <PropertyColumn
+                Property="@(p => p.Gender)"
+                Title="Gender"/>
             <PropertyColumn
                 Property="@(p => p.Name)"
                 Title="Nachname"/>

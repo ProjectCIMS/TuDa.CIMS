@@ -3,16 +3,44 @@
 @using MudBlazor
 @using TuDa.CIMS.Shared.Entities
 
-@*
-/// TODO: Add the button for editing
-<MudContainer Class="rounded-xl bg-white">
-    <div class="d-flex align-end justify-space-between mud-width-full">
-        <MudText><b>Name:</b> @ProfessorInfo.Name</MudText>
-        <MudText><b>TelefonNr.:</b> @ProfessorInfo.PhoneNumber</MudText>
-        <MudText><b>Stadt:</b> @ProfessorInfo.City</MudText>
-        <MudText><b>Straße:</b> @ProfessorInfo.Street</MudText>
-        <MudText><b>PLZ:</b> @ProfessorInfo.ZipCode</MudText>
-        <MudText><b>Email-Adresse:</b> @ProfessorInfo.Email</MudText>
+
+<MudContainer Class="rounded-xl bg-white" MaxWidth="MaxWidth.ExtraSmall">
+    <div class="d-flex flex-column">
+        <MudText Class="d-flex justify-space-between">Name: @ProfessorInfoa.Name <MudIconButton
+                Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="Edit" Disabled="true"></MudIconButton>
+        </MudText>
+        <MudText Class="d-flex justify-space-between">TelefonNr.: @ProfessorInfoa.PhoneNumber <MudIconButton
+                Icon="@Icons.Material.Filled.Edit"
+                Size="Size.Small"
+                OnClick="Edit"
+                Disabled="true"></MudIconButton>
+        </MudText>
+        <MudText Class="d-flex justify-space-between">Stadt: @ProfessorInfoa.Address.City <MudIconButton
+                Icon="@Icons.Material.Filled.Edit"
+                Size="Size.Small"
+                OnClick="Edit"
+                Disabled="true"></MudIconButton>
+        </MudText>
+        <MudText Class="d-flex justify-space-between">
+            Straße: @ProfessorInfoa.Address.Street @ProfessorInfoa.Address.Number <MudIconButton
+                Icon="@Icons.Material.Filled.Edit"
+                Size="Size.Small"
+                OnClick="Edit"
+                Disabled="true"></MudIconButton>
+        </MudText>
+        <MudText Class="d-flex justify-space-between">PLZ: @ProfessorInfoa.Address.ZipCode <MudIconButton
+                Icon="@Icons.Material.Filled.Edit"
+                Size="Size.Small"
+                OnClick="Edit"
+                Disabled="true"></MudIconButton>
+        </MudText>
+        <MudText Class="d-flex justify-space-between">Email-Adresse: @ProfessorInfoa.Email <MudIconButton
+                Icon="@Icons.Material.Filled.Edit"
+                Size="Size.Small"
+                OnClick="Edit"
+                Disabled="true"></MudIconButton>
+        </MudText>
+
     </div>
 </MudContainer>
-*@
+

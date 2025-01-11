@@ -10,7 +10,7 @@ public partial class WorkingGroupHeader : ComponentBase
 
     [Parameter] public required Professor Professor { get; set; }
 
-    [Parameter] public string ProfessorName { get; set; } = String.Empty;
+    [Parameter] public string ProfessorName { get; set; } = "jbfijbvieriovuber";
 
     public Guid workingGroupId { get; set; }
 

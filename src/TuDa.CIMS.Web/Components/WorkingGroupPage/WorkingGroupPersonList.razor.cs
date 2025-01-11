@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 public partial class WorkingGroupPersonList : ComponentBase
 {
-    public List<Person> Persons{get;set;} = [];
+    public List<Person> Persons = new List<Person>();
+
+
+    static Guid selectedPersonId = Guid.Empty;
 
     private void EditBuyer()
     {
