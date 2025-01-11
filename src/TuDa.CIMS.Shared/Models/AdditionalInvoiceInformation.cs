@@ -23,7 +23,7 @@ public record AdditionalInvoiceInformation
     /// Address of the Issuer. Used as address block on the right side.
     /// </summary>
     public Address IssuerAddress { get; init; } =
-        new() { Street = "Peter-Grünberg-Str.", BuildingNumber = "8" };
+        new() { Street = "Peter-Grünberg-Str.", Number = 8 };
 
     /// <summary>
     /// Email of the Issuer. Used as address block on the right side.

@@ -87,7 +87,7 @@ public class InvoiceCoverDocument : IDocument
                 .Item()
                 .Text(
                     "TU Darmstadt | "
-                        + $"{_information.IssuerAddress.Street} {_information.IssuerAddress.BuildingNumber} | "
+                        + $"{_information.IssuerAddress.Street} {_information.IssuerAddress.Number} | "
                         + $"{_information.IssuerAddress.ZipCode} {_information.IssuerAddress.City}"
                 )
                 .FontSize(7)
@@ -97,7 +97,7 @@ public class InvoiceCoverDocument : IDocument
 
             column.Item().PaddingTop(15).Text(professor.Gender.ToSalution());
             column.Item().Text($"{professor.Title} {professor.FirstName} {professor.Name}");
-            column.Item().Text($"{professor.Address.Street} {professor.Address.BuildingNumber}");
+            column.Item().Text($"{professor.Address.Street} {professor.Address.Number}");
             column.Item().Text($"{professor.Address.ZipCode} {professor.Address.City}");
         });
     }
@@ -160,7 +160,7 @@ public class InvoiceCoverDocument : IDocument
                     .Item()
                     .PaddingTop(15)
                     .Text(
-                        $"{_information.IssuerAddress.Street} {_information.IssuerAddress.BuildingNumber}"
+                        $"{_information.IssuerAddress.Street} {_information.IssuerAddress.Number}"
                     )
                     .FontSize(8);
 
