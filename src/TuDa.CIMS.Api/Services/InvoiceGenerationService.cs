@@ -77,7 +77,7 @@ public class InvoiceGenerationService : IInvoiceGenerationService
                     TotalPriceChemicals = value.ChemicalsTotalPrice(),
                     TotalPriceConsumables = value.ConsumablesTotalPrice(),
                     TotalPriceSolvents = value.SolventsTotalPrice(),
-                    TotalPriceGasCylinders = value.SolventsTotalPrice(),
+                    TotalPriceGasCylinders = value.GasCylindersTotalPrice(),
                 },
                 ErrorOr<InvoiceStatistics>.From
             );
