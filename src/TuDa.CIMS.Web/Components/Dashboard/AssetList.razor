@@ -24,7 +24,12 @@
     </ToolBarContent>
     <Columns>
         <PropertyColumn Property="@(i => GetItemTypeName(i))"
-                        Title="Typ"/>
+                        Title="Typ">
+            <CellTemplate>
+                <MudIcon Icon="@GetItemTypeIcon(context.Item)"/>
+                @GetItemTypeName(context.Item)
+            </CellTemplate>
+        </PropertyColumn>
         <PropertyColumn Property="@(x => GetItemName(x))"
                         Title="Produkt"/>
         <PropertyColumn Property="@(x => x.ItemNumber)"
@@ -43,7 +48,8 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager RowsPerPageString="Produkte pro Seite:" T="AssetItem"/>
+        <MudDataGridPager RowsPerPageString="Produkte pro Seite:"
+                          T="AssetItem"/>
     </PagerContent>
 </MudDataGrid>
 
@@ -59,6 +65,16 @@
             _ => "-",
         };
 
+    private static string GetItemTypeIcon(AssetItem assetItem) =>
+        assetItem switch
+        {
+            Solvent => Icons.Material.Filled.WaterDrop,
+            Chemical => Icons.Material.Filled.Science,
+            Consumable => Icons.Material.Filled.Inventory2,
+            GasCylinder => Icons.Material.Filled.GasMeter,
+            _ => Icons.Material.Filled.QuestionMark
+        };
+
     private static string GetItemName(AssetItem assetItem) =>
         assetItem switch
         {
@@ -68,9 +84,11 @@
 
     private static string GetPriceText(AssetItem assetItem) =>
         assetItem.Price.ToString("F")
+        + " €/"
         + assetItem switch
         {
             Substance substance => substance.PriceUnit.ToAbbrevation(),
-            _ => " Stück",
+            _ => "Stück",
         };
+
 }

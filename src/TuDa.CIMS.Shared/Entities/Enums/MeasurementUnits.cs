@@ -16,7 +16,7 @@ public static class MeasurementUnitsExtension
         {
             MeasurementUnits.KiloGram => "kg",
             MeasurementUnits.Liter => "l",
-            MeasurementUnits.Piece => " Stück",
+            MeasurementUnits.Piece => "Stück",
             MeasurementUnits.MilliLiter => "ml",
             MeasurementUnits.Gram => "g",
             _ => $" {unit}",
