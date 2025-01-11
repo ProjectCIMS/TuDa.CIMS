@@ -11,14 +11,4 @@ public record Professor : Person
     /// The address of the professor.
     /// </summary>
     public Address Address { get; set; } = new Address();
-
-    /// <summary>
-    /// The phone number of the professor.
-    /// </summary>
-    public string PhoneNumber { get; set; } = string.Empty;
-
-    /// <summary>
-    /// The email of the professor.
-    /// </summary>
-    public string Email { get; set; } = string.Empty;
 }
