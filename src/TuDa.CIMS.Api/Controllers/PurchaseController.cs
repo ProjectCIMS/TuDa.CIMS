@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared;
 using TuDa.CIMS.Shared.Dtos;
 
 namespace TuDa.CIMS.Api.Controllers;
 
 [ApiController]
 [Route("api/purchases")]
-public class PurchaseController : ControllerBase
+public class PurchaseController : CIMSBaseController
 {
     private readonly IPurchaseService _purchaseService;
 
@@ -23,9 +24,9 @@ public class PurchaseController : ControllerBase
     [HttpGet($"{{{nameof(workingGroupId)}:guid}}")]
     public async Task<IActionResult> GetAllAsync(Guid workingGroupId)
     {
-        return (await _purchaseService.GetAllAsync(workingGroupId)).Match<IActionResult>(
-            purchases => Ok(purchases),
-            error => BadRequest(error)
+        return (await _purchaseService.GetAllAsync(workingGroupId)).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
         );
     }
 
@@ -38,12 +39,11 @@ public class PurchaseController : ControllerBase
     [HttpGet($"{{{nameof(workingGroupId)}:guid}}/{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> GetOneAsync(Guid id, Guid workingGroupId)
     {
-        return (await _purchaseService.GetOneAsync(id, workingGroupId)).Match<IActionResult>(
-            purchase => Ok(purchase),
-            error => BadRequest(error)
+        return (await _purchaseService.GetOneAsync(id, workingGroupId)).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
         );
     }
-
 
     /// <summary>
     /// Removes a purchase with the specific id from the service.
@@ -55,9 +55,9 @@ public class PurchaseController : ControllerBase
     [HttpDelete($"{{{nameof(workingGroupId)}:guid}}/{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> RemoveAsync(Guid id, Guid workingGroupId)
     {
-        return (await _purchaseService.RemoveAsync(id, workingGroupId)).Match<IActionResult>(
-            _ => Ok(),
-            error => BadRequest(error)
+        return (await _purchaseService.RemoveAsync(id, workingGroupId)).Match(
+            onValue: _ => Ok(),
+            onError: ErrorsToProblem
         );
     }
 
@@ -69,11 +69,14 @@ public class PurchaseController : ControllerBase
     /// <param name="workingGroupId">the unique id of a workinggroup </param>
     /// <returns>a 200 OK response and the object if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
     [HttpPost($"{{{nameof(workingGroupId)}:guid}}")]
-    public async Task<IActionResult> CreateAsync(Guid workingGroupId, [FromBody] CreatePurchaseDto createModel)
+    public async Task<IActionResult> CreateAsync(
+        Guid workingGroupId,
+        [FromBody] CreatePurchaseDto createModel
+    )
     {
-        return (await _purchaseService.CreateAsync(workingGroupId, createModel)).Match<IActionResult>(
-            _ => Ok(),
-            error => BadRequest(error)
+        return (await _purchaseService.CreateAsync(workingGroupId, createModel)).Match(
+            onValue: _ => Ok(),
+            onError: ErrorsToProblem
         );
     }
 }

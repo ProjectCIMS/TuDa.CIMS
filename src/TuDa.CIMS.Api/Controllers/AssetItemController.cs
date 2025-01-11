@@ -25,7 +25,10 @@ public class AssetItemController : CIMSBaseController
     [HttpGet]
     public async Task<IActionResult> GetAllAsync([FromQuery] string? nameOrCas)
     {
-        return (await _assetItemService.GetAllAsync(nameOrCas)).Match(Ok, ErrorsToProblem);
+        return (await _assetItemService.GetAllAsync(nameOrCas)).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
+        );
     }
 
     /// <summary>
@@ -37,8 +40,8 @@ public class AssetItemController : CIMSBaseController
     public async Task<IActionResult> GetOneAsync(Guid id)
     {
         return (await _assetItemService.GetOneAsync(id)).Match(
-            value => Ok(JsonSerializer.Serialize(value)),
-            ErrorsToProblem
+            onValue: value => Ok(JsonSerializer.Serialize(value)),
+            onError: ErrorsToProblem
         );
     }
 
@@ -53,8 +56,8 @@ public class AssetItemController : CIMSBaseController
     public async Task<IActionResult> UpdateAsync(Guid id, UpdateAssetItemDto updateModel)
     {
         return (await _assetItemService.UpdateAsync(id, updateModel)).Match(
-            _ => Ok(),
-            ErrorsToProblem
+            onValue: _ => Ok(),
+            onError: ErrorsToProblem
         );
     }
 
@@ -67,7 +70,10 @@ public class AssetItemController : CIMSBaseController
     [HttpDelete($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> RemoveAsync(Guid id)
     {
-        return (await _assetItemService.RemoveAsync(id)).Match(_ => Ok(), ErrorsToProblem);
+        return (await _assetItemService.RemoveAsync(id)).Match(
+            onValue: _ => Ok(),
+            onError: ErrorsToProblem
+        );
     }
 
     /// <summary>
@@ -82,6 +88,9 @@ public class AssetItemController : CIMSBaseController
         [FromQuery] AssetItemPaginationQueryParams queryParams
     )
     {
-        return (await _assetItemService.GetPaginatedAsync(queryParams)).Match(Ok, ErrorsToProblem);
+        return (await _assetItemService.GetPaginatedAsync(queryParams)).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
+        );
     }
 }
