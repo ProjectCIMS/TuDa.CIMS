@@ -6,50 +6,41 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TuDa.CIMS.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAdress : Migration
+    public partial class AddAddresses : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<Guid>(
                 name: "AddressId",
-                table: "Person",
+                table: "Persons",
                 type: "uuid",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "Email",
-                table: "Person",
+                table: "Persons",
                 type: "text",
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "Gender",
-                table: "Person",
+                table: "Persons",
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<string>(
                 name: "PhoneNumber",
-                table: "Person",
+                table: "Persons",
                 type: "text",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "Title",
-                table: "Person",
+                table: "Persons",
                 type: "text",
                 nullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Purity",
-                table: "AssetItems",
-                type: "text",
-                nullable: true,
-                oldClrType: typeof(double),
-                oldType: "double precision",
-                oldNullable: true);
 
             migrationBuilder.CreateTable(
                 name: "Addresses",
@@ -67,13 +58,13 @@ namespace TuDa.CIMS.Api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Person_AddressId",
-                table: "Person",
+                name: "IX_Persons_AddressId",
+                table: "Persons",
                 column: "AddressId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Person_Addresses_AddressId",
-                table: "Person",
+                name: "FK_Persons_Addresses_AddressId",
+                table: "Persons",
                 column: "AddressId",
                 principalTable: "Addresses",
                 principalColumn: "Id",
@@ -84,44 +75,35 @@ namespace TuDa.CIMS.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Person_Addresses_AddressId",
-                table: "Person");
+                name: "FK_Persons_Addresses_AddressId",
+                table: "Persons");
 
             migrationBuilder.DropTable(
                 name: "Addresses");
 
             migrationBuilder.DropIndex(
-                name: "IX_Person_AddressId",
-                table: "Person");
+                name: "IX_Persons_AddressId",
+                table: "Persons");
 
             migrationBuilder.DropColumn(
                 name: "AddressId",
-                table: "Person");
+                table: "Persons");
 
             migrationBuilder.DropColumn(
                 name: "Email",
-                table: "Person");
+                table: "Persons");
 
             migrationBuilder.DropColumn(
                 name: "Gender",
-                table: "Person");
+                table: "Persons");
 
             migrationBuilder.DropColumn(
                 name: "PhoneNumber",
-                table: "Person");
+                table: "Persons");
 
             migrationBuilder.DropColumn(
                 name: "Title",
-                table: "Person");
-
-            migrationBuilder.AlterColumn<double>(
-                name: "Purity",
-                table: "AssetItems",
-                type: "double precision",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "text",
-                oldNullable: true);
+                table: "Persons");
         }
     }
 }

@@ -12,8 +12,8 @@ using TuDa.CIMS.Api.Database;
 namespace TuDa.CIMS.Api.Migrations
 {
     [DbContext(typeof(CIMSDbContext))]
-    [Migration("20250110010253_AddAdress")]
-    partial class AddAdress
+    [Migration("20250111113708_AddAddresses")]
+    partial class AddAddresses
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -178,7 +178,7 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Person");
+                    b.ToTable("Persons");
 
                     b.HasDiscriminator().HasValue("Person");
 
@@ -273,7 +273,8 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfessorId");
+                    b.HasIndex("ProfessorId")
+                        .IsUnique();
 
                     b.ToTable("WorkingGroups");
                 });
@@ -427,7 +428,8 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasOne("TuDa.CIMS.Shared.Entities.WorkingGroup", null)
                         .WithMany("Purchases")
-                        .HasForeignKey("WorkingGroupId");
+                        .HasForeignKey("WorkingGroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Buyer");
                 });
@@ -442,7 +444,8 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasOne("TuDa.CIMS.Shared.Entities.Purchase", null)
                         .WithMany("Entries")
-                        .HasForeignKey("PurchaseId");
+                        .HasForeignKey("PurchaseId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("AssetItem");
                 });
@@ -450,8 +453,8 @@ namespace TuDa.CIMS.Api.Migrations
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.WorkingGroup", b =>
                 {
                     b.HasOne("TuDa.CIMS.Shared.Entities.Professor", "Professor")
-                        .WithMany()
-                        .HasForeignKey("ProfessorId")
+                        .WithOne()
+                        .HasForeignKey("TuDa.CIMS.Shared.Entities.WorkingGroup", "ProfessorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -473,7 +476,8 @@ namespace TuDa.CIMS.Api.Migrations
                 {
                     b.HasOne("TuDa.CIMS.Shared.Entities.WorkingGroup", null)
                         .WithMany("Students")
-                        .HasForeignKey("WorkingGroupId");
+                        .HasForeignKey("WorkingGroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Purchase", b =>
