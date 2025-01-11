@@ -5,10 +5,8 @@
         <MudTextField
             T="string"
             Placeholder="Suche"
-            @bind-Value="_searchString"
             ValueChanged="@(s => OnSearch(s))"
             Adornment="@Adornment.Start"
-            Immediate="true"
             AdornmentIcon="@Icons.Material.Filled.Search"
             Clearable="true"
             IconSize="@Size.Medium"
