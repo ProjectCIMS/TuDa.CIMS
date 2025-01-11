@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
-/// TODO: Add dialog
-namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
+namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 public partial class WorkingGroupHeader : ComponentBase
 {
     private readonly IWorkingGroupApi _workingGroupApi;
@@ -37,7 +37,9 @@ public partial class WorkingGroupHeader : ComponentBase
         workingGroupId = GetIdFromUrl();
     }
 
-    public void EditProfessor()
+    /// TODO: Add dialog
+    public void OpenDialogAsync()
     {
+
     }
 }

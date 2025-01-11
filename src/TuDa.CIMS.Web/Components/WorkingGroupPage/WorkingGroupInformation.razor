@@ -1,16 +1,18 @@
-﻿@page "/"
+﻿@page "/2"
 
 @using MudBlazor
 @using TuDa.CIMS.Shared.Entities
+
 @*
+/// TODO: Add the button for editing
 <MudContainer Class="rounded-xl bg-white">
     <div class="d-flex align-end justify-space-between mud-width-full">
         <MudText><b>Name:</b> @ProfessorInfo.Name</MudText>
-        <MudText><b>Mass:</b> @ProfessorInfo.PhoneNumber</MudText>
-        <MudText><b>Electrons:</b> @ProfessorInfo.City</MudText>
-        <MudText><b>Electrons:</b> @ProfessorInfo.Street</MudText>
-        <MudText><b>Electrons:</b> @ProfessorInfo.ZipCode</MudText>
-        <MudText><b>Last Update:</b> @ProfessorInfo.Email</MudText>
+        <MudText><b>TelefonNr.:</b> @ProfessorInfo.PhoneNumber</MudText>
+        <MudText><b>Stadt:</b> @ProfessorInfo.City</MudText>
+        <MudText><b>Straße:</b> @ProfessorInfo.Street</MudText>
+        <MudText><b>PLZ:</b> @ProfessorInfo.ZipCode</MudText>
+        <MudText><b>Email-Adresse:</b> @ProfessorInfo.Email</MudText>
     </div>
 </MudContainer>
 *@
