@@ -12,8 +12,8 @@ using TuDa.CIMS.Api.Database;
 namespace TuDa.CIMS.Api.Migrations
 {
     [DbContext(typeof(CIMSDbContext))]
-    [Migration("20250108192227_AddWorkingGroupCascadingDeleteAndPerson")]
-    partial class AddWorkingGroupCascadingDeleteAndPerson
+    [Migration("20250110155009_AddWorkingGroupCascadingDelete")]
+    partial class AddWorkingGroupCascadingDelete
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -398,7 +398,8 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasOne("TuDa.CIMS.Shared.Entities.Purchase", null)
                         .WithMany("Entries")
-                        .HasForeignKey("PurchaseId");
+                        .HasForeignKey("PurchaseId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("AssetItem");
                 });
