@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TuDa.CIMS.Api.Database;
@@ -11,9 +12,11 @@ using TuDa.CIMS.Api.Database;
 namespace TuDa.CIMS.Api.Migrations
 {
     [DbContext(typeof(CIMSDbContext))]
-    partial class CIMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250110155009_AddWorkingGroupCascadingDelete")]
+    partial class AddWorkingGroupCascadingDelete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,32 +38,6 @@ namespace TuDa.CIMS.Api.Migrations
                     b.HasIndex("HazardId");
 
                     b.ToTable("SubstanceHazard");
-                });
-
-            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Address", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ZipCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.AssetItem", b =>
@@ -166,9 +143,6 @@ namespace TuDa.CIMS.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Gender")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -261,10 +235,6 @@ namespace TuDa.CIMS.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("text");
@@ -319,23 +289,6 @@ namespace TuDa.CIMS.Api.Migrations
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Professor", b =>
                 {
                     b.HasBaseType("TuDa.CIMS.Shared.Entities.Person");
-
-                    b.Property<Guid>("AddressId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasIndex("AddressId");
 
                     b.HasDiscriminator().HasValue("Professor");
                 });
@@ -460,17 +413,6 @@ namespace TuDa.CIMS.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Professor");
-                });
-
-            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Professor", b =>
-                {
-                    b.HasOne("TuDa.CIMS.Shared.Entities.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Student", b =>

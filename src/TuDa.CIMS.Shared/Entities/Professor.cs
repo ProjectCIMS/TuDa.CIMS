@@ -3,12 +3,22 @@
 public record Professor : Person
 {
     /// <summary>
-    /// Address of the professor.
+    /// The title of the professor.
     /// </summary>
-    public required Address Address { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// The title of the Professor as abbreviation.
+    /// The address of the professor.
     /// </summary>
-    public string Title { get; set; } = "Prof.";
+    public Address Address { get; set; } = new Address();
+
+    /// <summary>
+    /// The phone number of the professor.
+    /// </summary>
+    public string PhoneNumber { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The email of the professor.
+    /// </summary>
+    public string Email { get; set; } = string.Empty;
 }

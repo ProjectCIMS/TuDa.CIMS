@@ -6,9 +6,9 @@ public class AddressFaker : BaseEntityFaker<Address>
 {
     public AddressFaker()
     {
-        RuleFor(a => a.City, f => f.Address.City());
-        RuleFor(a => a.ZipCode, f => f.Address.ZipCode());
         RuleFor(a => a.Street, f => f.Address.StreetName());
-        RuleFor(a => a.BuildingNumber, f => f.Address.BuildingNumber());
+        RuleFor(a => a.Number, f => f.Random.Int(1, 200));
+        RuleFor(a => a.ZipCode, f => f.Address.ZipCode());
+        RuleFor(a => a.City, f => f.Address.City());
     }
 }

@@ -10,6 +10,6 @@ public class PersonFaker<TPerson> : BaseEntityFaker<TPerson>
     {
         RuleFor(p => p.Name, f => f.Name.LastName());
         RuleFor(p => p.FirstName, f => f.Name.FirstName());
-        RuleFor(p => p.Gender, f => f.PickRandomWithout(Gender.Unknown));
+        RuleFor(p => p.Gender, f => f.PickRandom<Gender>());
     }
 }

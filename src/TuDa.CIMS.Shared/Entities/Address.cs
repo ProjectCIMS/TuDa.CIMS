@@ -1,24 +1,24 @@
-﻿namespace TuDa.CIMS.Shared.Entities;
+namespace TuDa.CIMS.Shared.Entities;
 
 public record Address : BaseEntity
 {
     /// <summary>
-    /// City of the address.
+    /// The street of the professor.
     /// </summary>
-    public string City { get; set; } = "Darmstadt";
+    public string Street { get; set; } = string.Empty;
 
     /// <summary>
-    /// Zip code of the city.
+    /// The number of the street.
     /// </summary>
-    public string ZipCode { get; set; } = "64387";
+    public int Number { get; set; }
 
     /// <summary>
-    /// Street of the address.
+    /// The zip code of the city.
     /// </summary>
-    public required string Street { get; set; }
+    public string ZipCode { get; set; } = string.Empty;
 
     /// <summary>
-    /// Building number of the address.
+    /// The city of the professors address.
     /// </summary>
-    public required string BuildingNumber { get; set; }
+    public string City { get; set; } = string.Empty;
 }
