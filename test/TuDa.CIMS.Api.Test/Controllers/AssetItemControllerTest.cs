@@ -1,15 +1,15 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TuDa.CIMS.Api.Controllers;
 using TuDa.CIMS.Api.Database;
+using TuDa.CIMS.Api.Test.Integration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Test.Faker;
 
-namespace TuDa.CIMS.Api.Test.Integration;
+namespace TuDa.CIMS.Api.Test.Controllers;
 
 [TestSubject(typeof(AssetItemController))]
 public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
