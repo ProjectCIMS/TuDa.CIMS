@@ -1,8 +1,9 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using FluentAssertions;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TuDa.CIMS.Api.Controllers;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
@@ -10,6 +11,7 @@ using TuDa.CIMS.Shared.Test.Faker;
 
 namespace TuDa.CIMS.Api.Test.Integration;
 
+[TestSubject(typeof(AssetItemController))]
 public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
 {
     private readonly HttpClient _client;
@@ -179,5 +181,36 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
         );
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GetPaginatedAsync_ShouldReturnCorrectPagination_WhenPaginationNecessary()
+    {
+        List<AssetItem> assetItems =
+        [
+            new ChemicalFaker(),
+            new ConsumableFaker(),
+            new SolventFaker(),
+            new GasCylinderFaker(),
+        ];
+
+        await _dbContext.AssetItems.AddRangeAsync(assetItems);
+        await _dbContext.SaveChangesAsync();
+
+        var response1 = await _client.GetAsync("api/asset-items/paginated?pageNumber=1&pageSize=2");
+        var response2 = await _client.GetAsync("api/asset-items/paginated?pageNumber=2&pageSize=2");
+        var response3 = await _client.GetAsync("api/asset-items/paginated?pageNumber=3&pageSize=2");
+
+        response1.IsSuccessStatusCode.Should().BeTrue();
+        response2.IsSuccessStatusCode.Should().BeTrue();
+
+        response3.IsSuccessStatusCode.Should().BeFalse();
+        response3.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        var result1 = await response1.Content.ReadFromJsonAsync<List<AssetItem>>();
+        var result2 = await response2.Content.ReadFromJsonAsync<List<AssetItem>>();
+
+        result1.Should().BeEquivalentTo(assetItems[..2]);
+        result2.Should().BeEquivalentTo(assetItems[2..4]);
     }
 }
