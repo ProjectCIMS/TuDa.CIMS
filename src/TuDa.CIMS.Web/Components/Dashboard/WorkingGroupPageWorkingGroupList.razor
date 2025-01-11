@@ -1,24 +1,23 @@
 @using TuDa.CIMS.Shared.Entities
-@*@ref="_dataGrid"*@ @*ServerData="ServerReload"*@
-<MudDataGrid T="WorkingGroup" Items="@WorkingGroups" QuickFilter="@QuickFilter" Filterable="false">
+
+<MudDataGrid @ref="_dataGrid" T="WorkingGroup" ServerData="ServerReload" Filterable="false">
     <ToolBarContent>
-        @*ValueChanged="@(s => OnSearch(s))"*@
         <MudTextField
             T="string"
-            @bind-Value="_searchString"
             Placeholder="Suche"
+            @bind-Value="_searchString"
+            ValueChanged="@(s => OnSearch(s))"
             Adornment="@Adornment.Start"
             Immediate="true"
             AdornmentIcon="@Icons.Material.Filled.Search"
             Clearable="true"
             IconSize="@Size.Medium"
             Class="mt-0"/>
-        @*OnClick="CreateGroupSelected"*@
         <MudIconButton Icon="@Icons.Material.Filled.PersonAddAlt1" Color="Color.Primary" Size="Size.Large"
-                       OnClick="@(() => OpenDialogAsync(new DialogOptions() { CloseButton = true }))">
+                       OnClick="CreateGroupSelected" Variant="Variant.Filled">
         </MudIconButton>
         <MudIconButton Icon="@Icons.Material.Filled.CreditCard" Color="Color.Primary" Disabled="true"
-                       Size="Size.Large">
+                       Size="Size.Large" Variant="Variant.Filled">
         </MudIconButton>
     </ToolBarContent>
 
@@ -33,7 +32,8 @@
         <TemplateColumn Title="">
             <CellTemplate>
                 <a href="/workingGroupInfoPage" target="_self">
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Medium"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Medium">
+                    </MudIconButton>
                 </a>
             </CellTemplate>
         </TemplateColumn>
