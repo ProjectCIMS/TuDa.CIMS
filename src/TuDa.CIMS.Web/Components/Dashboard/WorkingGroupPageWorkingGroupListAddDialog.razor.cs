@@ -4,37 +4,33 @@ using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Web.Components.Dashboard;
 
-public partial class WorkingGroupListAddDialog
+public partial class WorkingGroupPageWorkingGroupListAddDialog
 {
     /// <summary>
-    /// CascadingParamter MudDialag.
+    /// CascadingParameter MudDialog.
     /// </summary>
-    [CascadingParameter] private MudDialogInstance MudDialog { get; set; } = null!;
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; } = null!;
 
     /// <summary>
     /// The created working group.
     /// </summary>
-    private WorkingGroup WorkingGroup { get; set; } = new()
-    {
-        Professor = new Professor
-        {
-            Name = ProfessorName
-        }
-    };
+    private WorkingGroup WorkingGroup { get; set; } = null!;
 
     /// <summary>
     /// The created name of the professor.
     /// </summary>
-    private static string ProfessorName { get; set; } = string.Empty;
+    private string ProfessorName { get; set; } = string.Empty;
 
-    private MudForm form;
+    private MudForm form = null!;
 
     private string ValidateProfessorName(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-            return "Der Name des Dozierenden darf nicht leer sein.";
+            return "Der Name des Professors darf nicht leer sein.";
         }
+
         InputIsValid = true;
         return "";
     }
@@ -47,10 +43,14 @@ public partial class WorkingGroupListAddDialog
     /// <summary>
     /// Closes the MudDialog.
     /// </summary>
-    private void Submit(){
+    private void Submit()
+    {
         if (InputIsValid)
         {
-            MudDialog.Close(DialogResult.Ok(WorkingGroup));
+            Professor professor = new() { Name = ProfessorName };
+            WorkingGroup workingGroup = new() { Professor = professor };
+            WorkingGroup = workingGroup;
+            MudDialog.Close(DialogResult.Ok(professor));
         }
     }
 
@@ -58,5 +58,4 @@ public partial class WorkingGroupListAddDialog
     /// Cancels the MudDialog.
     /// </summary>
     private void Cancel() => MudDialog.Cancel();
-
 }

@@ -8,7 +8,7 @@
                 <MudItem>
                     <MudForm @ref="form" @bind-IsValid="@InputIsValid">
                     <MudTextField Typo="Typo.h6" T="string" bind-Value="ProfessorName" Clearable="true"
-                                  Label="Name des Dozierenden" Validation="@(new Func<string, string>(ValidateProfessorName))" Required="true">
+                                  Label="Name des Professors" Validation="@(() => ValidateProfessorName)" Required="true">
                     </MudTextField>
                     </MudForm>
                 </MudItem>
