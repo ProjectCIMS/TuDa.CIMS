@@ -21,6 +21,7 @@ public class CIMSDbContext : DbContext
     public DbSet<WorkingGroup> WorkingGroups { get; set; }
     public DbSet<Professor> Professors { get; set; }
     public DbSet<Student> Students { get; set; }
+    public DbSet<Address> Addresses { get; set; }
     public DbSet<Person> Persons { get; set; }
 
     #endregion
@@ -37,7 +38,9 @@ public class CIMSDbContext : DbContext
     public DbSet<ConsumableTransaction> ConsumableTransactions { get; set; }
 
     public CIMSDbContext(DbContextOptions<CIMSDbContext> options)
-        : base(options) { }
+        : base(options)
+    {
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
