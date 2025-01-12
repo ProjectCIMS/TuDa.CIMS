@@ -28,7 +28,12 @@ public partial class ShoppingCartSubmitPopup
     /// <summary>
     /// The selected working group.
     /// </summary>
-    private WorkingGroup WorkingGroup { get; set; } = null!;
+    public WorkingGroup? WorkingGroup { get; set; } = null;
+
+    /// <summary>
+    /// The selected buyer.
+    /// </summary>
+    private Person Buyer { get; set; } = null!;
 
     /// <summary>
     /// Cancels the MudDialog.
