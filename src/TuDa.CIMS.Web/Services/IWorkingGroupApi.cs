@@ -10,7 +10,7 @@ namespace TuDa.CIMS.Web.Services;
 /// <summary>
 /// Refit client interface for performing operations on WorkingGroups.
 /// </summary>
-[RefitClient("/api/working-group")]
+[RefitClient("/api/working-groups")]
 public interface IWorkingGroupApi
 {
     /// <summary>

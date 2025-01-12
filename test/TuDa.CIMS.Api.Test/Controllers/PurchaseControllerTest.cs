@@ -129,14 +129,14 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
     {
         // Arrange
         WorkingGroup workingGroup = new WorkingGroupFaker(purchases: []);
-        AssetItem assetItem = new ConsumableFaker();
+        Consumable assetItem = new ConsumableFaker();
 
         await _dbContext.WorkingGroups.AddRangeAsync(workingGroup);
         await _dbContext.AssetItems.AddAsync(assetItem);
         await _dbContext.SaveChangesAsync();
 
         var completionDate = DateTime.Now;
-        var entries = new PurchaseEntryFaker(assetItem).GenerateBetween(1, 10);
+        var entries = new PurchaseEntryFaker<Consumable>(assetItem).GenerateBetween(1, 10);
 
         var createPurchase = new CreatePurchaseDto
         {

@@ -13,4 +13,9 @@ public record CreateWorkingGroupDto
     /// A phone number to contact the group.
     /// </summary>
     public string PhoneNumber { get; set; } = string.Empty;
+
+    /// <summary>
+    /// An email to contact the group.
+    /// </summary>
+    public string Email { get; set; } = string.Empty;
 }

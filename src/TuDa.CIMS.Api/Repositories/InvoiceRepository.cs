@@ -37,6 +37,7 @@ public class InvoiceRepository : IInvoiceRepository
     public Task<Professor?> GetProfessorOfWorkingGroup(Guid workingGroupId) =>
         _context
             .WorkingGroups.Where(wg => wg.Id == workingGroupId)
+            .Include(wg => wg.Professor.Address)
             .Select(wg => wg.Professor)
             .SingleOrDefaultAsync();
 }

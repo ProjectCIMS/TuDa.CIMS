@@ -17,6 +17,7 @@ public class WorkingGroupFaker : BaseEntityFaker<WorkingGroup>
             () => students ?? new PersonFaker<Student>().GenerateBetween(3, 5)
         );
         RuleFor(g => g.PhoneNumber, f => f.Phone.PhoneNumber());
+        RuleFor(g => g.Email, f => f.Internet.Email());
         RuleFor(
             g => g.Purchases,
             (_, wg) => purchases ?? new PurchaseFaker(wg).GenerateBetween(3, 5)

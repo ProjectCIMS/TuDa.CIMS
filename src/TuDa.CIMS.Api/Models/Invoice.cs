@@ -51,7 +51,7 @@ public record Invoice
     /// <summary>
     /// Gets the total price of all entries in the invoice.
     /// </summary>
-    public double TotalPrice =>
+    public double TotalPrice() =>
         ConsumablesTotalPrice()
         + ChemicalsTotalPrice()
         + SolventsTotalPrice()
