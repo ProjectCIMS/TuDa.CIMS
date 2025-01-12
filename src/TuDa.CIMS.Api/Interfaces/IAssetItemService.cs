@@ -12,4 +12,5 @@ public interface IAssetItemService
     Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateAssetItemDto updateModel);
     Task<ErrorOr<Deleted>> RemoveAsync(Guid id);
     Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(AssetItemPaginationQueryParams queryParams);
+
 }

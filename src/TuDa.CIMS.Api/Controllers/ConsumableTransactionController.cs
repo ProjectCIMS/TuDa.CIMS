@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Controllers;
 
@@ -42,7 +43,7 @@ public class ConsumableTransactionController : ControllerBase
     }
 
     /// <summary>
-    /// Updates the amount of the specific Consumamble of the ConsumableTransaction and creates a new transaction for a consumable item..
+    /// Updates the amount of the specific Consumamble of the ConsumableTransaction and creates a new transaction for a consumable item.
     /// If this is successful, returns a 200 OK response. If an error occurs during the update, an appropriate error response is returned.
     /// </summary>
     /// <param name="createModel"></param>
@@ -51,6 +52,21 @@ public class ConsumableTransactionController : ControllerBase
     public async Task<IActionResult> CreateAsync(CreateConsumableTransactionDto createModel)
     {
         return (await _consumableTransactionService.CreateAsync(createModel)).Match<IActionResult>(
+            _ => Ok(),
+            err => BadRequest(err)
+        );
+    }
+
+    /// <summary>
+    /// Creates a ConsumableTransaction for a given purchase.
+    /// If this is successful, returns a 200 OK response. If an error occurs during the update, an appropriate error response is returned.
+    /// </summary>
+    /// <param name="purchase"></param>
+
+    [HttpPost($"{{{nameof(purchase.Id)}:guid}}")]
+    public async Task<IActionResult> CreateForPurchase(Purchase purchase)
+    {
+        return (await _consumableTransactionService.CreateForPurchaseAsync(purchase)).Match<IActionResult>(
             _ => Ok(),
             err => BadRequest(err)
         );
