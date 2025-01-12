@@ -1,7 +1,4 @@
-﻿@inherits AssetItemCreateForm
-
-
-<!-- AssetItemDialog -->
+﻿<!-- AssetItemDialog -->
 
 <MudDialog>
     <TitleContent>
@@ -17,7 +14,7 @@
     </TitleContent>
     <!-- Modal Body -->
     <DialogContent>
-        <AssetItemCreateForm/>
+        <AssetItemCreateForm @ref="_assetItemCreateForm" OnValidation ="@(_ => StateHasChanged())"/>
     </DialogContent>
     <!-- Modal Footer -->
     <DialogActions>
@@ -25,7 +22,7 @@
                    Color="Color.Secondary">
             Schließen
         </MudButton>
-        <MudButton OnClick="HandleSave"
+        <MudButton OnClick="SaveChanges"
                    Color="Color.Primary">
             Änderungen speichern
         </MudButton>
@@ -34,7 +31,29 @@
 </MudDialog>
 
 @code {
+    private AssetItemCreateForm _assetItemCreateForm;
+
     [CascadingParameter] public required MudDialogInstance ProductDialog { get; set; }
 
-    private void Cancel() => ProductDialog.Cancel();
+    [Parameter] public bool ShowError { get; set; }
+
+    private void Cancel()
+    {
+        _assetItemCreateForm.ShowError = false;
+        ProductDialog.Cancel();
+    }
+
+
+    public async Task SaveChanges()
+    {
+        bool hasErrors = _assetItemCreateForm.ValidateForm();
+
+        if (hasErrors)
+        {
+            return;
+        }
+
+        await _assetItemCreateForm.SaveChanges();
+        ProductDialog.Close();
+    }
 }

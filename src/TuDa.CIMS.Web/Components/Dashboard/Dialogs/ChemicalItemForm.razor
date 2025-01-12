@@ -5,17 +5,23 @@
 <MudForm>
     <MudTextField @bind-Value="FormCas"
                   Label="CAS"
+                  Error="@IsError"
+                  ErrorText="Die CAS muss eingegeben werden!"
                   Placeholder="CAS eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
     <MudTextField @bind-Value="FormPurity"
-                     Label="Reinheit"
-                     Placeholder="Reinheit eingeben"
-                     Variant="Variant.Filled"
-                     FullWidth/>
+                  Label="Reinheit"
+                  Error="@IsError"
+                  ErrorText="Die Reinheit muss eingegeben werden!"
+                  Placeholder="Reinheit eingeben"
+                  Variant="Variant.Filled"
+                  FullWidth/>
 
     <MudNumericField @bind-Value="FormBindingSize"
+                     Error="@IsError"
+                     ErrorText="Die Größe des Gebindes muss größer als 0 betragen!"
                      Label="Größe des Gebindes"
                      Placeholder="Gebindengröße eingeben"
                      Variant="Variant.Filled"
@@ -32,12 +38,6 @@
         <MudSelectItem Value="MeasurementUnits.Liter">Liter</MudSelectItem>
         <MudSelectItem Value="MeasurementUnits.Piece">Stück</MudSelectItem>
     </MudSelect>
-
-    <MudButton Color="Color.Primary"
-               Class="mt-3"
-               OnClick="ResetChemicalInputs">
-        Leeren
-    </MudButton>
 </MudForm>
 
 @code
@@ -50,14 +50,24 @@
 
     [Parameter] public double FormBindingSize { get; set; }
 
-    /// <summary>
-    /// Resets the Input lines
-    /// </summary>
-    protected void ResetChemicalInputs()
+    [Parameter] public bool FormShowError { get; set; }
+
+    private bool IsError => FormShowError && (FormCas == string.Empty || FormPurity == string.Empty || FormBindingSize <= 0);
+
+
+    public bool ValidateForm()
     {
-        FormCas = string.Empty;
-        FormPurity = "";
-        FormBindingSize = 0;
+        if (
+            FormCas == string.Empty
+            || FormBindingSize == 0.0
+            || FormPurity == string.Empty
+        )
+        {
+            FormShowError = true;
+            return true;
+        }
+
+        return false;
     }
 
 }

@@ -1,43 +1,45 @@
 ﻿@* Gas Cylinder Item Form *@
 
 <MudForm>
-
-    <ChemicalItemForm/>
-
-
     <MudNumericField @bind-Value="FormVolume"
                      Label="Volume"
+                     Error="@IsError"
+                     ErrorText="Das Volumen muss größer als 0 betragen!"
                      Placeholder="Volumen eingeben"
                      Variant="Variant.Filled"
                      FullWidth/>
 
     <MudNumericField @bind-Value="FormPressure"
                      Label="Pressure"
+                     Error="@IsError"
+                     ErrorText="Der Druck muss größer als 0 betragen!"
                      Placeholder="Druck eingeben"
                      Variant="Variant.Filled"
                      FullWidth/>
-
-    <MudButton Color="Color.Primary"
-               Class="mt-3"
-               OnClick="ResetGasCylinderInputs">
-        Leeren
-    </MudButton>
 </MudForm>
 
 @code
 {
-    [Parameter]
-    public double FormVolume { get; set; } = 0;
+    [Parameter] public double FormVolume { get; set; }
 
-    [Parameter]
-    public double FormPressure { get; set; } = 0;
+    [Parameter] public double FormPressure { get; set; }
 
-    /// <summary>
-    /// Resets the Input lines
-    /// </summary>
-    protected void ResetGasCylinderInputs()
+    [Parameter] public bool FormShowError { get; set; }
+
+    private bool IsError => FormShowError && (FormVolume <= 0 || FormPressure <= 0);
+
+
+
+    public bool ValidateForm()
     {
-        FormVolume = 0;
-        FormPressure = 0;
+        if (FormVolume == 0.0
+            || FormPressure == 0.0
+        )
+        {
+            return true;
+        }
+
+        return false;
     }
+
 }

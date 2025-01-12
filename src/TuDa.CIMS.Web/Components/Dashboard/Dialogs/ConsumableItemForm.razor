@@ -3,27 +3,27 @@
 <MudForm>
     <MudTextField @bind-Value="FormManufacturer"
                   Label=Hersteller
+                  Error="@IsError"
+                  ErrorText="Der Hersteller muss eingegeben werden!"
                   Placeholder="Hersteller eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
     <MudTextField @bind-Value="FormSerialNumber"
                   Label="Seriennummer"
+                  Error="@IsError"
+                  ErrorText="Die Seriennummern muss eingegeben werden!"
                   Placeholder="Seriennummer eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
     <MudNumericField @bind-Value="FormConsumableAmount"
                      Label="Menge"
+                     Error="@IsError"
+                     ErrorText="Die Menge muss größer als 0 betragen!"
                      Placeholder="Menge eingeben"
                      Variant="Variant.Filled"
                      FullWidth/>
-
-    <MudButton Color="Color.Primary"
-               Class="mt-3"
-               OnClick="ResetConsumableInputs">
-        Leeren
-    </MudButton>
 </MudForm>
 
 @code
@@ -35,14 +35,22 @@
     public string FormSerialNumber { get; set; } = string.Empty;
 
     [Parameter]
-    public int FormConsumableAmount { get; set; } = 0;
-    /// <summary>
-    /// Resets the Input lines
-    /// </summary>
-    protected void ResetConsumableInputs()
+    public int FormConsumableAmount { get; set; }
+
+    [Parameter] public bool FormShowError { get; set; }
+
+    private bool IsError => FormShowError && (FormConsumableAmount <= 0 || FormManufacturer == string.Empty || FormSerialNumber == string.Empty);
+
+    public bool ValidateForm()
     {
-        FormManufacturer = string.Empty;
-        FormSerialNumber = string.Empty;
-        FormConsumableAmount = 0;
+        if (
+            FormManufacturer == string.Empty
+            || FormSerialNumber == string.Empty
+            || FormConsumableAmount == 0
+        )
+        {
+            return true;
+        }
+        return false;
     }
 }

@@ -1,9 +1,11 @@
 ﻿@using TuDa.CIMS.Shared.Entities.Enums
 @* AssetItemCreateForm *@
 
+<MudSnackbarProvider/>
 
 <!-- Modal Body -->
-<MudChipSet T="AssetItemType" @bind-SelectedValue="_selectedAssetItemType" CheckMark SelectionMode="@_selectionMode" Class="my-4">
+<MudChipSet T="AssetItemType" @bind-SelectedValue="_selectedAssetItemType" CheckMark SelectionMode="@_selectionMode"
+            Class="my-4">
     <MudChip Color="Color.Primary" Value="AssetItemType.Chemical">
         Chemikalie
     </MudChip>
@@ -20,12 +22,15 @@
 
 <MudGrid>
     <MudItem xs="12" md="6">
-        <AssetItemForm FormName="@Name"
+        <AssetItemForm @ref="_assetItemForm"
+                       FormName="@Name"
                        FormNote="@Note"
                        FormShop="@Shop"
                        FormItemNumber="@ItemNumber"
                        FormPrice="@Price"
-                       FormRoom="Room"/>
+                       FormRoom="Room"
+                       FormShowError="ShowError"
+                       OnReset="ResetInputs"/>
     </MudItem>
 
     <!-- Which Form to Choose -->
@@ -34,28 +39,43 @@
         {
             case AssetItemType.Chemical:
                 <ChemicalItemForm
+                    @ref="_chemicalItemForm"
                     FormCas="@Cas"
                     FormPurity="@Purity"
                     FormBindingSize="@BindingSize"
-                    FormPriceUnit="@PriceUnit"/>
+                    FormPriceUnit="@PriceUnit"
+                    FormShowError="ShowError"/>
                 break;
             case AssetItemType.Consumable:
                 <ConsumableItemForm
+                    @ref="_consumableItemForm"
                     FormManufacturer="@Manufacturer"
                     FormSerialNumber="@SerialNumber"
-                    FormConsumableAmount="@ConsumableAmount"/>
+                    FormConsumableAmount="@ConsumableAmount"
+                    FormShowError="ShowError"/>
                 break;
             case AssetItemType.GasCylinder:
-                <GasCylinderItemForm
-                    FormPressure="@Pressure"
-                    FormVolume="@Volume"/>
-                break;
-            case AssetItemType.Solvent:
                 <ChemicalItemForm
+                    @ref="_chemicalItemForm"
                     FormCas="@Cas"
                     FormPurity="@Purity"
                     FormBindingSize="@BindingSize"
-                    FormPriceUnit="@PriceUnit"/>
+                    FormPriceUnit="@PriceUnit"
+                    FormShowError="ShowError"/>
+                <GasCylinderItemForm
+                    @ref="_gasCylinderForm"
+                    FormPressure="@Pressure"
+                    FormVolume="@Volume"
+                    FormShowError="ShowError"/>
+                break;
+            case AssetItemType.Solvent:
+                <ChemicalItemForm
+                    @ref="_chemicalItemForm"
+                    FormCas="@Cas"
+                    FormPurity="@Purity"
+                    FormBindingSize="@BindingSize"
+                    FormPriceUnit="@PriceUnit"
+                    FormShowError="ShowError"/>
                 break;
         }
     </MudItem>
@@ -64,4 +84,5 @@
 @code
 {
     private readonly SelectionMode _selectionMode = SelectionMode.SingleSelection;
+
 }
