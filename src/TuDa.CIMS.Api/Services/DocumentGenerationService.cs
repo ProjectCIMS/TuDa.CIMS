@@ -11,27 +11,53 @@ namespace TuDa.CIMS.Api.Services;
 public class DocumentGenerationService : IDocumentGenerationService
 {
     private readonly IInvoiceGenerationService _invoiceService;
+    private readonly HttpClient _httpClient;
 
-    private readonly Image _logo;
+    /// <summary>
+    /// This is the Url of the TuDa logo. This needs to be a png or jpg.
+    /// </summary>
+    private readonly string _logoUrl;
 
-    public DocumentGenerationService(IInvoiceGenerationService invoiceService)
+    private Image? _logo { get; set; }
+
+    public DocumentGenerationService(
+        IConfiguration configuration,
+        IInvoiceGenerationService invoiceService,
+        HttpClient httpClient
+    )
     {
+        _logoUrl =
+            configuration["TuDaLogoUrl"]
+            ?? throw new ArgumentException("TuDaLogoUrl need to be provided");
         _invoiceService = invoiceService;
-        _logo = Image.FromFile("tuda_logo.png");
+        _httpClient = httpClient;
     }
 
-    public Task<ErrorOr<byte[]>> GenerateInvoice(
+    private async Task<Image?> GetLogo()
+    {
+        if (_logo is not null)
+            return _logo;
+
+        var response = await _httpClient.GetAsync(_logoUrl);
+        _logo = response.IsSuccessStatusCode
+            ? Image.FromBinaryData(await response.Content.ReadAsByteArrayAsync())
+            : null;
+
+        return _logo;
+    }
+
+    public async Task<ErrorOr<byte[]>> GenerateInvoice(
         Guid workingGroupId,
         AdditionalInvoiceInformation information,
         DateOnly? beginDate,
         DateOnly? endDate
     ) =>
-        _invoiceService
+        await _invoiceService
             .CollectInvoiceForWorkingGroup(workingGroupId, beginDate, endDate)
-            .Then(invoice =>
+            .ThenAsync(async invoice =>
                 Document
                     .Merge(
-                        new InvoiceCoverDocument(invoice, _logo, information) { },
+                        new InvoiceCoverDocument(invoice, await GetLogo(), information) { },
                         new InvoiceTablesDocument(invoice)
                     )
                     .UseContinuousPageNumbers()

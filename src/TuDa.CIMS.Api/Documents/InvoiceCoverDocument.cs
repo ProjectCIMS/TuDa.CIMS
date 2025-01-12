@@ -11,7 +11,7 @@ public class InvoiceCoverDocument : IDocument
     /// <summary>
     /// Logo of the organization to present in the heading.
     /// </summary>
-    private readonly Image _logo;
+    private readonly Image? _logo;
 
     /// <summary>
     /// The invoice, that should be used.
@@ -29,7 +29,7 @@ public class InvoiceCoverDocument : IDocument
 
     public InvoiceCoverDocument(
         Invoice invoice,
-        Image logo,
+        Image? logo,
         AdditionalInvoiceInformation information
     )
     {
@@ -74,7 +74,9 @@ public class InvoiceCoverDocument : IDocument
                 .Row(row =>
                 {
                     row.RelativeItem().Element(ComposeProfessorSalution);
-                    row.RelativeItem(0.6f).Image(_logo);
+
+                    if (_logo is not null)
+                        row.RelativeItem(0.6f).Image(_logo);
                 });
         });
     }
