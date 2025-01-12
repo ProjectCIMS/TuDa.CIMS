@@ -6,6 +6,8 @@ using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Controllers;
 
+[ApiController]
+[Route("api/consumableTransaction")]
 public class ConsumableTransactionController : ControllerBase
 {
     private readonly IConsumableTransactionService _consumableTransactionService;
@@ -57,18 +59,4 @@ public class ConsumableTransactionController : ControllerBase
         );
     }
 
-    /// <summary>
-    /// Creates a ConsumableTransaction for a given purchase.
-    /// If this is successful, returns a 200 OK response. If an error occurs during the update, an appropriate error response is returned.
-    /// </summary>
-    /// <param name="purchase"></param>
-
-    [HttpPost($"{{{nameof(purchase.Id)}:guid}}")]
-    public async Task<IActionResult> CreateForPurchase(Purchase purchase)
-    {
-        return (await _consumableTransactionService.CreateForPurchaseAsync(purchase)).Match<IActionResult>(
-            _ => Ok(),
-            err => BadRequest(err)
-        );
-    }
 }

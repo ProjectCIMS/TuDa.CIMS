@@ -83,19 +83,24 @@ public class ConsumableTransactionService : IConsumableTransactionService
     {
         try
         {
-            var consumableEntries = purchase.Entries.Where(e => e.AssetItem is Consumable);
-            foreach (var con in consumableEntries)
+            if (purchase.Completed)
             {
-                CreateConsumableTransactionDto consumableTransaction = new CreateConsumableTransactionDto()
+                var consumableEntries = purchase.Entries.Where(e => e.AssetItem is Consumable);
+                foreach (var con in consumableEntries)
                 {
-                    ConsumableId = con.Id,
-                    Date = purchase.CompletionDate ??,
-                    AmountChange = -con.Amount,
-                    TransactionReason = TransactionReasons.Purchase
-                };
-                _consumableTransactionRepository.CreateAsync(consumableTransaction);
+                        CreateConsumableTransactionDto consumableTransaction = new CreateConsumableTransactionDto()
+                        {
+                            ConsumableId = con.Id,
+                            //DateTime.Now is just a random value that is never set if purchase.completed is true
+                            Date = purchase.CompletionDate ?? DateTime.Now,
+                            AmountChange = -con.Amount,
+                            TransactionReason = TransactionReasons.Purchase
+                        };
+                    await _consumableTransactionRepository.CreateAsync(consumableTransaction);
+                }
 
-            } return Result.Created;
+                return Result.Created;
+            } return Error.Failure("Purchase not completed.");
         }
         catch (Exception e)
         {
