@@ -10,65 +10,27 @@ public partial class AssetItemCreateForm
     /// <summary>
     /// To choose from the different forms for inputting
     /// </summary>
-    private ItemType _selectedItemType = ItemType.Chemical;
-
-    /// <summary>
-    /// Available types of Items
-    /// </summary>
-    public enum ItemType
-    {
-        Chemical,
-        Consumable,
-        GasCylinder,
-        Solvent,
-    }
-
-    private readonly SelectionMode _selectionMode = SelectionMode.SingleSelection;
+    private AssetItemType _selectedAssetItemType = AssetItemType.Chemical;
 
     /// <summary>
     /// Temporary Values to bind when inputting
+    /// TODO: maybe add set function so that price and other numerics can't be negative
     /// </summary>
-    protected string Name = "";
-    protected string Shop = "";
-    protected string ItemNumber = "";
-    protected string Note = "";
-    protected string Cas = "";
-    protected string Manufacturer = "";
-    protected string SerialNumber = "";
-    protected double Price = 0;
-    protected int ConsumableAmount = 0;
-    protected string Purity = "";
-    protected double BindingSize = 0;
-    protected double Volume = 0;
-    protected double Pressure = 0;
-    protected Room Room = new Room() { Name = string.Empty };
-    protected MeasurementUnits PriceUnit = MeasurementUnits.Piece;
-
-    /// <summary>
-    /// Method to switch to a Substance
-    /// </summary>
-    private void SwitchToChemical()
-    {
-        _selectedItemType = ItemType.Chemical;
-    }
-
-    /// <summary>
-    /// Method to switch to a Consumable
-    /// </summary>
-    private void SwitchToConsumable()
-    {
-        _selectedItemType = ItemType.Consumable;
-    }
-
-    private void SwitchToGasCylinder()
-    {
-        _selectedItemType = ItemType.GasCylinder;
-    }
-
-    private void SwitchToSolvent()
-    {
-        _selectedItemType = ItemType.Solvent;
-    }
+    private string Name { get; set; }
+    private string Shop { get; set; }
+    private string ItemNumber { get; set; }
+    private string Note { get; set; }
+    private string Cas { get; set; }
+    private string Manufacturer { get; set; }
+    private string SerialNumber { get; set; }
+    private double Price { get; set; }
+    private int ConsumableAmount { get; set; }
+    private string Purity { get; set; }
+    private double BindingSize { get; set; }
+    private double Volume { get; set; }
+    private double Pressure { get; set; }
+    private Room Room { get; set; }
+    private MeasurementUnits PriceUnit { get; set; }
 
     /// <summary>
     /// Item after clicking "Änderungen speichern" Button
@@ -93,9 +55,9 @@ public partial class AssetItemCreateForm
     /// </summary>
     protected AssetItem SaveChanges()
     {
-        switch (_selectedItemType)
+        switch (_selectedAssetItemType)
         {
-            case ItemType.Chemical:
+            case AssetItemType.Chemical:
                 return savedItem = new Chemical
                 {
                     Name = Name,
@@ -109,7 +71,7 @@ public partial class AssetItemCreateForm
                     Room = Room,
                 };
 
-            case ItemType.Consumable:
+            case AssetItemType.Consumable:
                 return savedItem = new Consumable
                 {
                     Name = Name,
@@ -123,7 +85,7 @@ public partial class AssetItemCreateForm
                     Room = Room,
                 };
 
-            case ItemType.GasCylinder:
+            case AssetItemType.GasCylinder:
                 return savedItem = new GasCylinder
                 {
                     Name = Name,
@@ -139,7 +101,7 @@ public partial class AssetItemCreateForm
                     PriceUnit = PriceUnit,
                 };
 
-            case ItemType.Solvent:
+            case AssetItemType.Solvent:
                 return savedItem = new Solvent
                 {
                     Name = Name,
