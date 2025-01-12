@@ -1,28 +1,27 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
+using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
-public partial class WorkingGroupPersonList : ComponentBase
+public partial class WorkingGroupPersonList(IWorkingGroupApi _workingGroupApi) : ComponentBase
 {
     public List<Person> Persons = new List<Person>();
 
+    public WorkingGroup WorkingGroup { get; set; }
 
-    static Guid selectedPersonId = Guid.Empty;
-
-    private void EditBuyer()
-    {
-        // do something
-    }
+    private Guid WorkingGroupId { get; set; }
 
     private void RemoveBuyer()
     {
-        // do something
+        /// Wait for api functionality
+        /// _workingGroupApi.Remove(WorkingGroupId, person.Id);
     }
+
 
     private void AddBuyer()
     {
-        // do something
+        // TODO: Implement AddBuyer with a dialog here
     }
 
     private List<string> items = new List<string> { "Matse Müller", "Herbert Grönemeyer" };

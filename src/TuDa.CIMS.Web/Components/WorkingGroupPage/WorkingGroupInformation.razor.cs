@@ -1,19 +1,54 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Web.Components.WorkingGroupPage.WorkingGroupDialogs;
+using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
-public partial class WorkingGroupInformation : ComponentBase
+public partial class WorkingGroupInformation(IWorkingGroupApi _workingGroupApi) : ComponentBase
 {
+    private Guid WorkingGroupId { get; set; }
 
-    /// Probewerte für Professor
-    private Professor ProfessorInfoa = new Professor
+    [Inject] private IDialogService DialogService { get; set; } = null!;
+
+
+    [Parameter] public required Professor ProfessorInfo { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
-        FirstName = "Max",
-        Name = "",
-        Address = new Address() { Street = "Musterstraße", Number = 1, ZipCode = "12345", City = "Musterstadt" },
-        Email = "sigma@sigma.de"
-    };
-    public void Edit(){}
+        var information = await _workingGroupApi.GetAsync(WorkingGroupId);
+        ProfessorInfo = information.Value.Professor;
+    }
+
+    private Task EditProfessor()
+    {
+        return DialogService.ShowAsync<WorkingGroupProfessorEditDialog>();
+    }
+
+    private Task EditPhoneNumber()
+    {
+        return DialogService.ShowAsync<WorkingGroupEditPhoneNumberDialog>();
+    }
+
+    public Task EditAddressCity()
+    {
+        return DialogService.ShowAsync<WorkingGroupEditAddressCityDialog>();
+    }
+
+    public Task EditAddressStreetAndNumber()
+    {
+        return DialogService.ShowAsync<WorkingGroupEditAddressStreetAndNumberDialog>();
+    }
+
+    public Task EditAddressZipNumber()
+    {
+        return DialogService.ShowAsync<WorkingGroupEditZipNumberDialog>();
+    }
+
+    public Task EditEmail()
+    {
+        return DialogService.ShowAsync<WorkingGroupEditEmailDialog>();
+    }
 }
 

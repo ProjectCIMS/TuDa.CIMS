@@ -1,0 +1,12 @@
+﻿<MudDialog>
+    <TitleContent>
+        Telefonnummer bearbeiten
+    </TitleContent>
+    <DialogContent>
+        <MudTextField T="String" @bind-Value="ProfessorPhoneNumber" Label="PhoneNumber" Required="true"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" Color="Color.Error"> Abbrechen</MudButton>
+        <MudButton OnClick="Save" Color="Color.Success"> Speichern</MudButton>
+    </DialogActions>
+</MudDialog>

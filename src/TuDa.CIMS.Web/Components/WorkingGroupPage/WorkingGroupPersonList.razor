@@ -1,6 +1,4 @@
-﻿@page "/232"
-
-<MudContainer MaxWidth="MaxWidth.Small" Class="bg-white">
+﻿<MudContainer MaxWidth="MaxWidth.Small" Class="bg-white">
     <MudDataGrid Items="@Persons"
                  FixedHeader="@true"
                  SortMode="SortMode.None"
@@ -15,13 +13,6 @@
             <PropertyColumn
                 Property="@(p => p.Name)"
                 Title="Nachname"/>
-            <TemplateColumn CellClass="d-flex justify-end">
-                <CellTemplate>
-                    <MudIconButton Size="@Size.Small"
-                                   Icon="@Icons.Material.Outlined.Edit"
-                                   @onclick="@(EditBuyer)"/>
-                </CellTemplate>
-            </TemplateColumn>
         </Columns>
     </MudDataGrid>
     <div Class="d-flex justify-content-end">
