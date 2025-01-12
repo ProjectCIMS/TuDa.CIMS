@@ -54,7 +54,7 @@ public class InvoiceControllerTest : IClassFixture<CIMSApiFactory>
         await _dbContext.SaveChangesAsync();
 
         var response = await _client.GetAsync(
-            $"api/invoices/{workingGroup.Id}/statistics?beginDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}"
+            $"api/working-groups/{workingGroup.Id}/invoices/statistics?beginDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}"
         );
 
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -91,7 +91,9 @@ public class InvoiceControllerTest : IClassFixture<CIMSApiFactory>
         await _dbContext.WorkingGroups.AddAsync(workingGroup);
         await _dbContext.SaveChangesAsync();
 
-        var response = await _client.GetAsync($"api/invoices/{workingGroup.Id}/statistics");
+        var response = await _client.GetAsync(
+            $"api/working-groups/{workingGroup.Id}/invoices/statistics"
+        );
 
         response.IsSuccessStatusCode.Should().BeTrue();
 
@@ -125,7 +127,9 @@ public class InvoiceControllerTest : IClassFixture<CIMSApiFactory>
         await _dbContext.WorkingGroups.AddAsync(workingGroup);
         await _dbContext.SaveChangesAsync();
 
-        var response = await _client.GetAsync($"api/invoices/{workingGroup.Id}/statistics");
+        var response = await _client.GetAsync(
+            $"api/working-groups/{workingGroup.Id}/invoices/statistics"
+        );
 
         response.IsSuccessStatusCode.Should().BeTrue();
 

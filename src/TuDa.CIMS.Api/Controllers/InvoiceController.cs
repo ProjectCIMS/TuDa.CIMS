@@ -6,7 +6,7 @@ using TuDa.CIMS.Shared.Models;
 namespace TuDa.CIMS.Api.Controllers;
 
 [ApiController]
-[Route("api/invoices")]
+[Route("api/working-groups/{workingGroupId:guid}/invoices")]
 public class InvoiceController : CIMSBaseController
 {
     private readonly IInvoiceGenerationService _invoiceService;
@@ -21,7 +21,7 @@ public class InvoiceController : CIMSBaseController
         _documentService = documentService;
     }
 
-    [HttpGet($"{{{nameof(workingGroupId)}:guid}}/statistics")]
+    [HttpGet("statistics")]
     public async Task<IActionResult> GetInvoiceStatistics(
         Guid workingGroupId,
         [FromQuery] DateOnly? beginDate,
@@ -32,7 +32,7 @@ public class InvoiceController : CIMSBaseController
             onError: ErrorsToProblem
         );
 
-    [HttpPost($"{{{nameof(workingGroupId)}:guid}}/document")]
+    [HttpPost("document")]
     public async Task<IActionResult> GetInvoiceDocument(
         [FromRoute] Guid workingGroupId,
         [FromBody] AdditionalInvoiceInformation additionalInformation,
