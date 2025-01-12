@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections;
+using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
@@ -129,5 +130,12 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         _context.WorkingGroups.Add(workingGroup);
         await _context.SaveChangesAsync();
         return workingGroup;
+    }
+
+    public async Task<IEnumerable<WorkingGroup>> SearchAsync(string name)
+    {
+        IQueryable<WorkingGroup> query = _context.WorkingGroups.Where(s => EF.Functions.ILike(s.Professor.Name, $"%{name}%"));
+
+        return await query.ToListAsync();
     }
 }
