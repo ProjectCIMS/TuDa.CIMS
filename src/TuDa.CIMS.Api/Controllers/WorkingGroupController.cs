@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared;
 using TuDa.CIMS.Shared.Dtos;
 
 namespace TuDa.CIMS.Api.Controllers;
 
 [ApiController]
 [Route("api/working-groups")]
-public class WorkingGroupController : ControllerBase
+public class WorkingGroupController : CIMSBaseController
 {
     private readonly IWorkingGroupService _workingGroupService;
 
@@ -22,9 +23,9 @@ public class WorkingGroupController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
-        return (await _workingGroupService.GetAllAsync()).Match<IActionResult>(
-            value => Ok(value),
-            err => BadRequest(err)
+        return (await _workingGroupService.GetAllAsync()).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
         );
     }
 
@@ -36,9 +37,9 @@ public class WorkingGroupController : ControllerBase
     [HttpGet($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> GetOneAsync(Guid id)
     {
-        return (await _workingGroupService.GetOneAsync(id)).Match<IActionResult>(
-            value => Ok(value),
-            err => BadRequest(err)
+        return (await _workingGroupService.GetOneAsync(id)).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
         );
     }
 
@@ -52,9 +53,9 @@ public class WorkingGroupController : ControllerBase
     [HttpPatch($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel)
     {
-        return (await _workingGroupService.UpdateAsync(id, updateModel)).Match<IActionResult>(
-            value => Ok(value),
-            err => BadRequest(err)
+        return (await _workingGroupService.UpdateAsync(id, updateModel)).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
         );
     }
 
@@ -67,9 +68,9 @@ public class WorkingGroupController : ControllerBase
     [HttpDelete($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> RemoveAsync(Guid id)
     {
-        return (await _workingGroupService.RemoveAsync(id)).Match<IActionResult>(
-            _ => Ok(),
-            err => BadRequest(err)
+        return (await _workingGroupService.RemoveAsync(id)).Match(
+            onValue: _ => Ok(),
+            onError: ErrorsToProblem
         );
     }
 
@@ -82,9 +83,9 @@ public class WorkingGroupController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync(CreateWorkingGroupDto createModel)
     {
-        return (await _workingGroupService.CreateAsync(createModel)).Match<IActionResult>(
-            value => Ok(value),
-            err => BadRequest(err)
+        return (await _workingGroupService.CreateAsync(createModel)).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
         );
     }
 }

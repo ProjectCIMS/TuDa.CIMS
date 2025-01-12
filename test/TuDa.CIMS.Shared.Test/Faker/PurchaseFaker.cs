@@ -20,7 +20,10 @@ public class PurchaseFaker : BaseEntityFaker<Purchase>
         );
         RuleFor(
             p => p.CompletionDate,
-            f => completed.Value ? f.Date.Recent().ToUniversalTime() : null
+            f =>
+                completed.Value
+                    ? f.Date.RecentDateOnly(30).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)
+                    : null
         );
         RuleFor(p => p.Completed, () => completed);
     }

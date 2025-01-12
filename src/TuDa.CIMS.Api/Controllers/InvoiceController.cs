@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared;
 
 namespace TuDa.CIMS.Api.Controllers;
 
 [ApiController]
 [Route("api/invoices")]
-public class InvoiceController : ControllerBase
+public class InvoiceController : CIMSBaseController
 {
     private readonly IInvoiceGenerationService _invoiceService;
 
@@ -20,7 +21,8 @@ public class InvoiceController : ControllerBase
         [FromQuery] DateOnly? beginDate,
         [FromQuery] DateOnly? endDate
     ) =>
-        (
-            await _invoiceService.GetInvoiceStatistics(workingGroupId, beginDate, endDate)
-        ).Match<IActionResult>(Ok, BadRequest);
+        (await _invoiceService.GetInvoiceStatistics(workingGroupId, beginDate, endDate)).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
+        );
 }
