@@ -19,6 +19,6 @@ public static class MeasurementUnitsExtension
             MeasurementUnits.Piece => "Stück",
             MeasurementUnits.MilliLiter => "ml",
             MeasurementUnits.Gram => "g",
-            _ => $"{unit}",
+            _ => $" {unit}",
         };
 }

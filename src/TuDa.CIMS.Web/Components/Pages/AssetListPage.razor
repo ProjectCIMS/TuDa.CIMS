@@ -1,0 +1,28 @@
+﻿@page "/asset-list"
+@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Web.Components.Dashboard
+
+<div class="container-fluid ">
+    <div class="row mt-5">
+        <AssetList AddButtonPressed="CreateAssetItem"
+                   EditButtonPressed="EditAssetItem"/>
+    </div>
+</div>
+
+@code
+{
+    [Inject] private ILogger<AssetListPage> _logger { get; set; } = null!;
+
+    // TODO: Open CreateDialogHere
+    private void CreateAssetItem()
+    {
+        _logger.LogInformation("Added");
+    }
+
+    // TODO: Open EditDialog here
+    private void EditAssetItem(AssetItem assetItem)
+    {
+        _logger.LogInformation("Edit {Item.Name}", assetItem.Name);
+    }
+
+}
