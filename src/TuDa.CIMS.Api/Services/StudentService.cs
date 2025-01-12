@@ -22,11 +22,11 @@ public class StudentService : IStudentService
     /// <param name="id">the unique id of the Student</param>
     /// <param name="workingGroupId">the unique id of the Working Group</param>
     /// <returns></returns>
-    public async Task<ErrorOr<WorkingGroup>> RemoveAsync(Guid id, Guid workingGroupId)
+    public async Task<ErrorOr<WorkingGroup>> RemoveAsync(Guid workingGroupId, Guid id)
     {
         try
         {
-            return await _studentRepository.RemoveAsync(id, workingGroupId);
+            return await _studentRepository.RemoveAsync(workingGroupId, id);
         }
         catch (Exception e)
         {
@@ -43,12 +43,17 @@ public class StudentService : IStudentService
     /// </summary>
     /// <param name="id">the unique id of the Student</param>
     /// <param name="workingGroupId">the unique id of the Working Group</param>
+    /// <param name="createStudentDto">to add a student but optional</param>
     /// <returns></returns>
-    public async Task<ErrorOr<WorkingGroup>> AddAsync(Guid id, Guid workingGroupId)
+    public async Task<ErrorOr<WorkingGroup>> AddAsync(
+        Guid workingGroupId,
+        Guid id,
+        CreateStudentDto? createStudentDto
+    )
     {
         try
         {
-            return await _studentRepository.AddAsync(id, workingGroupId);
+            return await _studentRepository.AddAsync(workingGroupId, id, createStudentDto);
         }
         catch (Exception e)
         {
@@ -66,11 +71,15 @@ public class StudentService : IStudentService
     /// <param name="id">the unique id of the Student</param>
     /// <param name="updateModel">Model containing updated Values for the Student</param>
     /// <returns></returns>
-    public async Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateStudentDto updateModel)
+    public async Task<ErrorOr<Updated>> UpdateAsync(
+        Guid workingGroupId,
+        Guid id,
+        UpdateStudentDto updateModel
+    )
     {
         try
         {
-            return await _studentRepository.UpdateAsync(id, updateModel);
+            return await _studentRepository.UpdateAsync(workingGroupId, id, updateModel);
         }
         catch (Exception e)
         {
