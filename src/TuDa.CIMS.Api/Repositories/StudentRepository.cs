@@ -23,7 +23,7 @@ public class StudentRepository : IStudentRepository
     /// <param name="id">specific ID of Student</param>
     /// <param name="workingGroupId">specific ID of Working Group</param>
     /// <returns>returns the Working Group in which the Student was removed</returns>
-    public async Task<ErrorOr<WorkingGroup>> RemoveAsync(Guid id, Guid workingGroupId)
+    public async Task<ErrorOr<WorkingGroup>> RemoveAsync(Guid workingGroupId, Guid id)
     {
         var existingWorkingGroup = await _context
             .WorkingGroups.Where(i => i.Id == workingGroupId)
@@ -52,8 +52,13 @@ public class StudentRepository : IStudentRepository
     /// </summary>
     /// <param name="id">specific ID of Student</param>
     /// <param name="workingGroupId">specific ID of Working Group</param>
+    /// <param name="createStudentDto">model to create a student if necessary</param>
     /// <returns>returns the Working Group in which the Student was added</returns>
-    public async Task<ErrorOr<WorkingGroup>> AddAsync(Guid id, Guid workingGroupId)
+    public async Task<ErrorOr<WorkingGroup>> AddAsync(
+        Guid workingGroupId,
+        Guid id,
+        CreateStudentDto? createStudentDto
+    )
     {
         var existingWorkingGroup = await _context
             .WorkingGroups.Where(i => i.Id == workingGroupId)
@@ -69,7 +74,13 @@ public class StudentRepository : IStudentRepository
 
         if (existingStudent == null)
         {
-            return Error.NotFound("Student.add", $"Student with id {id} was not found.");
+            existingStudent = new Student()
+            {
+                Id = id,
+                Name = createStudentDto?.Name ?? string.Empty,
+                FirstName = createStudentDto?.FirstName ?? string.Empty,
+            };
+            _context.Students.Add(existingStudent);
         }
 
         existingWorkingGroup.Students.Add(existingStudent);
@@ -80,16 +91,40 @@ public class StudentRepository : IStudentRepository
     /// <summary>
     /// Updates an existing Student using the provided Values in the Update Model
     /// </summary>
+    /// <param name="workingGroupId">specific Id of the Working Group</param>
     /// <param name="id">specific ID of the Student</param>
     /// <param name="updatedStudentDto">the model containing the updated values for the Student</param>
     /// <returns>Returns an Update Result</returns>
-    public async Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateStudentDto updatedStudentDto)
+    public async Task<ErrorOr<Updated>> UpdateAsync(
+        Guid workingGroupId,
+        Guid id,
+        UpdateStudentDto updatedStudentDto
+    )
     {
         var existingStudent = await _context.Students.FindAsync(id);
 
         if (existingStudent == null)
         {
             return Error.NotFound("Student.update", $"Student with id {id} was not found.");
+        }
+
+        var existingWorkingGroup = await _context
+            .WorkingGroups.Where(i => i.Id == workingGroupId)
+            .Include(workingGroup => workingGroup.Students)
+            .SingleOrDefaultAsync();
+
+        if (existingWorkingGroup == null)
+        {
+            return Error.NotFound("Student.update", $"WorkingGroup with id {id} was not found.");
+        }
+
+        foreach (Student student in existingWorkingGroup.Students)
+        {
+            if (existingStudent == student)
+            {
+                student.Name = updatedStudentDto.Name;
+                student.FirstName = updatedStudentDto.FirstName;
+            }
         }
 
         existingStudent.Name = updatedStudentDto.Name;
