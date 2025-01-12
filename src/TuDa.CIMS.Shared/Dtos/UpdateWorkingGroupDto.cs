@@ -12,5 +12,10 @@ public record UpdateWorkingGroupDto
     /// <summary>
     /// A phone number to contact the group.
     /// </summary>
-    public string? PhoneNumber { get; set; } = string.Empty;
+    public string? PhoneNumber { get; set; }
+
+    /// <summary>
+    /// An email to contract the group.
+    /// </summary>
+    public string? Email { get; set; }
 }

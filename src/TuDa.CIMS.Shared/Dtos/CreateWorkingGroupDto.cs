@@ -20,6 +20,11 @@ public record CreateWorkingGroupDto
     public string PhoneNumber { get; set; } = string.Empty;
 
     /// <summary>
+    /// An email to contact the group.
+    /// </summary>
+    public string Email { get; set; } = string.Empty;
+
+    /// <summary>
     /// All purchases done by the group.
     /// </summary>
     public List<Purchase> Purchases { get; set; } = [];
