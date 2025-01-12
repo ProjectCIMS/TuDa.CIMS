@@ -19,6 +19,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+builder.Services.AddScoped<IConsumableTransactionService, ConsumableTransactionService>();
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
