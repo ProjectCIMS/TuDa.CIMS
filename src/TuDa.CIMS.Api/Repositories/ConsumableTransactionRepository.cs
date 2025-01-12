@@ -39,33 +39,34 @@ public class ConsumableTransactionRepository: IConsumableTransactionRepository
     /// </summary>
     /// <param name="ConsumableTransactionDto"></param>
 
-    public async Task<ErrorOr<Created>> CreateAsync(CreateConsumableTransactionDto ConsumableTransactionDto)
+    public async Task<ErrorOr<Created>> CreateAsync(CreateConsumableTransactionDto consumableTransactionDto)
     {
-        var consumable = await _context.AssetItems.Include(i => i.Room)
-            .Where(i => i.Id == ConsumableTransactionDto.ConsumableId).SingleOrDefaultAsync();
+        var consumable = await _context.Consumables
+            .Where(i => i.Id == consumableTransactionDto.ConsumableId).SingleOrDefaultAsync();
         ;
-
-        Consumable castedConsumable = (Consumable)consumable;
-        if (castedConsumable is null)
+        if (consumable is null)
         {
-            return Error.Failure("Consumable not found");
+            return Error.NotFound("Consumable not found");
         }
-        if (castedConsumable.Amount + ConsumableTransactionDto.AmountChange < 0)
+        if (consumable.Amount + consumableTransactionDto.AmountChange < 0)
         {
             return Error.Failure("Negative amount of consumable is not possible.");
         }
-        castedConsumable.Amount = +ConsumableTransactionDto.AmountChange;
+        consumable.Amount =+ consumableTransactionDto.AmountChange;
+
 
         ConsumableTransaction consumableTransaction = new ConsumableTransaction()
         {
-            Date = ConsumableTransactionDto.Date,
-            Consumable = castedConsumable,
-            AmountChange = ConsumableTransactionDto.AmountChange,
-            TransactionReason = ConsumableTransactionDto.TransactionReason,
+            Date = consumableTransactionDto.Date,
+            Consumable = consumable,
+            AmountChange = consumableTransactionDto.AmountChange,
+            TransactionReason = consumableTransactionDto.TransactionReason,
 
         };
         _context.ConsumableTransactions.Add(consumableTransaction);
         await _context.SaveChangesAsync();
         return Result.Created;
     }
+
+
 }

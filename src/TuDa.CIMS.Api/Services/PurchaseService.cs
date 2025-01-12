@@ -44,7 +44,10 @@ public class PurchaseService : IPurchaseService
         {
             return (await _purchaseRepository.GetOneAsync(id, workingGroupId)) switch
             {
-                null => Error.NotFound("PurchaseService.GetOneAsync", $"Purchase with id {id} not found."),
+                null => Error.NotFound(
+                    "PurchaseService.GetOneAsync",
+                    $"Purchase with id {id} not found."
+                ),
                 var value => value,
             };
         }
@@ -53,7 +56,6 @@ public class PurchaseService : IPurchaseService
             return Error.Unexpected("PurchaseService.GetOneAsync", ex.Message);
         }
     }
-
 
     /// <summary>
     /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
@@ -81,7 +83,10 @@ public class PurchaseService : IPurchaseService
     /// <param name="workingGroupId">the unique id of a workinggroup</param>
     /// <param name="createModel">the model containing the created values for the purchase</param>
     /// <returns></returns>
-    public async Task<ErrorOr<Created>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel)
+    public async Task<ErrorOr<Created>> CreateAsync(
+        Guid workingGroupId,
+        CreatePurchaseDto createModel
+    )
     {
         try
         {
@@ -92,4 +97,5 @@ public class PurchaseService : IPurchaseService
             return Error.Failure("PurchaseService.CreateAsync", ex.Message);
         }
     }
+
 }

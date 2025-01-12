@@ -1,6 +1,7 @@
 ﻿using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Api.Services;
 
@@ -75,6 +76,32 @@ public class ConsumableTransactionService : IConsumableTransactionService
                 "ConsumableTransaction.CreateAsync",
                 $"Failed to update amount of specific Conusmable with Id {consumableTransactionDto.ConsumableId} and failed to create ConsumableTransaction. Exception: {e.Message}"
             );
+        }
+    }
+
+    public async Task<ErrorOr<Created>> CreateForPurchaseAsync(Purchase purchase)
+    {
+        try
+        {
+            var consumableEntries = purchase.Entries.Where(e => e.AssetItem is Consumable);
+            foreach (var con in consumableEntries)
+            {
+                CreateConsumableTransactionDto consumableTransaction = new CreateConsumableTransactionDto()
+                {
+                    ConsumableId = con.Id,
+                    Date = purchase.CompletionDate ??,
+                    AmountChange = -con.Amount,
+                    TransactionReason = TransactionReasons.Purchase
+                };
+                _consumableTransactionRepository.CreateAsync(consumableTransaction);
+
+            } return Result.Created;
+        }
+        catch (Exception e)
+        {
+            return Error.Failure(
+                "ConsumableTransaction.CreateForPurchaseAsync",
+                $"Failed to create ConsumableTransaction for the purchase. Exception: {e.Message}");
         }
     }
 }
