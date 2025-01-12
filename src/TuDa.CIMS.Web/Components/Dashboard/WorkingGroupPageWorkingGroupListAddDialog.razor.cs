@@ -12,10 +12,6 @@ public partial class WorkingGroupPageWorkingGroupListAddDialog
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; } = null!;
 
-    /// <summary>
-    /// The created working group.
-    /// </summary>
-    private WorkingGroup WorkingGroup { get; set; } = null!;
 
     /// <summary>
     /// The created name of the professor.
@@ -48,8 +44,6 @@ public partial class WorkingGroupPageWorkingGroupListAddDialog
         if (InputIsValid)
         {
             Professor professor = new() { Name = ProfessorName };
-            WorkingGroup workingGroup = new() { Professor = professor };
-            WorkingGroup = workingGroup;
             MudDialog.Close(DialogResult.Ok(professor));
         }
     }

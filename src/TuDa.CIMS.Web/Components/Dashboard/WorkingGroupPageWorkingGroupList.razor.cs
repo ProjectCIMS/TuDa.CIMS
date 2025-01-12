@@ -5,17 +5,20 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.Dashboard;
 
-public partial class WorkingGroupPageWorkingGroupList(IDialogService dialogService)
+public partial class WorkingGroupPageWorkingGroupList
 {
-     private MudDataGrid<WorkingGroup> _dataGrid { get; set; }
-
-    private Task OnSearch(string query)
+    public WorkingGroupPageWorkingGroupList(IWorkingGroupApi workingGroupApi)
     {
-        _searchString = query;
-        return _dataGrid.ReloadServerData();
+        _workingGroupApi = workingGroupApi;
     }
+
+    private MudDataGrid<WorkingGroup> _dataGrid { get; set; }
+
+
     private readonly IWorkingGroupApi _workingGroupApi;
-    private string _searchString { get; set; }
+
+
+    private string _searchString { get; set; } = string.Empty;
 
     /// <summary>
     /// Parameter for the create group event.
@@ -48,7 +51,12 @@ public partial class WorkingGroupPageWorkingGroupList(IDialogService dialogServi
             );
     }
 
+    private Task OnSearch(string query)
+    {
+        _searchString = query;
+        return _dataGrid.ReloadServerData();
+    }
+
     private static SortDirection GetSortDirection(bool descending) =>
         descending ? MudBlazor.SortDirection.Descending : MudBlazor.SortDirection.Ascending;
-
 }
