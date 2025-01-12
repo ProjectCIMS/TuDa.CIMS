@@ -5,18 +5,24 @@
 <MudForm>
     <MudTextField @bind-Value="FormName"
                   Label="Name"
+                  Error="@IsError"
+                  ErrorText="Der Name muss eingegeben werden!"
                   Placeholder="Name eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
     <MudTextField @bind-Value="FormShop"
                   Label="Shop"
+                  Error="@IsError"
+                  ErrorText="Der Shop muss eingegeben werden!"
                   Placeholder="Shop eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
     <MudTextField @bind-Value="FormItemNumber"
                   Label="Produktnummer"
+                  Error="@IsError"
+                  ErrorText="Die Produktnummer muss eingegeben werden!"
                   Placeholder="Produktnummer eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
@@ -28,17 +34,19 @@
                   FullWidth/>
 
     <MudNumericField @bind-Value="FormPrice"
-                  Label="Preis"
-                  Placeholder="Preis eingeben"
-                  Variant="Variant.Filled"
-                  InputType="InputType.Number"
-                  FullWidth/>
+                     Label="Preis"
+                     Error="@IsError"
+                     ErrorText="Der Preis muss eingegeben werden!"
+                     Placeholder="Preis eingeben"
+                     Variant="Variant.Filled"
+                     FullWidth/>
 
     <MudTextField @bind-Value="FormRoom.Name"
                   Label="Raumname"
+                  Error="@IsError"
+                  ErrorText="Der Raumname muss eingegeben werden!"
                   Placeholder="Raumname eingeben"
                   Variant="Variant.Filled"
-                  InputType="InputType.Text"
                   FullWidth/>
 
     <MudButton Color="Color.Primary"
@@ -52,33 +60,45 @@
 
 @code
 {
-    [Parameter]
-    public string FormName { get; set; } = string.Empty;
+    [Parameter] public string FormName { get; set; } = string.Empty;
+
+    [Parameter] public string FormShop { get; set; } = string.Empty;
+
+    [Parameter] public string FormItemNumber { get; set; } = string.Empty;
+
+    [Parameter] public string FormNote { get; set; } = string.Empty;
+
+    [Parameter] public double FormPrice { get; set; } = 0;
+
+    [Parameter] public Room FormRoom { get; set; } = new Room() { Name = string.Empty };
+
+    [Parameter] public bool FormShowError { get; set; }
+
+    private bool IsError => FormShowError && (FormName == string.Empty || FormShop == string.Empty || FormItemNumber == string.Empty || FormPrice <= 0 || FormRoom.Name == string.Empty);
 
     [Parameter]
-    public string FormShop { get; set; } = string.Empty;
-
-    [Parameter]
-    public string FormItemNumber { get; set; } = string.Empty;
-
-    [Parameter]
-    public string FormNote { get; set; } = string.Empty;
-
-    [Parameter]
-    public double FormPrice { get; set; } = 0;
-
-    [Parameter] public Room FormRoom { get; set; } = new Room(){ Name = string.Empty };
-
+    public EventCallback OnReset { get; set; }
     /// <summary>
     /// Resets the Input lines
     /// </summary>
     protected void ResetInputs()
     {
-        FormName = string.Empty;
-        FormShop = string.Empty;
-        FormItemNumber = string.Empty;
-        FormNote = string.Empty;
-        FormPrice = 0;
-        FormRoom.Name = string.Empty;
+        OnReset.InvokeAsync();
+    }
+
+    public bool ValidateForm()
+    {
+        if (
+            FormName == string.Empty
+            || FormShop == string.Empty
+            || FormItemNumber == string.Empty
+            || FormPrice == 0.0
+            || FormRoom.Name == string.Empty
+        )
+        {
+            FormShowError = true;
+            return true;
+        }
+        return false;
     }
 }
