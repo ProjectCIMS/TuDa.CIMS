@@ -20,11 +20,7 @@
     </ToolBarContent>
 
     <Columns>
-        <TemplateColumn Title="Titel">
-            <CellTemplate>
-                <MudText>Prof.</MudText>
-            </CellTemplate>
-        </TemplateColumn>
+        <PropertyColumn Property="@(x => x.Professor.Title)" Title="Titel"/>
         <PropertyColumn Property="@(x => x.Professor.Name)"/>
         <PropertyColumn Property="@(x => x.PhoneNumber)" Title="Telefon Nr."/>
         <TemplateColumn Title="">
