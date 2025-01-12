@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared;
 using TuDa.CIMS.Shared.Models;
 
 namespace TuDa.CIMS.Api.Controllers;
 
 [ApiController]
 [Route("api/invoices")]
-public class InvoiceController : ControllerBase
+public class InvoiceController : CIMSBaseController
 {
     private readonly IInvoiceGenerationService _invoiceService;
     private readonly IDocumentGenerationService _documentService;
@@ -26,9 +27,10 @@ public class InvoiceController : ControllerBase
         [FromQuery] DateOnly? beginDate,
         [FromQuery] DateOnly? endDate
     ) =>
-        (
-            await _invoiceService.GetInvoiceStatistics(workingGroupId, beginDate, endDate)
-        ).Match<IActionResult>(Ok, BadRequest);
+        (await _invoiceService.GetInvoiceStatistics(workingGroupId, beginDate, endDate)).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
+        );
 
     [HttpPost($"{{{nameof(workingGroupId)}:guid}}/document")]
     public async Task<IActionResult> GetInvoiceDocument(
@@ -44,5 +46,8 @@ public class InvoiceController : ControllerBase
                 beginDate,
                 endDate
             )
-        ).Match<IActionResult>(pdf => File(pdf, "application/pdf", "invoice.pdf"), BadRequest);
+        ).Match(
+            onValue: pdf => File(pdf, "application/pdf", "invoice.pdf"),
+            onError: ErrorsToProblem
+        );
 }
