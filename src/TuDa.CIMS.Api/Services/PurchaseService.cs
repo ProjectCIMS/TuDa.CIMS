@@ -7,10 +7,12 @@ namespace TuDa.CIMS.Api.Services;
 public class PurchaseService : IPurchaseService
 {
     private readonly IPurchaseRepository _purchaseRepository;
+    private readonly IConsumableTransactionService _consumableTransactionService;
 
-    public PurchaseService(IPurchaseRepository purchaseRepository)
+    public PurchaseService(IPurchaseRepository purchaseRepository,IConsumableTransactionService consumableTransactionService )
     {
         _purchaseRepository = purchaseRepository;
+        _consumableTransactionService = consumableTransactionService;
     }
 
     /// <summary>
@@ -95,6 +97,18 @@ public class PurchaseService : IPurchaseService
         catch (Exception ex)
         {
             return Error.Failure("PurchaseService.CreateAsync", ex.Message);
+        }
+    }
+
+    public async Task<ErrorOr<Created>> CreateForPurchaseAsync(Purchase purchase)
+    {
+        try
+        {
+            return await _consumableTransactionService.CreateForPurchaseAsync(purchase);
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure("PurchaseService.CreateForPurchaseAsync", ex.Message);
         }
     }
 
