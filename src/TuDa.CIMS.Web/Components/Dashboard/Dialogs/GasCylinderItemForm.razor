@@ -1,0 +1,43 @@
+﻿@* Gas Cylinder Item Form *@
+
+<MudForm>
+
+    <ChemicalItemForm/>
+
+
+    <MudNumericField @bind-Value="FormVolume"
+                     Label="Volume"
+                     Placeholder="Volumen eingeben"
+                     Variant="Variant.Filled"
+                     FullWidth/>
+
+    <MudNumericField @bind-Value="FormPressure"
+                     Label="Pressure"
+                     Placeholder="Druck eingeben"
+                     Variant="Variant.Filled"
+                     FullWidth/>
+
+    <MudButton Color="Color.Primary"
+               Class="mt-3"
+               OnClick="ResetGasCylinderInputs">
+        Leeren
+    </MudButton>
+</MudForm>
+
+@code
+{
+    [Parameter]
+    public double FormVolume { get; set; } = 0;
+
+    [Parameter]
+    public double FormPressure { get; set; } = 0;
+
+    /// <summary>
+    /// Resets the Input lines
+    /// </summary>
+    protected void ResetGasCylinderInputs()
+    {
+        FormVolume = 0;
+        FormPressure = 0;
+    }
+}

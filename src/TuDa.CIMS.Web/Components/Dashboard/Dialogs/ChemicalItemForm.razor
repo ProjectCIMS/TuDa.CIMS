@@ -1,0 +1,63 @@
+﻿@using TuDa.CIMS.Shared.Entities.Enums
+@* Substance Item Form *@
+
+
+<MudForm>
+    <MudTextField @bind-Value="FormCas"
+                  Label="CAS"
+                  Placeholder="CAS eingeben"
+                  Variant="Variant.Filled"
+                  FullWidth/>
+
+    <MudTextField @bind-Value="FormPurity"
+                     Label="Reinheit"
+                     Placeholder="Reinheit eingeben"
+                     Variant="Variant.Filled"
+                     FullWidth/>
+
+    <MudNumericField @bind-Value="FormBindingSize"
+                     Label="Größe des Gebindes"
+                     Placeholder="Gebindengröße eingeben"
+                     Variant="Variant.Filled"
+                     FullWidth/>
+
+    <!-- MudSelect for selecting measurement unit -->
+    <MudSelect @bind-Value="FormPriceUnit"
+               Label="Preis Einheit wählen"
+               Variant="Variant.Filled"
+               FullWidth>
+        <MudSelectItem Value="MeasurementUnits.Gram">Gramm</MudSelectItem>
+        <MudSelectItem Value="MeasurementUnits.KiloGram">Kilogramm</MudSelectItem>
+        <MudSelectItem Value="MeasurementUnits.MilliLiter">Milliliter</MudSelectItem>
+        <MudSelectItem Value="MeasurementUnits.Liter">Liter</MudSelectItem>
+        <MudSelectItem Value="MeasurementUnits.Piece">Stück</MudSelectItem>
+    </MudSelect>
+
+    <MudButton Color="Color.Primary"
+               Class="mt-3"
+               OnClick="ResetChemicalInputs">
+        Leeren
+    </MudButton>
+</MudForm>
+
+@code
+{
+    [Parameter] public MeasurementUnits FormPriceUnit { get; set; }
+
+    [Parameter] public string FormCas { get; set; } = string.Empty;
+
+    [Parameter] public string FormPurity { get; set; } = string.Empty;
+
+    [Parameter] public double FormBindingSize { get; set; }
+
+    /// <summary>
+    /// Resets the Input lines
+    /// </summary>
+    protected void ResetChemicalInputs()
+    {
+        FormCas = string.Empty;
+        FormPurity = "";
+        FormBindingSize = 0;
+    }
+
+}

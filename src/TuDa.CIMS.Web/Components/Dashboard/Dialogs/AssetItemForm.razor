@@ -1,0 +1,84 @@
+﻿@using TuDa.CIMS.Shared.Entities
+
+@* Generic AssetItemForm *@
+
+<MudForm>
+    <MudTextField @bind-Value="FormName"
+                  Label="Name"
+                  Placeholder="Name eingeben"
+                  Variant="Variant.Filled"
+                  FullWidth/>
+
+    <MudTextField @bind-Value="FormShop"
+                  Label="Shop"
+                  Placeholder="Shop eingeben"
+                  Variant="Variant.Filled"
+                  FullWidth/>
+
+    <MudTextField @bind-Value="FormItemNumber"
+                  Label="Produktnummer"
+                  Placeholder="Produktnummer eingeben"
+                  Variant="Variant.Filled"
+                  FullWidth/>
+
+    <MudTextField @bind-Value="FormNote"
+                  Label="Notiz"
+                  Placeholder="Notiz eingeben"
+                  Variant="Variant.Filled"
+                  FullWidth/>
+
+    <MudNumericField @bind-Value="FormPrice"
+                  Label="Preis"
+                  Placeholder="Preis eingeben"
+                  Variant="Variant.Filled"
+                  InputType="InputType.Number"
+                  FullWidth/>
+
+    <MudTextField @bind-Value="FormRoom.Name"
+                  Label="Raumname"
+                  Placeholder="Raumname eingeben"
+                  Variant="Variant.Filled"
+                  InputType="InputType.Text"
+                  FullWidth/>
+
+    <MudButton Color="Color.Primary"
+               Class="mt-3"
+               OnClick="ResetInputs">
+        Leeren
+    </MudButton>
+</MudForm>
+
+
+
+@code
+{
+    [Parameter]
+    public string FormName { get; set; } = string.Empty;
+
+    [Parameter]
+    public string FormShop { get; set; } = string.Empty;
+
+    [Parameter]
+    public string FormItemNumber { get; set; } = string.Empty;
+
+    [Parameter]
+    public string FormNote { get; set; } = string.Empty;
+
+    [Parameter]
+    public double FormPrice { get; set; } = 0;
+
+    [Parameter] public Room FormRoom { get; set; } = new Room(){ Name = string.Empty };
+
+    /// <summary>
+    /// Resets the Input lines
+    /// </summary>
+    protected void ResetInputs()
+    {
+        FormName = string.Empty;
+        FormShop = string.Empty;
+        FormItemNumber = string.Empty;
+        FormNote = string.Empty;
+        FormPrice = 0;
+        FormRoom.Name = string.Empty;
+    }
+}
