@@ -9,4 +9,5 @@ public interface IPurchaseService
     Task<ErrorOr<Purchase>> GetOneAsync(Guid id, Guid workingGroupId);
     Task<ErrorOr<Deleted>> RemoveAsync( Guid id, Guid workingGroupId);
     Task<ErrorOr<Created>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel);
+     Task<ErrorOr<Created>> CreateForPurchaseAsync(Purchase purchase);
 }
