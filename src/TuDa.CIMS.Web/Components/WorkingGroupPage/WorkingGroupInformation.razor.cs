@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Components.WorkingGroupPage.WorkingGroupDialogs;
 using TuDa.CIMS.Web.Services;
 
@@ -13,13 +14,23 @@ public partial class WorkingGroupInformation(IWorkingGroupApi _workingGroupApi) 
     [Inject] private IDialogService DialogService { get; set; } = null!;
 
 
-    [Parameter] public required Professor ProfessorInfo { get; set; }
+    Professor ProfessorInfo = new Professor()
+    {
+        Email = "n",
+        FirstName = "vr",
+        Gender = Gender.Divers,
+        Title = "Mk",
+        Address = new Address() { City = "Munich", Number = 23, Street = "Street", ZipCode = "12345" },
+        Name = "Professor Name"
+    };
+    // [Parameter] public required Professor ProfessorInfo { get; set; }
 
+    /*
     protected override async Task OnInitializedAsync()
     {
         var information = await _workingGroupApi.GetAsync(WorkingGroupId);
         ProfessorInfo = information.Value.Professor;
-    }
+    }*/
 
     private Task EditProfessor()
     {
@@ -51,4 +62,3 @@ public partial class WorkingGroupInformation(IWorkingGroupApi _workingGroupApi) 
         return DialogService.ShowAsync<WorkingGroupEditEmailDialog>();
     }
 }
-

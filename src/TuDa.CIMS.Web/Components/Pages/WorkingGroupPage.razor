@@ -1,11 +1,26 @@
-﻿@page "/hallo"
+﻿@page "/{workingGroupId:guid}"
 
 @using TuDa.CIMS.Web.Components.WorkingGroupPage
 
-<MudContainer MaxWidth="MaxWidth.Large">
-    <WorkingGroupHeader></WorkingGroupHeader>
-    <WorkingGroupInformation></WorkingGroupInformation>
-    <WorkingGroupPersonList></WorkingGroupPersonList>
-    <WorkingGroupPurchaseList></WorkingGroupPurchaseList>
-    <WorkingGroupInvoiceButton></WorkingGroupInvoiceButton>
+<MudContainer MaxWidth="MaxWidth.Large" Class="bg-gray rounded-xl">
+    <MudGrid>
+        <!-- Header spans full width -->
+        <MudItem xs="12">
+            <WorkingGroupHeader></WorkingGroupHeader>
+        </MudItem>
+
+        <!-- Left column -->
+        <MudItem xs="12" md="6" Class="d-flex flex-column">
+            <WorkingGroupPersonList></WorkingGroupPersonList>
+            <MudItem Class="mt-4">
+                <WorkingGroupInformation></WorkingGroupInformation>
+            </MudItem>
+        </MudItem>
+
+        <!-- Right column -->
+        <MudItem xs="12" md="6" Class="d-flex flex-column">
+            <WorkingGroupPurchaseList></WorkingGroupPurchaseList>
+            <WorkingGroupInvoiceButton></WorkingGroupInvoiceButton>
+        </MudItem>
+    </MudGrid>
 </MudContainer>

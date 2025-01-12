@@ -1,8 +1,8 @@
-﻿@page "/122"
-
-<MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex justify-content-between align-center p-3 rounded-xl white">
-    @ProfessorName
-    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="OpenDialogAsync" Disabled="true"></MudIconButton>
+﻿<MudContainer MaxWidth="MaxWidth.Large" Class="d-flex justify-content-between align-items-center p-3 rounded-xl white">
+    <MudItem Class="d-flex justify-content-between align-items-center">
+    <MudText>@ProfessorName</MudText>
+    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="OpenDialogAsync"></MudIconButton>
+    </MudItem>
     <MudButton Class="align-items-end" Variant="Variant.Outlined">
         Deaktivieren
     </MudButton>

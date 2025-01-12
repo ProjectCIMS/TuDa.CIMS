@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Components.WorkingGroupPage.WorkingGroupDialogs;
 using TuDa.CIMS.Web.Services;
 
@@ -33,11 +34,26 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
     /// </summary>
     protected override async Task OnInitializedAsync()
     {
-        var workingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
-        ProfessorName = workingGroup.Value.Professor.Name;
-        Professor = workingGroup.Value.Professor;
+        // var workingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
+        var workingGroup = new WorkingGroup()
+        {
+            PhoneNumber = "232323",
+            Purchases = new List<Purchase>(),
+            Students = new List<Student>(),
+            Professor = new Professor()
+            {
+                Email = "n",
+                FirstName = "vr",
+                Gender = Gender.Divers,
+                Title = "Mk",
+                Address = new Address() { City = "Munich", Number = 23, Street = "Street", ZipCode = "12345" },
+                Name = "Professor Name"
+            }
+        };
+        ProfessorName = workingGroup.Professor.Name;
+        Professor = workingGroup.Professor;
 
-        await base.OnInitializedAsync();
+        // await base.OnInitializedAsync();
     }
 
     public void GetWorkingGroupId()
@@ -48,6 +64,11 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
     /// TODO: Add dialog
     private Task OpenDialogAsync()
     {
+        /* var parameters = new DialogParameters<WorkingGroupProfessorEditDialog>
+        {
+            { x => x.WorkingGroupId, WorkingGroupId },
+            { x => x.ProfessorName, ProfessorName }
+        }; */
         return DialogService.ShowAsync<WorkingGroupProfessorEditDialog>();
     }
 }
