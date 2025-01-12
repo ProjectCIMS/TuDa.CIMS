@@ -1,4 +1,3 @@
-@page "/test"
 @using TuDa.CIMS.Shared.Entities
 @using TuDa.CIMS.Shared.Entities.Enums
 
@@ -26,7 +25,7 @@
         <PropertyColumn Property="@(i => GetItemTypeName(i))"
                         Title="Typ">
             <CellTemplate>
-                <MudIcon Icon="@GetItemTypeIcon(context.Item)"/>
+                <MudIcon Icon="@GetItemTypeIcon(context.Item)" Size="@Size.Medium"/>
                 @GetItemTypeName(context.Item)
             </CellTemplate>
         </PropertyColumn>
@@ -41,8 +40,8 @@
                         Title="Preis"/>
         <TemplateColumn>
             <CellTemplate>
-                <MudIconButton Size="@Size.Small"
-                               Icon="@Icons.Material.Outlined.Edit"
+                <MudIconButton Size="@Size.Medium"
+                               Icon="@Icons.Material.Filled.Edit"
                                OnClick="_ => EditButtonPressed.InvokeAsync(context.Item)"/>
             </CellTemplate>
         </TemplateColumn>
