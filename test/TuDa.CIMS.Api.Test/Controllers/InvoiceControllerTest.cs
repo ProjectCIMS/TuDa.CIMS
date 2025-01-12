@@ -149,6 +149,41 @@ public class InvoiceControllerTest : IClassFixture<CIMSApiFactory>
             );
     }
 
+    [Fact]
+    public async Task GetInvoiceDocument_ShouldReturnAnPdfDocument()
+    {
+        WorkingGroup workingGroup = new WorkingGroupFaker(purchases: []);
+        List<Purchase> purchases = new PurchaseFaker(workingGroup, completed: true).GenerateBetween(
+            4,
+            10
+        );
+        var information = new AdditionalInvoiceInformation
+        {
+            InvoiceNumber = "Number",
+            DueDate = DateOnly.FromDateTime(DateTime.Today),
+        };
+
+        workingGroup.Purchases = purchases;
+
+        await _dbContext.WorkingGroups.AddAsync(workingGroup);
+        await _dbContext.SaveChangesAsync();
+
+        var response = await _client.PostAsync(
+            $"api/working-groups/{workingGroup.Id}/invoices/document",
+            JsonContent.Create(information)
+        );
+
+        response.IsSuccessStatusCode.Should().BeTrue();
+        response.Content.Headers.ContentType?.MediaType.Should().Be("application/pdf");
+
+        byte[] result = await response.Content.ReadAsByteArrayAsync();
+
+        // Convert the first 5 bytes to a string
+        string pdfHeader = System.Text.Encoding.ASCII.GetString(result, 0, 5);
+
+        pdfHeader.Should().Be("%PDF-");
+    }
+
     private static InvoiceStatistics PurchasesToInvoiceStatistics(List<Purchase> purchases) =>
         new()
         {
