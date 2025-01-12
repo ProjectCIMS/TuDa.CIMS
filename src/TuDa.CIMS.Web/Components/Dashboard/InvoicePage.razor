@@ -1,0 +1,63 @@
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudField Class="bg-white" Typo="Typo.h6" Variant="Variant.Outlined">@_buyer</MudField>
+        </MudItem>
+        <MudItem xs="6">
+            <MudPaper>
+                <MudItem>
+                    <MudText>Zeitraum:</MudText>
+                </MudItem>
+                <MudItem>
+                    <MudDateRangePicker @bind-DateRange="@_dateRange" Margin="Margin.Dense" Clearable="true"
+                                        PlaceholderStart="Startdatum" PlaceholderEnd="Enddatum"
+                                        Variant="Variant.Filled"/>
+                </MudItem>
+                <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
+                <MudItem>
+                    <MudStack Spacing="2">
+                        <MudText>Statistiken:</MudText>
+                        <MudStack Spacing="1" Class="m-lg-4">
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudText>Chemikalien:</MudText>
+                                <MudText Align="Align.Right">@GetTotalPriceChemicals()</MudText>
+                            </MudStack>
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudText>Verbrauchsgegenstände:</MudText>
+                                <MudText Align="Align.Right">@GetTotalPriceConsumables()</MudText>
+                            </MudStack>
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudText>Lösungsmittel:</MudText>
+                                <MudText Align="Align.Right">@GetTotalPriceSolvents()</MudText>
+                            </MudStack>
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudText>Technische Gase:</MudText>
+                                <MudText Align="Align.Right">@GetTotalPriceGasCylinders()</MudText>
+                            </MudStack>
+                        </MudStack>
+                    </MudStack>
+                </MudItem>
+
+                <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
+                <MudItem>
+                    <MudStack AlignItems="AlignItems.End">
+                        <MudButton Size="Size.Large" Color="Color.Success" Variant="Variant.Filled">
+                            <MudIcon Icon="@Icons.Material.Filled.Add"/> PDF GENERIEREN
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6">
+            <MudPaper>
+                <MudStack Spacing="2">
+                    <MudText Align="Align.Center">PDF-Anzeige</MudText>
+                    <MudButton Size="Size.Large" Variant="Variant.Filled" Color="Color.Primary">
+                        <MudIcon Icon="@Icons.Material.Filled.Add"/> SPEICHERN
+                    </MudButton>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
