@@ -1,12 +1,23 @@
 ﻿services:
+  cims-migration:
+    build:
+      context: .
+      dockerfile: infrastructure/TuDa.CIMS.MigrationService/Dockerfile
+    depends_on:
+      - cims-db
+    environment:
+      - ConnectionStrings__CIMS=Host=cims-db;Port=5432;Database=CIMS;Username=postgres;Password=postgres
+      - Seeding=true
+
   cims-web:
     image: ghcr.io/projectcims/cims-web:latest
     build:
       context: .
       dockerfile: src/TuDa.CIMS.Web/Dockerfile
-      platforms:
-        - linux/arm64
-        - linux/amd64
+    depends_on:
+      - cims-api
+    environment:
+      - Api__BaseUrl=http://cims-api:8080
     ports:
       - "80:8080"
 
@@ -15,13 +26,15 @@
     build:
       context: .
       dockerfile: src/TuDa.CIMS.Api/Dockerfile
-      platforms:
-        - linux/arm64
-        - linux/amd64
+    depends_on:
+      - cims-db
+      - cims-migration
+    environment:
+      - ConnectionStrings__CIMS=Host=cims-db;Port=5432;Database=CIMS;Username=postgres;Password=postgres
     ports:
       - "8080:8080"
 
-  postgres:
+  cims-db:
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres

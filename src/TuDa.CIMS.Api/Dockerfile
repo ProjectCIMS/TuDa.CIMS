@@ -13,12 +13,12 @@ COPY ["src/TuDa.CIMS.Api/TuDa.CIMS.Api.csproj", "src/TuDa.CIMS.Api/"]
 RUN dotnet restore "src/TuDa.CIMS.Api/TuDa.CIMS.Api.csproj" -a $TARGETARCH
 COPY . .
 WORKDIR "/src/src/TuDa.CIMS.Api"
-RUN dotnet build "TuDa.CIMS.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build --no-restore
+RUN dotnet build "TuDa.CIMS.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 ARG TARGETARCH
-RUN dotnet publish "TuDa.CIMS.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false -a $TARGETARCH --no-restore
+RUN dotnet publish "TuDa.CIMS.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false -a $TARGETARCH
 
 FROM base AS final
 WORKDIR /app
