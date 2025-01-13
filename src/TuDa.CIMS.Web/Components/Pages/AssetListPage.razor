@@ -28,7 +28,7 @@
         _logger.LogInformation("Edit {Item.Name}", assetItem.Name);
         var parameters = new DialogParameters
         {
-            { "UpdateItem", assetItem }
+            { "Item", assetItem }
         };
         var options = new DialogOptions { CloseOnEscapeKey = true };
 

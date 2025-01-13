@@ -228,7 +228,7 @@ public partial class AssetItemEditForm
             },
             _ => null!,
         };
-        FeedbackMessage = "Das Objekt wurde erfolgreich erstellt.";
+        FeedbackMessage = "Das Objekt wurde erfolgreich geupdated.";
         FeedbackColor = Severity.Success;
 
         await _assetItemApi.UpdateAsync(UpdateItem.Id, dto);
