@@ -1,3 +1,3 @@
 ﻿namespace TuDa.CIMS.Shared.Dtos;
 
-public class CreateSolventDto : CreateChemicalDto { }
+public class CreateSolventDto : CreateChemicalDto;

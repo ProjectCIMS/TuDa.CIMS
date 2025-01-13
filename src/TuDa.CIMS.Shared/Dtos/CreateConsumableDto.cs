@@ -10,10 +10,10 @@ public class CreateConsumableDto: CreateAssetItemDto
     /// <summary>
     /// The name of the consumable item.
     /// </summary>
-    public string Manufacturer { get; set; }
+    public string Manufacturer { get; set; } = string.Empty;
 
     /// <summary>
     /// The serial number of the consumable item.
     /// </summary>
-    public string SerialNumber { get; set; }
+    public string SerialNumber { get; set; } = string.Empty;
 }

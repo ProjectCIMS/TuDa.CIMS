@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Factories;
 using TuDa.CIMS.Api.Interfaces;
@@ -205,117 +206,44 @@ public class AssetItemRepository : IAssetItemRepository
         }
 
         List<Hazard> hazards = [];
-        switch (createModel)
+        if (createModel is CreateSubstanceDto createSubstanceDto)
         {
-            case CreateSolventDto createSolvent:
+            foreach (var hazardId in createSubstanceDto.Hazards)
+            {
+                var hazard = await _context.Hazards.SingleOrDefaultAsync(h => h.Id != hazardId);
+                if (hazard is null)
                 {
-                    foreach (var hazardId in createSolvent.Hazards)
-                    {
-                        var hazard = await _context.Hazards.SingleOrDefaultAsync(h => h.Id != hazardId);
-                        if (hazard is null)
-                        {
-                            return Error.NotFound(
-                                "Assetitem.create",
-                                $"Given HazardId {hazardId} was not found."
-                            );
-                        }
-                        hazards.Add(hazard);
-                    }
-
-                    break;
+                    return Error.NotFound(
+                        "Assetitem.create",
+                        $"Given HazardId {hazardId} was not found."
+                    );
                 }
-            case CreateGasCylinderDto createGasCylinder:
-                {
-                    foreach (var hazardId in createGasCylinder.Hazards)
-                    {
-                         var hazard = await _context.Hazards.SingleOrDefaultAsync(h => h.Id != hazardId);
-                        if (hazard is null)
-                        {
-                            return Error.NotFound(
-                                "Assetitem.create",
-                                $"Given HazardId {hazardId} was not found."
-                            );
-                        }
-                        hazards.Add(hazard);
-                    }
-
-                    break;
-                }
-            case CreateChemicalDto createChemical:
-                {
-                    foreach (var hazardId in createChemical.Hazards)
-                    {
-                        var hazard = await _context.Hazards.SingleOrDefaultAsync(h => h.Id != hazardId);
-                        if (hazard is null)
-                        {
-                            return Error.NotFound(
-                                "Assetitem.create",
-                                $"Given HazardId {hazardId} was not found."
-                            );
-                        }
-                        hazards.Add(hazard);
-                    }
-
-                    break;
-                }
+                hazards.Add(hazard);
+            }
         }
-
         AssetItem newItem = createModel switch
         {
-            CreateSolventDto solvent => new Solvent
+            CreateSolventDto solvent =>
+                solvent.Adapt<Solvent>() with
+                {
+                    Room = room,
+                    Hazards = hazards
+                },
+
+            CreateChemicalDto chemical =>
+                chemical.Adapt<Chemical>() with
+                {
+                    Room = room,
+                    Hazards = hazards
+                },
+            CreateGasCylinderDto gas =>  gas.Adapt<Chemical>() with
             {
-                ItemNumber = createModel.ItemNumber,
-                Name = createModel.Name,
-                Note = createModel.Note,
-                Price = createModel.Price,
-                Shop = createModel.Shop,
                 Room = room,
-                Cas = solvent.Cas,
-                Hazards = hazards,
-                PriceUnit = solvent.PriceUnit,
-                BindingSize = solvent.BindingSize,
-                Purity = solvent.Purity,
+                Hazards = hazards
             },
-            CreateChemicalDto chemical => new Chemical
+            CreateConsumableDto consumable =>  consumable.Adapt<Chemical>() with
             {
-                ItemNumber = createModel.ItemNumber,
-                Name = createModel.Name,
-                Note = createModel.Note,
-                Price = createModel.Price,
-                Shop = createModel.Shop,
-                Room = room,
-                Cas = chemical.Cas,
-                Hazards = hazards,
-                PriceUnit = chemical.PriceUnit,
-                BindingSize = chemical.BindingSize,
-                Purity = chemical.Purity,
-            },
-            CreateGasCylinderDto gas => new GasCylinder
-            {
-                ItemNumber = createModel.ItemNumber,
-                Name = createModel.Name,
-                Note = createModel.Note,
-                Price = createModel.Price,
-                Shop = createModel.Shop,
-                Room = room,
-                Cas = gas.Cas,
-                Hazards = hazards,
-                PriceUnit = gas.PriceUnit,
-                Volume = gas.Volume,
-                Pressure = gas.Pressure,
-                Purity = gas.Purity,
-            },
-            CreateConsumableDto consumable => new Consumable
-            {
-                ItemNumber = createModel.ItemNumber,
-                Name = createModel.Name,
-                Note = createModel.Note,
-                Price = createModel.Price,
-                Shop = createModel.Shop,
-                Room = room,
-                Amount = consumable.Amount,
-                Manufacturer = consumable.Manufacturer,
-                SerialNumber = consumable.SerialNumber,
+                Room = room
             },
             _ => throw new ArgumentException("Unsupported create model type", nameof(createModel)),
         };

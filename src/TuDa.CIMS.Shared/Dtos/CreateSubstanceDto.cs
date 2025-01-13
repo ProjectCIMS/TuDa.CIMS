@@ -8,12 +8,12 @@ public class CreateSubstanceDto:CreateAssetItemDto
     /// <summary>
     /// A unique identifier for the chemical.
     /// </summary>
-    public string Cas { get; set; }
+    public string Cas { get; set; } = string.Empty;
 
     /// <summary>
     /// The purity of the item.
     /// </summary>
-    public string Purity { get; set; }
+    public string Purity { get; set; } = string.Empty;
 
     /// <summary>
     /// The price unit of the item.
