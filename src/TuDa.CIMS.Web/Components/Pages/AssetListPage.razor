@@ -1,6 +1,7 @@
 ﻿@page "/asset-list"
 @using TuDa.CIMS.Shared.Entities
 @using TuDa.CIMS.Web.Components.Dashboard
+@using TuDa.CIMS.Web.Components.Dashboard.Dialogs
 
 <div class="container-fluid ">
     <div class="row mt-5">
@@ -12,11 +13,13 @@
 @code
 {
     [Inject] private ILogger<AssetListPage> _logger { get; set; } = null!;
+    [Inject] public required IDialogService DialogService { get; set; }
 
-    // TODO: Open CreateDialogHere
-    private void CreateAssetItem()
+    private async Task CreateAssetItem()
     {
         _logger.LogInformation("Added");
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        await DialogService.ShowAsync<AssetItemDialog>("Create Item", options);
     }
 
     // TODO: Open EditDialog here

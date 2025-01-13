@@ -9,6 +9,12 @@ namespace TuDa.CIMS.Web.Components.Dashboard;
 public partial class AssetList
 {
     /// <summary>
+    /// Event callback triggered when the add button is pressed.
+    /// </summary>
+    [Parameter]
+    public EventCallback AddButtonPressed { get; set; }
+
+    /// <summary>
     /// Event callback triggered when the edit button is pressed with the selected AssetItem.
     /// </summary>
     [Parameter]
@@ -58,13 +64,4 @@ public partial class AssetList
 
     private static SortDirection GetSortDirection(bool descending) =>
         descending ? MudBlazor.SortDirection.Descending : MudBlazor.SortDirection.Ascending;
-
-    [Inject]
-    public required IDialogService DialogService { get; set; }
-
-    private async Task OpenDialogAsync()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        await DialogService.ShowAsync<AssetItemDialog>("Create Item", options);
-    }
 }
