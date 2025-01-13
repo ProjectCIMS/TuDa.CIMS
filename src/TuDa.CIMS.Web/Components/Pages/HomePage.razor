@@ -1,19 +1,10 @@
 ﻿@page "/"
-@using TuDa.CIMS.Web.Components.Dashboard
+@code {
+    [Inject] private NavigationManager _navigationManager { get; set; } = null!;
 
-<div class="container-fluid ">
-    <div class="row mt-5">
-        <div class="col-md-2 justify-content-start">
-            <Filter/>
-        </div>
-        <div class="col-md-10 ps-5">
-            <div class="row">
-                <div class="col-md-10 d-flex mb-2">
-                    <AssetSearch/>
-                    <AssetItemDialog/>
-                </div>
-            </div>
-            <AssetList/>
-        </div>
-    </div>
-</div>
+    protected override void OnInitialized()
+    {
+        // This will automatically navigate the user to the assetList if the homepage is entered
+        _navigationManager.NavigateTo("asset-list", replace: true);
+    }
+}

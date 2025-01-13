@@ -1,15 +1,15 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared;
 using TuDa.CIMS.Shared.Dtos;
-using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Params;
 
 namespace TuDa.CIMS.Api.Controllers;
 
 [ApiController]
 [Route("api/asset-items")]
-public class AssetItemController : ControllerBase
+public class AssetItemController : CIMSBaseController
 {
     private readonly IAssetItemService _assetItemService;
 
@@ -25,9 +25,9 @@ public class AssetItemController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllAsync([FromQuery] string? nameOrCas)
     {
-        return (await _assetItemService.GetAllAsync(nameOrCas)).Match<IActionResult>(
-            value => Ok(value),
-            err => BadRequest(err)
+        return (await _assetItemService.GetAllAsync(nameOrCas)).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
         );
     }
 
@@ -39,9 +39,9 @@ public class AssetItemController : ControllerBase
     [HttpGet($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> GetOneAsync(Guid id)
     {
-        return (await _assetItemService.GetOneAsync(id)).Match<IActionResult>(
-            value => Ok(JsonSerializer.Serialize(value)),
-            err => BadRequest(err)
+        return (await _assetItemService.GetOneAsync(id)).Match(
+            onValue: value => Ok(JsonSerializer.Serialize(value)),
+            onError: ErrorsToProblem
         );
     }
 
@@ -55,9 +55,9 @@ public class AssetItemController : ControllerBase
     [HttpPatch($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> UpdateAsync(Guid id, UpdateAssetItemDto updateModel)
     {
-        return (await _assetItemService.UpdateAsync(id, updateModel)).Match<IActionResult>(
-            _ => Ok(),
-            err => BadRequest(err)
+        return (await _assetItemService.UpdateAsync(id, updateModel)).Match(
+            onValue: _ => Ok(),
+            onError: ErrorsToProblem
         );
     }
 
@@ -70,9 +70,9 @@ public class AssetItemController : ControllerBase
     [HttpDelete($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> RemoveAsync(Guid id)
     {
-        return (await _assetItemService.RemoveAsync(id)).Match<IActionResult>(
-            _ => Ok(),
-            err => BadRequest(err)
+        return (await _assetItemService.RemoveAsync(id)).Match(
+            onValue: _ => Ok(),
+            onError: ErrorsToProblem
         );
     }
 
@@ -84,11 +84,13 @@ public class AssetItemController : ControllerBase
     /// <param name="userParams"></param>
     /// <returns></returns>
     [HttpGet("paginated")]
-    public async Task<IActionResult> GetPaginatedAsync([FromQuery] AssetItemPaginationQueryParams queryParams)
+    public async Task<IActionResult> GetPaginatedAsync(
+        [FromQuery] AssetItemPaginationQueryParams queryParams
+    )
     {
-        return (await _assetItemService.GetPaginatedAsync(queryParams)).Match<IActionResult>(
-            value => Ok(value),
-            err => BadRequest(err)
+        return (await _assetItemService.GetPaginatedAsync(queryParams)).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
         );
     }
 

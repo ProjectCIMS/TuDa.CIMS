@@ -10,7 +10,9 @@ public interface IAssetItemRepository
     Task<AssetItem?> GetOneAsync(Guid id);
     Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateAssetItemDto updateModel);
     Task<ErrorOr<Deleted>> RemoveAsync(Guid id);
-    Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(AssetItemPaginationQueryParams userParams);
+    Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(
+        AssetItemPaginationQueryParams queryParams
+    );
     Task<IEnumerable<AssetItem>> SearchAsync(string nameOrCas);
     Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel);
 

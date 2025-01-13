@@ -2,12 +2,14 @@
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Factories;
 using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Params;
 
 namespace TuDa.CIMS.Api.Repositories;
 
+[ScopedService]
 public class AssetItemRepository : IAssetItemRepository
 {
     private readonly CIMSDbContext _context;
@@ -145,12 +147,21 @@ public class AssetItemRepository : IAssetItemRepository
     /// <summary>
     /// Returns a paginated list of AssetItems.
     /// </summary>
-    /// <param name="userParams"></param>
+    /// <param name="queryParams"></param>
     /// <returns></returns>
     public async Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(
         AssetItemPaginationQueryParams queryParams
     )
     {
+        if (
+            queryParams.PageSize * (queryParams.PageNumber - 1)
+            >= await _context.AssetItems.CountAsync()
+        )
+            return Error.Validation(
+                $"{nameof(AssetItemRepository)}.{nameof(GetPaginatedAsync)}",
+                "Requested Page would be empty"
+            );
+
         var query = _context.AssetItems.AsQueryable();
         return await PaginatedResponseFactory<AssetItem>.CreateAsync(
             query,

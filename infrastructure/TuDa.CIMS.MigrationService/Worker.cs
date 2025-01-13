@@ -13,6 +13,7 @@ namespace TuDa.CIMS.MigrationService;
 
 public class Worker(
     IServiceProvider serviceProvider,
+    IConfiguration configuration,
     IHostApplicationLifetime hostApplicationLifetime,
     ILogger<Worker> logger
 ) : BackgroundService
@@ -34,6 +35,8 @@ public class Worker(
 
             await EnsureDatabaseAsync(dbContext, stoppingToken);
             await RunMigrationAsync(dbContext, stoppingToken);
+            if (!configuration.GetValue<bool>("Seeding"))
+                return;
             await SeedDataAsync(dbContext, stoppingToken);
         }
         catch (Exception ex)
@@ -88,10 +91,11 @@ public class Worker(
         var professor = new PersonFaker<Professor>().Generate();
         var students = new PersonFaker<Student>().GenerateBetween(5, 5);
 
-        var purchaseEntries = new PurchaseEntryFaker(chemical).GenerateBetween(4, 4);
-        var purchase = new PurchaseFaker(null, purchaseEntries).Generate();
+        var workingGroup = new WorkingGroupFaker(professor, students, []).Generate();
 
-        var workingGroup = new WorkingGroupFaker(professor, students, [purchase]).Generate();
+        var purchaseEntries = new PurchaseEntryFaker(chemical).GenerateBetween(4, 4);
+        var purchase = new PurchaseFaker(workingGroup, purchaseEntries).Generate();
+        workingGroup.Purchases.Add(purchase);
 
         var consumableTransaction = new ConsumableTransactionFaker(consumable).Generate();
 
@@ -171,7 +175,9 @@ public class Worker(
                 logger.LogInformation("Seeding Room with Id {RoomId}", room.Id);
             }
 
-            if (!await dbContext.Chemicals.AnyAsync(cancellationToken))
+            if (
+                !await dbContext.Chemicals.Where(ch => !(ch is Solvent)).AnyAsync(cancellationToken)
+            )
             {
                 await dbContext.Chemicals.AddAsync(chemical, cancellationToken);
                 logger.LogInformation("Seeding Chemicals with Id {ChemicalsId}", chemical.Id);
