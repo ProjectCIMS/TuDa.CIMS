@@ -9,12 +9,6 @@ namespace TuDa.CIMS.Web.Components.Dashboard;
 public partial class AssetList
 {
     /// <summary>
-    /// Event callback triggered when the add button is pressed.
-    /// </summary>
-    [Parameter]
-    public EventCallback AddButtonPressed { get; set; }
-
-    /// <summary>
     /// Event callback triggered when the edit button is pressed with the selected AssetItem.
     /// </summary>
     [Parameter]
