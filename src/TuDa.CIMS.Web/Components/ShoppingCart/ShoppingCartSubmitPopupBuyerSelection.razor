@@ -5,15 +5,15 @@
                      Label="Käufer"
                      @bind-Value="Buyer"
                      SearchFunc="@Search"
-                     ToStringFunc="@ToString">
+                     ToStringFunc="@ToString"
+                     Disabled="@((WorkingGroup is null))">
 
         <ItemTemplate>
             <MudItem Class="d-flex align-items-center">
-                <MudIconButton Icon="@Icons.Material.Outlined.Info" Class="mr-2">
+                <MudIconButton Icon="@Icons.Material.Outlined.Info" Class="mr-2" >
                 </MudIconButton>
                 <MudText>@context.Name</MudText>
             </MudItem>
         </ItemTemplate>
     </MudAutocomplete>
 </MudItem>
-

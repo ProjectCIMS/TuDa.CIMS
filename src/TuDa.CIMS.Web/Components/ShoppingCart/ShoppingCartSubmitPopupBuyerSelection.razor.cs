@@ -1,8 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
 
-namespace TuDa.CIMS.Web.Components;
+namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 public partial class ShoppingCartSubmitPopupBuyerSelection : ComponentBase
 {
@@ -14,6 +13,7 @@ public partial class ShoppingCartSubmitPopupBuyerSelection : ComponentBase
 
     [Parameter]
     public required Person Buyer { get; set; }
+
 
     /// <summary>
     /// Search for the selection of the student.
@@ -49,3 +49,4 @@ public partial class ShoppingCartSubmitPopupBuyerSelection : ComponentBase
             _ => $"{buyer.Name} {buyer.FirstName}",
         };
 }
+
