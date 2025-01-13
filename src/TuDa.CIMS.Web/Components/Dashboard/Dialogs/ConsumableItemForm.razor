@@ -28,19 +28,21 @@
 
 @code
 {
-    [Parameter]
-    public string FormManufacturer { get; set; } = string.Empty;
-
-    [Parameter]
-    public string FormSerialNumber { get; set; } = string.Empty;
-
-    [Parameter]
-    public int FormConsumableAmount { get; set; }
+    /// <summary>
+    /// Input Fields
+    /// </summary>
+    public string FormManufacturer { get; private set; } = string.Empty;
+    public string FormSerialNumber { get; private set; } = string.Empty;
+    public int FormConsumableAmount { get; private set; }
 
     [Parameter] public bool FormShowError { get; set; }
 
     private bool IsError => FormShowError && (FormConsumableAmount <= 0 || FormManufacturer == string.Empty || FormSerialNumber == string.Empty);
 
+    /// <summary>
+    /// Validate the Inputs
+    /// </summary>
+    /// <returns>returns false when all Inputs are valid otherwise true</returns>
     public bool ValidateForm()
     {
         if (
@@ -51,6 +53,18 @@
         {
             return true;
         }
+
         return false;
     }
+
+    /// <summary>
+    /// Resets the Input lines
+    /// </summary>
+    public void ResetInputs()
+    {
+        FormManufacturer = string.Empty;
+        FormSerialNumber = string.Empty;
+        FormConsumableAmount = 0;
+    }
+
 }

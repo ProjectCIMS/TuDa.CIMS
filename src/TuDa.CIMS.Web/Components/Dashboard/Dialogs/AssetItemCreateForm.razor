@@ -23,13 +23,7 @@
 <MudGrid>
     <MudItem xs="12" md="6">
         <AssetItemForm @ref="_assetItemForm"
-                       FormName="@Name"
-                       FormNote="@Note"
-                       FormShop="@Shop"
-                       FormItemNumber="@ItemNumber"
-                       FormPrice="@Price"
-                       FormRoom="Room"
-                       FormShowError="ShowError"
+                       FormShowError="@ShowError"
                        OnReset="ResetInputs"/>
     </MudItem>
 
@@ -40,42 +34,25 @@
             case AssetItemType.Chemical:
                 <ChemicalItemForm
                     @ref="_chemicalItemForm"
-                    FormCas="@Cas"
-                    FormPurity="@Purity"
-                    FormBindingSize="@BindingSize"
-                    FormPriceUnit="@PriceUnit"
-                    FormShowError="ShowError"/>
+                    FormShowError="@ShowError"/>
                 break;
             case AssetItemType.Consumable:
                 <ConsumableItemForm
                     @ref="_consumableItemForm"
-                    FormManufacturer="@Manufacturer"
-                    FormSerialNumber="@SerialNumber"
-                    FormConsumableAmount="@ConsumableAmount"
-                    FormShowError="ShowError"/>
+                    FormShowError="@ShowError"/>
                 break;
             case AssetItemType.GasCylinder:
                 <ChemicalItemForm
                     @ref="_chemicalItemForm"
-                    FormCas="@Cas"
-                    FormPurity="@Purity"
-                    FormBindingSize="@BindingSize"
-                    FormPriceUnit="@PriceUnit"
-                    FormShowError="ShowError"/>
+                    FormShowError="@ShowError"/>
                 <GasCylinderItemForm
                     @ref="_gasCylinderForm"
-                    FormPressure="@Pressure"
-                    FormVolume="@Volume"
-                    FormShowError="ShowError"/>
+                    FormShowError="@ShowError"/>
                 break;
             case AssetItemType.Solvent:
                 <ChemicalItemForm
                     @ref="_chemicalItemForm"
-                    FormCas="@Cas"
-                    FormPurity="@Purity"
-                    FormBindingSize="@BindingSize"
-                    FormPriceUnit="@PriceUnit"
-                    FormShowError="ShowError"/>
+                    FormShowError="@ShowError"/>
                 break;
         }
     </MudItem>

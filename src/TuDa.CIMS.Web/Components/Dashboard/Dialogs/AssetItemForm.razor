@@ -41,7 +41,7 @@
                      Variant="Variant.Filled"
                      FullWidth/>
 
-    <MudTextField @bind-Value="FormRoom.Name"
+    <MudTextField @bind-Value="FormRoomName"
                   Label="Raumname"
                   Error="@IsError"
                   ErrorText="Der Raumname muss eingegeben werden!"
@@ -60,32 +60,40 @@
 
 @code
 {
-    [Parameter] public string FormName { get; set; } = string.Empty;
-
-    [Parameter] public string FormShop { get; set; } = string.Empty;
-
-    [Parameter] public string FormItemNumber { get; set; } = string.Empty;
-
-    [Parameter] public string FormNote { get; set; } = string.Empty;
-
-    [Parameter] public double FormPrice { get; set; } = 0;
-
-    [Parameter] public Room FormRoom { get; set; } = new Room() { Name = string.Empty };
+    /// <summary>
+    /// Input Fields
+    /// </summary>
+    public string FormName { get; private set; } = string.Empty;
+    public string FormShop { get; private set; } = string.Empty;
+    public string FormItemNumber { get; private set; } = string.Empty;
+    public string FormNote { get; private set; } = string.Empty;
+    public double FormPrice { get; private set; }
+    public string FormRoomName { get; private set; } = string.Empty;
 
     [Parameter] public bool FormShowError { get; set; }
 
-    private bool IsError => FormShowError && (FormName == string.Empty || FormShop == string.Empty || FormItemNumber == string.Empty || FormPrice <= 0 || FormRoom.Name == string.Empty);
+    private bool IsError => FormShowError && (FormName == string.Empty || FormShop == string.Empty || FormItemNumber == string.Empty || FormPrice <= 0 || FormRoomName == string.Empty);
 
-    [Parameter]
-    public EventCallback OnReset { get; set; }
+    [Parameter] public EventCallback OnReset { get; set; }
+
     /// <summary>
     /// Resets the Input lines
     /// </summary>
-    protected void ResetInputs()
+    public void ResetInputs()
     {
+        FormName = string.Empty;
+        FormShop = string.Empty;
+        FormItemNumber = string.Empty;
+        FormNote = string.Empty;
+        FormPrice = 0.0;
+        FormRoomName = string.Empty;
         OnReset.InvokeAsync();
     }
 
+    /// <summary>
+    /// Validate the Inputs
+    /// </summary>
+    /// <returns>returns false when all Inputs are valid otherwise true</returns>
     public bool ValidateForm()
     {
         if (
@@ -93,12 +101,12 @@
             || FormShop == string.Empty
             || FormItemNumber == string.Empty
             || FormPrice == 0.0
-            || FormRoom.Name == string.Empty
+            || FormRoomName == string.Empty
         )
         {
-            FormShowError = true;
             return true;
         }
+
         return false;
     }
 }
