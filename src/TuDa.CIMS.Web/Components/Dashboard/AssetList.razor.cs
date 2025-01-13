@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.Dashboard;
@@ -63,4 +64,13 @@ public partial class AssetList
 
     private static SortDirection GetSortDirection(bool descending) =>
         descending ? MudBlazor.SortDirection.Descending : MudBlazor.SortDirection.Ascending;
+
+    [Inject]
+    public required IDialogService DialogService { get; set; }
+
+    private async Task OpenDialogAsync()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        await DialogService.ShowAsync<AssetItemDialog>("Create Item", options);
+    }
 }
