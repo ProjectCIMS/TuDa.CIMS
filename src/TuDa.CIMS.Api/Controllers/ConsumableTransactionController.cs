@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 
@@ -8,7 +9,7 @@ namespace TuDa.CIMS.Api.Controllers;
 
 [ApiController]
 [Route("api/consumableTransaction")]
-public class ConsumableTransactionController : ControllerBase
+public class ConsumableTransactionController : CIMSBaseController
 {
     private readonly IConsumableTransactionService _consumableTransactionService;
 
@@ -24,9 +25,9 @@ public class ConsumableTransactionController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
-        return (await _consumableTransactionService.GetAllAsync()).Match<IActionResult>(
-            value => Ok(value),
-            err => BadRequest(err)
+        return (await _consumableTransactionService.GetAllAsync()).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
         );
     }
 
@@ -38,9 +39,9 @@ public class ConsumableTransactionController : ControllerBase
     [HttpGet($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> GetOneAsync(Guid id)
     {
-        return (await _consumableTransactionService.GetOneAsync(id)).Match<IActionResult>(
-            value => Ok(JsonSerializer.Serialize(value)),
-            err => BadRequest(err)
+        return (await _consumableTransactionService.GetOneAsync(id)).Match(
+            onValue: value => Ok(JsonSerializer.Serialize(value)),
+            onError: ErrorsToProblem
         );
     }
 
@@ -50,12 +51,21 @@ public class ConsumableTransactionController : ControllerBase
     /// </summary>
     /// <param name="createModel"></param>
 
-    [HttpPost]
+   /* [HttpPost]
     public async Task<IActionResult> CreateAsync(CreateConsumableTransactionDto createModel)
     {
-        return (await _consumableTransactionService.CreateAsync(createModel)).Match<IActionResult>(
-            _ => Ok(),
-            err => BadRequest(err)
+        return (await _consumableTransactionService.CreateAsync(createModel)).Match(
+            onValue: _ => Ok(),
+            onError: ErrorsToProblem
+        );
+    }*/
+
+    [HttpPost]
+    public async Task<IActionResult> CreateForPurchaseAsync(Purchase purchase)
+    {
+        return (await _consumableTransactionService.CreateForPurchaseAsync(purchase)).Match(
+            onValue: _ => Ok(),
+            onError: ErrorsToProblem
         );
     }
 

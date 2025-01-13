@@ -82,7 +82,7 @@ public class PurchaseRepository : IPurchaseRepository
     /// <param name="workingGroupId">the specific ID of a workinggroup</param>
     /// <param name="createModel">the model containing the updated values for the purchase</param>
     /// <returns></returns>
-    public async Task<ErrorOr<Created>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel)
+    public async Task<ErrorOr<Purchase>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel)
     {
         var workingGroup = await _context.WorkingGroups.Include(i => i.Purchases)
             .SingleOrDefaultAsync(r => r.Id == workingGroupId);
@@ -114,6 +114,6 @@ public class PurchaseRepository : IPurchaseRepository
         workingGroup.Purchases.Add(newPurchase);
         await _context.SaveChangesAsync();
 
-        return new Created();
+        return newPurchase;
     }
 }

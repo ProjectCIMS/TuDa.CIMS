@@ -85,30 +85,24 @@ public class PurchaseService : IPurchaseService
     /// <param name="workingGroupId">the unique id of a workinggroup</param>
     /// <param name="createModel">the model containing the created values for the purchase</param>
     /// <returns></returns>
-    public async Task<ErrorOr<Created>> CreateAsync(
+    public async Task<ErrorOr<Purchase>> CreateAsync(
         Guid workingGroupId,
         CreatePurchaseDto createModel
     )
     {
         try
         {
-            return await _purchaseRepository.CreateAsync(workingGroupId, createModel);
+            var purchase = await _purchaseRepository.CreateAsync(workingGroupId, createModel);
+            if (purchase.IsError)
+            {
+                return Error.Failure("PurchaseService.CreateAsync, could not create purchase.");
+            }
+            await _consumableTransactionService.CreateForPurchaseAsync(purchase.Value);
+            return purchase;
         }
         catch (Exception ex)
         {
             return Error.Failure("PurchaseService.CreateAsync", ex.Message);
-        }
-    }
-
-    public async Task<ErrorOr<Created>> CreateForPurchaseAsync(Purchase purchase)
-    {
-        try
-        {
-            return await _consumableTransactionService.CreateForPurchaseAsync(purchase);
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure("PurchaseService.CreateForPurchaseAsync", ex.Message);
         }
     }
 

@@ -54,7 +54,7 @@ public class ConsumableTransactionRepository: IConsumableTransactionRepository
         {
             return Error.Failure("Negative amount of consumable is not possible.");
         }
-        consumable.Amount =+ consumableTransactionDto.AmountChange;
+        consumable.Amount += consumableTransactionDto.AmountChange;
 
 
         ConsumableTransaction consumableTransaction = new ConsumableTransaction()
