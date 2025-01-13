@@ -76,6 +76,16 @@
 
     [Parameter] public EventCallback OnReset { get; set; }
 
+    public void SetForm(AssetItem item)
+    {
+        FormName = item.Name;
+        FormNote = item.Note;
+        FormPrice = item.Price;
+        FormShop = item.Shop;
+        FormRoomName = item.Room.Name;
+        FormItemNumber = item.ItemNumber;
+    }
+
     /// <summary>
     /// Resets the Input lines
     /// </summary>

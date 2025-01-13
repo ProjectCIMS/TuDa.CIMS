@@ -1,4 +1,5 @@
-﻿@* Gas Cylinder Item Form *@
+﻿@using TuDa.CIMS.Shared.Entities
+@* Gas Cylinder Item Form *@
 
 <MudForm>
     <MudNumericField @bind-Value="FormVolume"
@@ -30,6 +31,10 @@
 
     private bool IsError => FormShowError && (FormVolume <= 0 || FormPressure <= 0);
 
+    public void SetForm(AssetItem item)
+    {
+
+    }
 
     /// <summary>
     /// Validate the Inputs
