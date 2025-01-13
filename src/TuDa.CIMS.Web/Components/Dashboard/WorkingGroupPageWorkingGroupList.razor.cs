@@ -14,11 +14,17 @@ public partial class WorkingGroupPageWorkingGroupList
 
     private MudDataGrid<WorkingGroup> _dataGrid { get; set; }
 
-
     private readonly IWorkingGroupApi _workingGroupApi;
 
-
     private string _searchString { get; set; } = string.Empty;
+
+    [Inject] private NavigationManager _navigationManager { get; set; } = null!;
+
+    private void GoToWorkingGroupInfoPage(DataGridRowClickEventArgs<WorkingGroup> args)
+    {
+        var id = args.Item.Id;
+        _navigationManager.NavigateTo($"workinggroups/{id}", replace: true);
+    }
 
     /// <summary>
     /// Parameter for the create group event.

@@ -1,6 +1,7 @@
 @using TuDa.CIMS.Shared.Entities
 
-<MudDataGrid @ref="_dataGrid" T="WorkingGroup" ServerData="ServerReload" Filterable="false">
+<MudDataGrid @ref="_dataGrid" T="WorkingGroup" ServerData="ServerReload" Filterable="false"
+             RowClick="GoToWorkingGroupInfoPage">
     <ToolBarContent>
         <MudTextField
             T="string"
@@ -12,7 +13,7 @@
             IconSize="@Size.Medium"
             Class="mt-0"/>
         <MudIconButton Icon="@Icons.Material.Filled.PersonAddAlt1" Color="Color.Primary" Size="Size.Large"
-                       OnClick="CreateGroupSelected" Variant="Variant.Filled">
+                       OnClick="CreateGroupSelected" Variant="Variant.Filled" Class="m-4">
         </MudIconButton>
         <MudIconButton Icon="@Icons.Material.Filled.CreditCard" Color="Color.Primary" Disabled="true"
                        Size="Size.Large" Variant="Variant.Filled">
@@ -23,13 +24,5 @@
         <PropertyColumn Property="@(x => x.Professor.Title)" Title="Titel"/>
         <PropertyColumn Property="@(x => x.Professor.Name)"/>
         <PropertyColumn Property="@(x => x.PhoneNumber)" Title="Telefon Nr."/>
-        <TemplateColumn Title="">
-            <CellTemplate>
-                <a href="/workingGroupInfoPage" target="_self">
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Medium">
-                    </MudIconButton>
-                </a>
-            </CellTemplate>
-        </TemplateColumn>
     </Columns>
 </MudDataGrid>
