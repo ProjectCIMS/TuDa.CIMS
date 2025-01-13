@@ -91,10 +91,11 @@ public class Worker(
         var professor = new PersonFaker<Professor>().Generate();
         var students = new PersonFaker<Student>().GenerateBetween(5, 5);
 
-        var purchaseEntries = new PurchaseEntryFaker(chemical).GenerateBetween(4, 4);
-        var purchase = new PurchaseFaker(null, purchaseEntries).Generate();
+        var workingGroup = new WorkingGroupFaker(professor, students, []).Generate();
 
-        var workingGroup = new WorkingGroupFaker(professor, students, [purchase]).Generate();
+        var purchaseEntries = new PurchaseEntryFaker(chemical).GenerateBetween(4, 4);
+        var purchase = new PurchaseFaker(workingGroup, purchaseEntries).Generate();
+        workingGroup.Purchases.Add(purchase);
 
         var consumableTransaction = new ConsumableTransactionFaker(consumable).Generate();
 

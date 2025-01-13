@@ -6,11 +6,12 @@ public record UpdateWorkingGroupDto
 {
     /// <summary>
     /// The professor of the group.
+    /// TODO: This should be a UpdateProfessorDto
     /// </summary>
     public Professor? Professor { get; set; }
 
     /// <summary>
     /// A phone number to contact the group.
     /// </summary>
-    public string? PhoneNumber { get; set; } = string.Empty;
+    public string? PhoneNumber { get; set; }
 }
