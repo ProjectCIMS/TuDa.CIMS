@@ -223,27 +223,60 @@ public class AssetItemRepository : IAssetItemRepository
         }
         AssetItem newItem = createModel switch
         {
-            CreateSolventDto solvent =>
-                solvent.Adapt<Solvent>() with
-                {
-                    Room = room,
-                    Hazards = hazards
-                },
-
-            CreateChemicalDto chemical =>
-                chemical.Adapt<Chemical>() with
-                {
-                    Room = room,
-                    Hazards = hazards
-                },
-            CreateGasCylinderDto gas =>  gas.Adapt<Chemical>() with
+            CreateSolventDto solvent => new Solvent
             {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
                 Room = room,
-                Hazards = hazards
+                Cas = solvent.Cas,
+                Hazards = hazards,
+                PriceUnit = solvent.PriceUnit,
+                BindingSize = solvent.BindingSize,
+                Purity = solvent.Purity,
             },
-            CreateConsumableDto consumable =>  consumable.Adapt<Chemical>() with
+            CreateChemicalDto chemical => new Chemical
             {
-                Room = room
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = room,
+                Cas = chemical.Cas,
+                Hazards = hazards,
+                PriceUnit = chemical.PriceUnit,
+                BindingSize = chemical.BindingSize,
+                Purity = chemical.Purity,
+            },
+            CreateGasCylinderDto gas => new GasCylinder
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = room,
+                Cas = gas.Cas,
+                Hazards = hazards,
+                PriceUnit = gas.PriceUnit,
+                Volume = gas.Volume,
+                Pressure = gas.Pressure,
+                Purity = gas.Purity,
+            },
+            CreateConsumableDto consumable => new Consumable
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = room,
+                Amount = consumable.Amount,
+                Manufacturer = consumable.Manufacturer,
+                SerialNumber = consumable.SerialNumber,
             },
             _ => throw new ArgumentException("Unsupported create model type", nameof(createModel)),
         };
