@@ -17,6 +17,9 @@ public partial class AssetItemCreateForm
         _snackbar = snackbar;
     }
 
+    /// <summary>
+    /// Fields for Errors and Feedback
+    /// </summary>
     public bool ShowError = false;
     private string FeedbackMessage = string.Empty;
     private Severity FeedbackColor = Severity.Success;
@@ -26,46 +29,47 @@ public partial class AssetItemCreateForm
     /// </summary>
     private AssetItemType _selectedAssetItemType = AssetItemType.Chemical;
 
+    /// <summary>
+    /// References to the different Forms
+    /// </summary>
     private AssetItemForm _assetItemForm;
     private ChemicalItemForm _chemicalItemForm;
     private ConsumableItemForm _consumableItemForm;
     private GasCylinderItemForm _gasCylinderForm;
 
-    /// <summary>
-    /// Temporary Values to bind when inputting
-    /// </summary>
-    private string Name { get; set; } = string.Empty;
-    private string Shop { get; set; } = string.Empty;
-    private string ItemNumber { get; set; } = string.Empty;
-    private string Note { get; set; } = string.Empty;
-    private string Cas { get; set; } = string.Empty;
-    private string Manufacturer { get; set; } = string.Empty;
-    private string SerialNumber { get; set; } = string.Empty;
-    private double Price { get; set; } = 0.0;
-    private int ConsumableAmount { get; set; } = 0;
-    private string Purity { get; set; } = string.Empty;
-    private double BindingSize { get; set; } = 0.0;
-    private double Volume { get; set; } = 0.0;
-    private double Pressure { get; set; } = 0.0;
-    private Room Room { get; set; } = new Room() { Name = string.Empty };
-    private MeasurementUnits PriceUnit { get; set; } = MeasurementUnits.Piece;
 
+    /// <summary>
+    /// Resetting all Inputs on every Form
+    /// </summary>
     private void ResetInputs()
     {
-        Name = string.Empty;
-        Shop = string.Empty;
-        ItemNumber = string.Empty;
-        Note = string.Empty;
-        Cas = string.Empty;
-        Manufacturer = string.Empty;
-        SerialNumber = string.Empty;
-        Price = 0.0;
-        ConsumableAmount = 0;
-        Purity = string.Empty;
-        BindingSize = 0.0;
-        Volume = 0.0;
-        Pressure = 0.0;
-        Room.Name = string.Empty;
+        switch (_selectedAssetItemType)
+        {
+            case AssetItemType.Chemical:
+                {
+                    _chemicalItemForm.ResetInputs();
+                    break;
+                }
+
+            case AssetItemType.Consumable:
+                {
+                    _consumableItemForm.ResetInputs();
+                    break;
+                }
+
+            case AssetItemType.GasCylinder:
+                {
+                    _gasCylinderForm.ResetInputs();
+                    _chemicalItemForm.ResetInputs();
+                    break;
+                }
+
+            case AssetItemType.Solvent:
+                {
+                    _chemicalItemForm.ResetInputs();
+                    break;
+                }
+        }
         ShowError = false;
     }
 
@@ -98,10 +102,14 @@ public partial class AssetItemCreateForm
             OnValidation.InvokeAsync();
             return true;
         }
+
         OnValidation.InvokeAsync();
         return false;
     }
 
+    /// <summary>
+    /// Happens when the Forms are getting validated
+    /// </summary>
     [Parameter]
     public EventCallback OnValidation { get; set; }
 
@@ -114,56 +122,56 @@ public partial class AssetItemCreateForm
         {
             AssetItemType.Chemical => new Chemical
             {
-                Name = Name,
-                Shop = Shop,
-                ItemNumber = ItemNumber,
-                Note = Note,
-                Cas = Cas,
-                Price = Price,
-                Purity = Purity,
-                PriceUnit = PriceUnit,
-                Room = Room,
+                Name = _assetItemForm.FormName,
+                Shop = _assetItemForm.FormShop,
+                ItemNumber = _assetItemForm.FormItemNumber,
+                Note = _assetItemForm.FormNote,
+                Cas = _chemicalItemForm.FormCas,
+                Price = _assetItemForm.FormPrice,
+                Purity = _chemicalItemForm.FormPurity,
+                PriceUnit = _chemicalItemForm.FormPriceUnit,
+                Room = new Room() { Name = _assetItemForm.FormRoomName }
             },
 
             AssetItemType.Consumable => new Consumable
             {
-                Name = Name,
-                Shop = Shop,
-                ItemNumber = ItemNumber,
-                Note = Note,
-                Manufacturer = Manufacturer,
-                SerialNumber = SerialNumber,
-                Price = Price,
-                Amount = ConsumableAmount,
-                Room = Room,
+                Name = _assetItemForm.FormName,
+                Shop = _assetItemForm.FormShop,
+                ItemNumber = _assetItemForm.FormItemNumber,
+                Note = _assetItemForm.FormNote,
+                Price = _assetItemForm.FormPrice,
+                Room = new Room() { Name = _assetItemForm.FormRoomName },
+                Manufacturer = _consumableItemForm.FormManufacturer,
+                SerialNumber = _consumableItemForm.FormSerialNumber,
+                Amount = _consumableItemForm.FormConsumableAmount
             },
 
             AssetItemType.GasCylinder => new GasCylinder
             {
-                Name = Name,
-                Shop = Shop,
-                ItemNumber = ItemNumber,
-                Note = Note,
-                Cas = Cas,
-                Purity = Purity,
-                Price = Price,
-                Volume = Volume,
-                Pressure = Pressure,
-                Room = Room,
-                PriceUnit = PriceUnit,
+                Name = _assetItemForm.FormName,
+                Shop = _assetItemForm.FormShop,
+                ItemNumber = _assetItemForm.FormItemNumber,
+                Note = _assetItemForm.FormNote,
+                Price = _assetItemForm.FormPrice,
+                Room = new Room() { Name = _assetItemForm.FormRoomName },
+                Cas = _chemicalItemForm.FormCas,
+                Purity = _chemicalItemForm.FormPurity,
+                Volume = _gasCylinderForm.FormVolume,
+                Pressure = _gasCylinderForm.FormPressure,
+                PriceUnit = _chemicalItemForm.FormPriceUnit
             },
 
             AssetItemType.Solvent => new Solvent
             {
-                Name = Name,
-                Shop = Shop,
-                ItemNumber = ItemNumber,
-                Note = Note,
-                Cas = Cas,
-                Price = Price,
-                Purity = Purity,
-                Room = Room,
-                PriceUnit = PriceUnit,
+                Name = _assetItemForm.FormName,
+                Shop = _assetItemForm.FormShop,
+                ItemNumber = _assetItemForm.FormItemNumber,
+                Note = _assetItemForm.FormNote,
+                Cas = _chemicalItemForm.FormCas,
+                Price = _assetItemForm.FormPrice,
+                Purity = _chemicalItemForm.FormPurity,
+                PriceUnit = _chemicalItemForm.FormPriceUnit,
+                Room = new Room() { Name = _assetItemForm.FormRoomName }
             },
 
             _ => null,

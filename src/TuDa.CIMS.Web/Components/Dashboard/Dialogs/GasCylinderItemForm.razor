@@ -20,26 +20,40 @@
 
 @code
 {
-    [Parameter] public double FormVolume { get; set; }
-
-    [Parameter] public double FormPressure { get; set; }
+    /// <summary>
+    /// Input Fields
+    /// </summary>
+    public double FormVolume { get; private set; }
+    public double FormPressure { get; private set; }
 
     [Parameter] public bool FormShowError { get; set; }
 
     private bool IsError => FormShowError && (FormVolume <= 0 || FormPressure <= 0);
 
 
-
+    /// <summary>
+    /// Validate the Inputs
+    /// </summary>
+    /// <returns>returns false when all Inputs are valid otherwise true</returns>
     public bool ValidateForm()
     {
         if (FormVolume == 0.0
             || FormPressure == 0.0
-        )
+           )
         {
             return true;
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Resets the Input lines
+    /// </summary>
+    public void ResetInputs()
+    {
+        FormVolume = 0.0;
+        FormPressure = 0.0;
     }
 
 }
