@@ -11,7 +11,9 @@ public class ConsumableTransactionService : IConsumableTransactionService
 {
     private readonly IConsumableTransactionRepository _consumableTransactionRepository;
 
-    public ConsumableTransactionService(IConsumableTransactionRepository consumableTransactionRepository)
+    public ConsumableTransactionService(
+        IConsumableTransactionRepository consumableTransactionRepository
+    )
     {
         _consumableTransactionRepository = consumableTransactionRepository;
     }
@@ -24,14 +26,14 @@ public class ConsumableTransactionService : IConsumableTransactionService
     {
         try
         {
-            return  (await _consumableTransactionRepository.GetAllAsync()).ToErrorOr();
+            return (await _consumableTransactionRepository.GetAllAsync()).ToErrorOr();
         }
         catch (Exception e)
         {
             return Error.Failure(
-                    "ConsumableTransaction.GetAllAsync",
-                    $"Failed to get all ConsumableTransactions. Exception: {e.Message}"
-                );
+                "ConsumableTransaction.GetAllAsync",
+                $"Failed to get all ConsumableTransactions. Exception: {e.Message}"
+            );
         }
     }
 
@@ -67,8 +69,11 @@ public class ConsumableTransactionService : IConsumableTransactionService
     /// or the result of the <see cref="CreateAsync"/> functionality if successful
     /// </summary>
     /// <param name="consumableTransactionDto"></param>
-    public async Task<ErrorOr<Created>> CreateAsync(CreateConsumableTransactionDto consumableTransactionDto)
-    {  try
+    public async Task<ErrorOr<Created>> CreateAsync(
+        CreateConsumableTransactionDto consumableTransactionDto
+    )
+    {
+        try
         {
             return await _consumableTransactionRepository.CreateAsync(consumableTransactionDto);
         }
@@ -85,30 +90,33 @@ public class ConsumableTransactionService : IConsumableTransactionService
     {
         try
         {
-            if (purchase.Completed)
+            if (purchase.CompletionDate is not null)
             {
                 var consumableEntries = purchase.Entries.Where(e => e.AssetItem is Consumable);
                 foreach (var con in consumableEntries)
                 {
-                        CreateConsumableTransactionDto consumableTransaction = new CreateConsumableTransactionDto()
+                    CreateConsumableTransactionDto consumableTransaction =
+                        new CreateConsumableTransactionDto()
                         {
                             ConsumableId = con.Id,
                             //DateTime.Now is just a random value that is never set if purchase.completed is true
                             Date = purchase.CompletionDate ?? DateTime.Now,
                             AmountChange = -con.Amount,
-                            TransactionReason = TransactionReasons.Purchase
+                            TransactionReason = TransactionReasons.Purchase,
                         };
                     await _consumableTransactionRepository.CreateAsync(consumableTransaction);
                 }
 
                 return Result.Created;
-            } return Error.Failure("Purchase not completed.");
+            }
+            return Error.Failure("Purchase not completed.");
         }
         catch (Exception e)
         {
             return Error.Failure(
                 "ConsumableTransaction.CreateForPurchaseAsync",
-                $"Failed to create ConsumableTransaction for the purchase. Exception: {e.Message}");
+                $"Failed to create ConsumableTransaction for the purchase. Exception: {e.Message}"
+            );
         }
     }
 }

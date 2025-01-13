@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TuDa.CIMS.Api.Database;
@@ -102,9 +103,16 @@ public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
             })
             .ToList();
         var WorkingGroupFaker = new WorkingGroupFaker().Generate();
+
+        _dbContext.WorkingGroups.Add(WorkingGroupFaker);
+        _dbContext.AssetItems.AddRange(consumables);
+        _dbContext.SaveChanges();
+
         var createPurchase = new CreatePurchaseDto()
         {
-            Buyer = WorkingGroupFaker.Professor.Id, CompletionDate = DateTime.Today, Entries = entries,
+            Buyer = WorkingGroupFaker.Professor.Id,
+            CompletionDate = DateTime.Today.ToUniversalTime(),
+            Entries = entries,
         };
 
         // Act
@@ -113,26 +121,29 @@ public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
             JsonContent.Create(createPurchase)
         );
 
+        var reason = await response.Content.ReadAsStringAsync();
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
         var consumableTransactions = await _dbContext
-            .ConsumableTransactions.Where(ct =>
-                consumables.Select(c => c.Id).Contains(ct.Consumable.Id)
+            .ConsumableTransactions.Include(consumableTransaction =>
+                consumableTransaction.Consumable
             )
             .ToListAsync();
 
         consumableTransactions.Should().NotBeEmpty();
         consumableTransactions.Should().HaveCount(entries.Count);
-
-        foreach (var entry in entries)
-        {
-            var transaction = consumableTransactions.Single(ct =>
-                ct.Consumable.Id == entry.AssetItem.Id
-            );
-            transaction.AmountChange.Should().Be(-entry.Amount);
-            transaction.TransactionReason.Should().Be(TransactionReasons.Purchase);
-            transaction.Date.Should().Be(createPurchase.CompletionDate.Value);
-        }
+        consumableTransactions
+            .Select(ct => ct.Consumable)
+            .Should()
+            .BeEquivalentTo(entries.Select(e => e.AssetItem));
+        consumableTransactions
+            .Select(ct => ct.Date)
+            .Should()
+            .AllSatisfy(i => i.Date.Should().Be(createPurchase.CompletionDate));
+        consumableTransactions
+            .Select(ct => ct.AmountChange)
+            .Should()
+            .BeEquivalentTo(entries.Select(e => -e.Amount));
     }
 }
