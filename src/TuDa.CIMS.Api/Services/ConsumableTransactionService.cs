@@ -1,10 +1,12 @@
 ﻿using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Api.Services;
 
+[ScopedService]
 public class ConsumableTransactionService : IConsumableTransactionService
 {
     private readonly IConsumableTransactionRepository _consumableTransactionRepository;
