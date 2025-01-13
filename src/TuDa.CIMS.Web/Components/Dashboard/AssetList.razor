@@ -1,87 +1,93 @@
-<!-- table for asset list -->
-<div class="container-fluid text-center">
-    <table class="table">
-        <thead class="align-middle">
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Typ</th>
-            <th scope="col">Raum</th>
-            <th scope="col">Notiz</th>
-            <th scope="col">ArtikelNr</th>
-            <th scope="col">Shop</th>
-            <th scope="col">CAS-Nr</th>
-            <th scope="col">Gefahren</th>
-            <th scope="col">Maßeinheit</th>
-            <th scope="col">Hersteller</th>
-            <th scope="col">SerienNr</th>
-            <th scope="col"></th>
-        </tr>
-        </thead>
-        <tbody class="align-middle">
-        @foreach (var assetItem in AssetItems)
-        {
-            <tr>
-                <th scope="row">@assetItem.Name</th>
-                <td>@GetItemType(assetItem)</td>
-                <td>@assetItem.Room.Name</td>
-                <td>@assetItem.Note</td>
-                <td>@assetItem.ItemNumber</td>
-                <td>@assetItem.Shop</td>
-                <td>@GetCas(assetItem)</td>
-                <td>
-                    @if (GetHazards(assetItem).Count == 0)
-                    {
-                        <p>-</p>
-                    }
-                    @foreach (var hazard in GetHazards(assetItem))
-                    {
-                        @hazard.Name
-                        @hazard.ImagePath
-                    }
-                </td>
-                <td>@GetPriceUnit(assetItem)</td>
-                <td>@GetManufacturer(assetItem)</td>
-                <td>@GetSerialNumber(assetItem)</td>
-                <td>
-                    <button type="button"
-                            class="btn">
-                        <i class="bi bi-pencil-square"></i>
-                    </button> <!-- TODO: button needs to be added properly -->
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Entities.Enums
 
-    <!-- pagination -->
-    <nav aria-label="Page navigation example">
-        <ul class="pagination d-flex justify-content-center">
-            <li class="page-item disabled">
-                <button class="page-link">
-                    🡸
-                </button>
-            </li>
-            <li class="page-item active"
-                aria-current="page">
-                <button class="page-link">
-                    1
-                </button>
-            </li>
-            <li class="page-item">
-                <button class="page-link">
-                    2
-                </button>
-            </li>
-            <li class="page-item">
-                <button class="page-link">
-                    3
-                </button>
-            </li>
-            <li class="page-item">
-                <button class="page-link">
-                    🡺
-                </button>
-            </li>
-        </ul>
-    </nav>
-</div>
+<MudDataGrid @ref="_dataGrid"
+             T="AssetItem"
+             ServerData="ServerReload"
+             Filterable="false">
+    <ToolBarContent>
+        <MudTextField T="string"
+                      ValueChanged="@(s => OnSearch(s))"
+                      Placeholder="Search"
+                      Adornment="@Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Clearable="true"
+                      IconSize="@Size.Medium"
+                      Class="mt-0"/>
+        <MudSpacer/>
+        <MudButton Color="@Color.Success"
+                   Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   OnClick="@AddButtonPressed">Hinzufügen
+        </MudButton>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="@(i => GetItemTypeName(i))"
+                        Title="Typ">
+            <CellTemplate>
+                <MudIcon Icon="@GetItemTypeIcon(context.Item)" Size="@Size.Medium"/>
+                @GetItemTypeName(context.Item)
+            </CellTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="@(x => GetItemName(x))"
+                        Title="Produkt"/>
+        <PropertyColumn Property="@(x => x.ItemNumber)"
+                        Title="Artikelnummer"/>
+        <PropertyColumn Property="@(x => x.Shop)"/>
+        <PropertyColumn Property="@(x => x.Room.Name)"
+                        Title="Raum"/>
+        <PropertyColumn Property="@(x => GetPriceText(x))"
+                        Title="Preis"/>
+        <TemplateColumn>
+            <CellTemplate>
+                <MudIconButton Size="@Size.Medium"
+                               Icon="@Icons.Material.Filled.Edit"
+                               OnClick="_ => EditButtonPressed.InvokeAsync(context.Item)"/>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager RowsPerPageString="Produkte pro Seite:"
+                          T="AssetItem"/>
+    </PagerContent>
+</MudDataGrid>
+
+@code {
+
+    private static string GetItemTypeName(AssetItem assetItem) =>
+        assetItem switch
+        {
+            Solvent => "Lösungsmittel",
+            Chemical => "Chemikalie",
+            Consumable => "Verbrauchsmaterial",
+            GasCylinder => "Druckgasflasche",
+            _ => "-",
+        };
+
+    private static string GetItemTypeIcon(AssetItem assetItem) =>
+        assetItem switch
+        {
+            Solvent => Icons.Material.Filled.WaterDrop,
+            Chemical => Icons.Material.Filled.Science,
+            Consumable => Icons.Material.Filled.Inventory2,
+            GasCylinder => Icons.Material.Filled.GasMeter,
+            _ => Icons.Material.Filled.QuestionMark
+        };
+
+    private static string GetItemName(AssetItem assetItem) =>
+        assetItem switch
+        {
+            Chemical chemical => $"{chemical.Name} ({chemical.Cas})",
+            _ => assetItem.Name,
+        };
+
+    private static string GetPriceText(AssetItem assetItem) =>
+        assetItem.Price.ToString("F")
+        + " €/"
+        + assetItem switch
+        {
+            Substance substance => substance.PriceUnit.ToAbbrevation(),
+            _ => "Stück",
+        };
+
+}

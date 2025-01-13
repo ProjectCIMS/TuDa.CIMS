@@ -37,6 +37,32 @@ namespace TuDa.CIMS.Api.Migrations
                     b.ToTable("SubstanceHazard");
                 });
 
+            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Address", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Addresses");
+                });
+
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.AssetItem", b =>
                 {
                     b.Property<Guid>("Id")
@@ -140,13 +166,16 @@ namespace TuDa.CIMS.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Gender")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Person");
+                    b.ToTable("Persons");
 
                     b.HasDiscriminator().HasValue("Person");
 
@@ -241,7 +270,8 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfessorId");
+                    b.HasIndex("ProfessorId")
+                        .IsUnique();
 
                     b.ToTable("WorkingGroups");
                 });
@@ -285,6 +315,23 @@ namespace TuDa.CIMS.Api.Migrations
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Professor", b =>
                 {
                     b.HasBaseType("TuDa.CIMS.Shared.Entities.Person");
+
+                    b.Property<Guid>("AddressId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasIndex("AddressId");
 
                     b.HasDiscriminator().HasValue("Professor");
                 });
@@ -378,7 +425,8 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasOne("TuDa.CIMS.Shared.Entities.WorkingGroup", null)
                         .WithMany("Purchases")
-                        .HasForeignKey("WorkingGroupId");
+                        .HasForeignKey("WorkingGroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Buyer");
                 });
@@ -393,7 +441,8 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.HasOne("TuDa.CIMS.Shared.Entities.Purchase", null)
                         .WithMany("Entries")
-                        .HasForeignKey("PurchaseId");
+                        .HasForeignKey("PurchaseId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("AssetItem");
                 });
@@ -401,19 +450,31 @@ namespace TuDa.CIMS.Api.Migrations
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.WorkingGroup", b =>
                 {
                     b.HasOne("TuDa.CIMS.Shared.Entities.Professor", "Professor")
-                        .WithMany()
-                        .HasForeignKey("ProfessorId")
+                        .WithOne()
+                        .HasForeignKey("TuDa.CIMS.Shared.Entities.WorkingGroup", "ProfessorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Professor");
                 });
 
+            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Professor", b =>
+                {
+                    b.HasOne("TuDa.CIMS.Shared.Entities.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+                });
+
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Student", b =>
                 {
                     b.HasOne("TuDa.CIMS.Shared.Entities.WorkingGroup", null)
                         .WithMany("Students")
-                        .HasForeignKey("WorkingGroupId");
+                        .HasForeignKey("WorkingGroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Purchase", b =>
