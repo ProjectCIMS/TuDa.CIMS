@@ -93,4 +93,13 @@ public class AssetItemController : CIMSBaseController
             onError: ErrorsToProblem
         );
     }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateAsync(CreateAssetItemDto createModel)
+    {
+        return (await _assetItemService.CreateAsync(createModel)).Match(
+            onValue: _ => Ok(),
+            onError: ErrorsToProblem
+        );
+    }
 }
