@@ -1,5 +1,4 @@
-@page "/invoice"
-@using Microsoft.VisualBasic
+@page "/working-groups/{workingGroupId}/invoice"
 <MudContainer MaxWidth="MaxWidth.Large">
     <MudGrid>
         <MudItem xs="12">
@@ -11,6 +10,7 @@
                     <MudText>Zeitraum:</MudText>
                 </MudItem>
                 <MudItem Class="p-2">
+                    @*DateRangeChanged="@SetInvoiceStatistics"*@
                     <MudDateRangePicker @bind-DateRange="@_dateRange" Margin="Margin.Dense" Clearable="true"
                                         PlaceholderStart="Startdatum" PlaceholderEnd="Enddatum"
                                         Variant="Variant.Filled"/>
@@ -47,10 +47,10 @@
                         </MudStack>
                     </MudStack>
                 </MudItem>
-
                 <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
                 <MudItem>
                     <MudStack AlignItems="AlignItems.End">
+                        @*OnClick="OpenPdf"*@
                         <MudButton Size="Size.Large" Color="Color.Success" Variant="Variant.Filled">
                             <MudIcon Icon="@Icons.Material.Filled.Add"/> PDF GENERIEREN
                         </MudButton>
@@ -64,7 +64,6 @@
                     <MudText Align="Align.Center">PDF-Anzeige</MudText>
                     <MudImage Src="images/pdf-placeholder.png"
                               Height="300" Width="300" Alt="PDF Placeholder" Class="rounded-lg"/>
-                    @*OnClick="OnAfterRenderAsync(true)"*@
                     <MudButton Size="Size.Large" Variant="Variant.Filled" Color="Color.Primary" Disabled="true">
                         <MudIcon Icon="@Icons.Material.Filled.Add" Disabled="true"/> SPEICHERN
                     </MudButton>

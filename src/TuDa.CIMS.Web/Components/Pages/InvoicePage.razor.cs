@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
-using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Models;
 using TuDa.CIMS.Web.Services;
 
@@ -10,12 +9,17 @@ namespace TuDa.CIMS.Web.Components.Pages;
 
 public partial class InvoicePage
 {
-    // Error when Purchase is not static occurs.
+    /// <summary>
+    /// Parameter for the working group.
+    /// </summary>
+    [Parameter]
+    public static WorkingGroup? WorkingGroup { get; set; }
+
+    // Error when WorkingGroup is not static occurs.
     /// <summary>
     /// Contains the title and the name of the buyer.
     /// </summary>
-    private readonly string BuyerString = (Purchase.Buyer is Professor professor ? professor.Title : string.Empty).ToUpper()
-                                     + " " + Purchase.Buyer.Name.ToUpper();
+    private readonly string BuyerString = WorkingGroup.Professor.Title + " " + WorkingGroup.Professor.Name;
 
     /// <summary>
     /// Selected date range.
@@ -23,23 +27,23 @@ public partial class InvoicePage
     private DateRange _dateRange { get; set; } = new();
 
     /// <summary>
-    /// Purchase with purchase entries.
-    /// </summary>
-
-    public static Purchase Purchase { get; set; }
-
-    /// <summary>
     /// The id of the working group.
     /// </summary>
-    private Guid WorkingGroupId { get; set; } = Guid.Empty;
+    private Guid workingGroupId { get; set; } = WorkingGroup.Id;
 
     /// <summary>
     /// The invoice statistics of the purchase.
     /// </summary>
-    private InvoiceStatistics InvoiceStatistics { get; set; }
-    // = await _invoiceApi.GetStatisticsAsync(WorkingGroupId,
-    //    _dateRange.Start,
-    //     _dateRange.End);
+    private InvoiceStatistics InvoiceStatistics { get; set; } = null!;
+
+    // /// <summary>
+    // /// Sets the invoice statistics.
+    // /// </summary>
+    // private void SetInvoiceStatistics()
+    // {
+    //     InvoiceStatistics = await _invoiceApi.GetStatisticsAsync(workingGroupId,
+    //         _dateRange.Start, _dateRange.End);
+    // }
 
 
     [Inject] private IJSRuntime _jsRuntime { get; set; } = null!;
@@ -50,13 +54,11 @@ public partial class InvoicePage
 
     private string SelectedInvoiceNumber { get; set; } = null!;
 
-    /*protected override async Task OnAfterRenderAsync(bool firstRender)
+    /*private async Task OpenPdf(bool firstRender)
     {
-        var workingGroups = await _workingGroupApi.GetAllAsync();
-
-        if (!workingGroups.IsError)
+        if (!workingGroupId.IsError)
         {
-            var wgId = WorkingGroupId;
+            var wgId = workingGroupId;
             var infos = new AdditionalInvoiceInformation
             {
                 InvoiceNumber = SelectedInvoiceNumber,
@@ -70,7 +72,4 @@ public partial class InvoicePage
             );
         }
     }*/
-
-
-
 }
