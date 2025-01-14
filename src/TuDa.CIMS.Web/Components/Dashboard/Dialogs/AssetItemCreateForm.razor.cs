@@ -58,7 +58,6 @@ public partial class AssetItemCreateForm
             case AssetItemType.GasCylinder:
             {
                 _gasCylinderForm.ResetInputs();
-                _chemicalItemForm.ResetInputs();
                 break;
             }
 
@@ -91,7 +90,7 @@ public partial class AssetItemCreateForm
             )
             || (
                 _selectedAssetItemType == AssetItemType.GasCylinder
-                && (_gasCylinderForm.ValidateForm() || _chemicalItemForm.ValidateForm())
+                && _gasCylinderForm.ValidateForm()
             )
         )
         {

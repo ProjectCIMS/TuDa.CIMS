@@ -57,6 +57,8 @@
         return false;
     }
 
+    [Parameter] public EventCallback OnReset { get; set; }
+
     /// <summary>
     /// Resets the Input lines
     /// </summary>
@@ -65,6 +67,7 @@
         FormManufacturer = string.Empty;
         FormSerialNumber = string.Empty;
         FormConsumableAmount = 0;
+        OnReset.InvokeAsync();
     }
 
 }
