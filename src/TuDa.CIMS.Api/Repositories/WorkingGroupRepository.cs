@@ -115,8 +115,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
             // If the professor doesn't exist, create a new one
             professor = new Professor
             {
-                Name = createModel.Professor.Name,
-                FirstName = createModel.Professor.FirstName,
+                Name = createModel.Professor.Name, FirstName = createModel.Professor.FirstName,
             };
             _context.Professors.Add(professor);
         }
@@ -124,9 +123,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         // Create the WorkingGroup after ensuring all related entities exist
         var workingGroup = new WorkingGroup
         {
-            Professor = createModel.Professor,
-            PhoneNumber = createModel.PhoneNumber,
-            Email = createModel.Email,
+            Professor = createModel.Professor, PhoneNumber = createModel.PhoneNumber, Email = createModel.Email,
         };
 
         _context.WorkingGroups.Add(workingGroup);
@@ -136,8 +133,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
 
     public async Task<IEnumerable<WorkingGroup>> SearchAsync(string name)
     {
-        IQueryable<WorkingGroup> query = _context.WorkingGroups.Include(p => p.Professor).Where(s => EF.Functions.ILike(s.Professor.Name, $"%{name}%"));
-
-        return await query.ToListAsync();
+        return await _context.WorkingGroups.Include(p => p.Professor)
+            .Where(s => EF.Functions.ILike(s.Professor.Name, $"%{name}%")).ToListAsync();
     }
 }
