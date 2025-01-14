@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections;
+using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
@@ -114,8 +115,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
             // If the professor doesn't exist, create a new one
             professor = new Professor
             {
-                Name = createModel.Professor.Name,
-                FirstName = createModel.Professor.FirstName,
+                Name = createModel.Professor.Name, FirstName = createModel.Professor.FirstName,
             };
             _context.Professors.Add(professor);
         }
@@ -123,13 +123,17 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         // Create the WorkingGroup after ensuring all related entities exist
         var workingGroup = new WorkingGroup
         {
-            Professor = createModel.Professor,
-            PhoneNumber = createModel.PhoneNumber,
-            Email = createModel.Email,
+            Professor = createModel.Professor, PhoneNumber = createModel.PhoneNumber, Email = createModel.Email,
         };
 
         _context.WorkingGroups.Add(workingGroup);
         await _context.SaveChangesAsync();
         return workingGroup;
+    }
+
+    public async Task<IEnumerable<WorkingGroup>> SearchAsync(string name)
+    {
+        return await _context.WorkingGroups.Include(p => p.Professor)
+            .Where(s => EF.Functions.ILike(s.Professor.Name, $"%{name}%")).ToListAsync();
     }
 }
