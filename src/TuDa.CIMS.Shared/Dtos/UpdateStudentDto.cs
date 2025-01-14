@@ -5,10 +5,10 @@ public record UpdateStudentDto
     /// <summary>
     /// The name of the person.
     /// </summary>
-    public required string Name { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// The first name of the person.
     /// </summary>
-    public string FirstName { get; set; } = string.Empty;
+    public string? FirstName { get; set; }
 }
