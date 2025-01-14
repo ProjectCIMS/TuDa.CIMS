@@ -1,4 +1,5 @@
-﻿using Scalar.AspNetCore;
+﻿using System.Text.Json.Serialization;
+using Scalar.AspNetCore;
 
 namespace TuDa.CIMS.Api;
 
@@ -20,5 +21,18 @@ public static class ConfigureServices
         });
 
         return app;
+    }
+
+    public static IServiceCollection AddJsonDecoder(this IServiceCollection services)
+    {
+        services.ConfigureHttpJsonOptions(options =>
+        {
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
+        services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
+        return services;
     }
 }
