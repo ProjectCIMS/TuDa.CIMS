@@ -3,7 +3,7 @@ using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
 
-namespace TuDa.CIMS.Web.Components.Dashboard;
+namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
 public partial class WorkingGroupPageWorkingGroupList
 {
@@ -12,7 +12,7 @@ public partial class WorkingGroupPageWorkingGroupList
         _workingGroupApi = workingGroupApi;
     }
 
-    private MudDataGrid<WorkingGroup> _dataGrid { get; set; }
+    private MudDataGrid<WorkingGroup> _dataGrid { get; set; } = new();
 
     private readonly IWorkingGroupApi _workingGroupApi;
 

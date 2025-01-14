@@ -1,8 +1,5 @@
-@page "/working-group-page"
-@using TuDa.CIMS.Web.Components.Dashboard
+@page "/working-groups"
+@using TuDa.CIMS.Web.Components.WorkingGroupPage
 
-<MudContainer MaxWidth="MaxWidth.Large">
-    <MudGrid>
-        <WorkingGroupPageWorkingGroupList CreateGroupSelected="OpenDialogAsync"/>
-    </MudGrid>
-</MudContainer>
+<WorkingGroupPageWorkingGroupList CreateGroupSelected="OpenDialogAsync"/>
+

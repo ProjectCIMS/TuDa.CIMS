@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 
-namespace TuDa.CIMS.Web.Components.Dashboard;
+namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
 public partial class WorkingGroupPageWorkingGroupListAddDialog
 {

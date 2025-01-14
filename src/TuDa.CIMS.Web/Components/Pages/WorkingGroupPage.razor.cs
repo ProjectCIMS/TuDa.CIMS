@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
-using TuDa.CIMS.Web.Components.Dashboard;
+using TuDa.CIMS.Web.Components.WorkingGroupPage;
+using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.Pages;
 
@@ -9,6 +11,7 @@ public partial class WorkingGroupPage
 {
     [Inject]
     private IDialogService DialogService { get; set; } = null!;
+    [Inject] private IWorkingGroupApi _workingGroupApi { get; set; } = null!;
     private async Task OpenDialogAsync()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
@@ -16,13 +19,15 @@ public partial class WorkingGroupPage
             "AddWorkingGroupDialog",options
         );
         var result = await dialog.Result;
+        var professor = await dialog.GetReturnValueAsync<Professor>();
 
         if (result is { Canceled: false })
         {
-            Professor professor = (Professor)result.Data!;
-            if (professor.Name != null)
+            if (professor != null)
             {
-                //AddWorkingGroup(professor);
+                await _workingGroupApi.CreateAsync(
+                    new CreateWorkingGroupDto { Professor = professor }
+                );
             }
         }
     }
