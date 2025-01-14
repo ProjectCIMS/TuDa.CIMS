@@ -3,12 +3,21 @@
 
 @*ShoppingCart SubmitPopup WorkingGroup Selection*@
 <MudItem Class="d-flex align-items-center">
-    <MudAutocomplete T="WorkingGroup"
-                     Label="Professor"
-                     Value="WorkingGroup"
-                     ValueChanged="WorkingGroupChanged"
-                     SearchFunc="@Search"
-                     ToStringFunc="@ToString">
+    <MudAutocomplete
+        T="WorkingGroup"
+        @ref="_autocomplete"
+        Clearable="@true"
+        AdornmentIcon="@Icons.Material.Filled.Search"
+        AdornmentColor="@Color.Primary"
+        Value="WorkingGroup"
+        Label="Arbeitsgruppe"
+        SearchFunc="@Search"
+        ToStringFunc="@ToString"
+        ValueChanged="WorkingGroupChanged"
+        Variant="Variant.Filled"
+        Dense=true
+        ShowProgressIndicator="true">
+
         <ItemTemplate>
             <MudItem Class="d-flex align-items-center">
                 <MudIconButton Icon="@Icons.Material.Outlined.Info" Class="mr-2">

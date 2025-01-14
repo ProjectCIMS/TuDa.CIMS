@@ -21,9 +21,9 @@ public class WorkingGroupController : CIMSBaseController
     /// </summary>
     /// <returns> a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync([FromQuery] string? name)
     {
-        return (await _workingGroupService.GetAllAsync()).Match(
+        return (await _workingGroupService.GetAllAsync(name)).Match(
             onValue: Ok,
             onError: ErrorsToProblem
         );
