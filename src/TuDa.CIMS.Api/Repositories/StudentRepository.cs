@@ -50,14 +50,12 @@ public class StudentRepository : IStudentRepository
     /// <summary>
     /// Adds a Student from a Working Group
     /// </summary>
-    /// <param name="id">specific ID of Student</param>
     /// <param name="workingGroupId">specific ID of Working Group</param>
     /// <param name="createStudentDto">model to create a student if necessary</param>
     /// <returns>returns the Working Group in which the Student was added</returns>
     public async Task<ErrorOr<WorkingGroup>> AddAsync(
         Guid workingGroupId,
-        Guid id,
-        CreateStudentDto? createStudentDto
+        CreateStudentDto createStudentDto
     )
     {
         var existingWorkingGroup = await _context
@@ -67,23 +65,21 @@ public class StudentRepository : IStudentRepository
 
         if (existingWorkingGroup is null)
         {
-            return Error.NotFound("Student.add", $"Working Group with id {id} was not found.");
+            return Error.NotFound(
+                "Student.add",
+                $"Working Group with id {workingGroupId} was not found."
+            );
         }
 
-        var existingStudent = await _context.Students.FindAsync(id);
-
-        if (existingStudent == null)
+        Student newStudent = new Student()
         {
-            existingStudent = new Student()
-            {
-                Id = id,
-                Name = createStudentDto?.Name ?? string.Empty,
-                FirstName = createStudentDto?.FirstName ?? string.Empty,
-            };
-            _context.Students.Add(existingStudent);
-        }
+            Name = createStudentDto?.Name ?? string.Empty,
+            FirstName = createStudentDto?.FirstName ?? string.Empty,
+        };
+        _context.Students.Add(newStudent);
 
-        existingWorkingGroup.Students.Add(existingStudent);
+        existingWorkingGroup.Students.Add(newStudent);
+        _context.Students.Add(newStudent);
         await _context.SaveChangesAsync();
         return existingWorkingGroup;
     }
@@ -91,8 +87,8 @@ public class StudentRepository : IStudentRepository
     /// <summary>
     /// Updates an existing Student using the provided Values in the Update Model
     /// </summary>
-    /// <param name="workingGroupId">specific Id of the Working Group</param>
-    /// <param name="id">specific ID of the Student</param>
+    /// <param name="workingGroupId">the unique id of the Working Group</param>
+    /// <param name="id">the unique ID of the Student</param>
     /// <param name="updatedStudentDto">the model containing the updated values for the Student</param>
     /// <returns>Returns an Update Result</returns>
     public async Task<ErrorOr<Updated>> UpdateAsync(

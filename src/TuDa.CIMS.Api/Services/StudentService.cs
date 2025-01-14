@@ -41,25 +41,23 @@ public class StudentService : IStudentService
     /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
     /// or the result of the <see cref="AddAsync"/> functionality if successful
     /// </summary>
-    /// <param name="id">the unique id of the Student</param>
     /// <param name="workingGroupId">the unique id of the Working Group</param>
     /// <param name="createStudentDto">to add a student but optional</param>
     /// <returns></returns>
     public async Task<ErrorOr<WorkingGroup>> AddAsync(
         Guid workingGroupId,
-        Guid id,
-        CreateStudentDto? createStudentDto
+        CreateStudentDto createStudentDto
     )
     {
         try
         {
-            return await _studentRepository.AddAsync(workingGroupId, id, createStudentDto);
+            return await _studentRepository.AddAsync(workingGroupId, createStudentDto);
         }
         catch (Exception e)
         {
             return Error.Failure(
                 "StudentService.AddAsync",
-                $"Failed to add Student with ID {id}. Exception: {e.Message}"
+                $"Failed to add Student, Working Group not found with ID {workingGroupId}. Exception: {e.Message}"
             );
         }
     }
@@ -68,6 +66,7 @@ public class StudentService : IStudentService
     /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
     /// or the result of the <see cref="UpdateAsync"/> functionality if successful
     /// </summary>
+    /// <param name="workingGroupId">the unique id of the Working Group</param>
     /// <param name="id">the unique id of the Student</param>
     /// <param name="updateModel">Model containing updated Values for the Student</param>
     /// <returns></returns>

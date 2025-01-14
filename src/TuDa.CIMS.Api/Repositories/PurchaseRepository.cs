@@ -117,7 +117,7 @@ public class PurchaseRepository : IPurchaseRepository
                 createModel
                     .Entries?.Select(e => new PurchaseEntry
                     {
-                        AssetItem = null!,
+                        AssetItem = e.AssetItem,
                         Amount = e.Amount,
                         PricePerItem = e.PricePerItem,
                     })
