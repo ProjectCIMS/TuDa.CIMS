@@ -2,8 +2,7 @@
 
 namespace TuDa.CIMS.Shared.Test.Faker;
 
-public abstract class AddressFaker<TAddress> : BaseEntityFaker<TAddress>
-    where TAddress : Address
+public class AddressFaker : BaseEntityFaker<Address>
 {
     public AddressFaker()
     {
@@ -12,5 +11,4 @@ public abstract class AddressFaker<TAddress> : BaseEntityFaker<TAddress>
         RuleFor(a => a.ZipCode, f => f.Address.ZipCode());
         RuleFor(a => a.City, f => f.Address.City());
     }
-
 }

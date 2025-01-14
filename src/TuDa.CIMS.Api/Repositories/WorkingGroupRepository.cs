@@ -71,6 +71,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         existingItem.Professor.FirstName =
             updateModel.Professor?.FirstName ?? existingItem.Professor.FirstName;
         existingItem.PhoneNumber = updateModel.PhoneNumber ?? existingItem.PhoneNumber;
+        existingItem.Email = updateModel.Email ?? existingItem.Email;
 
         await _context.SaveChangesAsync();
         return existingItem;
@@ -125,6 +126,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         {
             Professor = createModel.Professor,
             PhoneNumber = createModel.PhoneNumber,
+            Email = createModel.Email,
         };
 
         _context.WorkingGroups.Add(workingGroup);
