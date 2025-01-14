@@ -86,7 +86,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var result = await response.Content.ReadFromJsonAsync<List<AssetItem>>();
+        var result = await response.Content.FromJsonAsync<List<AssetItem>>();
 
         result.Should().BeEquivalentTo(assetItems);
     }
@@ -207,8 +207,8 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
         response3.IsSuccessStatusCode.Should().BeFalse();
         response3.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        var result1 = await response1.Content.ReadFromJsonAsync<List<AssetItem>>();
-        var result2 = await response2.Content.ReadFromJsonAsync<List<AssetItem>>();
+        var result1 = await response1.Content.FromJsonAsync<List<AssetItem>>();
+        var result2 = await response2.Content.FromJsonAsync<List<AssetItem>>();
 
         result1.Should().BeEquivalentTo(assetItems[..2]);
         result2.Should().BeEquivalentTo(assetItems[2..4]);
