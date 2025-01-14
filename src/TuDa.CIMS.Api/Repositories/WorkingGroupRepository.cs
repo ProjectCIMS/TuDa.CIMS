@@ -26,6 +26,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         return await _context
             .WorkingGroups.Where(i => i.Id == id)
             .Include(workingGroup => workingGroup.Professor)
+            .ThenInclude(a => a.Address)
             .Include(workingGroup => workingGroup.Students)
             .Include(workingGroup => workingGroup.Purchases)
             .SingleOrDefaultAsync();
@@ -38,6 +39,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     {
         return await _context
             .WorkingGroups.Include(workingGroup => workingGroup.Professor)
+            .ThenInclude(a => a.Address)
             .Include(workingGroup => workingGroup.Students)
             .Include(workingGroup => workingGroup.Purchases)
             .ToListAsync();
@@ -54,6 +56,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         var existingItem = await _context
             .WorkingGroups.Where(i => i.Id == id)
             .Include(workingGroup => workingGroup.Professor)
+            .ThenInclude(a => a.Address)
             .Include(workingGroup => workingGroup.Students)
             .Include(workingGroup => workingGroup.Purchases)
             .SingleOrDefaultAsync();
@@ -70,6 +73,15 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         existingItem.Professor.FirstName =
             updateModel.Professor?.FirstName ?? existingItem.Professor.FirstName;
         existingItem.PhoneNumber = updateModel.PhoneNumber ?? existingItem.PhoneNumber;
+        existingItem.Professor.Title = updateModel.Professor?.Title ?? existingItem.Professor.Title;
+        existingItem.Professor.PhoneNumber =
+            updateModel.Professor?.PhoneNumber ?? existingItem.Professor.PhoneNumber;
+        existingItem.Professor.Email = updateModel.Professor?.Email ?? existingItem.Professor.Email;
+        existingItem.Professor.Gender = updateModel.Professor?.Gender ?? existingItem.Professor.Gender;
+        existingItem.Professor.Address.City = updateModel.Professor?.Address.City ?? existingItem.Professor.Address.City;
+        existingItem.Professor.Address.Street = updateModel.Professor?.Address.Street ?? existingItem.Professor.Address.Street;
+        existingItem.Professor.Address.ZipCode = updateModel.Professor?.Address.ZipCode ?? existingItem.Professor.Address.ZipCode;
+        existingItem.Professor.Address.Number = updateModel.Professor?.Address.Number ?? existingItem.Professor.Address.Number;
 
         await _context.SaveChangesAsync();
         return existingItem;

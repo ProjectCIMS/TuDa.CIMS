@@ -35,7 +35,6 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
         await base.OnInitializedAsync();
     }
 
-    /// TODO: Add dialog
     public async Task OpenDialogAsync()
     {
         var parameters = new DialogParameters

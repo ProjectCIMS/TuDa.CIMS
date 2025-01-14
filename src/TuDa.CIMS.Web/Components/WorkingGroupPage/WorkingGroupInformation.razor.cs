@@ -14,12 +14,12 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
     [Inject] private IDialogService DialogService { get; set; } = null!;
 
-    [Parameter] public Professor ProfessorInfo { get; set; } = new Professor()
+    [Parameter] public Professor ProfessorInfo { get; set; } = new()
     {
         Address = new Address(),
         Email = "",
         FirstName = "",
-        Name = "lmce"
+        Name = ""
     };
 
 
@@ -44,25 +44,18 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
         var result = await dialogReference.Result;
         var currentWorkingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
-        ProfessorInfo.Name = result.Data.ToString();
+        if(!result!.Canceled)
+        {
+            ProfessorInfo.Name = result.Data!.ToString()!;
 
-        //TODO: Update the working group with the new professor name
-
-        await workingGroupApi.UpdateAsync(WorkingGroupId,
-            new UpdateWorkingGroupDto()
-            {
-                PhoneNumber = "",
-                Professor = new Professor()
+            await workingGroupApi.UpdateAsync(WorkingGroupId,
+                new UpdateWorkingGroupDto()
                 {
-                    Address = currentWorkingGroup.Value.Professor.Address,
-                    PhoneNumber = currentWorkingGroup.Value.Professor.PhoneNumber,
-                    Title = currentWorkingGroup.Value.Professor.Title,
-                    Email = currentWorkingGroup.Value.Professor.Email,
-                    Gender = currentWorkingGroup.Value.Professor.Gender,
-                    FirstName = currentWorkingGroup.Value.Professor.FirstName,
-                    Name = ProfessorInfo.Name
-                }
-            });
+                    PhoneNumber = "",
+                    Professor = currentWorkingGroup.Value.Professor with {Name = ProfessorInfo.Name}
+                });
+            StateHasChanged();
+        }
     }
 
     private async Task EditPhoneNumber()
@@ -79,31 +72,21 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
 
         var result = await dialogReference.Result;
-        ProfessorInfo.PhoneNumber = result.Data.ToString();
-
-        //TODO: Update the working group with the new professor name
         var currentWorkingGroup = await  workingGroupApi.GetAsync(WorkingGroupId);
-        await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
+
+        if (!result!.Canceled)
         {
-            PhoneNumber = "ProfessorPhoneNumber",
-            Professor = new Professor()
-            {
-                Address = new Address()
+            ProfessorInfo.PhoneNumber = result.Data!.ToString()!;
+
+            await workingGroupApi.UpdateAsync(WorkingGroupId,
+                new UpdateWorkingGroupDto()
                 {
-                    City = currentWorkingGroup.Value.Professor.Address.City,
-                    Street = currentWorkingGroup.Value.Professor.Address.Street,
-                    Number = currentWorkingGroup.Value.Professor.Address.Number,
-                    ZipCode = currentWorkingGroup.Value.Professor.Address.ZipCode,
-                },
-                PhoneNumber = ProfessorInfo.PhoneNumber,
-                Title = currentWorkingGroup.Value.Professor.Title,
-                Email = currentWorkingGroup.Value.Professor.Email,
-                Gender = currentWorkingGroup.Value.Professor.Gender,
-                FirstName = currentWorkingGroup.Value.Professor.FirstName,
-                Name = currentWorkingGroup.Value.Professor.Name
-            }
-        });
+                    PhoneNumber = ProfessorInfo.PhoneNumber,
+                    Professor = currentWorkingGroup.Value.Professor with { PhoneNumber = ProfessorInfo.PhoneNumber }
+                });
+            StateHasChanged();
         }
+    }
 
     private async Task EditAddressCity()
     {
@@ -120,30 +103,37 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
         var result = await dialogReference.Result;
         var currentWorkingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
-        ProfessorInfo.Address.City = result.Data.ToString();
 
-        //TODO: Update the working group with the new professor name
-        await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
+        if (!result!.Canceled)
         {
-            PhoneNumber = "",
-            Professor = new Professor()
-            {
-                Address = new Address()
-                {
-                    City = ProfessorInfo.Address.City,
-                    Street = currentWorkingGroup.Value.Professor.Address.Street,
-                    Number = currentWorkingGroup.Value.Professor.Address.Number,
-                    ZipCode = currentWorkingGroup.Value.Professor.Address.ZipCode,
+            ProfessorInfo.Address.City = result.Data!.ToString()!;
 
-                },
-                PhoneNumber = currentWorkingGroup.Value.Professor.PhoneNumber,
-                Title = currentWorkingGroup.Value.Professor.Title,
-                Email = currentWorkingGroup.Value.Professor.Email,
-                Gender = currentWorkingGroup.Value.Professor.Gender,
-                FirstName = currentWorkingGroup.Value.Professor.FirstName,
-                Name = currentWorkingGroup.Value.Professor.Name
-            }
-        });
+            await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
+            {
+                PhoneNumber = "",
+                Professor = new Professor()
+                {
+                    Address = new Address()
+                    {
+                        Id = currentWorkingGroup.Value.Professor.Address.Id,
+                        City = ProfessorInfo.Address.City,
+                        Street = currentWorkingGroup.Value.Professor.Address.Street,
+                        Number = currentWorkingGroup.Value.Professor.Address.Number,
+                        ZipCode = currentWorkingGroup.Value.Professor.Address.ZipCode,
+
+                    },
+                    Id = currentWorkingGroup.Value.Professor.Id,
+                    PhoneNumber = currentWorkingGroup.Value.Professor.PhoneNumber,
+                    Title = currentWorkingGroup.Value.Professor.Title,
+                    Email = currentWorkingGroup.Value.Professor.Email,
+                    Gender = currentWorkingGroup.Value.Professor.Gender,
+                    FirstName = currentWorkingGroup.Value.Professor.FirstName,
+                    Name = currentWorkingGroup.Value.Professor.Name
+                }
+            });
+        }
+
+        StateHasChanged();
     }
 
     private async Task EditAddressStreetAndNumber()
@@ -163,29 +153,35 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
         var result = await dialogReference.Result;
         var currentWorkingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
-        ProfessorInfo.Address.Street = result.Data.ToString();
 
-        //TODO: Update the working group with the new professor name
-        await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
+        if (!result!.Canceled)
         {
-            PhoneNumber = "",
-            Professor = new Professor()
+            ProfessorInfo.Address.Street = result.Data!.ToString()!;
+
+            await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
             {
-                Address = new Address()
+                PhoneNumber = "",
+                Professor = new Professor()
                 {
-                    City = currentWorkingGroup.Value.Professor.Address.City,
-                    Street = ProfessorInfo.Address.Street,
-                    Number = ProfessorInfo.Address.Number,
-                    ZipCode = currentWorkingGroup.Value.Professor.Address.ZipCode,
-                },
-                PhoneNumber = currentWorkingGroup.Value.Professor.PhoneNumber,
-                Title = currentWorkingGroup.Value.Professor.Title,
-                Email = currentWorkingGroup.Value.Professor.Email,
-                Gender = currentWorkingGroup.Value.Professor.Gender,
-                FirstName = currentWorkingGroup.Value.Professor.FirstName,
-                Name = currentWorkingGroup.Value.Professor.Name
-            }
-        });
+                    Address = new Address()
+                    {
+                        Id = currentWorkingGroup.Value.Professor.Address.Id,
+                        City = currentWorkingGroup.Value.Professor.Address.City,
+                        Street = ProfessorInfo.Address.Street,
+                        Number = ProfessorInfo.Address.Number,
+                        ZipCode = currentWorkingGroup.Value.Professor.Address.ZipCode,
+                    },
+                    Id = currentWorkingGroup.Value.Professor.Id,
+                    PhoneNumber = currentWorkingGroup.Value.Professor.PhoneNumber,
+                    Title = currentWorkingGroup.Value.Professor.Title,
+                    Email = currentWorkingGroup.Value.Professor.Email,
+                    Gender = currentWorkingGroup.Value.Professor.Gender,
+                    FirstName = currentWorkingGroup.Value.Professor.FirstName,
+                    Name = currentWorkingGroup.Value.Professor.Name
+                }
+            });
+            StateHasChanged();
+        }
     }
 
     private async Task EditAddressZipNumber()
@@ -203,29 +199,34 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
         var result = await dialogReference.Result;
         var currentWorkingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
-        ProfessorInfo.Address.ZipCode = result.Data.ToString();
-
-        //TODO: Update the working group with the new professor name
-        await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
+        if (!result!.Canceled)
         {
-            PhoneNumber = "",
-            Professor = new Professor()
+            ProfessorInfo.Address.ZipCode = result.Data!.ToString()!;
+
+            await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
             {
-                Address = new Address()
+                PhoneNumber = "",
+                Professor = new Professor()
                 {
-                    City = currentWorkingGroup.Value.Professor.Address.City,
-                    Street = currentWorkingGroup.Value.Professor.Address.Street,
-                    Number = currentWorkingGroup.Value.Professor.Address.Number,
-                    ZipCode = ProfessorInfo.Address.ZipCode
-                },
-                PhoneNumber = currentWorkingGroup.Value.Professor.PhoneNumber,
-                Title = currentWorkingGroup.Value.Professor.Title,
-                Email = currentWorkingGroup.Value.Professor.Email,
-                Gender = currentWorkingGroup.Value.Professor.Gender,
-                FirstName = currentWorkingGroup.Value.Professor.FirstName,
-                Name = currentWorkingGroup.Value.Professor.Name
-            }
-        });
+                    Address = new Address()
+                    {
+                        Id = currentWorkingGroup.Value.Professor.Address.Id,
+                        City = currentWorkingGroup.Value.Professor.Address.City,
+                        Street = currentWorkingGroup.Value.Professor.Address.Street,
+                        Number = currentWorkingGroup.Value.Professor.Address.Number,
+                        ZipCode = ProfessorInfo.Address.ZipCode
+                    },
+                    Id = currentWorkingGroup.Value.Professor.Id,
+                    PhoneNumber = currentWorkingGroup.Value.Professor.PhoneNumber,
+                    Title = currentWorkingGroup.Value.Professor.Title,
+                    Email = currentWorkingGroup.Value.Professor.Email,
+                    Gender = currentWorkingGroup.Value.Professor.Gender,
+                    FirstName = currentWorkingGroup.Value.Professor.FirstName,
+                    Name = currentWorkingGroup.Value.Professor.Name
+                }
+            });
+            StateHasChanged();
+        }
     }
 
     private async Task EditEmail()
@@ -243,29 +244,34 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
         var result = await dialogReference.Result;
         var currentWorkingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
-        ProfessorInfo.Email = result.Data.ToString();
 
-        //TODO: Update the working group with the new professor name
-
-        await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
+        if (!result!.Canceled)
         {
-            PhoneNumber = "",
-            Professor = new Professor()
+            ProfessorInfo.Email = result.Data!.ToString()!;
+
+            await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
             {
-                Address = new Address()
+                PhoneNumber = "",
+                Professor = new Professor()
                 {
-                    City = currentWorkingGroup.Value.Professor.Address.City,
-                    Street = currentWorkingGroup.Value.Professor.Address.Street,
-                    Number = currentWorkingGroup.Value.Professor.Address.Number,
-                    ZipCode = currentWorkingGroup.Value.Professor.Address.ZipCode,
-                },
-                PhoneNumber = currentWorkingGroup.Value.Professor.PhoneNumber,
-                Title = currentWorkingGroup.Value.Professor.Title,
-                Email = ProfessorInfo.Email,
-                Gender = currentWorkingGroup.Value.Professor.Gender,
-                FirstName = currentWorkingGroup.Value.Professor.FirstName,
-                Name = currentWorkingGroup.Value.Professor.Name
-            }
-        });
+                    Address = new Address()
+                    {
+                        Id = currentWorkingGroup.Value.Professor.Address.Id,
+                        City = currentWorkingGroup.Value.Professor.Address.City,
+                        Street = currentWorkingGroup.Value.Professor.Address.Street,
+                        Number = currentWorkingGroup.Value.Professor.Address.Number,
+                        ZipCode = currentWorkingGroup.Value.Professor.Address.ZipCode,
+                    },
+                    Id = currentWorkingGroup.Value.Professor.Id,
+                    PhoneNumber = currentWorkingGroup.Value.Professor.PhoneNumber,
+                    Title = currentWorkingGroup.Value.Professor.Title,
+                    Email = ProfessorInfo.Email,
+                    Gender = currentWorkingGroup.Value.Professor.Gender,
+                    FirstName = currentWorkingGroup.Value.Professor.FirstName,
+                    Name = currentWorkingGroup.Value.Professor.Name
+                }
+            });
+            StateHasChanged();
+        }
     }
 }
