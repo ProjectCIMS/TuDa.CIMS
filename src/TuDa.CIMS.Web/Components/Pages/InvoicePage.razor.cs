@@ -40,7 +40,7 @@ public partial class InvoicePage
     /// The id of the working group.
     /// </summary>
     [Parameter]
-    private Guid workingGroupId { get; set; }
+    public Guid workingGroupId { get; set; }
 
     /// <summary>
     /// The invoice statistics of the purchase.
@@ -66,21 +66,30 @@ public partial class InvoicePage
         }
     }
 
+    /// <summary>
+    /// Returns the TotalPriceSolvents text.
+    /// </summary>
     private string GetTotalPriceSolvents()
     {
         return InvoiceStatistics?.TotalPriceSolvents.ToString("0.00") + "\u20ac";
     }
-
+    /// <summary>
+    /// Returns the TotalPriceChemicals text.
+    /// </summary>
     private string GetTotalPriceChemicals()
     {
         return InvoiceStatistics?.TotalPriceChemicals.ToString("0.00") + "\u20ac";
     }
-
+    /// <summary>
+    /// Returns the TotalPriceConsumables text.
+    /// </summary>
     private string GetTotalPriceConsumables()
     {
         return InvoiceStatistics?.TotalPriceConsumables.ToString("0.00") + "\u20ac";
     }
-
+    /// <summary>
+    /// Returns the TotalPriceGasCylinders text.
+    /// </summary>
     private string GetTotalPriceGasCylinders()
     {
         return InvoiceStatistics?.TotalPriceGasCylinders.ToString("0.00") + "\u20ac";
