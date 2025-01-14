@@ -82,6 +82,8 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         existingItem.Professor.Address.Street = updateModel.Professor?.Address.Street ?? existingItem.Professor.Address.Street;
         existingItem.Professor.Address.ZipCode = updateModel.Professor?.Address.ZipCode ?? existingItem.Professor.Address.ZipCode;
         existingItem.Professor.Address.Number = updateModel.Professor?.Address.Number ?? existingItem.Professor.Address.Number;
+        existingItem.Email = updateModel.Email ?? existingItem.Email;
+
 
         await _context.SaveChangesAsync();
         return existingItem;
@@ -136,6 +138,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         {
             Professor = createModel.Professor,
             PhoneNumber = createModel.PhoneNumber,
+            Email = createModel.Email,
         };
 
         _context.WorkingGroups.Add(workingGroup);

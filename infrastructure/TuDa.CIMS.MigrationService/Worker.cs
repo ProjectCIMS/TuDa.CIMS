@@ -88,13 +88,13 @@ public class Worker(
             cancellationToken
         );
 
-        var professor = new PersonFaker<Professor>().Generate();
+        var professor = new ProfessorFaker().Generate();
         var students = new PersonFaker<Student>().GenerateBetween(5, 5);
 
         var workingGroup = new WorkingGroupFaker(professor, students, []).Generate();
 
-        var purchaseEntries = new PurchaseEntryFaker(chemical).GenerateBetween(4, 4);
-        var purchase = new PurchaseFaker(workingGroup, purchaseEntries).Generate();
+        var purchaseEntries = new PurchaseEntryFaker<AssetItem>().GenerateBetween(4, 4);
+        var purchase = new PurchaseFaker(workingGroup, purchaseEntries, true).Generate();
         workingGroup.Purchases.Add(purchase);
 
         var consumableTransaction = new ConsumableTransactionFaker(consumable).Generate();

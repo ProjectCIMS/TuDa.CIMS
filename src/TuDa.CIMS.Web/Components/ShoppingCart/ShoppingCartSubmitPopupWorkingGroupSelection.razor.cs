@@ -9,6 +9,8 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection
     [Parameter]
     public required WorkingGroup WorkingGroup { get; set; }
 
+    [Parameter]
+    public EventCallback<WorkingGroup> WorkingGroupChanged { get; set; }
     /// <summary>
     /// List of working groups.
     /// TODO: Need to be replaced by WorkingGroupApi

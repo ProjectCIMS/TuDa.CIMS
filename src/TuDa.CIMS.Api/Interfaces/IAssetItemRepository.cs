@@ -14,4 +14,6 @@ public interface IAssetItemRepository
         AssetItemPaginationQueryParams queryParams
     );
     Task<IEnumerable<AssetItem>> SearchAsync(string nameOrCas);
+    Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel);
+
 }

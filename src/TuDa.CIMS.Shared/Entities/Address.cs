@@ -1,6 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-
 namespace TuDa.CIMS.Shared.Entities;
+
 public record Address : BaseEntity
 {
     /// <summary>
