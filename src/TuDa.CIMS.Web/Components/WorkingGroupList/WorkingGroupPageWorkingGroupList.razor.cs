@@ -3,7 +3,7 @@ using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
 
-namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
+namespace TuDa.CIMS.Web.Components.WorkingGroupList;
 
 public partial class WorkingGroupPageWorkingGroupList
 {
@@ -18,7 +18,8 @@ public partial class WorkingGroupPageWorkingGroupList
 
     private string _searchString { get; set; } = string.Empty;
 
-    [Inject] private NavigationManager _navigationManager { get; set; } = null!;
+    [Inject]
+    private NavigationManager _navigationManager { get; set; } = null!;
 
     private void GoToWorkingGroupInfoPage(DataGridRowClickEventArgs<WorkingGroup> args)
     {

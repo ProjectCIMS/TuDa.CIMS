@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 
-namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
+namespace TuDa.CIMS.Web.Components.WorkingGroupList;
 
 public partial class WorkingGroupPageWorkingGroupListAddDialog
 {
@@ -11,7 +11,6 @@ public partial class WorkingGroupPageWorkingGroupListAddDialog
     /// </summary>
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; } = null!;
-
 
     /// <summary>
     /// The created name of the professor.
