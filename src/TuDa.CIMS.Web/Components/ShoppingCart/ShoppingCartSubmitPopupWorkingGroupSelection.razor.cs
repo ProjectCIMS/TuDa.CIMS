@@ -14,6 +14,10 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection
     private readonly IWorkingGroupApi _workingGroupApi;
     private MudAutocomplete<WorkingGroup> _autocomplete = null!; // Is set by blazor component
 
+
+    [Parameter]
+    public EventCallback<WorkingGroup> WorkingGroupChanged { get; set; }
+
     /// <summary>
     /// Event that is called when an <see cref="Shared.Entities.WorkingGroup"/> is selected.
     /// </summary>

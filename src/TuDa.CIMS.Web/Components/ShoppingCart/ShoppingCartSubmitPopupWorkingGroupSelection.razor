@@ -8,14 +8,17 @@
         @ref="_autocomplete"
         Clearable="@true"
         AdornmentIcon="@Icons.Material.Filled.Search"
-        AdornmentColor="@Color.Primary"
+        AdornmentColor="@Color.Primary"                     
+        Value="WorkingGroup"
         Label="Arbeitsgruppe"
         SearchFunc="@Search"
         ToStringFunc="@ToString"
         ValueChanged="@WorkingGroupSelectedInternal"
+        ValueChanged="WorkingGroupChanged"
         Variant="Variant.Filled"
         Dense=true
         ShowProgressIndicator="true">
+
         <ItemTemplate>
             <MudItem Class="d-flex align-items-center">
                 <MudIconButton Icon="@Icons.Material.Outlined.Info" Class="mr-2">
