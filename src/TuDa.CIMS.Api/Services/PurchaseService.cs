@@ -95,7 +95,7 @@ public class PurchaseService : IPurchaseService
             var purchase = await _purchaseRepository.CreateAsync(workingGroupId, createModel);
             if (purchase.IsError)
             {
-                return Error.Failure("PurchaseService.CreateAsync, could not create purchase.");
+                return purchase.Errors;
             }
             await _consumableTransactionService.CreateForPurchaseAsync(purchase.Value);
             return purchase;

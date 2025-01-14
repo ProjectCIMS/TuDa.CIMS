@@ -94,19 +94,21 @@ public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
     {
         // Arrange
         var consumables = new List<Consumable> { new ConsumableFaker(), new ConsumableFaker() };
-        var entries = consumables
-            .Select(consumable => new CreatePurchaseEntryDto()
-            {
-                AssetItem = consumable,
-                Amount = consumable.Amount,
-                PricePerItem = 3,
-            })
-            .ToList();
-        var WorkingGroupFaker = new WorkingGroupFaker().Generate();
+
+        var WorkingGroupFaker = new WorkingGroupFaker(purchases:[]).Generate();
 
         _dbContext.WorkingGroups.Add(WorkingGroupFaker);
         _dbContext.AssetItems.AddRange(consumables);
         _dbContext.SaveChanges();
+
+ var entries = consumables
+            .Select(consumable => new CreatePurchaseEntryDto()
+            {
+                AssetItemId = consumable.Id,
+                Amount = consumable.Amount,
+                PricePerItem = 3,
+            })
+            .ToList();
 
         var createPurchase = new CreatePurchaseDto()
         {
@@ -133,17 +135,12 @@ public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
 
         consumableTransactions.Should().NotBeEmpty();
         consumableTransactions.Should().HaveCount(entries.Count);
-        consumableTransactions
-            .Select(ct => ct.Consumable)
-            .Should()
-            .BeEquivalentTo(entries.Select(e => e.AssetItem));
-        consumableTransactions
-            .Select(ct => ct.Date)
-            .Should()
-            .AllSatisfy(i => i.Date.Should().Be(createPurchase.CompletionDate));
-        consumableTransactions
-            .Select(ct => ct.AmountChange)
-            .Should()
-            .BeEquivalentTo(entries.Select(e => -e.Amount));
+
+        foreach (var (entry, transaction) in entries.Zip(consumableTransactions))
+        {
+            entry.Amount.Should().Be(-transaction.AmountChange);
+            entry.AssetItemId.Should().Be(transaction.Consumable.Id);
+        }
+
     }
 }

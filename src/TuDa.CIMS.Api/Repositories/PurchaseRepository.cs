@@ -100,6 +100,12 @@ public class PurchaseRepository : IPurchaseRepository
             return Error.NotFound("Purchase.create", $"Person with ID {createModel.Buyer} was not found.");
         }
 
+
+        var assetItemIds = createModel.Entries.Select(e => e.AssetItemId).Distinct().ToList();
+        var assetItems = await _context.AssetItems
+            .Where(ai => assetItemIds.Contains(ai.Id))
+            .ToDictionaryAsync(ai => ai.Id);
+
         var newPurchase = new Purchase
         {
             Buyer = buyer,
@@ -107,7 +113,10 @@ public class PurchaseRepository : IPurchaseRepository
             CompletionDate = createModel.CompletionDate,
             Entries = createModel.Entries?.Select(e => new PurchaseEntry
             {
-                AssetItem = e.AssetItem, Amount = e.Amount, PricePerItem = e.PricePerItem
+                AssetItem = assetItems.TryGetValue(e.AssetItemId, out var assetItem)
+                    ? assetItem
+                    : throw new Exception($"AssetItem with ID {e.AssetItemId} not found.")
+                , Amount = e.Amount, PricePerItem = e.PricePerItem
             }).ToList() ?? []
         };
 
