@@ -66,6 +66,15 @@ public partial class AssetItemEditForm
         ShowError = false;
     }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        AssetItemEditFormLoad();
+        StateHasChanged();
+    }
+
     /// <summary>
     /// fill the input fields with the Item
     /// </summary>
