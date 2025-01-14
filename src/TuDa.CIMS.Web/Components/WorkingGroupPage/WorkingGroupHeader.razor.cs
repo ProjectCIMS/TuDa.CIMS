@@ -52,30 +52,17 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
         var result = await dialogReference.Result;
         var currentWorkingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
 
-        if(!result.Canceled)
+        if(!result!.Canceled)
         {
-            ProfessorName = result.Data.ToString();
+            ProfessorName = result.Data!.ToString()!;
 
             await workingGroupApi.UpdateAsync(WorkingGroupId,
                 new UpdateWorkingGroupDto()
                 {
                     PhoneNumber = "",
-                    Professor = new Professor()
-                    {
-                        Id = currentWorkingGroup.Value.Professor.Id,
-                        Address = currentWorkingGroup.Value.Professor.Address,
-                        PhoneNumber = currentWorkingGroup.Value.Professor.PhoneNumber,
-                        Title = currentWorkingGroup.Value.Professor.Title,
-                        Email = currentWorkingGroup.Value.Professor.Email,
-                        Gender = currentWorkingGroup.Value.Professor.Gender,
-                        FirstName = currentWorkingGroup.Value.Professor.FirstName,
-                        Name = ProfessorName
-                    }
+                    Professor = currentWorkingGroup.Value.Professor with {Name = ProfessorName}
                 });
             StateHasChanged();
-            var lol = await workingGroupApi.GetAsync(WorkingGroupId);
-            Professor = lol.Value.Professor;
-
         }
 
     }

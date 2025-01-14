@@ -32,7 +32,6 @@ public partial class WorkingGroupPersonList(IWorkingGroupApi workingGroupApi) : 
     private void AddBuyer()
     {
         // TODO: Implement AddBuyer with a dialog here
-
     }
 
 }
