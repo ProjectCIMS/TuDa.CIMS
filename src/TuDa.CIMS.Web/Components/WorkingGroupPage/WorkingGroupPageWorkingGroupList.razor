@@ -1,0 +1,30 @@
+@using TuDa.CIMS.Shared.Entities
+
+<MudDataGrid @ref="_dataGrid" T="WorkingGroup" ServerData="ServerReload" Filterable="false"
+             RowClick="GoToWorkingGroupInfoPage">
+    <ToolBarContent>
+        <MudTextField
+            T="string"
+            Placeholder="Suche"
+            ValueChanged="@(s => OnSearch(s))"
+            Adornment="@Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search"
+            Clearable="true"
+            IconSize="@Size.Medium"
+            Class="mt-0"/>
+        <MudIconButton Icon="@Icons.Material.Filled.PersonAddAlt1" Color="Color.Primary" Size="Size.Large"
+                       OnClick="CreateGroupSelected" Variant="Variant.Filled" Class="m-4">
+        </MudIconButton>
+        <MudIconButton Icon="@Icons.Material.Filled.CreditCard" Color="Color.Primary" Disabled="true"
+                       Size="Size.Large" Variant="Variant.Filled">
+        </MudIconButton>
+    </ToolBarContent>
+
+    <Columns>
+        <PropertyColumn Property="@(x => x.Professor.Title)" Title="Titel"/>
+        <PropertyColumn Property="@(x => x.Professor.FirstName)" Title="Vorname"></PropertyColumn>
+        <PropertyColumn Property="@(x => x.Professor.Name)" Title="Nachname"/>
+        <PropertyColumn Property="@(x => x.PhoneNumber)" Title="Telefon Nr."/>
+        <PropertyColumn Property="@(x => x.Email)" Title="E-Mail"></PropertyColumn>
+    </Columns>
+</MudDataGrid>

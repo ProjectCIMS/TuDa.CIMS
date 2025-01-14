@@ -1,0 +1,23 @@
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5">Arbeitsgruppe erstellen</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudContainer>
+            <MudGrid>
+                <MudItem>
+                    <MudForm @ref="form" @bind-IsValid="@InputIsValid">
+                        <MudTextField Typo="Typo.h6" T="string" @bind-Value="ProfessorName" Clearable="true"
+                                      Label="Name des Professors" Validation="@(() => ValidateProfessorName)"
+                                      Required="true">
+                        </MudTextField>
+                    </MudForm>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Abbrechen</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit" Disabled="@(!InputIsValid)">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
