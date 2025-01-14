@@ -49,6 +49,7 @@ public static class ApiResponseExtension
                 { "url", exception.Uri?.ToString() ?? "None" },
                 { "method", exception.HttpMethod },
                 { "data", exception.Data },
+                { "problemDetails", exception.Content ?? string.Empty },
             }
         );
     }
