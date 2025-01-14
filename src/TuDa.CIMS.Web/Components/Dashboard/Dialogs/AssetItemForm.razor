@@ -1,4 +1,4 @@
-﻿@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Entities
 
 @* Generic AssetItemForm *@
 
@@ -76,6 +76,7 @@
 
     [Parameter] public EventCallback OnReset { get; set; }
 
+
     public void SetForm(AssetItem item)
     {
         FormName = item.Name;
@@ -85,6 +86,7 @@
         FormRoomName = item.Room.Name;
         FormItemNumber = item.ItemNumber;
     }
+
 
     /// <summary>
     /// Resets the Input lines

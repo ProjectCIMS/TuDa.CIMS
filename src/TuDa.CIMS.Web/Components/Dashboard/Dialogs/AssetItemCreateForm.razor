@@ -1,4 +1,4 @@
-﻿@using TuDa.CIMS.Shared.Entities.Enums
+@using TuDa.CIMS.Shared.Entities.Enums
 @* AssetItemCreateForm *@
 
 <MudSnackbarProvider/>
@@ -13,7 +13,7 @@
         Verbrauchsmaterial
     </MudChip>
     <MudChip Color="Color.Info" Value="AssetItemType.GasCylinder">
-        Gasflasche
+        Technische Gase
     </MudChip>
     <MudChip Color="Color.Success" Value="AssetItemType.Solvent">
         Lösung
@@ -34,25 +34,26 @@
             case AssetItemType.Chemical:
                 <ChemicalItemForm
                     @ref="_chemicalItemForm"
-                    FormShowError="@ShowError"/>
+                    FormShowError="@ShowError"
+                    OnReset="@(_ => StateHasChanged())"/>
                 break;
             case AssetItemType.Consumable:
                 <ConsumableItemForm
                     @ref="_consumableItemForm"
-                    FormShowError="@ShowError"/>
+                    FormShowError="@ShowError"
+                    OnReset="@(_ => StateHasChanged())"/>
                 break;
             case AssetItemType.GasCylinder:
-                <ChemicalItemForm
-                    @ref="_chemicalItemForm"
-                    FormShowError="@ShowError"/>
                 <GasCylinderItemForm
                     @ref="_gasCylinderForm"
-                    FormShowError="@ShowError"/>
+                    FormShowError="@ShowError"
+                    OnReset="@(_ => StateHasChanged())"/>
                 break;
             case AssetItemType.Solvent:
                 <ChemicalItemForm
                     @ref="_chemicalItemForm"
-                    FormShowError="@ShowError"/>
+                    FormShowError="@ShowError"
+                    OnReset="@(_ => StateHasChanged())"/>
                 break;
         }
     </MudItem>

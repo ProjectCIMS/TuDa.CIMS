@@ -14,10 +14,7 @@ public class PurchaseFaker : BaseEntityFaker<Purchase>
         completed ??= new Randomizer().Bool();
 
         RuleFor(p => p.Buyer, f => f.PickRandom(workingGroup.Students));
-        RuleFor(
-            p => p.Entries,
-            () => purchaseEntries ?? new PurchaseEntryFaker().GenerateBetween(2, 10)
-        );
+        RuleFor(p => p.Entries, f => purchaseEntries ?? RandomPurchaseEntries());
         RuleFor(
             p => p.CompletionDate,
             f =>
@@ -27,4 +24,14 @@ public class PurchaseFaker : BaseEntityFaker<Purchase>
         );
         RuleFor(p => p.Completed, () => completed);
     }
+
+    private static List<PurchaseEntry> RandomPurchaseEntries() =>
+        new List<PurchaseEntry>()
+            .Concat(new PurchaseEntryFaker<Chemical>(new ChemicalFaker()).GenerateBetween(0, 5))
+            .Concat(new PurchaseEntryFaker<Consumable>(new ConsumableFaker()).GenerateBetween(0, 5))
+            .Concat(new PurchaseEntryFaker<Solvent>(new SolventFaker()).GenerateBetween(0, 5))
+            .Concat(
+                new PurchaseEntryFaker<GasCylinder>(new GasCylinderFaker()).GenerateBetween(0, 5)
+            )
+            .ToList();
 }

@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Services;
@@ -21,8 +22,6 @@ public partial class AssetItemCreateForm
     /// Fields for Errors and Feedback
     /// </summary>
     public bool ShowError = false;
-    private string FeedbackMessage = string.Empty;
-    private Severity FeedbackColor = Severity.Success;
 
     /// <summary>
     /// To choose from the different forms for inputting
@@ -37,7 +36,6 @@ public partial class AssetItemCreateForm
     private ConsumableItemForm _consumableItemForm;
     private GasCylinderItemForm _gasCylinderForm;
 
-
     /// <summary>
     /// Resetting all Inputs on every Form
     /// </summary>
@@ -46,29 +44,28 @@ public partial class AssetItemCreateForm
         switch (_selectedAssetItemType)
         {
             case AssetItemType.Chemical:
-                {
-                    _chemicalItemForm.ResetInputs();
-                    break;
-                }
+            {
+                _chemicalItemForm.ResetInputs();
+                break;
+            }
 
             case AssetItemType.Consumable:
-                {
-                    _consumableItemForm.ResetInputs();
-                    break;
-                }
+            {
+                _consumableItemForm.ResetInputs();
+                break;
+            }
 
             case AssetItemType.GasCylinder:
-                {
-                    _gasCylinderForm.ResetInputs();
-                    _chemicalItemForm.ResetInputs();
-                    break;
-                }
+            {
+                _gasCylinderForm.ResetInputs();
+                break;
+            }
 
             case AssetItemType.Solvent:
-                {
-                    _chemicalItemForm.ResetInputs();
-                    break;
-                }
+            {
+                _chemicalItemForm.ResetInputs();
+                break;
+            }
         }
         ShowError = false;
     }
@@ -93,7 +90,7 @@ public partial class AssetItemCreateForm
             )
             || (
                 _selectedAssetItemType == AssetItemType.GasCylinder
-                && (_gasCylinderForm.ValidateForm() || _chemicalItemForm.ValidateForm())
+                && _gasCylinderForm.ValidateForm()
             )
         )
         {
@@ -118,9 +115,15 @@ public partial class AssetItemCreateForm
     /// </summary>
     public async Task SaveChanges()
     {
-        AssetItem? savedItem = _selectedAssetItemType switch
+        string feedbackMessage;
+        Severity feedbackColor;
+        var errorOrItems = await _assetItemApi.GetAllAsync();
+        var items = errorOrItems.Value.ToList();
+        Guid RoomId = items.FirstOrDefault().Room.Id;
+
+        CreateAssetItemDto? createDto = _selectedAssetItemType switch
         {
-            AssetItemType.Chemical => new Chemical
+            AssetItemType.Chemical => new CreateChemicalDto
             {
                 Name = _assetItemForm.FormName,
                 Shop = _assetItemForm.FormShop,
@@ -130,38 +133,38 @@ public partial class AssetItemCreateForm
                 Price = _assetItemForm.FormPrice,
                 Purity = _chemicalItemForm.FormPurity,
                 PriceUnit = _chemicalItemForm.FormPriceUnit,
-                Room = new Room() { Name = _assetItemForm.FormRoomName }
+                RoomId = RoomId,
             },
-
-            AssetItemType.Consumable => new Consumable
+            
+            AssetItemType.Consumable => new CreateConsumableDto
             {
                 Name = _assetItemForm.FormName,
                 Shop = _assetItemForm.FormShop,
                 ItemNumber = _assetItemForm.FormItemNumber,
                 Note = _assetItemForm.FormNote,
                 Price = _assetItemForm.FormPrice,
-                Room = new Room() { Name = _assetItemForm.FormRoomName },
+                RoomId = RoomId,
                 Manufacturer = _consumableItemForm.FormManufacturer,
                 SerialNumber = _consumableItemForm.FormSerialNumber,
-                Amount = _consumableItemForm.FormConsumableAmount
+                Amount = _consumableItemForm.FormConsumableAmount,
             },
 
-            AssetItemType.GasCylinder => new GasCylinder
+            AssetItemType.GasCylinder => new CreateGasCylinderDto
             {
                 Name = _assetItemForm.FormName,
                 Shop = _assetItemForm.FormShop,
                 ItemNumber = _assetItemForm.FormItemNumber,
                 Note = _assetItemForm.FormNote,
                 Price = _assetItemForm.FormPrice,
-                Room = new Room() { Name = _assetItemForm.FormRoomName },
+                RoomId = RoomId,
                 Cas = _chemicalItemForm.FormCas,
                 Purity = _chemicalItemForm.FormPurity,
                 Volume = _gasCylinderForm.FormVolume,
                 Pressure = _gasCylinderForm.FormPressure,
-                PriceUnit = _chemicalItemForm.FormPriceUnit
+                PriceUnit = _chemicalItemForm.FormPriceUnit,
             },
 
-            AssetItemType.Solvent => new Solvent
+            AssetItemType.Solvent => new CreateSolventDto
             {
                 Name = _assetItemForm.FormName,
                 Shop = _assetItemForm.FormShop,
@@ -171,33 +174,32 @@ public partial class AssetItemCreateForm
                 Price = _assetItemForm.FormPrice,
                 Purity = _chemicalItemForm.FormPurity,
                 PriceUnit = _chemicalItemForm.FormPriceUnit,
-                Room = new Room() { Name = _assetItemForm.FormRoomName }
+                RoomId = RoomId,
             },
 
             _ => null,
         };
 
-        if (savedItem != null)
+        if (createDto != null)
         {
             try
             {
-                //TODO: #41 needed
-                //await _assetItemApi.CreateAsync(savedItem);
-                FeedbackMessage = "Das Objekt wurde erfolgreich erstellt.";
-                FeedbackColor = Severity.Success;
+                await _assetItemApi.CreateAsync(createDto);
+                feedbackMessage = "Das Objekt wurde erfolgreich erstellt.";
+                feedbackColor = Severity.Success;
             }
             catch (Exception ex)
             {
-                FeedbackMessage = $"Fehler bei der Erstellung: {ex.Message}";
-                FeedbackColor = Severity.Error;
+                feedbackMessage = $"Fehler bei der Erstellung: {ex.Message}";
+                feedbackColor = Severity.Error;
             }
         }
         else
         {
-            FeedbackMessage = "Ungültiger Objekttyp.";
-            FeedbackColor = Severity.Error;
+            feedbackMessage = "Ungültiger Objekttyp.";
+            feedbackColor = Severity.Error;
         }
 
-        _snackbar.Add(FeedbackMessage, FeedbackColor);
+        _snackbar.Add(feedbackMessage, feedbackColor);
     }
 }
