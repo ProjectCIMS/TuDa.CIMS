@@ -1,0 +1,66 @@
+﻿@using TuDa.CIMS.Shared.Entities.Enums
+@* AssetItemCreateForm *@
+
+<MudSnackbarProvider/>
+
+<!-- Modal Body -->
+<MudChipSet T="AssetItemType" @bind-SelectedValue="_selectedAssetItemType" CheckMark SelectionMode="@_selectionMode"
+            Class="my-4">
+    <MudChip Color="Color.Primary" Value="AssetItemType.Chemical">
+        Chemikalie
+    </MudChip>
+    <MudChip Color="Color.Secondary" Value="AssetItemType.Consumable">
+        Verbrauchsmaterial
+    </MudChip>
+    <MudChip Color="Color.Info" Value="AssetItemType.GasCylinder">
+        Technische Gase
+    </MudChip>
+    <MudChip Color="Color.Success" Value="AssetItemType.Solvent">
+        Lösung
+    </MudChip>
+</MudChipSet>
+
+<MudGrid>
+    <MudItem xs="12" md="6">
+        <AssetItemForm @ref="_assetItemForm"
+                       FormShowError="@ShowError"
+                       OnReset="ResetInputs"/>
+    </MudItem>
+
+    <!-- Which Form to Choose -->
+    <MudItem xs="12" md="6">
+        @switch (_selectedAssetItemType)
+        {
+            case AssetItemType.Chemical:
+                <ChemicalItemForm
+                    @ref="_chemicalItemForm"
+                    FormShowError="@ShowError"
+                    OnReset="@(_ => StateHasChanged())"/>
+                break;
+            case AssetItemType.Consumable:
+                <ConsumableItemForm
+                    @ref="_consumableItemForm"
+                    FormShowError="@ShowError"
+                    OnReset="@(_ => StateHasChanged())"/>
+                break;
+            case AssetItemType.GasCylinder:
+                <GasCylinderItemForm
+                    @ref="_gasCylinderForm"
+                    FormShowError="@ShowError"
+                    OnReset="@(_ => StateHasChanged())"/>
+                break;
+            case AssetItemType.Solvent:
+                <ChemicalItemForm
+                    @ref="_chemicalItemForm"
+                    FormShowError="@ShowError"
+                    OnReset="@(_ => StateHasChanged())"/>
+                break;
+        }
+    </MudItem>
+</MudGrid>
+
+@code
+{
+    private readonly SelectionMode _selectionMode = SelectionMode.SingleSelection;
+
+}
