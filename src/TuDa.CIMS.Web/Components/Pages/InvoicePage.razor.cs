@@ -9,17 +9,18 @@ namespace TuDa.CIMS.Web.Components.Pages;
 
 public partial class InvoicePage
 {
-    /// <summary>
-    /// Parameter for the working group.
-    /// </summary>
-    [Parameter]
-    public static WorkingGroup? WorkingGroup { get; set; }
+    [Inject] private IJSRuntime _jsRuntime { get; set; } = null!;
+    [Inject] private IWorkingGroupApi _workingGroupApi { get; set; } = null!;
+    [Inject] private IInvoiceApi _invoiceApi { get; set; } = null!;
+
 
     // Error when WorkingGroup is not static occurs.
     /// <summary>
     /// Contains the title and the name of the buyer.
     /// </summary>
-    private readonly string BuyerString = WorkingGroup.Professor.Title + " " + WorkingGroup.Professor.Name;
+    private string BuyerString =>
+        $"{_workingGroupApi.GetAsync(workingGroupId).Result.Value.Professor.Title} " + " "
+        + $"{_workingGroupApi.GetAsync(workingGroupId).Result.Value.Professor.Name}";
 
     /// <summary>
     /// Selected date range.
@@ -29,47 +30,47 @@ public partial class InvoicePage
     /// <summary>
     /// The id of the working group.
     /// </summary>
-    private Guid workingGroupId { get; set; } = WorkingGroup.Id;
+    private Guid workingGroupId { get; set; }
 
     /// <summary>
     /// The invoice statistics of the purchase.
     /// </summary>
-    private InvoiceStatistics InvoiceStatistics { get; set; } = null!;
+    private InvoiceStatistics? InvoiceStatistics { get; set; }
 
-    // /// <summary>
-    // /// Sets the invoice statistics.
-    // /// </summary>
-    // private void SetInvoiceStatistics()
-    // {
-    //     InvoiceStatistics = await _invoiceApi.GetStatisticsAsync(workingGroupId,
-    //         _dateRange.Start, _dateRange.End);
-    // }
-
-
-    [Inject] private IJSRuntime _jsRuntime { get; set; } = null!;
-    [Inject] private IWorkingGroupApi _workingGroupApi { get; set; } = null!;
-    // [Inject] private IInvoiceApi _invoiceApi { get; set; } = null!;
+    /// <summary>
+    /// Sets the invoice statistics.
+    /// </summary>
+    private async Task SetInvoiceStatistics()
+    {
+        if (_dateRange is { Start: not null, End: not null })
+        {
+            var errorOrStatistics = await _invoiceApi.GetStatisticsAsync(workingGroupId,
+                DateOnly.FromDateTime(_dateRange.Start.Value), DateOnly.FromDateTime(_dateRange.End.Value));
+            if (!errorOrStatistics.IsError)
+            {
+                InvoiceStatistics = errorOrStatistics.Value;
+            }
+        }
+    }
 
     private DateTime? SelectedDueDate { get; set; } = null!;
 
     private string SelectedInvoiceNumber { get; set; } = null!;
 
-    /*private async Task OpenPdf(bool firstRender)
+    private async Task OpenPdf(bool firstRender)
     {
-        if (!workingGroupId.IsError)
+        if (SelectedDueDate != null && SelectedInvoiceNumber.Length > 0)
         {
             var wgId = workingGroupId;
             var infos = new AdditionalInvoiceInformation
             {
-                InvoiceNumber = SelectedInvoiceNumber,
-                DueDate = SelectedDueDate,
+                InvoiceNumber = SelectedInvoiceNumber, DueDate = DateOnly.FromDateTime(SelectedDueDate.Value),
             };
-
             var success = await _invoiceApi.OpenPdfAsync(
-                wgId,infos
+                wgId, infos
                 ,
                 _jsRuntime
             );
         }
-    }*/
+    }
 }

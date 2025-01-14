@@ -10,10 +10,9 @@
                     <MudText>Zeitraum:</MudText>
                 </MudItem>
                 <MudItem Class="p-2">
-                    @*DateRangeChanged="@SetInvoiceStatistics"*@
                     <MudDateRangePicker @bind-DateRange="@_dateRange" Margin="Margin.Dense" Clearable="true"
                                         PlaceholderStart="Startdatum" PlaceholderEnd="Enddatum"
-                                        Variant="Variant.Filled"/>
+                                        DateRangeChanged="@SetInvoiceStatistics" Variant="Variant.Filled"/>
                 </MudItem>
                 <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
                 <MudItem Class="p-2">
@@ -50,8 +49,7 @@
                 <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
                 <MudItem>
                     <MudStack AlignItems="AlignItems.End">
-                        @*OnClick="OpenPdf"*@
-                        <MudButton Size="Size.Large" Color="Color.Success" Variant="Variant.Filled">
+                        <MudButton Size="Size.Large" Color="Color.Success" Variant="Variant.Filled" OnClick="@(() => OpenPdf(true))">
                             <MudIcon Icon="@Icons.Material.Filled.Add"/> PDF GENERIEREN
                         </MudButton>
                     </MudStack>
