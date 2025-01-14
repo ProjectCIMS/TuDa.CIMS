@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Testcontainers.PostgreSql;
 using TuDa.CIMS.Api.Database;
 
@@ -22,6 +23,10 @@ public class CIMSApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
         {
             x.Remove(x.Single(a => typeof(DbContextOptions<CIMSDbContext>) == a.ServiceType));
             x.Remove(x.Single(a => typeof(CIMSDbContext) == a.ServiceType));
+            x.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Critical);
+            });
             x.AddDbContext<CIMSDbContext>(
                 a =>
                 {

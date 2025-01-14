@@ -17,6 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddServices();
 builder.Services.AddProblemDetails();
+builder.Services.AddJsonDecoder();
 
 builder.Services.AddControllers();
 

@@ -84,7 +84,7 @@ public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var result = await response.Content.ReadFromJsonAsync<List<ConsumableTransaction>>();
+        var result = await response.Content.FromJsonAsync<List<ConsumableTransaction>>();
 
         result.Should().BeEquivalentTo(consumableTransactions);
     }
@@ -95,13 +95,13 @@ public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
         // Arrange
         var consumables = new List<Consumable> { new ConsumableFaker(), new ConsumableFaker() };
 
-        var WorkingGroupFaker = new WorkingGroupFaker(purchases:[]).Generate();
+        var WorkingGroupFaker = new WorkingGroupFaker(purchases: []).Generate();
 
         _dbContext.WorkingGroups.Add(WorkingGroupFaker);
         _dbContext.AssetItems.AddRange(consumables);
         _dbContext.SaveChanges();
 
- var entries = consumables
+        var entries = consumables
             .Select(consumable => new CreatePurchaseEntryDto()
             {
                 AssetItemId = consumable.Id,
@@ -141,6 +141,5 @@ public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
             entry.Amount.Should().Be(-transaction.AmountChange);
             entry.AssetItemId.Should().Be(transaction.Consumable.Id);
         }
-
     }
 }
