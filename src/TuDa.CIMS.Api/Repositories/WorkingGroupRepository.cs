@@ -134,7 +134,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
 
     public async Task<IEnumerable<WorkingGroup>> SearchAsync(string name)
     {
-        IQueryable<WorkingGroup> query = _context.WorkingGroups.Where(s => EF.Functions.ILike(s.Professor.Name, $"%{name}%"));
+        IQueryable<WorkingGroup> query = _context.WorkingGroups.Include(p => p.Professor).Where(s => EF.Functions.ILike(s.Professor.Name, $"%{name}%"));
 
         return await query.ToListAsync();
     }
