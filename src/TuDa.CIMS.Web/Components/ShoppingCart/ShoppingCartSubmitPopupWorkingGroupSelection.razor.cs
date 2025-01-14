@@ -1,37 +1,41 @@
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
+using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
-public partial class ShoppingCartSubmitPopupWorkingGroupSelection
+public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupApi api)
 {
-    [Parameter]
-    public required WorkingGroup WorkingGroup { get; set; }
+    [Parameter] public required WorkingGroup WorkingGroup { get; set; }
 
+    private MudAutocomplete<WorkingGroup> _autocomplete = null!; // Is set by blazor component
+
+
+
+    /// <summary>
+    /// Event that is called when an <see cref="Shared.Entities.WorkingGroup"/> is selected.
+    /// </summary>
     [Parameter]
     public EventCallback<WorkingGroup> WorkingGroupChanged { get; set; }
-    /// <summary>
-    /// List of working groups.
-    /// TODO: Need to be replaced by WorkingGroupApi
-    /// </summary>
-    [Parameter]
-    public List<WorkingGroup> ListOfWorkingGroups { get; set; } = [];
 
-    /// <summary>
-    /// Search for the selection of the working group.
-    /// </summary>
-    private Task<IEnumerable<WorkingGroup>> Search(
-        string searchText,
-        CancellationToken cancellationToken
-    )
+
+
+    /// Invoke to clear text
+    private async Task WorkingGroupSelectedInternal(WorkingGroup item)
     {
-        return Task.FromResult(
-            ListOfWorkingGroups.Where(w =>
-                string.IsNullOrWhiteSpace(searchText)
-                || w.Professor.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)
-            )
-        );
+        await _autocomplete.ResetAsync();
+        await WorkingGroupChanged.InvokeAsync(item);
+    }
+
+    private async Task<IEnumerable<WorkingGroup>> Search(string name, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return [];
+        }
+        return await api.GetAllAsync(name).Match(value => value, _ => []);
     }
 
     /// <summary>
@@ -43,5 +47,4 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection
             null => "",
             _ => workingGroup.Professor.Name,
         };
-
 }
