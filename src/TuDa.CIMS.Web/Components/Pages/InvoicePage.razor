@@ -1,4 +1,4 @@
-@page "/working-groups/{workingGroupId}/invoice"
+@page "/working-groups/{workingGroupId:guid}/invoice"
 <MudContainer MaxWidth="MaxWidth.Large">
     <MudGrid>
         <MudItem xs="12">
@@ -20,7 +20,8 @@
                 </MudItem>
                 <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
                 <MudItem Class="p-2">
-                    <MudTextField Label="Rechnungsnummer" @bind-Value="@SelectedInvoiceNumber" Clearable="true"></MudTextField>
+                    <MudTextField Label="Rechnungsnummer" @bind-Value="@SelectedInvoiceNumber" Clearable="true">
+                    </MudTextField>
                 </MudItem>
                 <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
                 <MudItem Class="p-2">
@@ -29,19 +30,19 @@
                         <MudStack Spacing="1" Class="m-lg-4">
                             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                                 <MudText>Chemikalien:</MudText>
-                                <MudText Align="Align.Right">@InvoiceStatistics.TotalPriceChemicals</MudText>
+                                <MudText Align="Align.Right">@GetTotalPriceChemicals()</MudText>
                             </MudStack>
                             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                                 <MudText>Verbrauchsgegenstände:</MudText>
-                                <MudText Align="Align.Right">@InvoiceStatistics.TotalPriceConsumables</MudText>
+                                <MudText Align="Align.Right">@GetTotalPriceConsumables()</MudText>
                             </MudStack>
                             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                                 <MudText>Lösungsmittel:</MudText>
-                                <MudText Align="Align.Right">@InvoiceStatistics.TotalPriceSolvents</MudText>
+                                <MudText Align="Align.Right">@GetTotalPriceSolvents())</MudText>
                             </MudStack>
                             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                                 <MudText>Technische Gase:</MudText>
-                                <MudText Align="Align.Right">@InvoiceStatistics.TotalPriceGasCylinders</MudText>
+                                <MudText Align="Align.Right">@GetTotalPriceGasCylinders()</MudText>
                             </MudStack>
                         </MudStack>
                     </MudStack>
@@ -49,7 +50,8 @@
                 <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
                 <MudItem>
                     <MudStack AlignItems="AlignItems.End">
-                        <MudButton Size="Size.Large" Color="Color.Success" Variant="Variant.Filled" OnClick="@(() => OpenPdf(true))">
+                        <MudButton Size="Size.Large" Color="Color.Success" Variant="Variant.Filled"
+                                   OnClick="@(() => OpenPdf())">
                             <MudIcon Icon="@Icons.Material.Filled.Add"/> PDF GENERIEREN
                         </MudButton>
                     </MudStack>

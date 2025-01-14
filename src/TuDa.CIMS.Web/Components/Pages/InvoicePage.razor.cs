@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
+using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Models;
 using TuDa.CIMS.Web.Services;
 
@@ -12,14 +13,23 @@ public partial class InvoicePage
     [Inject] private IWorkingGroupApi _workingGroupApi { get; set; } = null!;
     [Inject] private IInvoiceApi _invoiceApi { get; set; } = null!;
 
+    private WorkingGroup? _workingGroup { get; set; }
 
-    // Error when WorkingGroup is not static occurs.
+    protected override async Task OnInitializedAsync()
+    {
+        var workingGroupErrorOr = await _workingGroupApi.GetAsync(workingGroupId);
+        if (workingGroupErrorOr.IsError)
+        {
+        }
+
+        _workingGroup = workingGroupErrorOr.Value;
+    }
+
     /// <summary>
     /// Contains the title and the name of the buyer.
     /// </summary>
     private string BuyerString =>
-        $"{_workingGroupApi.GetAsync(workingGroupId).Result.Value.Professor.Title} " + " "
-        + $"{_workingGroupApi.GetAsync(workingGroupId).Result.Value.Professor.Name}";
+        $"{_workingGroup?.Professor.Title} " + " " + $"{_workingGroup?.Professor.Name}";
 
     /// <summary>
     /// Selected date range.
@@ -29,12 +39,16 @@ public partial class InvoicePage
     /// <summary>
     /// The id of the working group.
     /// </summary>
+    [Parameter]
     private Guid workingGroupId { get; set; }
 
     /// <summary>
     /// The invoice statistics of the purchase.
     /// </summary>
-    private InvoiceStatistics? InvoiceStatistics { get; set; }
+    private InvoiceStatistics? InvoiceStatistics { get; set; } = new()
+    {
+        TotalPriceConsumables = 0, TotalPriceChemicals = 0, TotalPriceSolvents = 0, TotalPriceGasCylinders = 0
+    };
 
     /// <summary>
     /// Sets the invoice statistics.
@@ -52,6 +66,27 @@ public partial class InvoicePage
         }
     }
 
+    private string GetTotalPriceSolvents()
+    {
+        return InvoiceStatistics?.TotalPriceSolvents.ToString("0.00") + "\u20ac";
+    }
+
+    private string GetTotalPriceChemicals()
+    {
+        return InvoiceStatistics?.TotalPriceChemicals.ToString("0.00") + "\u20ac";
+    }
+
+    private string GetTotalPriceConsumables()
+    {
+        return InvoiceStatistics?.TotalPriceConsumables.ToString("0.00") + "\u20ac";
+    }
+
+    private string GetTotalPriceGasCylinders()
+    {
+        return InvoiceStatistics?.TotalPriceGasCylinders.ToString("0.00") + "\u20ac";
+    }
+
+
     private async Task OnDateRangeChanged(DateRange newDateRange)
     {
         _dateRange = newDateRange;
@@ -62,7 +97,7 @@ public partial class InvoicePage
 
     private string SelectedInvoiceNumber { get; set; } = null!;
 
-    private async Task OpenPdf(bool firstRender)
+    private async Task OpenPdf()
     {
         if (SelectedDueDate != null && SelectedInvoiceNumber.Length > 0)
         {
