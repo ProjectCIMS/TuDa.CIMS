@@ -75,7 +75,7 @@ public class PurchaseController : CIMSBaseController
     )
     {
         return (await _purchaseService.CreateAsync(workingGroupId, createModel)).Match(
-            onValue: _ => Ok(),
+            onValue: Ok,
             onError: ErrorsToProblem
         );
     }

@@ -1,0 +1,73 @@
+﻿@* Consumable Item Form *@
+
+<MudForm>
+    <MudTextField @bind-Value="FormManufacturer"
+                  Label=Hersteller
+                  Error="@IsError"
+                  ErrorText="Der Hersteller muss eingegeben werden!"
+                  Placeholder="Hersteller eingeben"
+                  Variant="Variant.Filled"
+                  FullWidth/>
+
+    <MudTextField @bind-Value="FormSerialNumber"
+                  Label="Seriennummer"
+                  Error="@IsError"
+                  ErrorText="Die Seriennummern muss eingegeben werden!"
+                  Placeholder="Seriennummer eingeben"
+                  Variant="Variant.Filled"
+                  FullWidth/>
+
+    <MudNumericField @bind-Value="FormConsumableAmount"
+                     Label="Menge"
+                     Error="@IsError"
+                     ErrorText="Die Menge muss größer als 0 betragen!"
+                     Placeholder="Menge eingeben"
+                     Variant="Variant.Filled"
+                     FullWidth/>
+</MudForm>
+
+@code
+{
+    /// <summary>
+    /// Input Fields
+    /// </summary>
+    public string FormManufacturer { get; private set; } = string.Empty;
+    public string FormSerialNumber { get; private set; } = string.Empty;
+    public int FormConsumableAmount { get; private set; }
+
+    [Parameter] public bool FormShowError { get; set; }
+
+    private bool IsError => FormShowError && (FormConsumableAmount <= 0 || FormManufacturer == string.Empty || FormSerialNumber == string.Empty);
+
+    /// <summary>
+    /// Validate the Inputs
+    /// </summary>
+    /// <returns>returns false when all Inputs are valid otherwise true</returns>
+    public bool ValidateForm()
+    {
+        if (
+            FormManufacturer == string.Empty
+            || FormSerialNumber == string.Empty
+            || FormConsumableAmount == 0
+        )
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    [Parameter] public EventCallback OnReset { get; set; }
+
+    /// <summary>
+    /// Resets the Input lines
+    /// </summary>
+    public void ResetInputs()
+    {
+        FormManufacturer = string.Empty;
+        FormSerialNumber = string.Empty;
+        FormConsumableAmount = 0;
+        OnReset.InvokeAsync();
+    }
+
+}
