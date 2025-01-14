@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
-public partial class ShoppingCartSubmitPopupBuyerSelection : ComponentBase
+public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi workingGroupApi) : ComponentBase
 {
     /// <summary>
     /// CascadingParameter for working group.
@@ -15,14 +16,20 @@ public partial class ShoppingCartSubmitPopupBuyerSelection : ComponentBase
     public required Person Buyer { get; set; }
 
 
+    private async Task FindWorkingGroup()
+    {
+        WorkingGroup = (await workingGroupApi.GetAsync(WorkingGroup!.Id)).Match(value => value, _ => null);
+    }
+
     /// <summary>
     /// Search for the selection of the student.
     /// </summary>
-    private Task<IEnumerable<Person>> Search(string searchText, CancellationToken cancellationToken)
+    private async Task<IEnumerable<Person>> Search(string searchText, CancellationToken cancellationToken)
     {
+        await FindWorkingGroup();
         if (WorkingGroup == null)
         {
-            return Task.FromResult<IEnumerable<Person>>([]);
+            return await Task.FromResult<IEnumerable<Person>>([]);
         }
 
         var result = new List<Person>();
@@ -36,7 +43,7 @@ public partial class ShoppingCartSubmitPopupBuyerSelection : ComponentBase
         {
             result.Add(WorkingGroup.Professor);
         }
-        return Task.FromResult<IEnumerable<Person>>(result);
+        return await Task.FromResult<IEnumerable<Person>>(result);
     }
 
     /// <summary>

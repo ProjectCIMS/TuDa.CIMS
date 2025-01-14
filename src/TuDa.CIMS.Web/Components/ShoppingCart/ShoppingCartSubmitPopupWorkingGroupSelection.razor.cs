@@ -6,34 +6,27 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
-public partial class ShoppingCartSubmitPopupWorkingGroupSelection
+public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupApi api)
 {
-    [Parameter]
-    public required WorkingGroup WorkingGroup { get; set; }
+    [Parameter] public required WorkingGroup WorkingGroup { get; set; }
 
-    private readonly IWorkingGroupApi _workingGroupApi;
     private MudAutocomplete<WorkingGroup> _autocomplete = null!; // Is set by blazor component
 
 
-    [Parameter]
-    public EventCallback<WorkingGroup> WorkingGroupChanged { get; set; }
 
     /// <summary>
     /// Event that is called when an <see cref="Shared.Entities.WorkingGroup"/> is selected.
     /// </summary>
     [Parameter]
-    public EventCallback<WorkingGroup> WorkingGroupSelected { get; set; }
+    public EventCallback<WorkingGroup> WorkingGroupChanged { get; set; }
 
-    public ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupApi api)
-    {
-        _workingGroupApi = api;
-    }
+
 
     /// Invoke to clear text
     private async Task WorkingGroupSelectedInternal(WorkingGroup item)
     {
         await _autocomplete.ResetAsync();
-        await WorkingGroupSelected.InvokeAsync(item);
+        await WorkingGroupChanged.InvokeAsync(item);
     }
 
     private async Task<IEnumerable<WorkingGroup>> Search(string name, CancellationToken token)
@@ -42,8 +35,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection
         {
             return [];
         }
-
-        return await _workingGroupApi.GetAllAsync(name).Match(value => value, _ => []);
+        return await api.GetAllAsync(name).Match(value => value, _ => []);
     }
 
     /// <summary>
@@ -55,5 +47,4 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection
             null => "",
             _ => workingGroup.Professor.Name,
         };
-
 }
