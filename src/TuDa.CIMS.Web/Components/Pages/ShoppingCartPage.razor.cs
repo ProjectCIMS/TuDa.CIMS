@@ -48,6 +48,7 @@ public partial class ShoppingCartPage
                 "WorkingGroups",
                 new List<WorkingGroup>()
                 {
+
                     new()
                     {
                         Professor = new Professor
@@ -66,6 +67,7 @@ public partial class ShoppingCartPage
                             Gender = Gender.Unknown,
                         },
                     },
+
                 }
             },
         };
