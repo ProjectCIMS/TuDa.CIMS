@@ -22,7 +22,9 @@
 
     <Columns>
         <PropertyColumn Property="@(x => x.Professor.Title)" Title="Titel"/>
-        <PropertyColumn Property="@(x => x.Professor.Name)"/>
+        <PropertyColumn Property="@(x => x.Professor.FirstName)" Title="Vorname"></PropertyColumn>
+        <PropertyColumn Property="@(x => x.Professor.Name)" Title="Nachname"/>
         <PropertyColumn Property="@(x => x.PhoneNumber)" Title="Telefon Nr."/>
+        <PropertyColumn Property="@(x => x.Professor.Email)" Title="E-Mail"></PropertyColumn>
     </Columns>
 </MudDataGrid>

@@ -23,7 +23,7 @@ public partial class WorkingGroupPageWorkingGroupList
     private void GoToWorkingGroupInfoPage(DataGridRowClickEventArgs<WorkingGroup> args)
     {
         var id = args.Item.Id;
-        _navigationManager.NavigateTo($"workinggroups/{id}", replace: true);
+        _navigationManager.NavigateTo($"working-groups/{id}");
     }
 
     /// <summary>
