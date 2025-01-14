@@ -34,8 +34,7 @@ public partial class WorkingGroupPageWorkingGroupList
 
     private async Task<GridData<WorkingGroup>> ServerReload(GridState<WorkingGroup> state)
     {
-        // _workingGroupApi.GetAllAsync(_searchString)
-        var errorOrGroups = await _workingGroupApi.GetAllAsync();
+        var errorOrGroups = await _workingGroupApi.GetAllAsync(_searchString);
         if (errorOrGroups.IsError)
             return new GridData<WorkingGroup>();
         var groups = SortWorkingGroups(state, errorOrGroups.Value).ToList();
