@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Components.ShoppingCart;
 
 namespace TuDa.CIMS.Web.Components.Pages;
@@ -47,8 +48,26 @@ public partial class ShoppingCartPage
                 "WorkingGroups",
                 new List<WorkingGroup>()
                 {
-                    new() { Professor = new Professor { Name = "Heiter" } },
-                    new() { Professor = new Professor { Name = "Kaiser" } },
+
+                    new()
+                    {
+                        Professor = new Professor
+                        {
+                            Name = "Heiter",
+                            Address = null,
+                            Gender = Gender.Unknown,
+                        },
+                    },
+                    new()
+                    {
+                        Professor = new Professor
+                        {
+                            Name = "Kaiser",
+                            Address = null,
+                            Gender = Gender.Unknown,
+                        },
+                    },
+
                 }
             },
         };

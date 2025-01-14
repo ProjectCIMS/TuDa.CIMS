@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Factories;
 using TuDa.CIMS.Api.Interfaces;
@@ -191,5 +192,96 @@ public class AssetItemRepository : IAssetItemRepository
         }
 
         return await query.Include(i => i.Room).ToListAsync();
+    }
+
+    public async Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel)
+    {
+        var room = await _context.Rooms.SingleOrDefaultAsync(r => r.Id == createModel.RoomId);
+        if (room is null)
+        {
+            return Error.NotFound(
+                "Assetitem.create",
+                $"Given RoomId {createModel.RoomId} was not found."
+            );
+        }
+
+        List<Hazard> hazards = [];
+        if (createModel is CreateSubstanceDto createSubstanceDto)
+        {
+            foreach (var hazardId in createSubstanceDto.Hazards)
+            {
+                var hazard = await _context.Hazards.SingleOrDefaultAsync(h => h.Id != hazardId);
+                if (hazard is null)
+                {
+                    return Error.NotFound(
+                        "Assetitem.create",
+                        $"Given HazardId {hazardId} was not found."
+                    );
+                }
+                hazards.Add(hazard);
+            }
+        }
+        AssetItem newItem = createModel switch
+        {
+            CreateSolventDto solvent => new Solvent
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = room,
+                Cas = solvent.Cas,
+                Hazards = hazards,
+                PriceUnit = solvent.PriceUnit,
+                BindingSize = solvent.BindingSize,
+                Purity = solvent.Purity,
+            },
+            CreateChemicalDto chemical => new Chemical
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = room,
+                Cas = chemical.Cas,
+                Hazards = hazards,
+                PriceUnit = chemical.PriceUnit,
+                BindingSize = chemical.BindingSize,
+                Purity = chemical.Purity,
+            },
+            CreateGasCylinderDto gas => new GasCylinder
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = room,
+                Cas = gas.Cas,
+                Hazards = hazards,
+                PriceUnit = gas.PriceUnit,
+                Volume = gas.Volume,
+                Pressure = gas.Pressure,
+                Purity = gas.Purity,
+            },
+            CreateConsumableDto consumable => new Consumable
+            {
+                ItemNumber = createModel.ItemNumber,
+                Name = createModel.Name,
+                Note = createModel.Note,
+                Price = createModel.Price,
+                Shop = createModel.Shop,
+                Room = room,
+                Amount = consumable.Amount,
+                Manufacturer = consumable.Manufacturer,
+                SerialNumber = consumable.SerialNumber,
+            },
+            _ => throw new ArgumentException("Unsupported create model type", nameof(createModel)),
+        };
+        await _context.AssetItems.AddAsync(newItem);
+        await _context.SaveChangesAsync();
+        return Result.Created;
     }
 }
