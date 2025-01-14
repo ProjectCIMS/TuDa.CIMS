@@ -69,21 +69,17 @@ public class WorkingGroupRepository : IWorkingGroupRepository
             );
         }
 
+        existingItem.Email = updateModel.Email ?? existingItem.Email;
+        existingItem.PhoneNumber = updateModel.PhoneNumber ?? existingItem.PhoneNumber;
         existingItem.Professor.Name = updateModel.Professor?.Name ?? existingItem.Professor.Name;
         existingItem.Professor.FirstName =
             updateModel.Professor?.FirstName ?? existingItem.Professor.FirstName;
-        existingItem.PhoneNumber = updateModel.PhoneNumber ?? existingItem.PhoneNumber;
         existingItem.Professor.Title = updateModel.Professor?.Title ?? existingItem.Professor.Title;
-        existingItem.Professor.PhoneNumber =
-            updateModel.Professor?.PhoneNumber ?? existingItem.Professor.PhoneNumber;
-        existingItem.Professor.Email = updateModel.Professor?.Email ?? existingItem.Professor.Email;
         existingItem.Professor.Gender = updateModel.Professor?.Gender ?? existingItem.Professor.Gender;
         existingItem.Professor.Address.City = updateModel.Professor?.Address.City ?? existingItem.Professor.Address.City;
         existingItem.Professor.Address.Street = updateModel.Professor?.Address.Street ?? existingItem.Professor.Address.Street;
         existingItem.Professor.Address.ZipCode = updateModel.Professor?.Address.ZipCode ?? existingItem.Professor.Address.ZipCode;
         existingItem.Professor.Address.Number = updateModel.Professor?.Address.Number ?? existingItem.Professor.Address.Number;
-        existingItem.Email = updateModel.Email ?? existingItem.Email;
-
 
         await _context.SaveChangesAsync();
         return existingItem;
