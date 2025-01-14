@@ -45,7 +45,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
             // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
 
-            var result = await response.Content.ReadFromJsonAsync<Purchase>();
+            var result = await response.Content.FromJsonAsync<Purchase>();
 
             result.Should().BeEquivalentTo(purchase);
         }
@@ -75,7 +75,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var result = await response.Content.ReadFromJsonAsync<List<Purchase>>();
+        var result = await response.Content.FromJsonAsync<List<Purchase>>();
 
         result.Should().BeEquivalentTo(workingGroup.Purchases);
     }
