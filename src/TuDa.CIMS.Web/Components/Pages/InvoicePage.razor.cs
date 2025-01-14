@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
-using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Models;
 using TuDa.CIMS.Web.Services;
 
@@ -51,6 +50,12 @@ public partial class InvoicePage
                 InvoiceStatistics = errorOrStatistics.Value;
             }
         }
+    }
+
+    private async Task OnDateRangeChanged(DateRange newDateRange)
+    {
+        _dateRange = newDateRange;
+        await SetInvoiceStatistics();
     }
 
     private DateTime? SelectedDueDate { get; set; } = null!;

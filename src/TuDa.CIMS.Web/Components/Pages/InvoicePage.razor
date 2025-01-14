@@ -10,9 +10,9 @@
                     <MudText>Zeitraum:</MudText>
                 </MudItem>
                 <MudItem Class="p-2">
-                    <MudDateRangePicker @bind-DateRange="@_dateRange" Margin="Margin.Dense" Clearable="true"
+                    <MudDateRangePicker DateRange="@_dateRange" Margin="Margin.Dense" Clearable="true"
                                         PlaceholderStart="Startdatum" PlaceholderEnd="Enddatum"
-                                        DateRangeChanged="@SetInvoiceStatistics" Variant="Variant.Filled"/>
+                                        DateRangeChanged="@OnDateRangeChanged" Variant="Variant.Filled"/>
                 </MudItem>
                 <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
                 <MudItem Class="p-2">
