@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
@@ -71,28 +72,28 @@ public partial class InvoicePage
     /// </summary>
     private string GetTotalPriceSolvents()
     {
-        return InvoiceStatistics?.TotalPriceSolvents.ToString("0.00") + "\u20ac";
+        return InvoiceStatistics?.TotalPriceSolvents.ToString("0.00", CultureInfo.GetCultureInfo("de-DE")) + "€";
     }
     /// <summary>
     /// Returns the TotalPriceChemicals text.
     /// </summary>
     private string GetTotalPriceChemicals()
     {
-        return InvoiceStatistics?.TotalPriceChemicals.ToString("0.00") + "\u20ac";
+        return InvoiceStatistics?.TotalPriceChemicals.ToString("0.00", CultureInfo.GetCultureInfo("de-DE")) + "€";
     }
     /// <summary>
     /// Returns the TotalPriceConsumables text.
     /// </summary>
     private string GetTotalPriceConsumables()
     {
-        return InvoiceStatistics?.TotalPriceConsumables.ToString("0.00") + "\u20ac";
+        return InvoiceStatistics?.TotalPriceConsumables.ToString("0.00", CultureInfo.GetCultureInfo("de-DE")) + "€";
     }
     /// <summary>
     /// Returns the TotalPriceGasCylinders text.
     /// </summary>
     private string GetTotalPriceGasCylinders()
     {
-        return InvoiceStatistics?.TotalPriceGasCylinders.ToString("0.00") + "\u20ac";
+        return InvoiceStatistics?.TotalPriceGasCylinders.ToString("0.00", CultureInfo.GetCultureInfo("de-DE")) + "€";
     }
 
 
