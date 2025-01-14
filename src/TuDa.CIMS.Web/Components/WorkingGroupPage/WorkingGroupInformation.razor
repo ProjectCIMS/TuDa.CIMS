@@ -1,0 +1,33 @@
+﻿<MudContainer Class="rounded bg-white" MaxWidth="MaxWidth.Small">
+    <div class="d-flex flex-column">
+        <MudText Class="d-flex justify-space-between">Name: @ProfessorInfo.Name <MudIconButton
+                Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="EditProfessor"></MudIconButton>
+        </MudText>
+        <MudText Class="d-flex justify-space-between">TelefonNr.: @WorkingGroup.PhoneNumber <MudIconButton
+                Icon="@Icons.Material.Filled.Edit"
+                Size="Size.Small"
+                OnClick="EditPhoneNumber"></MudIconButton>
+        </MudText>
+        <MudText Class="d-flex justify-space-between">Stadt: @ProfessorInfo.Address.City <MudIconButton
+                Icon="@Icons.Material.Filled.Edit"
+                Size="Size.Small"
+                OnClick="EditAddressCity"></MudIconButton>
+        </MudText>
+        <MudText Class="d-flex justify-space-between">
+            Straße: @ProfessorInfo.Address.Street @ProfessorInfo.Address.Number <MudIconButton
+                Icon="@Icons.Material.Filled.Edit"
+                Size="Size.Small"
+                OnClick="EditAddressStreetAndNumber"></MudIconButton>
+        </MudText>
+        <MudText Class="d-flex justify-space-between">PLZ: @ProfessorInfo.Address.ZipCode <MudIconButton
+                Icon="@Icons.Material.Filled.Edit"
+                Size="Size.Small"
+                OnClick="EditAddressZipNumber"></MudIconButton>
+        </MudText>
+        <MudText Class="d-flex justify-space-between">Email-Adresse: @WorkingGroup.Email <MudIconButton
+                Icon="@Icons.Material.Filled.Edit"
+                Size="Size.Small"
+                OnClick="EditEmail"></MudIconButton>
+        </MudText>
+    </div>
+</MudContainer>

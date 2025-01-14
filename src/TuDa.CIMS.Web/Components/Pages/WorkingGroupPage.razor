@@ -1,0 +1,25 @@
+﻿@page "/working-groups/{WorkingGroupId:guid}"
+
+@using TuDa.CIMS.Web.Components.WorkingGroupPage
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="bg-white rounded-xl">
+    <MudGrid>
+        <!-- Header spans full width -->
+        <MudItem xs="12" Class="mt-2 col-md-1">
+        <WorkingGroupHeader WorkingGroupId="WorkingGroupId"></WorkingGroupHeader>
+        </MudItem>
+
+        <!-- Left column -->
+        <MudItem xs="12" md="6" Class="d-flex flex-column">
+            <WorkingGroupPersonList WorkingGroupId="WorkingGroupId"></WorkingGroupPersonList>
+            <MudItem Class="mt-2">
+                <WorkingGroupInformation WorkingGroupId="WorkingGroupId"></WorkingGroupInformation>
+            </MudItem>
+        </MudItem>
+
+        <!-- Right column -->
+        <MudItem xs="12" md="6" Class="d-flex flex-column">
+            <WorkingGroupPurchaseList WorkingGroupId="WorkingGroupId"></WorkingGroupPurchaseList>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
