@@ -41,9 +41,11 @@
     private bool IsError => FormShowError && (FormConsumableAmount <= 0 || FormManufacturer == string.Empty || FormSerialNumber == string.Empty);
 
 
-    public void SetForm(AssetItem item)
+    public void SetForm(Consumable item)
     {
-
+        FormManufacturer = item.Manufacturer;
+        FormSerialNumber = item.SerialNumber;
+        FormConsumableAmount = item.Amount;
     }
 
     /// <summary>
@@ -64,6 +66,8 @@
         return false;
     }
 
+    [Parameter] public EventCallback OnReset { get; set; }
+
     /// <summary>
     /// Resets the Input lines
     /// </summary>
@@ -72,6 +76,7 @@
         FormManufacturer = string.Empty;
         FormSerialNumber = string.Empty;
         FormConsumableAmount = 0;
+        OnReset.InvokeAsync();
     }
 
 }

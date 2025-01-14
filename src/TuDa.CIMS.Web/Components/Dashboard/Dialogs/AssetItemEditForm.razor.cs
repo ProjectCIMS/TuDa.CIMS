@@ -22,13 +22,9 @@ public partial class AssetItemEditForm
     /// Fields for Errors and Feedback
     /// </summary>
     public bool ShowError = false;
+
     private string FeedbackMessage = string.Empty;
     private Severity FeedbackColor = Severity.Success;
-
-    /// <summary>
-    /// To choose from the different forms for inputting
-    /// </summary>
-    private AssetItemType _selectedAssetItemType = AssetItemType.Chemical;
 
     /// <summary>
     /// References to the different Forms
@@ -46,86 +42,67 @@ public partial class AssetItemEditForm
     /// </summary>
     private void ResetInputs()
     {
-        switch (_selectedAssetItemType)
+        switch (UpdateItem)
         {
-            case AssetItemType.Chemical:
+            case Chemical:
             {
                 _chemicalItemForm.ResetInputs();
                 break;
             }
 
-            case AssetItemType.Consumable:
+            case Consumable:
             {
                 _consumableItemForm.ResetInputs();
                 break;
             }
 
-            case AssetItemType.GasCylinder:
+            case GasCylinder:
             {
                 _gasCylinderForm.ResetInputs();
-                _chemicalItemForm.ResetInputs();
-                break;
-            }
-
-            case AssetItemType.Solvent:
-            {
-                _chemicalItemForm.ResetInputs();
                 break;
             }
         }
+
         ShowError = false;
     }
 
     /// <summary>
     /// fill the input fields with the Item
     /// </summary>
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    public void AssetItemEditFormLoad()
     {
-        if (firstRender)
+        _assetItemForm.SetForm(UpdateItem);
+
+        switch (UpdateItem)
         {
-            _assetItemForm.SetForm(UpdateItem);
-
-            switch (_selectedAssetItemType)
+            case Chemical:
             {
-                case AssetItemType.Chemical:
+                if (UpdateItem is Chemical chemical)
                 {
-                    if (UpdateItem is Chemical chemical)
-                    {
-                        _chemicalItemForm.SetForm(chemical);
-                    }
-                    break;
+                    _chemicalItemForm.SetForm(chemical);
                 }
 
-                case AssetItemType.Consumable:
-                {
-                    if (UpdateItem is Consumable consumable)
-                    {
-                        _consumableItemForm.SetForm(consumable);
-                    }
+                break;
+            }
 
-                    break;
+            case Consumable:
+            {
+                if (UpdateItem is Consumable consumable)
+                {
+                    _consumableItemForm.SetForm(consumable);
                 }
 
-                case AssetItemType.GasCylinder:
+                break;
+            }
+
+            case GasCylinder:
+            {
+                if (UpdateItem is GasCylinder gasCylinder)
                 {
-                    if (UpdateItem is GasCylinder gasCylinder)
-                    {
-                        _gasCylinderForm.SetForm(gasCylinder);
-                        _chemicalItemForm.FormCas = gasCylinder.Cas;
-                        _chemicalItemForm.FormPurity = gasCylinder.Purity;
-                        _chemicalItemForm.FormPriceUnit = gasCylinder.PriceUnit;
-                    }
-                    break;
+                    _gasCylinderForm.SetForm(gasCylinder);
                 }
 
-                case AssetItemType.Solvent:
-                {
-                    if (UpdateItem is Solvent solvent)
-                    {
-                        _chemicalItemForm.SetForm(solvent);
-                    }
-                    break;
-                }
+                break;
             }
         }
     }
@@ -140,18 +117,12 @@ public partial class AssetItemEditForm
             _assetItemForm.ValidateForm()
             || (
                 (
-                    _selectedAssetItemType == AssetItemType.Chemical
-                    || _selectedAssetItemType == AssetItemType.Solvent
+                    UpdateItem.GetType() == typeof(Chemical)
+                    || UpdateItem.GetType() == typeof(Solvent)
                 ) && _chemicalItemForm.ValidateForm()
             )
-            || (
-                _selectedAssetItemType == AssetItemType.Consumable
-                && _consumableItemForm.ValidateForm()
-            )
-            || (
-                _selectedAssetItemType == AssetItemType.GasCylinder
-                && (_gasCylinderForm.ValidateForm() || _chemicalItemForm.ValidateForm())
-            )
+            || (UpdateItem.GetType() == typeof(Consumable) && _consumableItemForm.ValidateForm())
+            || (UpdateItem.GetType() == typeof(GasCylinder) && _gasCylinderForm.ValidateForm())
         )
         {
             ResetInputs();
@@ -175,9 +146,9 @@ public partial class AssetItemEditForm
     /// </summary>
     public async Task SaveChanges()
     {
-        UpdateAssetItemDto? dto = _selectedAssetItemType switch
+        UpdateAssetItemDto? dto = UpdateItem switch
         {
-            AssetItemType.Chemical => new UpdateChemicalDto()
+            Chemical => new UpdateChemicalDto()
             {
                 Name = _assetItemForm.FormName,
                 Shop = _assetItemForm.FormShop,
@@ -189,7 +160,7 @@ public partial class AssetItemEditForm
                 PriceUnit = _chemicalItemForm.FormPriceUnit,
             },
 
-            AssetItemType.Consumable => new UpdateConsumableDto()
+            Consumable => new UpdateConsumableDto()
             {
                 Name = _assetItemForm.FormName,
                 Shop = _assetItemForm.FormShop,
@@ -201,7 +172,7 @@ public partial class AssetItemEditForm
                 Amount = _consumableItemForm.FormConsumableAmount,
             },
 
-            AssetItemType.GasCylinder => new UpdateGasCylinderDto()
+            GasCylinder => new UpdateGasCylinderDto()
             {
                 Name = _assetItemForm.FormName,
                 Shop = _assetItemForm.FormShop,
@@ -212,18 +183,6 @@ public partial class AssetItemEditForm
                 Purity = _chemicalItemForm.FormPurity,
                 Volume = _gasCylinderForm.FormVolume,
                 Pressure = _gasCylinderForm.FormPressure,
-                PriceUnit = _chemicalItemForm.FormPriceUnit,
-            },
-
-            AssetItemType.Solvent => new UpdateSolventDto()
-            {
-                Name = _assetItemForm.FormName,
-                Shop = _assetItemForm.FormShop,
-                ItemNumber = _assetItemForm.FormItemNumber,
-                Note = _assetItemForm.FormNote,
-                Cas = _chemicalItemForm.FormCas,
-                Price = _assetItemForm.FormPrice,
-                Purity = _chemicalItemForm.FormPurity,
                 PriceUnit = _chemicalItemForm.FormPriceUnit,
             },
             _ => null!,

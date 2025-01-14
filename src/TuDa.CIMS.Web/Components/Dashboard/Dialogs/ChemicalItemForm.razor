@@ -82,6 +82,8 @@
         return false;
     }
 
+    [Parameter] public EventCallback OnReset { get; set; }
+
     /// <summary>
     /// Resets the Input lines
     /// </summary>
@@ -90,6 +92,7 @@
         FormCas = string.Empty;
         FormPurity = string.Empty;
         FormBindingSize = 0.0;
+        OnReset.InvokeAsync();
     }
 
 }
