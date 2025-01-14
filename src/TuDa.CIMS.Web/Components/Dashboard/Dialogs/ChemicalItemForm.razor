@@ -1,4 +1,6 @@
-﻿@using TuDa.CIMS.Shared.Entities.Enums
+@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Entities.Enums
+
 @* Substance Item Form *@
 
 
@@ -50,9 +52,20 @@
     public string FormPurity { get; private set; } = string.Empty;
     public double FormBindingSize { get; private set; }
 
+
     [Parameter] public bool FormShowError { get; set; }
 
     private bool IsError => FormShowError && (FormCas == string.Empty || FormPurity == string.Empty || FormBindingSize <= 0);
+
+
+    public void SetForm(Chemical item)
+    {
+        FormCas = item.Cas;
+        FormPurity = item.Purity;
+        FormBindingSize = item.BindingSize;
+        FormPriceUnit = item.PriceUnit;
+    }
+
 
     /// <summary>
     /// Validate the Inputs

@@ -1,0 +1,63 @@
+﻿@using TuDa.CIMS.Shared.Entities
+
+<MudDialog>
+    <TitleContent>
+        <MudContainer Class="d-flex justify-content-between align-items-center"
+                      Style="padding: 0; margin: 0; width: 100%;">
+            <MudText Typo="Typo.h6">
+                Eintrag erstellen
+            </MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                           Color="Color.Inherit"
+                           OnClick="Cancel"/>
+        </MudContainer>
+    </TitleContent>
+    <!-- Modal Body -->
+    <DialogContent>
+        <AssetItemEditForm @ref="_assetItemEditForm" OnValidation ="@(_ => StateHasChanged())" UpdateItem="Item"/>
+    </DialogContent>
+    <!-- Modal Footer -->
+    <DialogActions>
+        <MudButton OnClick="Cancel"
+                   Color="Color.Secondary">
+            Schließen
+        </MudButton>
+        <MudButton OnClick="SaveChanges"
+                   Color="Color.Primary">
+            Änderungen speichern
+        </MudButton>
+    </DialogActions>
+
+</MudDialog>
+
+
+@code {
+    private AssetItemEditForm _assetItemEditForm;
+
+    [CascadingParameter] public required MudDialogInstance ProductDialog { get; set; }
+
+    [Parameter] public bool ShowError { get; set; }
+
+    [Parameter] public required AssetItem Item { get; set; }
+
+
+    private void Cancel()
+    {
+        _assetItemEditForm.ShowError = false;
+        ProductDialog.Cancel();
+    }
+
+
+    public async Task SaveChanges()
+    {
+        bool hasErrors = _assetItemEditForm.ValidateForm();
+
+        if (hasErrors)
+        {
+            return;
+        }
+
+        await _assetItemEditForm.SaveChanges();
+        ProductDialog.Close();
+    }
+}

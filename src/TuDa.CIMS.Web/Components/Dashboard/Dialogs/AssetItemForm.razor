@@ -1,4 +1,4 @@
-﻿@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Entities
 
 @* Generic AssetItemForm *@
 
@@ -75,6 +75,18 @@
     private bool IsError => FormShowError && (FormName == string.Empty || FormShop == string.Empty || FormItemNumber == string.Empty || FormPrice <= 0 || FormRoomName == string.Empty);
 
     [Parameter] public EventCallback OnReset { get; set; }
+
+
+    public void SetForm(AssetItem item)
+    {
+        FormName = item.Name;
+        FormNote = item.Note;
+        FormPrice = item.Price;
+        FormShop = item.Shop;
+        FormRoomName = item.Room.Name;
+        FormItemNumber = item.ItemNumber;
+    }
+
 
     /// <summary>
     /// Resets the Input lines

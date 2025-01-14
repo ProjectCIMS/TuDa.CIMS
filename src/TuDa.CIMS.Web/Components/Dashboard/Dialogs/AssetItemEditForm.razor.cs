@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
@@ -7,12 +7,12 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 
-public partial class AssetItemCreateForm
+public partial class AssetItemEditForm
 {
     private readonly IAssetItemApi _assetItemApi;
     private readonly ISnackbar _snackbar;
 
-    public AssetItemCreateForm(IAssetItemApi assetItemApi, ISnackbar snackbar)
+    public AssetItemEditForm(IAssetItemApi assetItemApi, ISnackbar snackbar)
     {
         _assetItemApi = assetItemApi;
         _snackbar = snackbar;
@@ -23,10 +23,8 @@ public partial class AssetItemCreateForm
     /// </summary>
     public bool ShowError = false;
 
-    /// <summary>
-    /// To choose from the different forms for inputting
-    /// </summary>
-    private AssetItemType _selectedAssetItemType = AssetItemType.Chemical;
+    private string FeedbackMessage = string.Empty;
+    private Severity FeedbackColor = Severity.Success;
 
     /// <summary>
     /// References to the different Forms
@@ -36,38 +34,86 @@ public partial class AssetItemCreateForm
     private ConsumableItemForm _consumableItemForm;
     private GasCylinderItemForm _gasCylinderForm;
 
+    [Parameter]
+    public required AssetItem UpdateItem { get; set; }
+
     /// <summary>
     /// Resetting all Inputs on every Form
     /// </summary>
     private void ResetInputs()
     {
-        switch (_selectedAssetItemType)
+        switch (UpdateItem)
         {
-            case AssetItemType.Chemical:
+            case Chemical:
             {
                 _chemicalItemForm.ResetInputs();
                 break;
             }
 
-            case AssetItemType.Consumable:
+            case Consumable:
             {
                 _consumableItemForm.ResetInputs();
                 break;
             }
 
-            case AssetItemType.GasCylinder:
+            case GasCylinder:
             {
                 _gasCylinderForm.ResetInputs();
                 break;
             }
+        }
 
-            case AssetItemType.Solvent:
+        ShowError = false;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        AssetItemEditFormLoad();
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// fill the input fields with the Item
+    /// </summary>
+    public void AssetItemEditFormLoad()
+    {
+        _assetItemForm.SetForm(UpdateItem);
+
+        switch (UpdateItem)
+        {
+            case Chemical:
             {
-                _chemicalItemForm.ResetInputs();
+                if (UpdateItem is Chemical chemical)
+                {
+                    _chemicalItemForm.SetForm(chemical);
+                }
+
+                break;
+            }
+
+            case Consumable:
+            {
+                if (UpdateItem is Consumable consumable)
+                {
+                    _consumableItemForm.SetForm(consumable);
+                }
+
+                break;
+            }
+
+            case GasCylinder:
+            {
+                if (UpdateItem is GasCylinder gasCylinder)
+                {
+                    _gasCylinderForm.SetForm(gasCylinder);
+                }
+
                 break;
             }
         }
-        ShowError = false;
     }
 
     /// <summary>
@@ -80,18 +126,12 @@ public partial class AssetItemCreateForm
             _assetItemForm.ValidateForm()
             || (
                 (
-                    _selectedAssetItemType == AssetItemType.Chemical
-                    || _selectedAssetItemType == AssetItemType.Solvent
+                    UpdateItem.GetType() == typeof(Chemical)
+                    || UpdateItem.GetType() == typeof(Solvent)
                 ) && _chemicalItemForm.ValidateForm()
             )
-            || (
-                _selectedAssetItemType == AssetItemType.Consumable
-                && _consumableItemForm.ValidateForm()
-            )
-            || (
-                _selectedAssetItemType == AssetItemType.GasCylinder
-                && _gasCylinderForm.ValidateForm()
-            )
+            || (UpdateItem.GetType() == typeof(Consumable) && _consumableItemForm.ValidateForm())
+            || (UpdateItem.GetType() == typeof(GasCylinder) && _gasCylinderForm.ValidateForm())
         )
         {
             ResetInputs();
@@ -115,15 +155,9 @@ public partial class AssetItemCreateForm
     /// </summary>
     public async Task SaveChanges()
     {
-        string feedbackMessage;
-        Severity feedbackColor;
-        var errorOrItems = await _assetItemApi.GetAllAsync();
-        var items = errorOrItems.Value.ToList();
-        Guid RoomId = items.FirstOrDefault().Room.Id;
-
-        CreateAssetItemDto? createDto = _selectedAssetItemType switch
+        UpdateAssetItemDto? dto = UpdateItem switch
         {
-            AssetItemType.Chemical => new CreateChemicalDto
+            Chemical => new UpdateChemicalDto()
             {
                 Name = _assetItemForm.FormName,
                 Shop = _assetItemForm.FormShop,
@@ -133,73 +167,39 @@ public partial class AssetItemCreateForm
                 Price = _assetItemForm.FormPrice,
                 Purity = _chemicalItemForm.FormPurity,
                 PriceUnit = _chemicalItemForm.FormPriceUnit,
-                RoomId = RoomId,
             },
-            
-            AssetItemType.Consumable => new CreateConsumableDto
+
+            Consumable => new UpdateConsumableDto()
             {
                 Name = _assetItemForm.FormName,
                 Shop = _assetItemForm.FormShop,
                 ItemNumber = _assetItemForm.FormItemNumber,
                 Note = _assetItemForm.FormNote,
                 Price = _assetItemForm.FormPrice,
-                RoomId = RoomId,
                 Manufacturer = _consumableItemForm.FormManufacturer,
                 SerialNumber = _consumableItemForm.FormSerialNumber,
                 Amount = _consumableItemForm.FormConsumableAmount,
             },
 
-            AssetItemType.GasCylinder => new CreateGasCylinderDto
+            GasCylinder => new UpdateGasCylinderDto()
             {
                 Name = _assetItemForm.FormName,
                 Shop = _assetItemForm.FormShop,
                 ItemNumber = _assetItemForm.FormItemNumber,
                 Note = _assetItemForm.FormNote,
                 Price = _assetItemForm.FormPrice,
-                RoomId = RoomId,
                 Cas = _chemicalItemForm.FormCas,
                 Purity = _chemicalItemForm.FormPurity,
                 Volume = _gasCylinderForm.FormVolume,
                 Pressure = _gasCylinderForm.FormPressure,
                 PriceUnit = _chemicalItemForm.FormPriceUnit,
             },
-
-            AssetItemType.Solvent => new CreateSolventDto
-            {
-                Name = _assetItemForm.FormName,
-                Shop = _assetItemForm.FormShop,
-                ItemNumber = _assetItemForm.FormItemNumber,
-                Note = _assetItemForm.FormNote,
-                Cas = _chemicalItemForm.FormCas,
-                Price = _assetItemForm.FormPrice,
-                Purity = _chemicalItemForm.FormPurity,
-                PriceUnit = _chemicalItemForm.FormPriceUnit,
-                RoomId = RoomId,
-            },
-
-            _ => null,
+            _ => null!,
         };
+        FeedbackMessage = "Das Objekt wurde erfolgreich geupdated.";
+        FeedbackColor = Severity.Success;
 
-        if (createDto != null)
-        {
-            try
-            {
-                await _assetItemApi.CreateAsync(createDto);
-                feedbackMessage = "Das Objekt wurde erfolgreich erstellt.";
-                feedbackColor = Severity.Success;
-            }
-            catch (Exception ex)
-            {
-                feedbackMessage = $"Fehler bei der Erstellung: {ex.Message}";
-                feedbackColor = Severity.Error;
-            }
-        }
-        else
-        {
-            feedbackMessage = "Ungültiger Objekttyp.";
-            feedbackColor = Severity.Error;
-        }
-
-        _snackbar.Add(feedbackMessage, feedbackColor);
+        await _assetItemApi.UpdateAsync(UpdateItem.Id, dto);
+        _snackbar.Add(FeedbackMessage, FeedbackColor);
     }
 }

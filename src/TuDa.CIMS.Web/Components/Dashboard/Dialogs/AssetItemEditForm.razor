@@ -1,0 +1,39 @@
+﻿@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Entities.Enums
+<MudGrid>
+    <MudItem xs="12" md="6">
+        <AssetItemForm @ref="_assetItemForm"
+                       FormShowError="@ShowError"
+                       OnReset="ResetInputs"/>
+    </MudItem>
+
+    <!-- Which Form to Choose -->
+    <MudItem xs="12" md="6">
+        @switch (UpdateItem)
+        {
+            case Chemical:
+                <ChemicalItemForm @ref="_chemicalItemForm"
+                                  FormShowError="@ShowError"
+                                  OnReset="@(_ => StateHasChanged())"/>
+                break;
+            case Consumable:
+                <ConsumableItemForm
+                    @ref="_consumableItemForm"
+                    FormShowError="@ShowError"
+                    OnReset="@(_ => StateHasChanged())"/>
+                break;
+            case GasCylinder:
+                <GasCylinderItemForm
+                    @ref="_gasCylinderForm"
+                    FormShowError="@ShowError"
+                    OnReset="@(_ => StateHasChanged())"/>
+                break;
+        }
+    </MudItem>
+    <MudItem>
+        <MudButton OnClick="AssetItemEditFormLoad"
+                   Color="Color.Primary">
+            Zurücksetzen
+        </MudButton>
+    </MudItem>
+</MudGrid>

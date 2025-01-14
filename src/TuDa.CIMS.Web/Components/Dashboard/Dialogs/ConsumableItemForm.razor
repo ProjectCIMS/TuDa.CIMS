@@ -1,4 +1,5 @@
-﻿@* Consumable Item Form *@
+@using TuDa.CIMS.Shared.Entities
+@* Consumable Item Form *@
 
 <MudForm>
     <MudTextField @bind-Value="FormManufacturer"
@@ -38,6 +39,14 @@
     [Parameter] public bool FormShowError { get; set; }
 
     private bool IsError => FormShowError && (FormConsumableAmount <= 0 || FormManufacturer == string.Empty || FormSerialNumber == string.Empty);
+
+
+    public void SetForm(Consumable item)
+    {
+        FormManufacturer = item.Manufacturer;
+        FormSerialNumber = item.SerialNumber;
+        FormConsumableAmount = item.Amount;
+    }
 
     /// <summary>
     /// Validate the Inputs

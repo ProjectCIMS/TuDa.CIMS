@@ -22,10 +22,17 @@
         await DialogService.ShowAsync<AssetItemDialog>("Create Item", options);
     }
 
-    // TODO: Open EditDialog here
-    private void EditAssetItem(AssetItem assetItem)
+
+    private async Task EditAssetItem(AssetItem assetItem)
     {
         _logger.LogInformation("Edit {Item.Name}", assetItem.Name);
+        var parameters = new DialogParameters
+        {
+            { "Item", assetItem }
+        };
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        await DialogService.ShowAsync<AssetItemEditDialog>("Edit Item", parameters, options);
     }
 
 }
