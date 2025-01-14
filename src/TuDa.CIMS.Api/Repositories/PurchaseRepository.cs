@@ -23,8 +23,8 @@ public class PurchaseRepository : IPurchaseRepository
     /// <returns></returns>
     public async Task<IEnumerable<Purchase>> GetAllAsync(Guid workingGroupId)
     {
-        return await _context.WorkingGroups
-            .Where(i => i.Id == workingGroupId)
+        return await _context
+            .WorkingGroups.Where(i => i.Id == workingGroupId)
             .SelectMany(i => i.Purchases)
             .Include(i => i.Buyer)
             .Include(i => i.Entries)
@@ -40,8 +40,8 @@ public class PurchaseRepository : IPurchaseRepository
     /// <returns></returns>
     public async Task<Purchase?> GetOneAsync(Guid id, Guid workingGroupId)
     {
-        return await _context.WorkingGroups
-            .Where(i => i.Id == workingGroupId)
+        return await _context
+            .WorkingGroups.Where(i => i.Id == workingGroupId)
             .SelectMany(i => i.Purchases)
             .Where(i => i.Id == id)
             .Include(i => i.Buyer)
@@ -59,8 +59,7 @@ public class PurchaseRepository : IPurchaseRepository
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id, Guid workingGroupId)
     {
         var itemToRemove = await _context
-            .WorkingGroups
-            .Where(i => i.Id == workingGroupId)
+            .WorkingGroups.Where(i => i.Id == workingGroupId)
             .SelectMany(i => i.Purchases)
             .Where(i => i.Id == id)
             .SingleOrDefaultAsync();
@@ -83,21 +82,28 @@ public class PurchaseRepository : IPurchaseRepository
     /// <param name="createModel">the model containing the updated values for the purchase</param>
     /// <returns></returns>
     public async Task<ErrorOr<Purchase>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel)
+
     {
-        var workingGroup = await _context.WorkingGroups.Include(i => i.Purchases)
+        var workingGroup = await _context
+            .WorkingGroups.Include(i => i.Purchases)
             .SingleOrDefaultAsync(r => r.Id == workingGroupId);
 
         if (workingGroup is null)
         {
-            return Error.NotFound("Purchase.create",
-                $"WorkingGroup with ID {workingGroupId} was not found.");
+            return Error.NotFound(
+                "Purchase.create",
+                $"WorkingGroup with ID {workingGroupId} was not found."
+            );
         }
 
         var buyer = await _context.Persons.SingleOrDefaultAsync(r => r.Id == createModel.Buyer);
 
         if (buyer is null)
         {
-            return Error.NotFound("Purchase.create", $"Person with ID {createModel.Buyer} was not found.");
+            return Error.NotFound(
+                "Purchase.create",
+                $"Person with ID {createModel.Buyer} was not found."
+            );
         }
 
 
@@ -110,7 +116,7 @@ public class PurchaseRepository : IPurchaseRepository
         {
             Buyer = buyer,
             Signature = createModel.Signature,
-            CompletionDate = createModel.CompletionDate,
+            CompletionDate = createModel.CompletionDate,     
             Entries = createModel.Entries?.Select(e => new PurchaseEntry
             {
                 AssetItem = assetItems.TryGetValue(e.AssetItemId, out var assetItem)
