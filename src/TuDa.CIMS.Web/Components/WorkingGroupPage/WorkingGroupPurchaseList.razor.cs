@@ -10,6 +10,7 @@ public partial class WorkingGroupPurchaseList(IPurchaseApi _iPurchaseApi) : Comp
 
     [Parameter] public Guid WorkingGroupId { get; set; }
 
+    // TODO: Navigate to the bills page
 
     protected override async Task OnInitializedAsync()
     {

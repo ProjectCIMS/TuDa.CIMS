@@ -14,21 +14,11 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
 
     [Parameter] public string ProfessorName { get; set; } = String.Empty;
 
+    [Parameter] public string ProfessorTitle { get; set; } = String.Empty;
+
     [Parameter] public Guid WorkingGroupId { get; set; }
 
     [Inject] private IDialogService DialogService { get; set; } = null!;
-
-    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-
-    /// <summary>
-    /// Get the id from the url
-    /// </summary>
-    private Guid GetIdFromUrl()
-    {
-        var uri = NavigationManager.Uri.Split('/');
-        var idString = uri[^1];
-        return Guid.Parse(idString);
-    }
 
 
     /// <summary>
@@ -38,14 +28,11 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
     {
         var workingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
         ProfessorName = workingGroup.Value.Professor.Name;
+        ProfessorTitle = workingGroup.Value.Professor.Title;
         Professor = workingGroup.Value.Professor;
 
-        await base.OnInitializedAsync();
-    }
 
-    public void GetWorkingGroupId()
-    {
-        WorkingGroupId = GetIdFromUrl();
+        await base.OnInitializedAsync();
     }
 
     /// TODO: Add dialog
@@ -64,24 +51,32 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
 
         var result = await dialogReference.Result;
         var currentWorkingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
-        ProfessorName = result.Data.ToString();
 
-        //TODO: Update the working group with the new professor name
+        if(!result.Canceled)
+        {
+            ProfessorName = result.Data.ToString();
 
-        await workingGroupApi.UpdateAsync(WorkingGroupId,
-            new UpdateWorkingGroupDto()
-            {
-                PhoneNumber = "",
-                Professor = new Professor()
+            await workingGroupApi.UpdateAsync(WorkingGroupId,
+                new UpdateWorkingGroupDto()
                 {
-                    Address = currentWorkingGroup.Value.Professor.Address,
-                    PhoneNumber = currentWorkingGroup.Value.Professor.PhoneNumber,
-                    Title = currentWorkingGroup.Value.Professor.Title,
-                    Email = currentWorkingGroup.Value.Professor.Email,
-                    Gender = currentWorkingGroup.Value.Professor.Gender,
-                    FirstName = currentWorkingGroup.Value.Professor.FirstName,
-                    Name = ProfessorName
-                }
-            });
+                    PhoneNumber = "",
+                    Professor = new Professor()
+                    {
+                        Id = currentWorkingGroup.Value.Professor.Id,
+                        Address = currentWorkingGroup.Value.Professor.Address,
+                        PhoneNumber = currentWorkingGroup.Value.Professor.PhoneNumber,
+                        Title = currentWorkingGroup.Value.Professor.Title,
+                        Email = currentWorkingGroup.Value.Professor.Email,
+                        Gender = currentWorkingGroup.Value.Professor.Gender,
+                        FirstName = currentWorkingGroup.Value.Professor.FirstName,
+                        Name = ProfessorName
+                    }
+                });
+            StateHasChanged();
+            var lol = await workingGroupApi.GetAsync(WorkingGroupId);
+            Professor = lol.Value.Professor;
+
+        }
+
     }
 }

@@ -1,4 +1,4 @@
-﻿<MudContainer MaxWidth="MaxWidth.Small" Class="bg-white rounded-xl">
+﻿<MudContainer MaxWidth="MaxWidth.Small" Class="bg-white rounded">
     <MudDataGrid Items="@Persons"
                  FixedHeader="@true"
                  SortMode="SortMode.None"
@@ -16,8 +16,8 @@
         </Columns>
     </MudDataGrid>
     <div Class="d-flex justify-content-end">
-    <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@RemoveBuyer">Löschen</MudButton>
-    <MudButton Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="@AddBuyer">Hinzufügen</MudButton>
+    <MudButton Class="me-4 mt-2" Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@RemoveBuyer">Löschen</MudButton>
+    <MudButton Class="mt-2" Variant="Variant.Filled" Size="Size.Small" StartIcon="@Icons.Material.Filled.Add" Color="Color.Success" OnClick="@AddBuyer">Hinzufügen</MudButton>
     </div>
 </MudContainer>
 

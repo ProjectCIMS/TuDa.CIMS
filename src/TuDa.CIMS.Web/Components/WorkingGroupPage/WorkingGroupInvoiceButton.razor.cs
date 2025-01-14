@@ -3,8 +3,11 @@
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 public partial class WorkingGroupInvoiceButton : ComponentBase
 {
-    [Parameter] public EventCallback Checkout { get; set; }
+    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
+    private void NavigateToInvoice()
+    {
+        NavigationManager.NavigateTo($"{NavigationManager.Uri}/invoice");
+    }
 
-    // TODO Navigate to the bills page
 }
 

@@ -75,7 +75,7 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
         var options = new DialogOptions() { CloseOnEscapeKey = true};
 
         var dialogReference =
-            await DialogService.ShowAsync<WorkingGroupProfessorEditDialog>("Edit PhoneNumber", parameters, options);
+            await DialogService.ShowAsync<WorkingGroupEditPhoneNumberDialog>("Edit PhoneNumber", parameters, options);
 
 
         var result = await dialogReference.Result;
@@ -115,7 +115,7 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
         var options = new DialogOptions() { CloseOnEscapeKey = true};
 
         var dialogReference =
-            await DialogService.ShowAsync<WorkingGroupProfessorEditDialog>("Edit City", parameters, options);
+            await DialogService.ShowAsync<WorkingGroupEditAddressCityDialog>("Edit City", parameters, options);
 
 
         var result = await dialogReference.Result;
@@ -246,6 +246,7 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
         ProfessorInfo.Email = result.Data.ToString();
 
         //TODO: Update the working group with the new professor name
+
         await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
         {
             PhoneNumber = "",

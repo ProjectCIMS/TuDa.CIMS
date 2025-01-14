@@ -1,8 +1,9 @@
-﻿<MudContainer MaxWidth="MaxWidth.Small" Class="bg-white rounded-xl">
+﻿<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column bg-white rounded">
     <MudDataGrid Items="@Purchases"
                  FixedHeader="@true"
                  SortMode="SortMode.None"
                  Hover="@true">
+
         <Columns>
             <PropertyColumn
                 Property="@(p => p.CompletionDate)"
@@ -19,4 +20,5 @@
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
+    <WorkingGroupInvoiceButton></WorkingGroupInvoiceButton>
 </MudContainer>

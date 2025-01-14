@@ -16,29 +16,8 @@ public partial class WorkingGroupEditPhoneNumberDialog(IWorkingGroupApi _working
 
     public async Task Save()
     {
-        // Saves the city
+        // Saves the phone number
 
-        var currentWorkingGroup = await  _workingGroupApi.GetAsync(WorkingGroupId);
-        await _workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
-        {
-            PhoneNumber = "ProfessorPhoneNumber",
-            Professor = new Professor()
-            {
-                Address = new Address()
-                {
-                    City = currentWorkingGroup.Value.Professor.Address.City,
-                    Street = currentWorkingGroup.Value.Professor.Address.Street,
-                    Number = currentWorkingGroup.Value.Professor.Address.Number,
-                    ZipCode = currentWorkingGroup.Value.Professor.Address.ZipCode,
-                },
-                PhoneNumber = ProfessorPhoneNumber,
-                Title = currentWorkingGroup.Value.Professor.Title,
-                Email = currentWorkingGroup.Value.Professor.Email,
-                Gender = currentWorkingGroup.Value.Professor.Gender,
-                FirstName = currentWorkingGroup.Value.Professor.FirstName,
-                Name = currentWorkingGroup.Value.Professor.Name
-            }
-        });
         MudDialog.Close(DialogResult.Ok(ProfessorPhoneNumber));
     }
 
