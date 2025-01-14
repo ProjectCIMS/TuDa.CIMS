@@ -43,7 +43,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var result = await response.Content.ReadFromJsonAsync<WorkingGroup>();
+        var result = await response.Content.FromJsonAsync<WorkingGroup>();
 
         result.Should().BeEquivalentTo(workingGroup);
     }
@@ -72,7 +72,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var result = await response.Content.ReadFromJsonAsync<List<WorkingGroup>>();
+        var result = await response.Content.FromJsonAsync<List<WorkingGroup>>();
 
         result.Should().BeEquivalentTo(workingGroups);
     }
@@ -126,7 +126,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var createResult = await response.Content.ReadFromJsonAsync<WorkingGroup>();
+        var createResult = await response.Content.FromJsonAsync<WorkingGroup>();
 
         var result = await _dbContext.WorkingGroups.Include(wg => wg.Professor).SingleAsync();
         result
@@ -171,7 +171,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var responseWorkingGroup = await response.Content.ReadFromJsonAsync<WorkingGroup>();
+        var responseWorkingGroup = await response.Content.FromJsonAsync<WorkingGroup>();
 
         workingGroup.Should().BeEquivalentTo(updatedWorkingGroup);
 
