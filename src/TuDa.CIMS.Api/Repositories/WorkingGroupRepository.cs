@@ -78,8 +78,8 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         existingItem.Professor.Gender = updateModel.Professor?.Gender ?? existingItem.Professor.Gender;
         existingItem.Professor.Address.City = updateModel.Professor?.Address.City ?? existingItem.Professor.Address.City;
         existingItem.Professor.Address.Street = updateModel.Professor?.Address.Street ?? existingItem.Professor.Address.Street;
-        existingItem.Professor.Address.ZipCode = updateModel.Professor?.Address.ZipCode ?? existingItem.Professor.Address.ZipCode;
         existingItem.Professor.Address.Number = updateModel.Professor?.Address.Number ?? existingItem.Professor.Address.Number;
+        existingItem.Professor.Address.ZipCode = updateModel.Professor?.Address.ZipCode ?? existingItem.Professor.Address.ZipCode;
 
         await _context.SaveChangesAsync();
         return existingItem;

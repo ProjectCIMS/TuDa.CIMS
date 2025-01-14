@@ -6,12 +6,11 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage.WorkingGroupDialogs;
 
-public partial class WorkingGroupEditZipNumberDialog(IWorkingGroupApi _workingGroupApi) : ComponentBase
+public partial class WorkingGroupEditZipNumberDialog : ComponentBase
 {
     [Parameter] public string ProfessorZipNumber { get; set; }
     [CascadingParameter] public required MudDialogInstance MudDialog { get; set; }
 
-    [Parameter] public Guid WorkingGroupId { get; set; }
     public async Task Save()
     {
         // Saves the zip code

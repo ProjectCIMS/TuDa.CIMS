@@ -6,11 +6,9 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage.WorkingGroupDialogs;
 
-public partial class WorkingGroupEditAddressCityDialog(IWorkingGroupApi _workingGroupApi) : ComponentBase
+public partial class WorkingGroupEditAddressCityDialog : ComponentBase
 {
     [Parameter] public string ProfessorCity { get; set; }
-
-    [Parameter] public Guid WorkingGroupId { get; set; }
 
     [CascadingParameter] public required MudDialogInstance MudDialog { get; set; }
 

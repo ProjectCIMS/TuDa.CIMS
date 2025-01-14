@@ -6,13 +6,11 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage.WorkingGroupDialogs;
 
-public partial class WorkingGroupProfessorEditDialog(IWorkingGroupApi _workingGroupApi) : ComponentBase
+public partial class WorkingGroupProfessorEditDialog : ComponentBase
 {
     [CascadingParameter] public required MudDialogInstance MudDialog { get; set; }
 
     [Parameter] public Guid WorkingGroupId { get; set; }
-
-    [Parameter] public WorkingGroup? currentWorkingGroup { get; set; }
 
     [Parameter] public required string ProfessorName { get; set; } = String.Empty;
 

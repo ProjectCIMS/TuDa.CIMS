@@ -96,7 +96,6 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
                 new UpdateWorkingGroupDto()
                 {
                     PhoneNumber = WorkingGroup.PhoneNumber,
-                    Professor = currentWorkingGroup.Value.Professor
                 });
             StateHasChanged();
         }
@@ -124,8 +123,6 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
             await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
             {
-                PhoneNumber = "",
-                Email = "",
                 Professor = new Professor()
                 {
                     Address = new Address()
@@ -153,8 +150,7 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
         var parameters = new DialogParameters
             // TODO: Fix street and number problem
         {
-            { nameof(WorkingGroupEditAddressStreetAndNumberDialog.ProfessorNumber), ProfessorInfo.Address.Number },
-            { nameof(WorkingGroupEditAddressStreetAndNumberDialog.ProfessorStreet), ProfessorInfo.Address.Street }
+            { nameof(WorkingGroupEditAddressStreetAndNumberDialog.Street), ProfessorInfo.Address.Street },
         };
 
         var options = new DialogOptions() { CloseOnEscapeKey = true };
@@ -173,8 +169,6 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
             await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
             {
-                PhoneNumber = "",
-                Email = "",
                 Professor = new Professor()
                 {
                     Address = new Address()
@@ -217,8 +211,6 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
             await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
             {
-                PhoneNumber = "",
-                Email = "",
                 Professor = new Professor()
                 {
                     Address = new Address()
@@ -262,24 +254,7 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
             await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
             {
-                PhoneNumber = "",
-                Email = WorkingGroup.Email,
-                Professor = new Professor()
-                {
-                    Address = new Address()
-                    {
-                        Id = currentWorkingGroup.Value.Professor.Address.Id,
-                        City = currentWorkingGroup.Value.Professor.Address.City,
-                        Street = currentWorkingGroup.Value.Professor.Address.Street,
-                        Number = currentWorkingGroup.Value.Professor.Address.Number,
-                        ZipCode = currentWorkingGroup.Value.Professor.Address.ZipCode,
-                    },
-                    Id = currentWorkingGroup.Value.Professor.Id,
-                    Title = currentWorkingGroup.Value.Professor.Title,
-                    Gender = currentWorkingGroup.Value.Professor.Gender,
-                    FirstName = currentWorkingGroup.Value.Professor.FirstName,
-                    Name = currentWorkingGroup.Value.Professor.Name
-                }
+                Email = WorkingGroup.Email
             });
             StateHasChanged();
         }

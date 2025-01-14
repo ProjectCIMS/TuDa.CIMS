@@ -6,11 +6,13 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage.WorkingGroupDialogs;
 
-public partial class WorkingGroupEditAddressStreetAndNumberDialog(IWorkingGroupApi _workingGroupApi) : ComponentBase
+public partial class WorkingGroupEditAddressStreetAndNumberDialog : ComponentBase
 {
-    [Parameter] public string ProfessorStreet { get; set; }
-    [Parameter] public int ProfessorNumber { get; set; }
-    [Parameter] public Guid WorkingGroupId { get; set; }
+    [Parameter] public string? Street { get; set; }
+    [Parameter] public int Number { get; set; }
+
+    // TODO: include the number
+    // [Parameter] public string Number { get; set; }
 
 
     [CascadingParameter] public required MudDialogInstance MudDialog { get; set; }
@@ -20,7 +22,7 @@ public partial class WorkingGroupEditAddressStreetAndNumberDialog(IWorkingGroupA
     {
         // Saves the street and number
 
-        MudDialog.Close(DialogResult.Ok(ProfessorStreet));
+        MudDialog.Close(DialogResult.Ok(Street));
     }
 
     public void Cancel()

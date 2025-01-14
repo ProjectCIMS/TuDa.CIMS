@@ -6,7 +6,7 @@ using TuDa.CIMS.Web.Services;
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 public partial class WorkingGroupPersonList(IWorkingGroupApi workingGroupApi) : ComponentBase
 {
-    public IEnumerable<Person> Persons = new List<Person>();
+    private IEnumerable<Person> Persons = new List<Person>();
 
     [Parameter] public Guid WorkingGroupId { get; set; }
 
