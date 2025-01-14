@@ -4,18 +4,23 @@ using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
-public partial class WorkingGroupPersonList(IWorkingGroupApi _workingGroupApi) : ComponentBase
+public partial class WorkingGroupPersonList(IWorkingGroupApi workingGroupApi) : ComponentBase
 {
-    public List<Person> Persons = new List<Person>();
+    public IEnumerable<Person> Persons = new List<Person>();
 
-    public WorkingGroup WorkingGroup { get; set; }
 
-    private Guid WorkingGroupId { get; set; }
+
+    [Parameter] public Guid WorkingGroupId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var WorkingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
+        Persons = WorkingGroup.Value.Students;
+    }
 
     private void RemoveBuyer()
     {
         /// Wait for api functionality
-        /// _workingGroupApi.Remove(WorkingGroupId, person.Id);
     }
 
 
@@ -24,11 +29,5 @@ public partial class WorkingGroupPersonList(IWorkingGroupApi _workingGroupApi) :
         // TODO: Implement AddBuyer with a dialog here
     }
 
-    private List<string> items = new List<string> { "Matse Müller", "Herbert Grönemeyer" };
-
-    private void AddItem()
-    {
-        items.Add($"Neues Item {items.Count + 1}");
-    }
 }
 

@@ -1,4 +1,4 @@
-﻿@page "/{workingGroupId:guid}"
+﻿@page "/workinggroups/{WorkingGroupId:guid}"
 
 @using TuDa.CIMS.Web.Components.WorkingGroupPage
 
@@ -6,20 +6,20 @@
     <MudGrid>
         <!-- Header spans full width -->
         <MudItem xs="12">
-            <WorkingGroupHeader></WorkingGroupHeader>
+            <WorkingGroupHeader WorkingGroupId="WorkingGroupId"></WorkingGroupHeader>
         </MudItem>
 
         <!-- Left column -->
         <MudItem xs="12" md="6" Class="d-flex flex-column">
-            <WorkingGroupPersonList></WorkingGroupPersonList>
+            <WorkingGroupPersonList WorkingGroupId="WorkingGroupId"></WorkingGroupPersonList>
             <MudItem Class="mt-4">
-                <WorkingGroupInformation></WorkingGroupInformation>
+                <WorkingGroupInformation WorkingGroupId="WorkingGroupId"></WorkingGroupInformation>
             </MudItem>
         </MudItem>
 
         <!-- Right column -->
         <MudItem xs="12" md="6" Class="d-flex flex-column">
-            <WorkingGroupPurchaseList></WorkingGroupPurchaseList>
+            <WorkingGroupPurchaseList WorkingGroupId="WorkingGroupId"></WorkingGroupPurchaseList>
             <WorkingGroupInvoiceButton></WorkingGroupInvoiceButton>
         </MudItem>
     </MudGrid>

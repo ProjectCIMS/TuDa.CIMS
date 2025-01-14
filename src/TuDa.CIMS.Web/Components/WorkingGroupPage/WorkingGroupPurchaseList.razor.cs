@@ -8,15 +8,15 @@ public partial class WorkingGroupPurchaseList(IPurchaseApi _iPurchaseApi) : Comp
 {
     [Parameter] public IEnumerable<Purchase> Purchases { get; set; } = [];
 
-    private Guid WorkingGroupId { get; set; }
+    [Parameter] public Guid WorkingGroupId { get; set; }
 
-    /*
+
     protected override async Task OnInitializedAsync()
     {
         var purchases = await _iPurchaseApi.GetAllAsync(WorkingGroupId);
         Purchases = purchases.Value;
     }
-    */
+
 
 
     public void NavigateToPurchase()
