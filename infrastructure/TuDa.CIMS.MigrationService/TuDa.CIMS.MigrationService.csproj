@@ -29,10 +29,6 @@
       <EnableDefaultContentItems>false</EnableDefaultContentItems>
     </PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="AssetItems.xlsx" CopyToOutputDirectory="PreserveNewest"/>
-  </ItemGroup>
-
     <ItemGroup>
       <Content Include="..\..\.dockerignore">
         <Link>.dockerignore</Link>
