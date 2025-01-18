@@ -22,11 +22,11 @@ public class ConsumableTransactionService : IConsumableTransactionService
     /// Return an an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
     /// or the result of the <see cref="GetAllAsync"/> functionality if successful.
     /// </summary>
-    public async Task<ErrorOr<IEnumerable<ConsumableTransaction>>> GetAllAsync()
+    public async Task<ErrorOr<List<ConsumableTransaction>>> GetAllAsync()
     {
         try
         {
-            return (await _consumableTransactionRepository.GetAllAsync()).ToErrorOr();
+            return await _consumableTransactionRepository.GetAllAsync();
         }
         catch (Exception e)
         {
@@ -81,7 +81,7 @@ public class ConsumableTransactionService : IConsumableTransactionService
         {
             return Error.Failure(
                 "ConsumableTransaction.CreateAsync",
-                $"Failed to update amount of specific Conusmable with Id {consumableTransactionDto.ConsumableId} and failed to create ConsumableTransaction. Exception: {e.Message}"
+                $"Failed to update amount of specific Consumable with Id {consumableTransactionDto.ConsumableId} and failed to create ConsumableTransaction. Exception: {e.Message}"
             );
         }
     }
@@ -90,30 +90,32 @@ public class ConsumableTransactionService : IConsumableTransactionService
     {
         try
         {
-            if (purchase.CompletionDate is not null)
+            if (purchase.CompletionDate is null)
             {
-                var consumableEntries = purchase.Entries.Where(e => e.AssetItem is Consumable);
-                foreach (var conEntry in consumableEntries)
-                {
-                    CreateConsumableTransactionDto consumableTransaction =
-                        new CreateConsumableTransactionDto()
-                        {
-                            ConsumableId = conEntry.AssetItem.Id,
-                            //DateTime.Now is just a random value that is never set if purchase.completed is true
-                            Date = purchase.CompletionDate ?? DateTime.Now,
-                            AmountChange = -conEntry.Amount,
-                            TransactionReason = TransactionReasons.Purchase,
-                        };
-
-                    var created = await _consumableTransactionRepository.CreateAsync(consumableTransaction);
-                    if (created.IsError)
-                    {
-                        return created.Errors;
-                    }
-                }
-                return Result.Created;
+                return Error.Failure("Purchase not completed.");
             }
-            return Error.Failure("Purchase not completed.");
+
+            var consumableEntries = purchase.Entries.Where(e => e.AssetItem is Consumable);
+            foreach (var conEntry in consumableEntries)
+            {
+                CreateConsumableTransactionDto consumableTransaction =
+                    new()
+                    {
+                        ConsumableId = conEntry.AssetItem.Id,
+                        Date = purchase.CompletionDate.Value,
+                        AmountChange = -conEntry.Amount,
+                        TransactionReason = TransactionReasons.Purchase,
+                    };
+
+                var created = await _consumableTransactionRepository.CreateAsync(
+                    consumableTransaction
+                );
+                if (created.IsError)
+                {
+                    return created.Errors;
+                }
+            }
+            return Result.Created;
         }
         catch (Exception e)
         {
