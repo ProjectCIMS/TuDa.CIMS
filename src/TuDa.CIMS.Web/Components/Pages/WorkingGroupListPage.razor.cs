@@ -23,7 +23,7 @@ public partial class WorkingGroupListPage
             options
         );
         var result = await dialog.Result;
-        var professor = await dialog.GetReturnValueAsync<Professor>();
+        var professor = await dialog.GetReturnValueAsync<CreateProfessorDto>();
 
         if (result is { Canceled: false })
         {
