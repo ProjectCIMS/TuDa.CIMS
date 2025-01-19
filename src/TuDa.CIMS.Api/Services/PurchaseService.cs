@@ -9,7 +9,10 @@ public class PurchaseService : IPurchaseService
     private readonly IPurchaseRepository _purchaseRepository;
     private readonly IConsumableTransactionService _consumableTransactionService;
 
-    public PurchaseService(IPurchaseRepository purchaseRepository,IConsumableTransactionService consumableTransactionService )
+    public PurchaseService(
+        IPurchaseRepository purchaseRepository,
+        IConsumableTransactionService consumableTransactionService
+    )
     {
         _purchaseRepository = purchaseRepository;
         _consumableTransactionService = consumableTransactionService;
@@ -21,11 +24,11 @@ public class PurchaseService : IPurchaseService
     /// </summary>
     /// <param name="workingGroupId">the unique id of a workinggroup</param>
     /// <returns></returns>
-    public async Task<ErrorOr<IEnumerable<Purchase>>> GetAllAsync(Guid workingGroupId)
+    public async Task<ErrorOr<List<Purchase>>> GetAllAsync(Guid workingGroupId)
     {
         try
         {
-            return (await _purchaseRepository.GetAllAsync(workingGroupId)).ToErrorOr();
+            return await _purchaseRepository.GetAllAsync(workingGroupId);
         }
         catch (Exception ex)
         {
@@ -105,5 +108,4 @@ public class PurchaseService : IPurchaseService
             return Error.Failure("PurchaseService.CreateAsync", ex.Message);
         }
     }
-
 }
