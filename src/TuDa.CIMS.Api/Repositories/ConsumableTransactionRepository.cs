@@ -52,7 +52,7 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
 
         if (consumable.Amount + consumableTransactionDto.AmountChange < 0)
         {
-            return Error.Failure("Negative amount of consumable is not possible.");
+            return Error.Failure("Negative amount of consumable after a purchase is not possible.");
         }
 
         consumable.Amount += consumableTransactionDto.AmountChange;

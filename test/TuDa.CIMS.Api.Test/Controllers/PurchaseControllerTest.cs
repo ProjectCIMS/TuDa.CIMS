@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TuDa.CIMS.Api.Controllers;
@@ -152,6 +153,10 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
                 .ToList(),
         };
 
+        // Set Amount to amount purchased to ensure no error is returned
+        assetItem.Amount = entries.Aggregate(0, (i, entry) => i + entry.Amount);
+        await _dbContext.SaveChangesAsync();
+
         // Act
         var response = await _client.PostAsync(
             $"api/purchases/{workingGroup.Id}",
@@ -159,7 +164,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
         );
 
         // Assert
-        response.IsSuccessStatusCode.Should().BeTrue();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var result = await _dbContext
             .Purchases.Include(p => p.Entries)
