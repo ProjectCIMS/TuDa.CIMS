@@ -100,7 +100,15 @@ public class PurchaseService : IPurchaseService
             {
                 return purchase.Errors;
             }
-            await _consumableTransactionService.CreateForPurchaseAsync(purchase.Value);
+
+            var errorOrCreated = await _consumableTransactionService.CreateForPurchaseAsync(
+                purchase.Value
+            );
+            if (errorOrCreated.IsError)
+            {
+                return errorOrCreated.Errors;
+            }
+
             return purchase;
         }
         catch (Exception ex)

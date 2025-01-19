@@ -124,7 +124,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "There is a bug with already present AssetItems (GH#150)")]
+    [Fact]
     public async Task CreateAsync_ShouldCreatePurchase_WhenWorkingGroupPresent()
     {
         // Arrange
@@ -135,7 +135,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
         await _dbContext.AssetItems.AddAsync(assetItem);
         await _dbContext.SaveChangesAsync();
 
-        var completionDate = DateTime.Now;
+        var completionDate = DateTime.Now.ToUniversalTime();
         var entries = new PurchaseEntryFaker<Consumable>(assetItem).GenerateBetween(1, 10);
 
         var createPurchase = new CreatePurchaseDto
