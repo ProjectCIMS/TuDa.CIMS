@@ -9,17 +9,16 @@
 
   <ItemGroup>
     <PackageReference Include="Mapster" Version="7.4.0"/>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
-    <!-- We have to check if we are allowed to use this for free -->
-    <PackageReference Include="QuestPDF" Version="2024.10.3" />
-    <PackageReference Include="Scalar.AspNetCore" Version="1.2.64" />
-    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.2.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.2" />
+    <PackageReference Include="QuestPDF" Version="2024.12.2" />
+    <PackageReference Include="Scalar.AspNetCore" Version="1.2.76" />
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
