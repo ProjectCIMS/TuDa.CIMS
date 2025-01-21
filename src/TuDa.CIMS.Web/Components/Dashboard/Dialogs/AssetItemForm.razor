@@ -12,9 +12,9 @@
                   FullWidth/>
 
     <MudTextField @bind-Value="FormShop"
-                  Label="Shop"
+                  Label="Lieferant"
                   Error="@IsError"
-                  ErrorText="Der Shop muss eingegeben werden!"
+                  ErrorText="Der Lieferant muss eingegeben werden!"
                   Placeholder="Shop eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
@@ -43,8 +43,6 @@
 
     <MudTextField @bind-Value="FormRoomName"
                   Label="Raumname"
-                  Error="@IsError"
-                  ErrorText="Der Raumname muss eingegeben werden!"
                   Placeholder="Raumname eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
@@ -72,7 +70,7 @@
 
     [Parameter] public bool FormShowError { get; set; }
 
-    private bool IsError => FormShowError && (FormName == string.Empty || FormShop == string.Empty || FormItemNumber == string.Empty || FormPrice <= 0 || FormRoomName == string.Empty);
+    private bool IsError => FormShowError && (FormName == string.Empty || FormShop == string.Empty || FormItemNumber == string.Empty || FormPrice <= 0);
 
     [Parameter] public EventCallback OnReset { get; set; }
 
