@@ -1,3 +1,4 @@
+@using System.Globalization
 @using TuDa.CIMS.Shared.Entities
 @using TuDa.CIMS.Shared.Entities.Enums
 
@@ -23,6 +24,8 @@
 
     <MudNumericField @bind-Value="FormBindingSize"
                      Error="@IsError"
+                     Culture="@_de"
+                     T="double"
                      ErrorText="Die Größe des Gebindes muss größer als 0 betragen!"
                      Label="Größe des Gebindes"
                      Placeholder="Gebindengröße eingeben"
@@ -44,6 +47,8 @@
 
 @code
 {
+    public CultureInfo _de = CultureInfo.GetCultureInfo("de-DE");
+
     /// <summary>
     /// Input Fields
     /// </summary>

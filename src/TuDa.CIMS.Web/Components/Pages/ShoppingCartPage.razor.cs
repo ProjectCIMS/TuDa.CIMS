@@ -29,7 +29,7 @@ public partial class ShoppingCartPage
 
         if (result is { Canceled: false })
         {
-            int amount = (int)result.Data!;
+            double amount = (double)result.Data!;
             if (amount > 0)
             {
                 AddProductEntry(amount, product);
@@ -48,7 +48,6 @@ public partial class ShoppingCartPage
                 "WorkingGroups",
                 new List<WorkingGroup>()
                 {
-
                     new()
                     {
                         Professor = new Professor
@@ -67,7 +66,6 @@ public partial class ShoppingCartPage
                             Gender = Gender.Unknown,
                         },
                     },
-
                 }
             },
         };
@@ -83,7 +81,7 @@ public partial class ShoppingCartPage
         // if (await dialog.GetReturnValueAsync<WorkingGroup>() is not null){}
     }
 
-    private void AddProductEntry(int amount, AssetItem product)
+    private void AddProductEntry(double amount, AssetItem product)
     {
         Purchase.Entries.Add(
             new PurchaseEntry()

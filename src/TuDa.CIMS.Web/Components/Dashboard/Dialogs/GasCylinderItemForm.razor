@@ -1,4 +1,5 @@
-﻿@using TuDa.CIMS.Shared.Entities
+﻿@using System.Globalization
+@using TuDa.CIMS.Shared.Entities
 @using TuDa.CIMS.Shared.Entities.Enums
 @* Gas Cylinder Item Form *@
 
@@ -33,6 +34,8 @@
 
     <MudNumericField @bind-Value="FormVolume"
                      Label="Volume"
+                     Culture="@_de"
+                     T="double"
                      Error="@IsError"
                      ErrorText="Das Volumen muss größer als 0 betragen!"
                      Placeholder="Volumen eingeben"
@@ -41,6 +44,8 @@
 
     <MudNumericField @bind-Value="FormPressure"
                      Label="Pressure"
+                     Culture="@_de"
+                     T="double"
                      Error="@IsError"
                      ErrorText="Der Druck muss größer als 0 betragen!"
                      Placeholder="Druck eingeben"
@@ -50,6 +55,7 @@
 
 @code
 {
+    public CultureInfo _de = CultureInfo.GetCultureInfo("de-DE");
     /// <summary>
     /// Input Fields
     /// </summary>

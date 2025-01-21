@@ -101,11 +101,13 @@ public class ConsumableTransactionService : IConsumableTransactionService
                             ConsumableId = conEntry.AssetItem.Id,
                             //DateTime.Now is just a random value that is never set if purchase.completed is true
                             Date = purchase.CompletionDate ?? DateTime.Now,
-                            AmountChange = -conEntry.Amount,
+                            AmountChange = (int)-conEntry.Amount,
                             TransactionReason = TransactionReasons.Purchase,
                         };
 
-                    var created = await _consumableTransactionRepository.CreateAsync(consumableTransaction);
+                    var created = await _consumableTransactionRepository.CreateAsync(
+                        consumableTransaction
+                    );
                     if (created.IsError)
                     {
                         return created.Errors;
