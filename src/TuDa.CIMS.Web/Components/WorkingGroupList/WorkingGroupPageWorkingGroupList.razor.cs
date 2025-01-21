@@ -57,6 +57,11 @@ public partial class WorkingGroupPageWorkingGroupList
             );
     }
 
+    public async Task ReloadDataGridAsync()
+    {
+        await _dataGrid.ReloadServerData();
+    }
+
     private Task OnSearch(string query)
     {
         _searchString = query;

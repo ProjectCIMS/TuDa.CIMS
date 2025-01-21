@@ -15,6 +15,8 @@ public partial class WorkingGroupListPage
     [Inject]
     private IWorkingGroupApi _workingGroupApi { get; set; } = null!;
 
+    private WorkingGroupPageWorkingGroupList? _workingGroupList;
+
     private async Task OpenDialogAsync()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
@@ -32,6 +34,10 @@ public partial class WorkingGroupListPage
                 await _workingGroupApi.CreateAsync(
                     new CreateWorkingGroupDto { Professor = professor }
                 );
+                if (_workingGroupList != null)
+                {
+                     await _workingGroupList.ReloadDataGridAsync();
+                }
             }
         }
     }
