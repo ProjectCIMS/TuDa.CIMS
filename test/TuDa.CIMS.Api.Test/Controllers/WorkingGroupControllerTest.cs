@@ -173,9 +173,20 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
 
         var responseWorkingGroup = await response.Content.FromJsonAsync<WorkingGroup>();
 
-        workingGroup.Should().BeEquivalentTo(updatedWorkingGroup);
+        workingGroup
+            .Should()
+            .BeEquivalentTo(
+                updatedWorkingGroup,
+                options => options.Excluding(wg => wg.Professor.UpdatedAt)
+            );
 
-        workingGroup.Should().BeEquivalentTo(responseWorkingGroup);
+        workingGroup
+            .Should()
+            .BeEquivalentTo(
+                responseWorkingGroup,
+                options => options.Excluding(wg => wg.Professor.UpdatedAt)
+            );
+        responseWorkingGroup!.Professor.UpdatedAt.Should().NotBeNull();
     }
 
     [Fact]
