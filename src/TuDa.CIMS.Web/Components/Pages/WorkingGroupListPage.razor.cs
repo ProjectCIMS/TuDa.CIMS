@@ -9,13 +9,11 @@ namespace TuDa.CIMS.Web.Components.Pages;
 
 public partial class WorkingGroupListPage
 {
-    [Inject]
-    private IDialogService DialogService { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
 
-    [Inject]
-    private IWorkingGroupApi _workingGroupApi { get; set; } = null!;
+    [Inject] private IWorkingGroupApi _workingGroupApi { get; set; } = null!;
 
-    private WorkingGroupPageWorkingGroupList? _workingGroupList;
+    private WorkingGroupPageWorkingGroupList _workingGroupList = null!;
 
     private async Task OpenDialogAsync()
     {
@@ -34,10 +32,7 @@ public partial class WorkingGroupListPage
                 await _workingGroupApi.CreateAsync(
                     new CreateWorkingGroupDto { Professor = professor }
                 );
-                if (_workingGroupList != null)
-                {
-                     await _workingGroupList.ReloadDataGridAsync();
-                }
+                await _workingGroupList.ReloadDataGridAsync();
             }
         }
     }

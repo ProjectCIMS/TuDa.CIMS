@@ -18,8 +18,7 @@ public partial class WorkingGroupPageWorkingGroupList
 
     private string _searchString { get; set; } = string.Empty;
 
-    [Inject]
-    private NavigationManager _navigationManager { get; set; } = null!;
+    [Inject] private NavigationManager _navigationManager { get; set; } = null!;
 
     private void GoToWorkingGroupInfoPage(DataGridRowClickEventArgs<WorkingGroup> args)
     {
@@ -57,10 +56,7 @@ public partial class WorkingGroupPageWorkingGroupList
             );
     }
 
-    public async Task ReloadDataGridAsync()
-    {
-        await _dataGrid.ReloadServerData();
-    }
+    public Task ReloadDataGridAsync() => _dataGrid.ReloadServerData();
 
     private Task OnSearch(string query)
     {
