@@ -1,3 +1,4 @@
+@using System.Globalization
 @using TuDa.CIMS.Shared.Entities
 
 @* Generic AssetItemForm *@
@@ -34,6 +35,9 @@
                   FullWidth/>
 
     <MudNumericField @bind-Value="FormPrice"
+                     Format="N2"
+                     Culture="@_de"
+                     T="double"
                      Label="Preis"
                      Error="@PriceIsError"
                      ErrorText="Der Preis muss eingegeben werden!"
@@ -58,6 +62,8 @@
 
 @code
 {
+    public CultureInfo _de = CultureInfo.GetCultureInfo("de-DE");
+
     /// <summary>
     /// Input Fields
     /// </summary>

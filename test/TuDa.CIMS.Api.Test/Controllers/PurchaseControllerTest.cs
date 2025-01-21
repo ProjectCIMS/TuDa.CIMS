@@ -147,7 +147,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
                 .Select(entry => new CreatePurchaseEntryDto
                 {
                     AssetItemId = entry.AssetItem.Id,
-                    Amount = entry.Amount,
+                    Amount = (int)entry.Amount,
                     PricePerItem = entry.PricePerItem,
                 })
                 .ToList(),

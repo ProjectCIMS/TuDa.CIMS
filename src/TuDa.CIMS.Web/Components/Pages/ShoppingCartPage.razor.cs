@@ -38,7 +38,7 @@ public partial class ShoppingCartPage
 
         if (result is { Canceled: false })
         {
-            int amount = (int)result.Data!;
+            double amount = (double)result.Data!;
             if (amount > 0)
             {
                 AddProductEntry(amount, product);
@@ -100,7 +100,7 @@ public partial class ShoppingCartPage
         Purchase.Entries.Clear();
     }
 
-    private void AddProductEntry(int amount, AssetItem product)
+    private void AddProductEntry(double amount, AssetItem product)
     {
         Purchase.Entries.Add(
             new PurchaseEntry()
