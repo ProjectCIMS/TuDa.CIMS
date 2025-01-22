@@ -6,7 +6,7 @@ using TuDa.CIMS.Shared.Dtos;
 namespace TuDa.CIMS.Api.Controllers;
 
 [ApiController]
-[Route("api/purchases")]
+[Route("api/working-groups/{workingGroupId:guid}/purchases")]
 public class PurchaseController : CIMSBaseController
 {
     private readonly IPurchaseService _purchaseService;
@@ -21,7 +21,7 @@ public class PurchaseController : CIMSBaseController
     /// </summary>
     /// <param name="workingGroupId">the unique id of a workinggroup </param>
     /// <returns>a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
-    [HttpGet($"{{{nameof(workingGroupId)}:guid}}")]
+    [HttpGet]
     public async Task<IActionResult> GetAllAsync(Guid workingGroupId)
     {
         return (await _purchaseService.GetAllAsync(workingGroupId)).Match(
@@ -36,7 +36,7 @@ public class PurchaseController : CIMSBaseController
     /// <param name="id">the unique id of the purchase</param>
     /// <param name="workingGroupId">the unique id of a workinggroup </param>
     /// <returns>a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs  </returns>
-    [HttpGet($"{{{nameof(workingGroupId)}:guid}}/{{{nameof(id)}:guid}}")]
+    [HttpGet($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> GetOneAsync(Guid id, Guid workingGroupId)
     {
         return (await _purchaseService.GetOneAsync(id, workingGroupId)).Match(
@@ -52,7 +52,7 @@ public class PurchaseController : CIMSBaseController
     /// <param name="id">the unique id of the purchase</param>
     /// <param name="workingGroupId">the unique id of a workinggroup </param>
     /// <returns> a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
-    [HttpDelete($"{{{nameof(workingGroupId)}:guid}}/{{{nameof(id)}:guid}}")]
+    [HttpDelete($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> RemoveAsync(Guid id, Guid workingGroupId)
     {
         return (await _purchaseService.RemoveAsync(id, workingGroupId)).Match(
@@ -68,7 +68,7 @@ public class PurchaseController : CIMSBaseController
     /// <param name="createModel">the model containing the data for the new purchase</param>
     /// <param name="workingGroupId">the unique id of a workinggroup </param>
     /// <returns>a 200 OK response and the object if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
-    [HttpPost($"{{{nameof(workingGroupId)}:guid}}")]
+    [HttpPost]
     public async Task<IActionResult> CreateAsync(
         Guid workingGroupId,
         [FromBody] CreatePurchaseDto createModel

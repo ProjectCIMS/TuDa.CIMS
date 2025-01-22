@@ -119,7 +119,7 @@ public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
 
         // Act
         var response = await _client.PostAsync(
-            $"api/purchases/{WorkingGroupFaker.Id}/",
+            $"api/working-groups/{WorkingGroupFaker.Id}/purchases",
             JsonContent.Create(createPurchase)
         );
 
