@@ -175,9 +175,8 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
     [Fact]
     public async Task CreateAsync_ShouldReturnNotFound_WhenWorkingGroupNotPresent()
     {
-        var workingGroup = new WorkingGroupFaker().Generate();
         var response = await _client.PostAsync(
-            $"api/working-groups/{workingGroup.Id}/purchases/{Guid.NewGuid()}",
+            $"api/working-groups/{Guid.NewGuid()}/purchases",
             JsonContent.Create(new CreatePurchaseDto() { Buyer = Guid.NewGuid() })
         );
 
