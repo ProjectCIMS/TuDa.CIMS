@@ -2,7 +2,6 @@
 
 public enum MeasurementUnits
 {
-    Unitless,
     MilliLiter,
     Liter,
     Gram,
@@ -20,7 +19,6 @@ public static class MeasurementUnitsExtension
             MeasurementUnits.Piece => "Stück",
             MeasurementUnits.MilliLiter => "ml",
             MeasurementUnits.Gram => "g",
-            MeasurementUnits.Unitless => "",
             _ => $" {unit}",
         };
 }

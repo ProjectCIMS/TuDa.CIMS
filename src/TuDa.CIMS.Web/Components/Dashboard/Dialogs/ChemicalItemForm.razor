@@ -30,12 +30,12 @@
                ErrorText="Preiseinheit fehlt!"
                Variant="Variant.Filled"
                FullWidth>
-        <MudSelectItem Value="MeasurementUnits.Unitless">-</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.Gram">Gramm</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.KiloGram">Kilogramm</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.MilliLiter">Milliliter</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.Liter">Liter</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.Piece">Stück</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="null">-</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.Gram">Gramm</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.KiloGram">Kilogramm</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.MilliLiter">Milliliter</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.Liter">Liter</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.Piece">Stück</MudSelectItem>
     </MudSelect>
 </MudForm>
 
@@ -44,7 +44,7 @@
     /// <summary>
     /// Input Fields
     /// </summary>
-    public MeasurementUnits FormPriceUnit { get; private set; }
+    public MeasurementUnits? FormPriceUnit { get; private set; }
     public string FormCas { get; private set; } = string.Empty;
     public string FormPurity { get; private set; } = string.Empty;
     public double FormBindingSize { get; private set; }
@@ -52,7 +52,7 @@
 
     [Parameter] public bool FormShowError { get; set; }
 
-    private bool IsError => FormPriceUnit == MeasurementUnits.Unitless && FormShowError;
+    private bool IsError => FormPriceUnit == null  && FormShowError;
 
 
     public void SetForm(Chemical item)

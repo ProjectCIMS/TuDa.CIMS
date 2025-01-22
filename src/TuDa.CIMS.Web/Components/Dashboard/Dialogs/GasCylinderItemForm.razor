@@ -22,12 +22,12 @@
                Label="Preis Einheit wählen"
                Variant="Variant.Filled"
                FullWidth>
-        <MudSelectItem Value="MeasurementUnits.Unitless">-</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.Gram">Gramm</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.KiloGram">Kilogramm</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.MilliLiter">Milliliter</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.Liter">Liter</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.Piece">Stück</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="null">-</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.Gram">Gramm</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.KiloGram">Kilogramm</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.MilliLiter">Milliliter</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.Liter">Liter</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.Piece">Stück</MudSelectItem>
     </MudSelect>
 
     <MudNumericField @bind-Value="FormVolume"
@@ -50,13 +50,13 @@
     /// </summary>
     public double FormVolume { get; private set; }
     public double FormPressure { get; private set; }
-    public MeasurementUnits FormPriceUnit { get;  set; }
+    public MeasurementUnits? FormPriceUnit { get;  set; }
     public string FormCas { get;  set; } = string.Empty;
     public string FormPurity { get;  set; } = string.Empty;
 
     [Parameter] public bool FormShowError { get; set; }
 
-    private bool IsError => FormPriceUnit == MeasurementUnits.Unitless && FormShowError;
+    private bool IsError => FormPriceUnit == null && FormShowError;
 
     public void SetForm(GasCylinder item)
     {
