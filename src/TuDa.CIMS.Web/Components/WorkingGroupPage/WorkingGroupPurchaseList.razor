@@ -9,7 +9,7 @@
                 Property="@(p => p.CompletionDate)"
                 Title="Datum"/>
             <PropertyColumn
-                Property="@(p => p.TotalPrice)"
+                Property="@(p => Double.Round(p.TotalPrice, 2).ToString().Replace(",", ".") + " €")"
                 Title="Preis"/>
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
