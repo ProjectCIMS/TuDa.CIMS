@@ -22,9 +22,13 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     private IQueryable<WorkingGroup> WorkingGroupsFilledQuery =>
         _context
             .WorkingGroups.Include(workingGroup => workingGroup.Professor)
-            .ThenInclude(a => a.Address)
+            .ThenInclude(professor => professor.Address)
             .Include(workingGroup => workingGroup.Students)
-            .Include(workingGroup => workingGroup.Purchases);
+            .Include(workingGroup => workingGroup.Purchases)
+            .ThenInclude(purchase => purchase.Buyer)
+            .Include(workingGroup => workingGroup.Purchases)
+            .ThenInclude(purchase => purchase.Entries)
+            .ThenInclude(entry => entry.AssetItem);
 
     private IQueryable<WorkingGroup> WorkingGroupsEmptyQuery => _context.WorkingGroups;
 
@@ -33,7 +37,10 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// </summary>
     /// <param name="id">the specific id of the Working Group</param>
     public Task<WorkingGroup?> GetOneAsync(Guid id) =>
-        WorkingGroupsFilledQuery.SingleOrDefaultAsync(i => i.Id == id);
+        WorkingGroupsFilledQuery.SingleOrDefaultAsync(workingGroup => workingGroup.Id == id);
+
+    private Task<WorkingGroup?> GetOneEmptyAsync(Guid id) =>
+        WorkingGroupsEmptyQuery.SingleOrDefaultAsync(workingGroup => workingGroup.Id == id);
 
     /// <summary>
     /// Returns all existing Working Groups of the database.
@@ -78,7 +85,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// <returns>Returns that the Working Group was successfully deleted</returns>
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id)
     {
-        var itemToRemove = await WorkingGroupsEmptyQuery.SingleOrDefaultAsync();
+        var itemToRemove = await GetOneEmptyAsync(id);
 
         if (itemToRemove is null)
         {
@@ -101,23 +108,39 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// <returns>Returns an Error or the created Working Group</returns>
     public async Task<ErrorOr<WorkingGroup>> CreateAsync(CreateWorkingGroupDto createModel)
     {
-        // If the professor doesn't exist, create a new one
-        var professor = await _professorRepository.CreateAsync(createModel.Professor);
+        var strategy = _context.Database.CreateExecutionStrategy();
 
-        if (professor.IsError)
-            return professor.Errors;
-
-        // Create the WorkingGroup after ensuring all related entities exist
-        var workingGroup = new WorkingGroup
+        return await strategy.ExecuteAsync<ErrorOr<WorkingGroup>>(async () =>
         {
-            Professor = professor.Value,
-            PhoneNumber = createModel.PhoneNumber,
-            Email = createModel.Email,
-        };
+            await using var transaction = await _context.Database.BeginTransactionAsync();
 
-        _context.WorkingGroups.Add(workingGroup);
-        await _context.SaveChangesAsync();
-        return workingGroup;
+            // If the professor doesn't exist, create a new one
+            var professor = await _professorRepository.CreateAsync(createModel.Professor);
+
+            if (professor.IsError)
+                return professor.Errors;
+
+            // Create the WorkingGroup after ensuring all related entities exist
+            var workingGroup = new WorkingGroup
+            {
+                Professor = professor.Value,
+                PhoneNumber = createModel.PhoneNumber,
+                Email = createModel.Email,
+            };
+
+            try
+            {
+                _context.WorkingGroups.Add(workingGroup);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return workingGroup;
+            }
+            catch (Exception e)
+            {
+                return Error.Failure(e.GetType().Name, e.Message);
+            }
+        });
     }
 
     public async Task<List<WorkingGroup>> SearchAsync(string name)
