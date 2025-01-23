@@ -33,11 +33,4 @@ public class InvoiceRepository : IInvoiceRepository
             .ThenInclude(e => e.AssetItem)
             .Include(p => p.Buyer)
             .ToListAsync();
-
-    public Task<Professor?> GetProfessorOfWorkingGroup(Guid workingGroupId) =>
-        _context
-            .WorkingGroups.Where(wg => wg.Id == workingGroupId)
-            .Include(wg => wg.Professor.Address)
-            .Select(wg => wg.Professor)
-            .SingleOrDefaultAsync();
 }

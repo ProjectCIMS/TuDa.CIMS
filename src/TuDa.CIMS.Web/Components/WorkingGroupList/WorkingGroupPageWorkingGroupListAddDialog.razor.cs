@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupList;
@@ -42,7 +43,7 @@ public partial class WorkingGroupPageWorkingGroupListAddDialog
     {
         if (InputIsValid)
         {
-            Professor professor = new() { Name = ProfessorName };
+            CreateProfessorDto professor = new() { Name = ProfessorName };
             MudDialog.Close(DialogResult.Ok(professor));
         }
     }

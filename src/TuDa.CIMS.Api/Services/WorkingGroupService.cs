@@ -46,25 +46,25 @@ public class WorkingGroupService : IWorkingGroupService
     /// Return an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
     /// or the result of the <see cref="GetAllAsync"/> functionality if successful
     /// </summary>
-    public async Task<ErrorOr<IEnumerable<WorkingGroup>>> GetAllAsync(string? name)
+    public async Task<ErrorOr<List<WorkingGroup>>> GetAllAsync(string? name)
     {
         try
         {
             return name != null
-                ? (await _workingGroupRepository.SearchAsync(name)).ToErrorOr()
-                : (await _workingGroupRepository.GetAllAsync()).ToErrorOr();
+                ? await _workingGroupRepository.SearchAsync(name)
+                : await _workingGroupRepository.GetAllAsync();
         }
         catch (Exception e)
         {
-            return name != null ?
-                Error.Failure(
+            return name != null
+                ? Error.Failure(
                     "WorkingGroups.SearchAsync",
                     $"Failed to search Working Groups with name {name}. Exception: {e.Message}"
-                ) :
-                Error.Failure(
-                "WorkingGroups.GetAllAsync",
-                $"Failed to get all Working Groups. Exception: {e.Message}"
-            );
+                )
+                : Error.Failure(
+                    "WorkingGroups.GetAllAsync",
+                    $"Failed to get all Working Groups. Exception: {e.Message}"
+                );
         }
     }
 

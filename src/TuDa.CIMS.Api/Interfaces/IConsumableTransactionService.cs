@@ -5,8 +5,8 @@ namespace TuDa.CIMS.Api.Interfaces;
 
 public interface IConsumableTransactionService
 {
-    Task<ErrorOr<IEnumerable<ConsumableTransaction>>> GetAllAsync();
+    Task<ErrorOr<List<ConsumableTransaction>>> GetAllAsync();
     Task<ErrorOr<ConsumableTransaction>> GetOneAsync(Guid id);
-    Task<ErrorOr<Created>> CreateAsync(CreateConsumableTransactionDto ConsumableTransactionDto);
+    Task<ErrorOr<Created>> CreateAsync(CreateConsumableTransactionDto consumableTransactionDto);
     Task<ErrorOr<Created>> CreateForPurchaseAsync(Purchase purchase);
 }

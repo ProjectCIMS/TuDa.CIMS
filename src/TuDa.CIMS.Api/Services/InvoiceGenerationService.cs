@@ -10,10 +10,15 @@ namespace TuDa.CIMS.Api.Services;
 public class InvoiceGenerationService : IInvoiceGenerationService
 {
     private readonly IInvoiceRepository _invoiceRepository;
+    private readonly IWorkingGroupRepository _workingGroupRepository;
 
-    public InvoiceGenerationService(IInvoiceRepository invoiceRepository)
+    public InvoiceGenerationService(
+        IInvoiceRepository invoiceRepository,
+        IWorkingGroupRepository workingGroupRepository
+    )
     {
         _invoiceRepository = invoiceRepository;
+        _workingGroupRepository = workingGroupRepository;
     }
 
     public async Task<ErrorOr<Invoice>> CollectInvoiceForWorkingGroup(
@@ -27,7 +32,7 @@ public class InvoiceGenerationService : IInvoiceGenerationService
             beginDate ??= DateOnly.MinValue;
             endDate ??= DateOnly.MaxValue;
 
-            var professor = await _invoiceRepository.GetProfessorOfWorkingGroup(workingGroupId);
+            var professor = (await _workingGroupRepository.GetOneAsync(workingGroupId))?.Professor;
 
             if (professor is null)
                 return Error.NotFound(

@@ -6,14 +6,14 @@ namespace TuDa.CIMS.Api.Interfaces;
 
 public interface IAssetItemRepository
 {
-    Task<IEnumerable<AssetItem>> GetAllAsync();
+    Task<List<AssetItem>> GetAllAsync();
     Task<AssetItem?> GetOneAsync(Guid id);
     Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateAssetItemDto updateModel);
     Task<ErrorOr<Deleted>> RemoveAsync(Guid id);
     Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(
         AssetItemPaginationQueryParams queryParams
     );
-    Task<IEnumerable<AssetItem>> SearchAsync(string nameOrCas);
-    Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel);
 
+    Task<List<AssetItem>> SearchAsync(string nameOrCas);
+    Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel);
 }

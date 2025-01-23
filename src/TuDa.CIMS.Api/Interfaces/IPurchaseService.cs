@@ -5,9 +5,8 @@ namespace TuDa.CIMS.Api.Interfaces;
 
 public interface IPurchaseService
 {
-    Task<ErrorOr<IEnumerable<Purchase>>> GetAllAsync(Guid workingGroupId);
+    Task<ErrorOr<List<Purchase>>> GetAllAsync(Guid workingGroupId);
     Task<ErrorOr<Purchase>> GetOneAsync(Guid id, Guid workingGroupId);
-    Task<ErrorOr<Deleted>> RemoveAsync( Guid id, Guid workingGroupId);
+    Task<ErrorOr<Deleted>> RemoveAsync(Guid id, Guid workingGroupId);
     Task<ErrorOr<Purchase>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel);
-
 }

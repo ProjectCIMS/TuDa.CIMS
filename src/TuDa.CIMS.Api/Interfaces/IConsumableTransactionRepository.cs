@@ -5,7 +5,7 @@ namespace TuDa.CIMS.Api.Interfaces;
 
 public interface IConsumableTransactionRepository
 {
-    Task<IEnumerable<ConsumableTransaction>> GetAllAsync();
+    Task<List<ConsumableTransaction>> GetAllAsync();
     Task<ConsumableTransaction?> GetOneAsync(Guid id);
-    Task<ErrorOr<Created>> CreateAsync(CreateConsumableTransactionDto ConsumableTransactionDto);
+    Task<ErrorOr<Created>> CreateAsync(CreateConsumableTransactionDto consumableTransactionDto);
 }
