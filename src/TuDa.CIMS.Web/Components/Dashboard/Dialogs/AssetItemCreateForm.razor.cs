@@ -111,7 +111,7 @@ public partial class AssetItemCreateForm
     public EventCallback OnValidation { get; set; }
 
     /// <summary>
-    /// Functionality of the "Änderungen speichern" Button: Bind the Values to the actual Item
+    /// Functionality of the "Änderungen speichern" Button: Create the Item
     /// </summary>
     public async Task SaveChanges()
     {
