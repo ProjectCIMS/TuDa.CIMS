@@ -66,9 +66,16 @@ public class ProfessorRepository : IProfessorRepository
             },
         };
 
-        await _context.Professors.AddAsync(professor);
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.Professors.AddAsync(professor);
+            await _context.SaveChangesAsync();
 
-        return professor;
+            return professor;
+        }
+        catch (Exception e)
+        {
+            return Error.Failure(e.GetType().Name, e.Message);
+        }
     }
 }
