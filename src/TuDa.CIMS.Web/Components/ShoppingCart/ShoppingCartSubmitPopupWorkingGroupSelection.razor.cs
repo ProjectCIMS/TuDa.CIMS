@@ -20,6 +20,16 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
     [Parameter]
     public EventCallback<WorkingGroup> WorkingGroupChanged { get; set; }
 
+    private MudForm form = null!;
+
+    private string ValidateWorkingGroupSelection(WorkingGroup? value)
+    {
+        if (value == null)
+        {
+            return "Es muss eine Arbeitsgruppe ausgewählt werden.";
+        }
+        return "";
+    }
 
 
     /// Invoke to clear text

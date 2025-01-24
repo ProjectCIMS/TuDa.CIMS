@@ -7,7 +7,9 @@
                      ValueChanged="BuyerChanged"
                      SearchFunc="@Search"
                      ToStringFunc="@ToString"
-                     Disabled="@((WorkingGroup is null))">
+                     Disabled="@((WorkingGroup is null))"
+                     Validation="@(() => ValidateBuyerSelection)"
+                     Required="true">
 
         <ItemTemplate>
             <MudItem Class="d-flex align-items-center">

@@ -15,8 +15,10 @@
         ToStringFunc="@ToString"
         ValueChanged="WorkingGroupChanged"
         Variant="Variant.Filled"
-        Dense=true
-        ShowProgressIndicator="true">
+        Dense="true"
+        ShowProgressIndicator="true"
+        Validation="@(() => ValidateWorkingGroupSelection)"
+        Required="true">
 
         <ItemTemplate>
             <MudItem Class="d-flex align-items-center">
