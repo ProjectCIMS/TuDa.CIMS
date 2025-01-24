@@ -4,7 +4,9 @@
 <MudDataGrid @ref="_dataGrid"
              T="AssetItem"
              ServerData="ServerReload"
-             Filterable="false">
+             Filterable="true"
+             FilterMode="@DataGridFilterMode.ColumnFilterRow"
+             FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
     <ToolBarContent>
         <MudTextField T="string"
                       ValueChanged="@(s => OnSearch(s))"
