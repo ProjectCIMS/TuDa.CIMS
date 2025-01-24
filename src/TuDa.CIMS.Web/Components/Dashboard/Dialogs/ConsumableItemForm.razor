@@ -4,16 +4,12 @@
 <MudForm>
     <MudTextField @bind-Value="FormManufacturer"
                   Label=Hersteller
-                  Error="@IsError"
-                  ErrorText="Der Hersteller muss eingegeben werden!"
                   Placeholder="Hersteller eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
     <MudTextField @bind-Value="FormSerialNumber"
                   Label="Seriennummer"
-                  Error="@IsError"
-                  ErrorText="Die Seriennummern muss eingegeben werden!"
                   Placeholder="Seriennummer eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
@@ -38,7 +34,7 @@
 
     [Parameter] public bool FormShowError { get; set; }
 
-    private bool IsError => FormShowError && (FormConsumableAmount <= 0 || FormManufacturer == string.Empty || FormSerialNumber == string.Empty);
+    private bool IsError => FormShowError && FormConsumableAmount <= 0;
 
 
     public void SetForm(Consumable item)

@@ -5,23 +5,23 @@
 <MudForm>
     <MudTextField @bind-Value="FormName"
                   Label="Name"
-                  Error="@IsError"
+                  Error="@NameIsError"
                   ErrorText="Der Name muss eingegeben werden!"
                   Placeholder="Name eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
     <MudTextField @bind-Value="FormShop"
-                  Label="Shop"
-                  Error="@IsError"
-                  ErrorText="Der Shop muss eingegeben werden!"
+                  Label="Lieferant"
+                  Error="@ShopIsError"
+                  ErrorText="Der Lieferant muss eingegeben werden!"
                   Placeholder="Shop eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
     <MudTextField @bind-Value="FormItemNumber"
                   Label="Produktnummer"
-                  Error="@IsError"
+                  Error="@ItemNumberIsError"
                   ErrorText="Die Produktnummer muss eingegeben werden!"
                   Placeholder="Produktnummer eingeben"
                   Variant="Variant.Filled"
@@ -35,7 +35,7 @@
 
     <MudNumericField @bind-Value="FormPrice"
                      Label="Preis"
-                     Error="@IsError"
+                     Error="@PriceIsError"
                      ErrorText="Der Preis muss eingegeben werden!"
                      Placeholder="Preis eingeben"
                      Variant="Variant.Filled"
@@ -43,8 +43,6 @@
 
     <MudTextField @bind-Value="FormRoomName"
                   Label="Raumname"
-                  Error="@IsError"
-                  ErrorText="Der Raumname muss eingegeben werden!"
                   Placeholder="Raumname eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
@@ -72,7 +70,10 @@
 
     [Parameter] public bool FormShowError { get; set; }
 
-    private bool IsError => FormShowError && (FormName == string.Empty || FormShop == string.Empty || FormItemNumber == string.Empty || FormPrice <= 0 || FormRoomName == string.Empty);
+    private bool PriceIsError => FormShowError && FormPrice <= 0;
+    private bool NameIsError => FormShowError && FormName == string.Empty;
+    private bool ShopIsError => FormShowError && FormShop == string.Empty;
+    private bool ItemNumberIsError => FormShowError && FormItemNumber == string.Empty;
 
     [Parameter] public EventCallback OnReset { get; set; }
 
