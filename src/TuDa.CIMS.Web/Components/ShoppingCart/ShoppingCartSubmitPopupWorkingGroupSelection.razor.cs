@@ -12,6 +12,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
 
     private MudAutocomplete<WorkingGroup> _autocomplete = null!; // Is set by blazor component
 
+    private MudForm form;
 
 
     /// <summary>
@@ -20,7 +21,14 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
     [Parameter]
     public EventCallback<WorkingGroup> WorkingGroupChanged { get; set; }
 
+    [Parameter] public EventCallback<bool> OnValidationChanged { get; set; }
 
+    private async Task ValidateSelection()
+    {
+        await form.Validate();
+        bool isValid = form.IsValid;
+        await OnValidationChanged.InvokeAsync(isValid);
+    }
 
     /// Invoke to clear text
     private async Task WorkingGroupSelectedInternal(WorkingGroup item)
