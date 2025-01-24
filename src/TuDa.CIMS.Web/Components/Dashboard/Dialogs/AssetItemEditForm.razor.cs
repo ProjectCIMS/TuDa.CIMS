@@ -37,6 +37,11 @@ public partial class AssetItemEditForm
     [Parameter]
     public required AssetItem UpdateItem { get; set; }
 
+    public async Task DeleteItem()
+    {
+        await _assetItemApi.RemoveAsync(UpdateItem.Id);
+    }
+
     /// <summary>
     /// Resetting all Inputs on every Form
     /// </summary>

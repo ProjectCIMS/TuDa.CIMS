@@ -1,6 +1,6 @@
 ﻿@using TuDa.CIMS.Shared.Entities
 @using TuDa.CIMS.Shared.Entities.Enums
-<MudGrid>
+<MudGrid Style="width: 575px; height: 550px;">
     <MudItem xs="12" md="6">
         <AssetItemForm @ref="_assetItemForm"
                        FormShowError="@ShowError"
@@ -29,11 +29,5 @@
                     OnReset="@(_ => StateHasChanged())"/>
                 break;
         }
-    </MudItem>
-    <MudItem>
-        <MudButton OnClick="AssetItemEditFormLoad"
-                   Color="Color.Primary">
-            Zurücksetzen
-        </MudButton>
     </MudItem>
 </MudGrid>
