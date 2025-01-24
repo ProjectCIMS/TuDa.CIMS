@@ -13,7 +13,7 @@ public record CreatePurchaseEntryDto
     /// <summary>
     /// The amount of purchased items.
     /// </summary>
-    public required int Amount { get; set; }
+    public required double Amount { get; set; }
 
     /// <summary>
     /// The current item price when the purchase is done.
