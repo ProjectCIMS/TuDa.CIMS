@@ -37,7 +37,9 @@
         <PropertyColumn Property="@(x => x.Room.Name)"
                         Title="Raum"/>
         <PropertyColumn Property="@(x => GetPriceText(x))"
-                        Title="Preis"/>
+                        SortBy="@(x => x.Price)"
+                        Title="Preis">
+        </PropertyColumn>
         <TemplateColumn>
             <CellTemplate>
                 <MudIconButton Size="@Size.Medium"
