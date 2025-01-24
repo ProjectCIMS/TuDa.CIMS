@@ -1,4 +1,5 @@
-﻿<!-- The Dialog for Amount Input -->
+﻿@using System.Globalization
+<!-- The Dialog for Amount Input -->
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h5">
@@ -24,13 +25,24 @@
             </MudItem>
             <!-- Amount Input -->
             <MudItem xs="12">
-                <MudTextField @bind-Value="Amount"
-                              Error="@IsError"
-                              ErrorText="Die Menge muss größer als 0 betragen!"
-                              InputMode="@InputMode.numeric"
-                              InputType="@InputType.Number"
-                              Label="Menge"
-                              T="int"/>
+                @if (IsInt())
+                    {
+                <MudNumericField @bind-Value="AmountInt"
+                                 Error="@IsError"
+                                 ErrorText="Menge muss größer 0 betragen!"
+                                 Label="Menge"
+                                 T="int"
+                                 Culture="@_de"/>
+                }
+                else
+                {
+                <MudNumericField @bind-Value="Amount"
+                                 Error="@IsError"
+                                 ErrorText="Menge muss größer 0 betragen!"
+                                 Label="Menge"
+                                 T="double"
+                                 Culture="@_de"/>
+                }
             </MudItem>
         </MudGrid>
     </DialogContent>
@@ -47,4 +59,7 @@
     </DialogActions>
 </MudDialog>
 
-
+@code
+{
+    private readonly CultureInfo _de = CultureInfo.GetCultureInfo("de-DE");
+}

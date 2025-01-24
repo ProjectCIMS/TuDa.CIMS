@@ -133,9 +133,10 @@ public partial class AssetItemCreateForm
                 Price = _assetItemForm.FormPrice,
                 Purity = _chemicalItemForm.FormPurity,
                 PriceUnit = _chemicalItemForm.FormPriceUnit,
+                BindingSize = _chemicalItemForm.FormBindingSize,
                 RoomId = RoomId,
             },
-            
+
             AssetItemType.Consumable => new CreateConsumableDto
             {
                 Name = _assetItemForm.FormName,
@@ -157,11 +158,11 @@ public partial class AssetItemCreateForm
                 Note = _assetItemForm.FormNote,
                 Price = _assetItemForm.FormPrice,
                 RoomId = RoomId,
-                Cas = _chemicalItemForm.FormCas,
-                Purity = _chemicalItemForm.FormPurity,
+                Cas = _gasCylinderForm.FormCas,
+                Purity = _gasCylinderForm.FormPurity,
                 Volume = _gasCylinderForm.FormVolume,
                 Pressure = _gasCylinderForm.FormPressure,
-                PriceUnit = _chemicalItemForm.FormPriceUnit,
+                PriceUnit = _gasCylinderForm.FormPriceUnit,
             },
 
             AssetItemType.Solvent => new CreateSolventDto
@@ -174,6 +175,7 @@ public partial class AssetItemCreateForm
                 Price = _assetItemForm.FormPrice,
                 Purity = _chemicalItemForm.FormPurity,
                 PriceUnit = _chemicalItemForm.FormPriceUnit,
+                BindingSize = _chemicalItemForm.FormBindingSize,
                 RoomId = RoomId,
             },
 

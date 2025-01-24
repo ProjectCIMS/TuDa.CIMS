@@ -4,7 +4,6 @@ namespace TuDa.CIMS.Shared.Dtos;
 
 public class CreateConsumableTransactionDto
 {
-
     /// <summary>
     /// The consumable of this transaction.
     /// </summary>

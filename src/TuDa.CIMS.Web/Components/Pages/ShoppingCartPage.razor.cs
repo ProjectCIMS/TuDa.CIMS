@@ -38,7 +38,7 @@ public partial class ShoppingCartPage
 
         if (result is { Canceled: false })
         {
-            int amount = (int)result.Data!;
+            double amount = (double)result.Data!;
             if (amount > 0)
             {
                 AddProductEntry(amount, product);
@@ -50,6 +50,7 @@ public partial class ShoppingCartPage
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         var parameters = new DialogParameters { { "PurchaseEntries", Purchase.Entries } };
+
 
         var dialog = await DialogService.ShowAsync<ShoppingCartSubmitPopup>(
             "Einkauf Bestätigen",
@@ -100,7 +101,7 @@ public partial class ShoppingCartPage
         Purchase.Entries.Clear();
     }
 
-    private void AddProductEntry(int amount, AssetItem product)
+    private void AddProductEntry(double amount, AssetItem product)
     {
         Purchase.Entries.Add(
             new PurchaseEntry()
