@@ -37,6 +37,13 @@ public partial class AssetList
 
         var items = SortAssetItems(state, errorOrItems.Value).ToList();
 
+        foreach (var filterDefinition in state.FilterDefinitions)
+        {
+            var filterFunction = filterDefinition.GenerateFilterFunction();
+
+            items = items.Where(filterFunction).ToList();
+        }
+
         var pagedData = items.Skip(state.Page * state.PageSize).Take(state.PageSize).ToList();
 
         return new GridData<AssetItem> { TotalItems = items.Count, Items = pagedData };

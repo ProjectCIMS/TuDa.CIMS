@@ -1,4 +1,5 @@
 using MudBlazor.Services;
+using MudBlazor.Translations;
 using TuDa.CIMS.Shared.Extensions;
 using TuDa.CIMS.Web.Components;
 
@@ -11,6 +12,7 @@ builder.AddRefitClients();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddMudServices();
 builder.Services.AddServices();
+builder.Services.AddMudTranslations();
 
 var app = builder.Build();
 
