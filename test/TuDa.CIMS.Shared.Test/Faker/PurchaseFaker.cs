@@ -20,8 +20,7 @@ public class PurchaseFaker : BaseEntityFaker<Purchase>
             f =>
                 completed.Value
                     ? f.Date.RecentDateOnly(30).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)
-                : Random.Shared.Next(0, 2) == 0 ? null
-                : f.Date.RecentDateOnly(30).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)
+                :  null
         );
     }
 
