@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
 
@@ -15,6 +16,17 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
 
     [Parameter]
     public required Person Buyer { get; set; }
+
+    [Parameter] public EventCallback<bool> OnValidationChanged { get; set; }
+
+    private MudForm form;
+
+    private async Task ValidateSelection()
+    {
+        await form.Validate();
+        bool isValid = form.IsValid;
+        await OnValidationChanged.InvokeAsync(isValid);
+    }
 
     [Parameter]
     public required EventCallback<Person> BuyerChanged { get; set; }

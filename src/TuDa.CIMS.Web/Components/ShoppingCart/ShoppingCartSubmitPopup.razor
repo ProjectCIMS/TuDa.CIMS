@@ -7,15 +7,21 @@
     <DialogContent>
         <MudContainer>
             <MudGrid Justify="Justify.SpaceBetween">
-                <ShoppingCartSubmitPopupWorkingGroupSelection @bind-WorkingGroup="@WorkingGroup" />
-                <ShoppingCartSubmitPopupBuyerSelection @bind-Buyer ="@Buyer"
-                                                       WorkingGroup = "@WorkingGroup"/>
+                <ShoppingCartSubmitPopupWorkingGroupSelection @bind-WorkingGroup="@WorkingGroup"
+                                                              OnValidationChanged="HandleWorkingGroupValidationChanged"/>
+                <ShoppingCartSubmitPopupBuyerSelection @bind-Buyer="@Buyer"
+                                                       WorkingGroup="@WorkingGroup"
+                                                       OnValidationChanged="HandleBuyerValidationChanged"/>
                 <ShoppingCartSubmitPopupPurchaseList PurchaseListEntries="PurchaseEntries"/>
             </MudGrid>
+            @if (!isBuyerValid)
+            {
+                <MudText Color="Color.Error">@buyerValidationMessage</MudText>
+            }
         </MudContainer>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Abbrechen</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit" Disabled="@(!isFormValid)">Ok</MudButton>
     </DialogActions>
 </MudDialog>
