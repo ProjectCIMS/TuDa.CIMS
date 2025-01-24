@@ -35,34 +35,44 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
         await base.OnInitializedAsync();
     }
 
+    /// <summary>
+    /// Opens the dialog to edit the professor
+    /// </summary>
     public async Task OpenDialogAsync()
     {
-        var parameters = new DialogParameters
+        Dictionary<string, List<string>> field = new();
+
+        field.Add("Values", new List<string> { ProfessorName, ProfessorTitle  });
+        field.Add("DialogTitle", new List<string>{ "Professor bearbeiten" });
+        field.Add("Label", new List<string> { "Name", "Titel" });
+
+        var parameters = new DialogParameters<GenericInputPopUp>
         {
-            { nameof(WorkingGroupProfessorEditDialog.ProfessorName), ProfessorName },
+            { x => x.Field, field }
         };
 
-        var options = new DialogOptions() { CloseOnEscapeKey = true};
+        var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        var dialogReference =
-            await DialogService.ShowAsync<WorkingGroupProfessorEditDialog>("Edit Professor", parameters, options);
-
+        var dialogReference = await DialogService.ShowAsync<GenericInputPopUp>("Edit Professor", parameters, options);
 
         var result = await dialogReference.Result;
         var currentWorkingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
 
-        if(!result!.Canceled)
+        if (!result!.Canceled)
         {
-            ProfessorName = result.Data!.ToString()!;
+            var returnedValues = (Dictionary<string, List<string>>) result.Data!;
+            var valuesList = returnedValues["Values"];
+            var name = valuesList[0];
+            var title = valuesList[1];
 
             await workingGroupApi.UpdateAsync(WorkingGroupId,
-                new UpdateWorkingGroupDto()
+                new UpdateWorkingGroupDto
                 {
                     PhoneNumber = "",
-                    Professor = currentWorkingGroup.Value.Professor with {Name = ProfessorName}
+                    Professor = currentWorkingGroup.Value.Professor with { Name = name, Title = title}
                 });
+
             StateHasChanged();
         }
-
     }
 }
