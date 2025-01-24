@@ -26,7 +26,7 @@ public class InvoiceRepository : IInvoiceRepository
             .Include(wg => wg.Purchases)
             .SelectMany(wg => wg.Purchases)
             .Where(p =>
-                (p.Completed && p.CompletionDate != null)
+                (p.CompletionDate != null)
                 && (p.CompletionDate.Value >= beginDate && p.CompletionDate.Value <= endDate)
             )
             .Include(p => p.Entries)
