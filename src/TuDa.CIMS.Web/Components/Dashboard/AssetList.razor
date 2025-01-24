@@ -36,13 +36,10 @@
         <PropertyColumn Property="@(x => x.Shop)"/>
         <PropertyColumn Property="@(x => x.Room.Name)"
                         Title="Raum"/>
-        <PropertyColumn Property="@(x => x.Price)"
+        <PropertyColumn Property="@(x => GetPriceText(x))"
+                        SortBy="@(x => x.Price)"
                         Title="Preis">
-                <CellTemplate>
-                    @GetPriceText(context.Item)
-                </CellTemplate>
         </PropertyColumn>
-
         <TemplateColumn>
             <CellTemplate>
                 <MudIconButton Size="@Size.Medium"
