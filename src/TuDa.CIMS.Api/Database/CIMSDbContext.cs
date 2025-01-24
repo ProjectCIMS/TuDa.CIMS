@@ -38,13 +38,15 @@ public class CIMSDbContext : DbContext
     public DbSet<ConsumableTransaction> ConsumableTransactions { get; set; }
 
     public CIMSDbContext(DbContextOptions<CIMSDbContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Purchase>().HasMany(p => p.Entries).WithOne().OnDelete(DeleteBehavior.Cascade);
+        modelBuilder
+            .Entity<Purchase>()
+            .HasMany(p => p.Entries)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder
             .Entity<WorkingGroup>()
@@ -83,5 +85,29 @@ public class CIMSDbContext : DbContext
                     j.HasKey("SubstanceId", "HazardId"); // Composite primary key
                 }
             );
+    }
+
+    public override int SaveChanges()
+    {
+        SetUpdatedAtTimestamps();
+        return base.SaveChanges();
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        SetUpdatedAtTimestamps();
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void SetUpdatedAtTimestamps()
+    {
+        var entries = ChangeTracker
+            .Entries<BaseEntity>()
+            .Where(e => e.State == EntityState.Modified);
+
+        foreach (var entry in entries)
+        {
+            entry.Entity.UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

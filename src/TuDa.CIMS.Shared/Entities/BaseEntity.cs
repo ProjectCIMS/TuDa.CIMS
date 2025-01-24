@@ -12,4 +12,6 @@ public abstract record BaseEntity
     /// </remarks>
     [Key]
     public Guid Id { get; init; } = Guid.Empty;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
 }
