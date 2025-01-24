@@ -118,7 +118,6 @@ public class PurchaseRepository : IPurchaseRepository
             Buyer = buyer,
             Signature = createModel.Signature,
             CompletionDate = createModel.CompletionDate,
-            Completed = true,
             Entries =
                 createModel
                     .Entries?.Select(e => new PurchaseEntry

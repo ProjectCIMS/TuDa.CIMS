@@ -167,7 +167,6 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
             .Include(p => p.Buyer)
             .SingleAsync();
         result.Buyer.Should().BeEquivalentTo(workingGroup.Professor);
-        result.Completed.Should().BeTrue();
         result.CompletionDate.Should().Be(completionDate);
         result.Entries.Should().BeEquivalentTo(entries, options => options.Excluding(e => e.Id));
     }
