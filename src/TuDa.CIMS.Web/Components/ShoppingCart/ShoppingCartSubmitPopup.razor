@@ -8,7 +8,7 @@
         <MudContainer>
             <MudGrid Justify="Justify.SpaceBetween">
                 <ShoppingCartSubmitPopupWorkingGroupSelection @bind-WorkingGroup="@WorkingGroup" />
-                <ShoppingCartSubmitPopupBuyerSelection Buyer ="@Buyer"
+                <ShoppingCartSubmitPopupBuyerSelection @bind-Buyer ="@Buyer"
                                                        WorkingGroup = "@WorkingGroup"/>
                 <ShoppingCartSubmitPopupPurchaseList PurchaseListEntries="PurchaseEntries"/>
             </MudGrid>

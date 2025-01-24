@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Web.Helper;
 
 namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
@@ -13,13 +14,6 @@ public partial class ShoppingCartSubmitPopup
     public required List<PurchaseEntry> PurchaseEntries { get; set; }
 
     /// <summary>
-    /// List of available WorkingGroups.
-    /// TODO: Replace with WorkingGroupApi and move to WorkingGroupSelection.
-    /// </summary>
-    [Parameter]
-    public required List<WorkingGroup> WorkingGroups { get; set; }
-
-    /// <summary>
     /// CascadingParamter MudDialag.
     /// </summary>
     [CascadingParameter]
@@ -28,7 +22,7 @@ public partial class ShoppingCartSubmitPopup
     /// <summary>
     /// The selected working group.
     /// </summary>
-    public WorkingGroup? WorkingGroup { get; set; } = null;
+    public WorkingGroup? WorkingGroup { get; set; }
 
     /// <summary>
     /// The selected buyer.
@@ -43,5 +37,6 @@ public partial class ShoppingCartSubmitPopup
     /// <summary>
     /// Closes the MudDialog.
     /// </summary>
-    private void Submit() => MudDialog.Close(DialogResult.Ok(WorkingGroup));
+    private void Submit() =>
+        MudDialog.Close(DialogResult.Ok(new WorkingGroupWithBuyer(WorkingGroup!.Id, Buyer.Id)));
 }

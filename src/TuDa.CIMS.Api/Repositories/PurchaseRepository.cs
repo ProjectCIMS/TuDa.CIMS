@@ -81,8 +81,10 @@ public class PurchaseRepository : IPurchaseRepository
     /// <param name="workingGroupId">the specific ID of a workinggroup</param>
     /// <param name="createModel">the model containing the updated values for the purchase</param>
     /// <returns></returns>
-    public async Task<ErrorOr<Purchase>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel)
-
+    public async Task<ErrorOr<Purchase>> CreateAsync(
+        Guid workingGroupId,
+        CreatePurchaseDto createModel
+    )
     {
         var workingGroup = await _context
             .WorkingGroups.Include(i => i.Purchases)
@@ -106,24 +108,28 @@ public class PurchaseRepository : IPurchaseRepository
             );
         }
 
-
         var assetItemIds = createModel.Entries.Select(e => e.AssetItemId).Distinct().ToList();
-        var assetItems = await _context.AssetItems
-            .Where(ai => assetItemIds.Contains(ai.Id))
+        var assetItems = await _context
+            .AssetItems.Where(ai => assetItemIds.Contains(ai.Id))
             .ToDictionaryAsync(ai => ai.Id);
 
         var newPurchase = new Purchase
         {
             Buyer = buyer,
             Signature = createModel.Signature,
-            CompletionDate = createModel.CompletionDate,     
-            Entries = createModel.Entries?.Select(e => new PurchaseEntry
-            {
-                AssetItem = assetItems.TryGetValue(e.AssetItemId, out var assetItem)
-                    ? assetItem
-                    : throw new Exception($"AssetItem with ID {e.AssetItemId} not found.")
-                , Amount = e.Amount, PricePerItem = e.PricePerItem
-            }).ToList() ?? []
+            CompletionDate = createModel.CompletionDate,
+            Completed = true,
+            Entries =
+                createModel
+                    .Entries?.Select(e => new PurchaseEntry
+                    {
+                        AssetItem = assetItems.TryGetValue(e.AssetItemId, out var assetItem)
+                            ? assetItem
+                            : throw new Exception($"AssetItem with ID {e.AssetItemId} not found."),
+                        Amount = e.Amount,
+                        PricePerItem = e.PricePerItem,
+                    })
+                    .ToList() ?? [],
         };
 
         workingGroup.Purchases.Add(newPurchase);
