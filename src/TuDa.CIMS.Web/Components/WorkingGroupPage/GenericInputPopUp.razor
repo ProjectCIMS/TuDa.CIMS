@@ -1,16 +1,17 @@
-﻿
-<MudDialog>
-    <TitleContent>
-        @Field["DialogTitle"][0]
-    </TitleContent>
+﻿<MudDialog>
     <DialogContent>
-        @for(int i = 0; i < Field["Values"].Count; i++)
-        {
-            <MudTextField T="string" @bind-Value="@Field["Values"][i]" Label="@Field["Label"][i]" Required="true" />
-        }
+        <MudForm>
+            @for (int i = 0; i < _values.Count; i++)
+            {
+                int index = i;
+                <MudTextField
+                    @bind-Value="_values[index]"
+                    Label="@_labels[index]"/>
+            }
+        </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel" Color="Color.Error">Abbrechen</MudButton>
-        <MudButton OnClick="Save" Color="Color.Success">Speichern</MudButton>
+        <MudButton OnClick="Submit" Color="Color.Success">Speichern</MudButton>
     </DialogActions>
 </MudDialog>

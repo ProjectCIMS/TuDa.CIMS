@@ -3,25 +3,38 @@ using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace TuDa.CIMS.Web.Components.WorkingGroupPage
-{
+namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
     public partial class GenericInputPopUp : ComponentBase
     {
-        [Parameter]
-        public Dictionary<string, List<string>> Field { get; set; } = new();
 
         [CascadingParameter] public required MudDialogInstance MudDialog { get; set; }
 
-        public void Save()
+        [Parameter] public Dictionary<string, object> Field { get; set; }
+
+        private List<string> _labels = new();
+        private List<string> _values = new();
+
+        protected override void OnInitialized()
         {
-            // Saves the input of the fields
-            MudDialog.Close(DialogResult.Ok(Field));
+            if (Field.TryGetValue("Label", out var labelObj) && labelObj is List<string> labels)
+            {
+                _labels = labels;
+            }
+
+            if (Field.TryGetValue("Values", out var valuesObj) && valuesObj is List<string> values)
+            {
+                _values = values.ToList();
+            }
         }
 
-        public void Cancel()
+        private void Submit()
         {
-            // Cancel the dialog
-            MudDialog.Cancel();
+            var resultDict = new Dictionary<string, List<string>>
+            {
+                { "Values", _values }
+            };
+            MudDialog.Close(DialogResult.Ok(resultDict));
         }
+
+        private void Cancel() => MudDialog.Cancel();
     }
-}
