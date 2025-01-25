@@ -75,6 +75,7 @@ public class StudentRepository : IStudentRepository
         {
             Name = createStudentDto?.Name ?? string.Empty,
             FirstName = createStudentDto?.FirstName ?? string.Empty,
+            PhoneNumber = createStudentDto?.PhoneNumber ?? string.Empty
         };
         _context.Students.Add(newStudent);
 
@@ -120,11 +121,13 @@ public class StudentRepository : IStudentRepository
             {
                 student.Name = updatedStudentDto.Name;
                 student.FirstName = updatedStudentDto.FirstName;
+                student.PhoneNumber = updatedStudentDto.PhoneNumber;
             }
         }
 
         existingStudent.Name = updatedStudentDto.Name;
         existingStudent.FirstName = updatedStudentDto.FirstName;
+        existingStudent.PhoneNumber = updatedStudentDto.PhoneNumber;
         await _context.SaveChangesAsync();
         return Result.Updated;
     }

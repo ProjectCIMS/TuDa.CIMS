@@ -11,4 +11,9 @@ public class CreateStudentDto
     /// The first name of the person.
     /// </summary>
     public string FirstName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The phone number of the person.
+    /// </summary>
+    public string PhoneNumber { get; set; } = string.Empty;
 }

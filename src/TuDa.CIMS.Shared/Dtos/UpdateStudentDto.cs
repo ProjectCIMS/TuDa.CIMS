@@ -11,4 +11,9 @@ public record UpdateStudentDto
     /// The first name of the person.
     /// </summary>
     public string? FirstName { get; set; }
+
+    /// <summary>
+    /// The phone number of the person.
+    /// </summary>
+    public string PhoneNumber { get; set; } = string.Empty;
 }
