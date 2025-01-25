@@ -4,7 +4,8 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
-public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi workingGroupApi) : ComponentBase
+public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi workingGroupApi)
+    : ComponentBase
 {
     /// <summary>
     /// CascadingParameter for working group.
@@ -15,16 +16,24 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
     [Parameter]
     public required Person Buyer { get; set; }
 
+    [Parameter]
+    public required EventCallback<Person> BuyerChanged { get; set; }
 
     private async Task FindWorkingGroup()
     {
-        WorkingGroup = (await workingGroupApi.GetAsync(WorkingGroup!.Id)).Match(value => value, _ => null);
+        WorkingGroup = (await workingGroupApi.GetAsync(WorkingGroup!.Id)).Match(
+            value => value,
+            _ => null
+        );
     }
 
     /// <summary>
     /// Search for the selection of the student.
     /// </summary>
-    private async Task<IEnumerable<Person>> Search(string searchText, CancellationToken cancellationToken)
+    private async Task<IEnumerable<Person>> Search(
+        string searchText,
+        CancellationToken cancellationToken
+    )
     {
         await FindWorkingGroup();
         if (WorkingGroup == null)
@@ -56,4 +65,3 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
             _ => $"{buyer.Name} {buyer.FirstName}",
         };
 }
-
