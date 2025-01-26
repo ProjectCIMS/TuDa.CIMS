@@ -10,16 +10,20 @@ namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
 public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : ComponentBase
 {
-    [Parameter] public required Professor Professor { get; set; }
+    [Parameter]
+    public required Professor Professor { get; set; }
 
-    [Parameter] public string ProfessorName { get; set; } = String.Empty;
+    [Parameter]
+    public string ProfessorName { get; set; } = String.Empty;
 
-    [Parameter] public string ProfessorTitle { get; set; } = String.Empty;
+    [Parameter]
+    public string ProfessorTitle { get; set; } = String.Empty;
 
-    [Parameter] public Guid WorkingGroupId { get; set; }
+    [Parameter]
+    public Guid WorkingGroupId { get; set; }
 
-    [Inject] private IDialogService DialogService { get; set; } = null!;
-
+    [Inject]
+    private IDialogService DialogService { get; set; } = null!;
 
     /// <summary>
     /// Sets the ProfessorName and Professor properties
@@ -31,7 +35,6 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
         ProfessorTitle = workingGroup.Value.Professor.Title;
         Professor = workingGroup.Value.Professor;
 
-
         await base.OnInitializedAsync();
     }
 
@@ -42,27 +45,29 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
             { nameof(WorkingGroupProfessorEditDialog.ProfessorName), ProfessorName },
         };
 
-        var options = new DialogOptions() { CloseOnEscapeKey = true};
+        var options = new DialogOptions() { CloseOnEscapeKey = true };
 
-        var dialogReference =
-            await DialogService.ShowAsync<WorkingGroupProfessorEditDialog>("Edit Professor", parameters, options);
-
+        var dialogReference = await DialogService.ShowAsync<WorkingGroupProfessorEditDialog>(
+            "Edit Professor",
+            parameters,
+            options
+        );
 
         var result = await dialogReference.Result;
-        var currentWorkingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
 
-        if(!result!.Canceled)
+        if (!result!.Canceled)
         {
             ProfessorName = result.Data!.ToString()!;
 
-            await workingGroupApi.UpdateAsync(WorkingGroupId,
+            await workingGroupApi.UpdateAsync(
+                WorkingGroupId,
                 new UpdateWorkingGroupDto()
                 {
                     PhoneNumber = "",
-                    Professor = currentWorkingGroup.Value.Professor with {Name = ProfessorName}
-                });
+                    Professor = new() { Name = ProfessorName },
+                }
+            );
             StateHasChanged();
         }
-
     }
 }

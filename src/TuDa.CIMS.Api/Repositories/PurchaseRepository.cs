@@ -10,27 +10,38 @@ namespace TuDa.CIMS.Api.Repositories;
 public class PurchaseRepository : IPurchaseRepository
 {
     private readonly CIMSDbContext _context;
+    private readonly IWorkingGroupRepository _workingGroupRepository;
+    private readonly IPurchaseEntryRepository _purchaseEntryRepository;
 
-    public PurchaseRepository(CIMSDbContext context)
+    public PurchaseRepository(
+        CIMSDbContext context,
+        IWorkingGroupRepository workingGroupRepository,
+        IPurchaseEntryRepository purchaseEntryRepository
+    )
     {
         _context = context;
+        _workingGroupRepository = workingGroupRepository;
+        _purchaseEntryRepository = purchaseEntryRepository;
     }
+
+    private IQueryable<Purchase> PurchaseFilledQuery(Guid workingGroupId) =>
+        _context
+            .WorkingGroups.Where(i => i.Id == workingGroupId)
+            .SelectMany(i => i.Purchases)
+            .Include(i => i.Buyer)
+            .Include(i => i.Entries)
+            .ThenInclude(i => i.AssetItem);
+
+    private IQueryable<Purchase> PurchaseEmptyQuery(Guid workingGroupId) =>
+        _context.WorkingGroups.Where(i => i.Id == workingGroupId).SelectMany(i => i.Purchases);
 
     /// <summary>
     /// Returns all purchases from the database.
     /// </summary>
     /// <param name="workingGroupId">the specific ID of the workinggroup</param>
     /// <returns></returns>
-    public async Task<IEnumerable<Purchase>> GetAllAsync(Guid workingGroupId)
-    {
-        return await _context
-            .WorkingGroups.Where(i => i.Id == workingGroupId)
-            .SelectMany(i => i.Purchases)
-            .Include(i => i.Buyer)
-            .Include(i => i.Entries)
-            .ThenInclude(i => i.AssetItem)
-            .ToListAsync();
-    }
+    public Task<List<Purchase>> GetAllAsync(Guid workingGroupId) =>
+        PurchaseFilledQuery(workingGroupId).ToListAsync();
 
     /// <summary>
     /// Returns a single purchase by its specific ID.
@@ -38,17 +49,8 @@ public class PurchaseRepository : IPurchaseRepository
     /// <param name="id">the specific ID for the purchase</param>
     /// <param name="workingGroupId">the specific id of a workinggroup</param>
     /// <returns></returns>
-    public async Task<Purchase?> GetOneAsync(Guid id, Guid workingGroupId)
-    {
-        return await _context
-            .WorkingGroups.Where(i => i.Id == workingGroupId)
-            .SelectMany(i => i.Purchases)
-            .Where(i => i.Id == id)
-            .Include(i => i.Buyer)
-            .Include(i => i.Entries)
-            .ThenInclude(i => i.AssetItem)
-            .SingleOrDefaultAsync();
-    }
+    public Task<Purchase?> GetOneAsync(Guid id, Guid workingGroupId) =>
+        PurchaseFilledQuery(workingGroupId).Where(p => p.Id == id).SingleOrDefaultAsync();
 
     /// <summary>
     /// Removes a purchase with the specific ID from the database.
@@ -58,11 +60,7 @@ public class PurchaseRepository : IPurchaseRepository
     /// <returns></returns>
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id, Guid workingGroupId)
     {
-        var itemToRemove = await _context
-            .WorkingGroups.Where(i => i.Id == workingGroupId)
-            .SelectMany(i => i.Purchases)
-            .Where(i => i.Id == id)
-            .SingleOrDefaultAsync();
+        var itemToRemove = await GetOneAsync(id, workingGroupId);
 
         if (itemToRemove is null)
         {
@@ -86,9 +84,7 @@ public class PurchaseRepository : IPurchaseRepository
         CreatePurchaseDto createModel
     )
     {
-        var workingGroup = await _context
-            .WorkingGroups.Include(i => i.Purchases)
-            .SingleOrDefaultAsync(r => r.Id == workingGroupId);
+        var workingGroup = await _workingGroupRepository.GetOneAsync(workingGroupId);
 
         if (workingGroup is null)
         {
@@ -108,10 +104,12 @@ public class PurchaseRepository : IPurchaseRepository
             );
         }
 
-        var assetItemIds = createModel.Entries.Select(e => e.AssetItemId).Distinct().ToList();
-        var assetItems = await _context
-            .AssetItems.Where(ai => assetItemIds.Contains(ai.Id))
-            .ToDictionaryAsync(ai => ai.Id);
+        var purchaseEntries = await _purchaseEntryRepository.CreateMultipleAsync(
+            createModel.Entries
+        );
+
+        if (purchaseEntries.IsError)
+            return purchaseEntries.Errors;
 
         var newPurchase = new Purchase
         {
@@ -119,17 +117,7 @@ public class PurchaseRepository : IPurchaseRepository
             Signature = createModel.Signature,
             CompletionDate = createModel.CompletionDate,
             Completed = true,
-            Entries =
-                createModel
-                    .Entries?.Select(e => new PurchaseEntry
-                    {
-                        AssetItem = assetItems.TryGetValue(e.AssetItemId, out var assetItem)
-                            ? assetItem
-                            : throw new Exception($"AssetItem with ID {e.AssetItemId} not found."),
-                        Amount = e.Amount,
-                        PricePerItem = e.PricePerItem,
-                    })
-                    .ToList() ?? [],
+            Entries = purchaseEntries.Value,
         };
 
         workingGroup.Purchases.Add(newPurchase);

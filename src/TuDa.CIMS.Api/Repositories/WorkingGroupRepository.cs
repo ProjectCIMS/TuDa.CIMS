@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
@@ -12,39 +11,41 @@ namespace TuDa.CIMS.Api.Repositories;
 public class WorkingGroupRepository : IWorkingGroupRepository
 {
     private readonly CIMSDbContext _context;
+    private readonly IProfessorRepository _professorRepository;
 
-    public WorkingGroupRepository(CIMSDbContext context)
+    public WorkingGroupRepository(CIMSDbContext context, IProfessorRepository professorRepository)
     {
         _context = context;
+        _professorRepository = professorRepository;
     }
+
+    private IQueryable<WorkingGroup> WorkingGroupsFilledQuery =>
+        _context
+            .WorkingGroups.Include(workingGroup => workingGroup.Professor)
+            .ThenInclude(professor => professor.Address)
+            .Include(workingGroup => workingGroup.Students)
+            .Include(workingGroup => workingGroup.Purchases)
+            .ThenInclude(purchase => purchase.Buyer)
+            .Include(workingGroup => workingGroup.Purchases)
+            .ThenInclude(purchase => purchase.Entries)
+            .ThenInclude(entry => entry.AssetItem);
+
+    private IQueryable<WorkingGroup> WorkingGroupsEmptyQuery => _context.WorkingGroups;
 
     /// <summary>
     /// Returns an existing Working Group with the specific id.
     /// </summary>
     /// <param name="id">the specific id of the Working Group</param>
-    public async Task<WorkingGroup?> GetOneAsync(Guid id)
-    {
-        return await _context
-            .WorkingGroups.Where(i => i.Id == id)
-            .Include(workingGroup => workingGroup.Professor)
-            .ThenInclude(a => a.Address)
-            .Include(workingGroup => workingGroup.Students)
-            .Include(workingGroup => workingGroup.Purchases)
-            .SingleOrDefaultAsync();
-    }
+    public Task<WorkingGroup?> GetOneAsync(Guid id) =>
+        WorkingGroupsFilledQuery.SingleOrDefaultAsync(workingGroup => workingGroup.Id == id);
+
+    private Task<WorkingGroup?> GetOneEmptyAsync(Guid id) =>
+        WorkingGroupsEmptyQuery.SingleOrDefaultAsync(workingGroup => workingGroup.Id == id);
 
     /// <summary>
     /// Returns all existing Working Groups of the database.
     /// </summary>
-    public async Task<IEnumerable<WorkingGroup>> GetAllAsync()
-    {
-        return await _context
-            .WorkingGroups.Include(workingGroup => workingGroup.Professor)
-            .ThenInclude(a => a.Address)
-            .Include(workingGroup => workingGroup.Students)
-            .Include(workingGroup => workingGroup.Purchases)
-            .ToListAsync();
-    }
+    public Task<List<WorkingGroup>> GetAllAsync() => WorkingGroupsFilledQuery.ToListAsync();
 
     /// <summary>
     /// Updates an existing Working Group with the specified id using the provided update model.
@@ -54,13 +55,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// <returns>Returns an Error or the updated Working Group</returns>
     public async Task<ErrorOr<WorkingGroup>> UpdateAsync(Guid id, UpdateWorkingGroupDto updateModel)
     {
-        var existingItem = await _context
-            .WorkingGroups.Where(i => i.Id == id)
-            .Include(workingGroup => workingGroup.Professor)
-            .ThenInclude(a => a.Address)
-            .Include(workingGroup => workingGroup.Students)
-            .Include(workingGroup => workingGroup.Purchases)
-            .SingleOrDefaultAsync();
+        var existingItem = await GetOneAsync(id);
 
         if (existingItem is null)
         {
@@ -72,15 +67,12 @@ public class WorkingGroupRepository : IWorkingGroupRepository
 
         existingItem.Email = updateModel.Email ?? existingItem.Email;
         existingItem.PhoneNumber = updateModel.PhoneNumber ?? existingItem.PhoneNumber;
-        existingItem.Professor.Name = updateModel.Professor?.Name ?? existingItem.Professor.Name;
-        existingItem.Professor.FirstName =
-            updateModel.Professor?.FirstName ?? existingItem.Professor.FirstName;
-        existingItem.Professor.Title = updateModel.Professor?.Title ?? existingItem.Professor.Title;
-        existingItem.Professor.Gender = updateModel.Professor?.Gender ?? existingItem.Professor.Gender;
-        existingItem.Professor.Address.City = updateModel.Professor?.Address.City ?? existingItem.Professor.Address.City;
-        existingItem.Professor.Address.Street = updateModel.Professor?.Address.Street ?? existingItem.Professor.Address.Street;
-        existingItem.Professor.Address.Number = updateModel.Professor?.Address.Number ?? existingItem.Professor.Address.Number;
-        existingItem.Professor.Address.ZipCode = updateModel.Professor?.Address.ZipCode ?? existingItem.Professor.Address.ZipCode;
+
+        if (updateModel.Professor is not null)
+            await _professorRepository.UpdateAsync(
+                existingItem.Professor.Id,
+                updateModel.Professor
+            );
 
         await _context.SaveChangesAsync();
         return existingItem;
@@ -93,9 +85,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// <returns>Returns that the Working Group was successfully deleted</returns>
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id)
     {
-        var itemToRemove = await _context
-            .WorkingGroups.Where(i => i.Id == id)
-            .SingleOrDefaultAsync();
+        var itemToRemove = await GetOneEmptyAsync(id);
 
         if (itemToRemove is null)
         {
@@ -118,31 +108,45 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// <returns>Returns an Error or the created Working Group</returns>
     public async Task<ErrorOr<WorkingGroup>> CreateAsync(CreateWorkingGroupDto createModel)
     {
-        var professor = await _context.Professors.FindAsync(createModel.Professor.Id);
-        if (professor == null)
+        var strategy = _context.Database.CreateExecutionStrategy();
+
+        return await strategy.ExecuteAsync<ErrorOr<WorkingGroup>>(async () =>
         {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
             // If the professor doesn't exist, create a new one
-            professor = new Professor
+            var professor = await _professorRepository.CreateAsync(createModel.Professor);
+
+            if (professor.IsError)
+                return professor.Errors;
+
+            // Create the WorkingGroup after ensuring all related entities exist
+            var workingGroup = new WorkingGroup
             {
-                Name = createModel.Professor.Name, FirstName = createModel.Professor.FirstName,
+                Professor = professor.Value,
+                PhoneNumber = createModel.PhoneNumber,
+                Email = createModel.Email,
             };
-            _context.Professors.Add(professor);
-        }
 
-        // Create the WorkingGroup after ensuring all related entities exist
-        var workingGroup = new WorkingGroup
-        {
-            Professor = createModel.Professor, PhoneNumber = createModel.PhoneNumber, Email = createModel.Email,
-        };
+            try
+            {
+                _context.WorkingGroups.Add(workingGroup);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
 
-        _context.WorkingGroups.Add(workingGroup);
-        await _context.SaveChangesAsync();
-        return workingGroup;
+                return workingGroup;
+            }
+            catch (Exception e)
+            {
+                return Error.Failure(e.GetType().Name, e.Message);
+            }
+        });
     }
 
-    public async Task<IEnumerable<WorkingGroup>> SearchAsync(string name)
+    public async Task<List<WorkingGroup>> SearchAsync(string name)
     {
-        return await _context.WorkingGroups.Include(p => p.Professor)
-            .Where(s => EF.Functions.ILike(s.Professor.Name, $"%{name}%")).ToListAsync();
+        return await WorkingGroupsFilledQuery
+            .Where(s => EF.Functions.ILike(s.Professor.Name, $"%{name}%"))
+            .ToListAsync();
     }
 }

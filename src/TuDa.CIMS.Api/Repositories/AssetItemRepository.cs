@@ -21,24 +21,27 @@ public class AssetItemRepository : IAssetItemRepository
     }
 
     /// <summary>
+    /// Query for all <see cref="AssetItem"/>s from the DB with included properties.
+    /// </summary>
+    private IQueryable<AssetItem> AssetItemsFilledQuery => _context.AssetItems.Include(i => i.Room);
+
+    /// <summary>
+    /// Query for all <see cref="Substance"/>s from the DB with included properties.
+    /// </summary>
+    private IQueryable<Substance> SubstancesFilledQuery =>
+        AssetItemsFilledQuery.OfType<Substance>().Include(s => s.Hazards);
+
+    /// <summary>
     /// Returns all existing AssetItems of the database.
     /// </summary>
-    public async Task<IEnumerable<AssetItem>> GetAllAsync()
-    {
-        return await _context.AssetItems.Include(i => i.Room).ToListAsync();
-    }
+    public Task<List<AssetItem>> GetAllAsync() => AssetItemsFilledQuery.ToListAsync();
 
     /// <summary>
     /// Returns an existing AssetItem with the specific id.
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
-    public async Task<AssetItem?> GetOneAsync(Guid id)
-    {
-        return await _context
-            .AssetItems.Where(i => i.Id == id)
-            .Include(i => i.Room)
-            .SingleOrDefaultAsync();
-    }
+    public Task<AssetItem?> GetOneAsync(Guid id) =>
+        AssetItemsFilledQuery.SingleOrDefaultAsync(item => item.Id == id);
 
     /// <summary>
     /// Updates an existing AssetItem with the specified ID using the provided update model.
@@ -47,9 +50,7 @@ public class AssetItemRepository : IAssetItemRepository
     /// <param name="updateModel">the model containing the updated values for the AssetItem </param>
     public async Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateAssetItemDto updateModel)
     {
-        var existingItem = await _context
-            .AssetItems.Include(i => i.Room)
-            .SingleOrDefaultAsync(i => i.Id == id);
+        var existingItem = await GetOneAsync(id);
 
         if (existingItem is null)
         {
@@ -64,15 +65,7 @@ public class AssetItemRepository : IAssetItemRepository
 
         switch (existingItem, updateModel)
         {
-            case (Solvent solvent, UpdateSolventDto update):
-                solvent.Cas = update.Cas ?? solvent.Cas;
-                solvent.Hazards = update.Hazards ?? solvent.Hazards;
-                solvent.PriceUnit = update.PriceUnit ?? solvent.PriceUnit;
-                solvent.BindingSize = update.BindingSize ?? solvent.BindingSize;
-                solvent.Purity = update.Purity ?? solvent.Purity;
-                break;
-
-            case (Chemical chemical, UpdateChemicalDto update):
+            case (Chemical chemical, UpdateChemicalDto update): // Solvent is handled by this
                 chemical.Cas = update.Cas ?? chemical.Cas;
                 chemical.Hazards = update.Hazards ?? chemical.Hazards;
                 chemical.PriceUnit = update.PriceUnit ?? chemical.PriceUnit;
@@ -126,10 +119,7 @@ public class AssetItemRepository : IAssetItemRepository
     /// <param name="id">the unique id of the AssetItem</param>
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id)
     {
-        var itemToRemove = await _context
-            .AssetItems.Include(i => i.Room)
-            .Where(i => i.Id == id)
-            .SingleOrDefaultAsync();
+        var itemToRemove = await GetOneAsync(id);
 
         if (itemToRemove is null)
         {
@@ -163,35 +153,26 @@ public class AssetItemRepository : IAssetItemRepository
                 "Requested Page would be empty"
             );
 
-        var query = _context.AssetItems.AsQueryable();
         return await PaginatedResponseFactory<AssetItem>.CreateAsync(
-            query,
+            AssetItemsFilledQuery,
             queryParams.PageNumber,
             queryParams.PageSize
         );
     }
 
-    ///Returns a list of matching AssetItem based on the provided name or CAS number.
+    /// <summary>
+    /// Returns a list of matching AssetItem based on the provided name or CAS number.
     /// </summary>
     /// <param name="nameOrCas"></param>
-    public async Task<IEnumerable<AssetItem>> SearchAsync(string nameOrCas)
+    public async Task<List<AssetItem>> SearchAsync(string nameOrCas)
     {
-        IQueryable<AssetItem> query;
-
         bool isCas = nameOrCas.All(c => char.IsDigit(c) || c == '-');
 
-        if (isCas)
-        {
-            query = _context
-                .Substances.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
-                .Include(s => s.Hazards);
-        }
-        else
-        {
-            query = _context.AssetItems.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
-        }
+        var query = isCas
+            ? SubstancesFilledQuery.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
+            : AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
 
-        return await query.Include(i => i.Room).ToListAsync();
+        return await query.ToListAsync();
     }
 
     public async Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel)
@@ -218,9 +199,11 @@ public class AssetItemRepository : IAssetItemRepository
                         $"Given HazardId {hazardId} was not found."
                     );
                 }
+
                 hazards.Add(hazard);
             }
         }
+
         AssetItem newItem = createModel switch
         {
             CreateSolventDto solvent => new Solvent
