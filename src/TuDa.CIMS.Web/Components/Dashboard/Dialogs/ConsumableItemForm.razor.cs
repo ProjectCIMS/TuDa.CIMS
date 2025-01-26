@@ -15,13 +15,7 @@ public partial class ConsumableItemForm
     [Parameter]
     public bool FormShowError { get; set; }
 
-    private bool IsError =>
-        FormShowError
-        && (
-            FormConsumableAmount <= 0
-            || FormManufacturer == string.Empty
-            || FormSerialNumber == string.Empty
-        );
+    private bool IsError => FormShowError && FormConsumableAmount <= 0;
 
     public void SetForm(Consumable item)
     {

@@ -9,7 +9,7 @@ public partial class ChemicalItemForm
     /// <summary>
     /// Input Fields
     /// </summary>
-    public MeasurementUnits FormPriceUnit { get; private set; }
+    public MeasurementUnits? FormPriceUnit { get; private set; }
     public string FormCas { get; private set; } = string.Empty;
     public string FormPurity { get; private set; } = string.Empty;
     public double FormBindingSize { get; private set; }
@@ -17,9 +17,7 @@ public partial class ChemicalItemForm
     [Parameter]
     public bool FormShowError { get; set; }
 
-    private bool IsError =>
-        FormShowError
-        && (FormCas == string.Empty || FormPurity == string.Empty || FormBindingSize <= 0);
+    private bool IsError => FormPriceUnit == null && FormShowError;
 
     public void SetForm(Chemical item)
     {

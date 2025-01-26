@@ -11,21 +11,14 @@ public partial class GasCylinderItemForm
     /// </summary>
     public double FormVolume { get; private set; }
     public double FormPressure { get; private set; }
-    public MeasurementUnits FormPriceUnit { get; set; }
+    public MeasurementUnits? FormPriceUnit { get; set; }
     public string FormCas { get; set; } = string.Empty;
     public string FormPurity { get; set; } = string.Empty;
 
     [Parameter]
     public bool FormShowError { get; set; }
 
-    private bool IsError =>
-        FormShowError
-        && (
-            FormVolume <= 0
-            || FormPressure <= 0
-            || FormCas == string.Empty
-            || FormPurity == string.Empty
-        );
+    private bool IsError => FormPriceUnit == null && FormShowError;
 
     public void SetForm(GasCylinder item)
     {

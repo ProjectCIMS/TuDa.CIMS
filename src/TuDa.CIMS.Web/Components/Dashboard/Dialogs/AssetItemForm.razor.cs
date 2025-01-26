@@ -18,15 +18,10 @@ public partial class AssetItemForm
     [Parameter]
     public bool FormShowError { get; set; }
 
-    private bool IsError =>
-        FormShowError
-        && (
-            FormName == string.Empty
-            || FormShop == string.Empty
-            || FormItemNumber == string.Empty
-            || FormPrice <= 0
-            || FormRoomName == string.Empty
-        );
+    private bool PriceIsError => FormShowError && FormPrice <= 0;
+    private bool NameIsError => FormShowError && FormName == string.Empty;
+    private bool ShopIsError => FormShowError && FormShop == string.Empty;
+    private bool ItemNumberIsError => FormShowError && FormItemNumber == string.Empty;
 
     [Parameter]
     public EventCallback OnReset { get; set; }
