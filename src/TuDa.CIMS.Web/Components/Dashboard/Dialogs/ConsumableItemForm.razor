@@ -1,18 +1,19 @@
-@using TuDa.CIMS.Shared.Entities
 @* Consumable Item Form *@
 
-<MudForm>
+<MudForm Class="form-container">
     <MudTextField @bind-Value="FormManufacturer"
                   Label=Hersteller
                   Placeholder="Hersteller eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
+                  FullWidth
+                  Class="form-field"/>
 
     <MudTextField @bind-Value="FormSerialNumber"
                   Label="Seriennummer"
                   Placeholder="Seriennummer eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
+                  FullWidth
+                  Class="form-field"/>
 
     <MudNumericField @bind-Value="FormConsumableAmount"
                      Label="Menge"
@@ -20,8 +21,19 @@
                      ErrorText="Die Menge muss größer als 0 betragen!"
                      Placeholder="Menge eingeben"
                      Variant="Variant.Filled"
-                     FullWidth/>
+                     FullWidth
+                     Class="form-field"/>
 </MudForm>
+
+<style>
+    .form-container {
+        padding: 16px;
+    }
+
+    .form-field {
+        margin-bottom: 16px;
+    }
+</style>
 
 @code
 {
