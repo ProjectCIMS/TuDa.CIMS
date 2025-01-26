@@ -54,10 +54,9 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
         var currentWorkingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
         if (!result!.Canceled)
         {
-            var returnedValues = (Dictionary<string, List<string>>)result.Data!;
-            var valuesList = returnedValues["Values"];
-            ProfessorInfo.FirstName = valuesList[0];
-            ProfessorInfo.Name = valuesList[1];
+            var returnedValues = (List<string>)result.Data!;
+            ProfessorInfo.FirstName = returnedValues[0];
+            ProfessorInfo.Name = returnedValues[1];
 
             await workingGroupApi.UpdateAsync(WorkingGroupId,
                 new UpdateWorkingGroupDto()
@@ -94,9 +93,8 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
         if (!result!.Canceled)
         {
-            var returnedValues = (Dictionary<string, List<string>>)result.Data!;
-            var valuesList = returnedValues["Values"];
-            WorkingGroup.PhoneNumber = valuesList[0];
+            var returnedValues = (List<string>)result.Data!;
+            WorkingGroup.PhoneNumber = returnedValues[0];
 
             await workingGroupApi.UpdateAsync(WorkingGroupId,
                 new UpdateWorkingGroupDto() { PhoneNumber = WorkingGroup.PhoneNumber, });
@@ -126,9 +124,8 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
         if (!result!.Canceled)
         {
-            var returnedValues = (Dictionary<string, List<string>>)result.Data!;
-            var valuesList = returnedValues["Values"];
-            ProfessorInfo.Address.City = valuesList[0];
+            var returnedValues = (List<string>)result.Data!;
+            ProfessorInfo.Address.City = returnedValues[0];
 
             await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
             {
@@ -179,10 +176,9 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
         if (!result!.Canceled)
         {
-            var returnedValues = (Dictionary<string, List<string>>)result.Data!;
-            var valuesList = returnedValues["Values"];
-            ProfessorInfo.Address.Street = valuesList[0];
-            ProfessorInfo.Address.Number = int.Parse(valuesList[1]);
+            var returnedValues = (List<string>)result.Data!;
+            ProfessorInfo.Address.Street = returnedValues[0];
+            ProfessorInfo.Address.Number = int.Parse(returnedValues[1]);
 
             await workingGroupApi.UpdateAsync(WorkingGroupId, new UpdateWorkingGroupDto()
             {
@@ -231,9 +227,8 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
         var currentWorkingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
         if (!result!.Canceled)
         {
-            var returnedValues = (Dictionary<string, List<string>>)result.Data!;
-            var valuesList = returnedValues["Values"];
-            ProfessorInfo.Address.ZipCode = valuesList[0];
+            var returnedValues = (List<string>)result.Data!;
+            ProfessorInfo.Address.ZipCode = returnedValues[0];
 
             await workingGroupApi.UpdateAsync(WorkingGroupId,
                 new UpdateWorkingGroupDto()
@@ -284,9 +279,8 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
         if (!result!.Canceled)
         {
-            var returnedValues = (Dictionary<string, List<string>>)result.Data!;
-            var valuesList = returnedValues["Values"];
-            WorkingGroup.Email = valuesList[0];
+            var returnedValues = (List<string>)result.Data!;
+            WorkingGroup.Email = returnedValues[0];
 
             await workingGroupApi.UpdateAsync(WorkingGroupId,
                 new UpdateWorkingGroupDto() { Email = WorkingGroup.Email });

@@ -29,11 +29,7 @@ namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
         private void Submit()
         {
-            var resultDict = new Dictionary<string, List<string>>
-            {
-                { "Values", _values }
-            };
-            MudDialog.Close(DialogResult.Ok(resultDict));
+            MudDialog.Close(DialogResult.Ok(_values));
         }
 
         private void Cancel() => MudDialog.Cancel();

@@ -59,11 +59,9 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
 
         if (!result!.Canceled)
         {
-            var returnedValues = (Dictionary<string, List<string>>) result.Data!;
-            var valuesList = returnedValues["Values"];
-            ProfessorName = valuesList[0];
-            ProfessorTitle = valuesList[1];
-
+            var returnedValues = (List<string>) result.Data!;
+            ProfessorName = returnedValues[0];
+            ProfessorTitle = returnedValues[1];
 
             await workingGroupApi.UpdateAsync(WorkingGroupId,
                 new UpdateWorkingGroupDto
