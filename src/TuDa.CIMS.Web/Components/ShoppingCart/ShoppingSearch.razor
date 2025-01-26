@@ -1,4 +1,6 @@
 ﻿@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Entities.Enums
+
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" sm="8" md="8">
         <MudAutocomplete
@@ -15,5 +17,26 @@
             Dense=true
             ShowProgressIndicator="true">
         </MudAutocomplete>
+        <MudChipSet T="AssetItemType" @bind-SelectedValue="_selectedAssetItemType" CheckMark
+                    SelectionMode="@_selectionMode"
+                    Class="my-4">
+            <MudChip Color="Color.Primary" Value="AssetItemType.Chemical">
+                Chemikalie
+            </MudChip>
+            <MudChip Color="Color.Secondary" Value="AssetItemType.Consumable">
+                Verbrauchsmaterial
+            </MudChip>
+            <MudChip Color="Color.Info" Value="AssetItemType.GasCylinder">
+                Technische Gase
+            </MudChip>
+            <MudChip Color="Color.Success" Value="AssetItemType.Solvent">
+                Lösung
+            </MudChip>
+        </MudChipSet>
     </MudItem>
 </MudGrid>
+
+@code
+{
+    private readonly SelectionMode _selectionMode = SelectionMode.SingleSelection;
+}
