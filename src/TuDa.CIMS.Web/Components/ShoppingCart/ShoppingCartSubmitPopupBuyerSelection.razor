@@ -1,14 +1,6 @@
 ﻿@using TuDa.CIMS.Shared.Entities
 @*ShoppingCart SubmitPopup WorkingGroup Selection*@
 <MudItem Class="d-flex align-items-center">
-    @*<EditForm EditContext="editContext">
-        <DataAnnotationsValidator/>
-        Immediate="true"
-        Required="true"
-        CoerceValue="@coerceValue"
-        ResetValueOnEmptyText="true"
-        For="@(() => choice.SelectedBuyer)"
-        Validation="@(()=>BuyerIsValid=editContext.Validate())"*@
     <MudForm @ref="form">
     <MudAutocomplete T="Person"
                      Label="Käufer"
@@ -30,5 +22,4 @@
         </ItemTemplate>
     </MudAutocomplete>
     </MudForm>
-    @*</EditForm>*@
 </MudItem>

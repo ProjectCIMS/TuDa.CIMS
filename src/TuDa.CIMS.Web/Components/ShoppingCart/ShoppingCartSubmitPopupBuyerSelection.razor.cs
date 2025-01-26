@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
@@ -19,34 +17,24 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
     [Parameter]
     public required Person Buyer { get; set; }
 
-    // [Parameter]
-    // public required bool IsValid { get; set; }
-
-    // [Parameter] public EventCallback<bool> OnValidationChanged { get; set; }
-
     private MudForm form;
-    // private bool coerceValue;
-    // private EditContext editContext;
-    // private bool BuyerIsValid;
 
     [Parameter]
     public required bool BuyerIsValid { get; set; }
 
     [Parameter]
     public EventCallback<bool> BuyerIsValidChanged { get; set; }
-    // private IEnumerable<string> Validate(string value)
-    // {
-    //     if (string.IsNullOrWhiteSpace(value))
-    //     {
-    //         yield return "Ein Käufer muss ausgewählt werden.";
-    //     }
-    // }
-    // public class Choice
-    // {
-    //     [Required]
-    //     public Person SelectedBuyer { get; set;}
-    // }
-    // private Choice choice = new();
+
+    [Parameter]
+    public required EventCallback<Person> BuyerChanged { get; set; }
+
+    private async Task FindWorkingGroup()
+    {
+        WorkingGroup = (await workingGroupApi.GetAsync(WorkingGroup!.Id)).Match(
+            value => value,
+            _ => null
+        );
+    }
     private async Task ValidateSelection()
     {
         await form.Validate();
@@ -69,16 +57,6 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
             return "Ein Käufer muss ausgewählt werden.";
         }
         return "";
-    }
-    [Parameter]
-    public required EventCallback<Person> BuyerChanged { get; set; }
-
-    private async Task FindWorkingGroup()
-    {
-        WorkingGroup = (await workingGroupApi.GetAsync(WorkingGroup!.Id)).Match(
-            value => value,
-            _ => null
-        );
     }
 
     /// <summary>

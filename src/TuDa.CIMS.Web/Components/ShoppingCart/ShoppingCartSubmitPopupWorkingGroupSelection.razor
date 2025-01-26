@@ -3,12 +3,6 @@
 
 @*ShoppingCart SubmitPopup WorkingGroup Selection*@
 <MudItem Class="d-flex align-items-center">
-    @*<EditForm EditContext="editContext">
-        <DataAnnotationsValidator/>*@
-    @*CoerceValue="@coerceValue"
-        ResetValueOnEmptyText="true"
-        For="@(() => choice.SelectedWorkingGroup)"
-        Validation="@(()=>WorkingGroupIsValid=editContext.Validate())"*@
     <MudForm @ref="form">
     <MudAutocomplete
         T="WorkingGroup"
@@ -35,6 +29,5 @@
         </ItemTemplate>
     </MudAutocomplete>
     </MudForm>
-    @*</EditForm>*@
 </MudItem>
 

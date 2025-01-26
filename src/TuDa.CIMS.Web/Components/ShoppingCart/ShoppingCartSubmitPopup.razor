@@ -1,4 +1,3 @@
-@using TuDa.CIMS.Shared.Entities
 @* Submit Popup *@
 <MudDialog>
     <TitleContent>
@@ -14,10 +13,6 @@
                                                        @bind-BuyerIsValid="@BuyerIsValid"/>
                 <ShoppingCartSubmitPopupPurchaseList PurchaseListEntries="PurchaseEntries"/>
             </MudGrid>
-            @if (!BuyerIsValid)
-            {
-                <MudText Color="Color.Error">@buyerValidationMessage</MudText>
-            }
         </MudContainer>
     </DialogContent>
     <DialogActions>

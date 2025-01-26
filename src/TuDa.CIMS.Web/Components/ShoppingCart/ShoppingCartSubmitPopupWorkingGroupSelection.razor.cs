@@ -1,9 +1,6 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
-using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.ShoppingCart;
@@ -15,7 +12,6 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
     private MudAutocomplete<WorkingGroup> _autocomplete = null!; // Is set by blazor component
 
     private MudForm form;
-
 
     /// <summary>
     /// Event that is called when an <see cref="Shared.Entities.WorkingGroup"/> is selected.
@@ -38,8 +34,6 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
         }
     }
 
-    // private bool coerceValue;
-    // private EditContext editContext;
     private string ValidateWorkingGroup(WorkingGroup? value)
     {
         if (value == null)
@@ -48,23 +42,6 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
         }
         return "";
     }
-
-
-    /*private IEnumerable<string> Validate(string value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            yield return "Eine Arbeitsgruppe muss ausgewählt werden.";
-        }
-    }
-    public class Choice
-    {
-        [Required]
-        public WorkingGroup SelectedWorkingGroup { get; set;}
-    }
-    private Choice choice = new();
-
-    [Parameter] public EventCallback<bool> OnValidationChanged { get; set; }*/
 
     private async Task ValidateSelection()
     {
