@@ -3,7 +3,7 @@
         <MudContainer Class="d-flex justify-content-between align-items-center"
                       Style="padding: 0; margin: 0; width: 100%;">
             <MudText Typo="Typo.h6">
-                Eintrag erstellen
+                Eintrag bearbeiten
             </MudText>
             <MudIconButton Icon="@Icons.Material.Filled.Close"
                            Color="Color.Inherit"
@@ -16,25 +16,41 @@
     </DialogContent>
     <!-- Modal Footer -->
     <DialogActions>
-        <MudButton OnClick="Cancel"
-                   Color="Color.Secondary"
-                   Class="me-auto">
-            Schließen
-        </MudButton>
-        <MudButton OnClick="DeleteAsync"
-                   Color="Color.Error"
-                   Variant="Variant.Filled">
-            Löschen
-        </MudButton>
-        <MudButton OnClick="AssetItemEditFormLoad"
-                   Color="Color.Primary">
-            Zurücksetzen
-        </MudButton>
-        <MudButton OnClick="SaveChanges"
-                   Color="Color.Success"
-                   Variant="Variant.Filled">
-            Änderungen speichern
-        </MudButton>
+        <MudContainer Class="dialog-footer">
+            <MudButton OnClick="Cancel"
+                       Color="Color.Secondary"
+                       Class="me-auto action-button">
+                Schließen
+            </MudButton>
+            <MudButton OnClick="AssetItemEditFormLoad"
+                       Color="Color.Primary"
+                       Class="action-button">
+                Zurücksetzen
+            </MudButton>
+            <MudButton OnClick="DeleteItem"
+                       Color="Color.Error"
+                       Variant="Variant.Filled"
+                       Class="action-button">
+                Löschen
+            </MudButton>
+            <MudButton OnClick="SaveChanges"
+                       Color="Color.Success"
+                       Variant="Variant.Filled"
+                       Class="action-button">
+                Speichern
+            </MudButton>
+        </MudContainer>
     </DialogActions>
-
 </MudDialog>
+
+<style>
+    .dialog-footer {
+        padding: 16px;
+        display: flex;
+        gap: 8px;
+    }
+
+    .action-button {
+        margin: 0 8px;
+    }
+</style>

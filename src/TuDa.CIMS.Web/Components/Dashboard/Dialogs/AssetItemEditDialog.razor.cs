@@ -21,37 +21,25 @@ public partial class AssetItemEditDialog
     public required AssetItem Item { get; set; }
 
     /// <summary>
-    /// Opening up the Delete Confirmation Dialog
-    /// </summary>
-    private Task DeleteAsync()
-    {
-        var parameters = new DialogParameters<ConfirmDeleteDialog>
-        {
-            {
-                x => x.ContentText,
-                "Willst du diesen Gegenstand wirklich löschen? Dies kann nicht rückgängig gemacht werden"
-            },
-            { x => x.ButtonText, "Löschen" },
-            { x => x.Color, Color.Error },
-            { "OnDeleteRequested", EventCallback.Factory.Create(this, DeleteItem) },
-        };
-
-        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
-
-        return DialogService.ShowAsync<ConfirmDeleteDialog>(
-            "Gegenstand löschen",
-            parameters,
-            options
-        );
-    }
-
-    /// <summary>
     /// If the Delete was confirmed through the extra dialog this will execute the deletion
     /// </summary>
     private async Task DeleteItem()
     {
-        await _assetItemEditForm.DeleteItem();
-        ProductDialog.Close();
+        var options = new DialogOptions { CloseOnEscapeKey = false, BackdropClick = false };
+
+        var messageBox = new MessageBoxOptions
+        {
+            Title = "Eintrag löschen",
+            Message = "Wollen sie den Eintrag wirklich löschen?",
+            YesText = "Löschen",
+            NoText = "Nein",
+        };
+
+        if (await DialogService.ShowMessageBox(messageBox) ?? false)
+        {
+            await _assetItemEditForm.DeleteItem();
+            ProductDialog.Close();
+        }
     }
 
     /// <summary>

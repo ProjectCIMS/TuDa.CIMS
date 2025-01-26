@@ -14,21 +14,39 @@
     </TitleContent>
     <!-- Modal Body -->
     <DialogContent>
-        <AssetItemCreateForm @ref="_assetItemCreateForm" OnValidation ="@(_ => StateHasChanged())"/>
+        <AssetItemCreateForm @ref="_assetItemCreateForm" OnValidation="@(_ => StateHasChanged())"/>
     </DialogContent>
     <!-- Modal Footer -->
     <DialogActions>
-        <MudButton OnClick="Cancel"
-                   Color="Color.Secondary">
-            Schließen
-        </MudButton>
-        <MudButton OnClick="SaveChanges"
-                   Color="Color.Primary">
-            Änderungen speichern
-        </MudButton>
+        <MudContainer Class="dialog-footer">
+            <MudButton OnClick="Cancel"
+                       Color="Color.Secondary"
+                       Class="action-button">
+                Schließen
+            </MudButton>
+            <MudButton OnClick="SaveChanges"
+                       Color="Color.Success"
+                       Variant="Variant.Filled"
+                       Class="action-button">
+                Speichern
+            </MudButton>
+        </MudContainer>
     </DialogActions>
 
 </MudDialog>
+
+<style>
+    .dialog-footer {
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .action-button {
+        margin: 0 8px;
+    }
+</style>
 
 @code {
     private AssetItemCreateForm _assetItemCreateForm;
@@ -56,4 +74,5 @@
         await _assetItemCreateForm.SaveChanges();
         ProductDialog.Close();
     }
+
 }
