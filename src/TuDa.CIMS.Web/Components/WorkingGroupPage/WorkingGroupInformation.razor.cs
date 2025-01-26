@@ -200,9 +200,7 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
             { "Label", new List<string>{"Postleitzahl"} }
         };
 
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            { up => up.Field, field }
+        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
 
         var options = new DialogOptions() { CloseOnEscapeKey = true };
 

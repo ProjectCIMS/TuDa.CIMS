@@ -65,12 +65,14 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
             ProfessorName = returnedValues[0];
             ProfessorTitle = returnedValues[1];
 
-            await workingGroupApi.UpdateAsync(WorkingGroupId,
-                new UpdateWorkingGroupDto
+            await workingGroupApi.UpdateAsync(
+                WorkingGroupId,
+                new UpdateWorkingGroupDto()
                 {
                     PhoneNumber = "",
-                    Professor = currentWorkingGroup.Value.Professor with { Name = ProfessorName, Title = ProfessorTitle}
-                });
+                    Professor = new UpdateProfessorDto { Name = ProfessorName }
+                }
+            );
             StateHasChanged();
         }
     }
