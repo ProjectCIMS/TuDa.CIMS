@@ -5,44 +5,39 @@
 <MudForm>
     <MudTextField @bind-Value="FormCas"
                   Label="CAS"
-                  Error="@IsError"
-                  ErrorText="Die CAS muss eingegeben werden!"
                   Placeholder="CAS eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
     <MudTextField @bind-Value="FormPurity"
                   Label="Reinheit"
-                  Error="@IsError"
-                  ErrorText="Die Reinheit muss eingegeben werden!"
                   Placeholder="Reinheit eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
     <!-- MudSelect for selecting measurement unit -->
     <MudSelect @bind-Value="FormPriceUnit"
+               Error="@IsError"
+               ErrorText="Preiseinheit fehlt!"
                Label="Preis Einheit wählen"
                Variant="Variant.Filled"
                FullWidth>
-        <MudSelectItem Value="MeasurementUnits.Gram">Gramm</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.KiloGram">Kilogramm</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.MilliLiter">Milliliter</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.Liter">Liter</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.Piece">Stück</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="null">-</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.Gram">Gramm</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.KiloGram">Kilogramm</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.MilliLiter">Milliliter</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.Liter">Liter</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.Piece">Stück</MudSelectItem>
     </MudSelect>
 
     <MudNumericField @bind-Value="FormVolume"
                      Label="Volume"
-                     Error="@IsError"
-                     ErrorText="Das Volumen muss größer als 0 betragen!"
                      Placeholder="Volumen eingeben"
                      Variant="Variant.Filled"
                      FullWidth/>
 
     <MudNumericField @bind-Value="FormPressure"
                      Label="Pressure"
-                     Error="@IsError"
-                     ErrorText="Der Druck muss größer als 0 betragen!"
                      Placeholder="Druck eingeben"
                      Variant="Variant.Filled"
                      FullWidth/>
@@ -55,14 +50,13 @@
     /// </summary>
     public double FormVolume { get; private set; }
     public double FormPressure { get; private set; }
-    public MeasurementUnits FormPriceUnit { get;  set; }
+    public MeasurementUnits? FormPriceUnit { get;  set; }
     public string FormCas { get;  set; } = string.Empty;
     public string FormPurity { get;  set; } = string.Empty;
 
     [Parameter] public bool FormShowError { get; set; }
 
-    private bool IsError => FormShowError && (FormVolume <= 0 || FormPressure <= 0 || FormCas == string.Empty
-                                              || FormPurity == string.Empty);
+    private bool IsError => FormPriceUnit == null && FormShowError;
 
     public void SetForm(GasCylinder item)
     {
