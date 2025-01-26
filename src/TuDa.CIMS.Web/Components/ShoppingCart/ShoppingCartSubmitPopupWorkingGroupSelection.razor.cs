@@ -11,7 +11,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
 
     private MudAutocomplete<WorkingGroup> _autocomplete = null!; // Is set by blazor component
 
-    private MudForm form;
+    private MudForm form = null!;
 
     /// <summary>
     /// Event that is called when an <see cref="Shared.Entities.WorkingGroup"/> is selected.
@@ -36,7 +36,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
 
     private string ValidateWorkingGroup(WorkingGroup? value)
     {
-        if (value == null)
+        if (value is null)
         {
             return "Eine Arbeitsgruppe muss ausgewählt werden.";
         }
@@ -47,7 +47,10 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
     {
         await form.Validate();
         bool isValid = form.IsValid;
-        await WorkingGroupIsValidChanged.InvokeAsync(isValid);
+        if (WorkingGroupIsValidChanged.HasDelegate)
+        {
+            await WorkingGroupIsValidChanged.InvokeAsync(isValid);
+        }
     }
 
     /// Invoke to clear text

@@ -52,7 +52,7 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
     }
     private string ValidateBuyer(Person? value)
     {
-        if (value == null)
+        if (value is null)
         {
             return "Ein Käufer muss ausgewählt werden.";
         }

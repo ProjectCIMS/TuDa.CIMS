@@ -47,18 +47,17 @@ public partial class ShoppingCartSubmitPopup
     /// </summary>
     private void Submit()
     {
-        if (WorkingGroup?.Students != null)
+        if (WorkingGroup?.Students is not null)
         {
-            List<Guid> studentIds = [];
-            studentIds.AddRange(WorkingGroup.Students.Select(student => student.Id));
-            if (WorkingGroup?.Professor.Id != Buyer.Id && !studentIds.Contains(Buyer.Id))
+            List<Guid> studentIds = WorkingGroup.Students.Select(student => student.Id).ToList();
+            if (IsValid && (WorkingGroup?.Professor.Id == Buyer.Id || studentIds.Contains(Buyer.Id)))
+            {
+                MudDialog.Close(DialogResult.Ok(new WorkingGroupWithBuyer(WorkingGroup!.Id, Buyer.Id)));
+            }
+            else
             {
                 BuyerIsValid = false;
                 BuyerValidationMessage = "Der ausgewählte Käufer gehört nicht zur ausgewählten Arbeitsgruppe.";
-            }
-            if(IsValid)
-            {
-                MudDialog.Close(DialogResult.Ok(new WorkingGroupWithBuyer(WorkingGroup!.Id, Buyer.Id)));
             }
         }
     }
