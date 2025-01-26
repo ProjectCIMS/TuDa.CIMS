@@ -26,7 +26,8 @@ public partial class ShoppingCartProductDialog
     /// checks if the amount should be inputted as int or double
     /// </summary>
     /// <returns>returns true if it should be an integer</returns>
-    public bool IsInt() => Product is Consumable || (Product as Substance)!.PriceUnit == MeasurementUnits.Piece;
+    public bool IsInt() =>
+        Product is Consumable || (Product as Substance)!.PriceUnit == MeasurementUnits.Piece;
 
     private bool IsError => Amount <= 0.0 || AmountInt <= 0;
 
@@ -35,7 +36,7 @@ public partial class ShoppingCartProductDialog
     {
         if (IsInt())
         {
-            ProductDialog.Close(DialogResult.Ok(AmountInt));
+            ProductDialog.Close(DialogResult.Ok((double)AmountInt));
         }
         else
         {
