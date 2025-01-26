@@ -8,20 +8,15 @@ namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
 public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : ComponentBase
 {
-    [Parameter]
-    public required Professor Professor { get; set; }
+    [Parameter] public required Professor Professor { get; set; }
 
-    [Parameter]
-    public string ProfessorName { get; set; } = String.Empty;
+    [CascadingParameter] public string ProfessorName { get; set; } = String.Empty;
 
-    [Parameter]
-    public string ProfessorTitle { get; set; } = String.Empty;
+    [Parameter] public string ProfessorTitle { get; set; } = String.Empty;
 
-    [Parameter]
-    public Guid WorkingGroupId { get; set; }
+    [Parameter] public Guid WorkingGroupId { get; set; }
 
-    [Inject]
-    private IDialogService DialogService { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
 
     /// <summary>
     /// Sets the ProfessorName and Professor properties
@@ -41,39 +36,32 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
     /// </summary>
     public async Task OpenDialogAsync()
     {
-        Dictionary<string, object> field = new()
-        {
-            { "Values", new List<string> { ProfessorName, ProfessorTitle } },
-            { "DialogTitle", "Professor bearbeiten" },
-            { "Label", new List<string>{"Name", "Titel"} }
-        };
+        GenericInput field = new() { Labels = ["Titel", "Nachname"], Values = [Professor.Title, Professor.Name], };
 
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            { up => up.Field, field }
-        };
+        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
 
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        var dialogReference = await DialogService.ShowAsync<GenericInputPopUp>("Professor bearbeiten", parameters, options);
+        var dialogReference =
+            await DialogService.ShowAsync<GenericInputPopUp>("Professor bearbeiten", parameters, options);
 
         var result = await dialogReference.Result;
 
         if (!result!.Canceled)
         {
-            var returnedValues = (List<string>) result.Data!;
-            ProfessorName = returnedValues[0];
-            ProfessorTitle = returnedValues[1];
+            var returnedValues = (List<string>)result.Data!;
+            ProfessorTitle = returnedValues[0];
+            ProfessorName = returnedValues[1];
 
             await workingGroupApi.UpdateAsync(
                 WorkingGroupId,
-                new UpdateWorkingGroupDto()
+                new UpdateWorkingGroupDto
                 {
-                    PhoneNumber = "",
-                    Professor = new UpdateProfessorDto { Name = ProfessorName }
+                    PhoneNumber = "", Professor = new() { Name = ProfessorName, Title = ProfessorTitle }
                 }
             );
             StateHasChanged();
         }
     }
 }
+

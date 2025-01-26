@@ -1,12 +1,11 @@
 ﻿<MudDialog>
     <DialogContent>
         <MudForm>
-            @for (int i = 0; i < _values.Count; i++)
+            @foreach(var i in Enumerable.Range(0, Field.Labels.Count))
             {
-                int index = i;
                 <MudTextField
-                    @bind-Value="_values[index]"
-                    Label="@_labels[index]"/>
+                    @bind-Value="Field.Values[i]"
+                    Label="@Field.Labels[i]"/>
             }
         </MudForm>
     </DialogContent>

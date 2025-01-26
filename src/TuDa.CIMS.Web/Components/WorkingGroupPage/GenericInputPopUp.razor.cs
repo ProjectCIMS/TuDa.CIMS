@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-using Google.Protobuf.WellKnownTypes;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
@@ -9,28 +7,18 @@ namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
         [CascadingParameter] public required MudDialogInstance MudDialog { get; set; }
 
-        [Parameter] public Dictionary<string, object> Field { get; set; }
-
-        private List<string> _labels = new();
-        private List<string> _values = new();
-
-        protected override void OnInitialized()
-        {
-            if (Field.TryGetValue("Label", out var labelObj) && labelObj is List<string> labels)
-            {
-                _labels = labels;
-            }
-
-            if (Field.TryGetValue("Values", out var valuesObj) && valuesObj is List<string> values)
-            {
-                _values = values.ToList();
-            }
-        }
+        [Parameter] public GenericInput Field { get; set; } = new GenericInput();
 
         private void Submit()
         {
-            MudDialog.Close(DialogResult.Ok(_values));
+            MudDialog.Close(DialogResult.Ok(Field.Values));
         }
 
         private void Cancel() => MudDialog.Cancel();
     }
+
+public class GenericInput
+{
+    public List<string> Labels { get; set; } = new();
+    public List<string> Values { get; set; } = new();
+}
