@@ -71,11 +71,11 @@ public class StudentRepository : IStudentRepository
             );
         }
 
-        Student newStudent = new Student()
+        Student newStudent = new()
         {
-            Name = createStudentDto?.Name ?? string.Empty,
-            FirstName = createStudentDto?.FirstName ?? string.Empty,
-            PhoneNumber = createStudentDto?.PhoneNumber ?? string.Empty
+            Name = createStudentDto.Name,
+            FirstName = createStudentDto.FirstName,
+            PhoneNumber = createStudentDto.PhoneNumber
         };
         _context.Students.Add(newStudent);
 
@@ -121,13 +121,13 @@ public class StudentRepository : IStudentRepository
             {
                 student.Name = updatedStudentDto.Name;
                 student.FirstName = updatedStudentDto.FirstName;
-                student.PhoneNumber = updatedStudentDto.PhoneNumber;
+                existingStudent.PhoneNumber = updatedStudentDto.PhoneNumber ?? existingStudent.PhoneNumber;
             }
         }
 
         existingStudent.Name = updatedStudentDto.Name;
         existingStudent.FirstName = updatedStudentDto.FirstName;
-        existingStudent.PhoneNumber = updatedStudentDto.PhoneNumber;
+        existingStudent.PhoneNumber = updatedStudentDto.PhoneNumber ?? existingStudent.PhoneNumber;
         await _context.SaveChangesAsync();
         return Result.Updated;
     }
