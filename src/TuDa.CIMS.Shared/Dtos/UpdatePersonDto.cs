@@ -26,5 +26,5 @@ public record UpdatePersonDto
     /// <summary>
     /// The phone number of the person.
     /// </summary>
-    public string PhoneNumber { get; set; } = string.Empty;
+    public string? PhoneNumber { get; set; }
 }
