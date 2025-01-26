@@ -8,16 +8,20 @@ namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
 public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : ComponentBase
 {
-    [Parameter] public required Professor Professor { get; set; }
+    [Parameter]
+    public required Professor Professor { get; set; }
 
-    [Parameter] public string ProfessorName { get; set; } = String.Empty;
+    [Parameter]
+    public string ProfessorName { get; set; } = String.Empty;
 
-    [Parameter] public string ProfessorTitle { get; set; } = String.Empty;
+    [Parameter]
+    public string ProfessorTitle { get; set; } = String.Empty;
 
-    [Parameter] public Guid WorkingGroupId { get; set; }
+    [Parameter]
+    public Guid WorkingGroupId { get; set; }
 
-    [Inject] private IDialogService DialogService { get; set; } = null!;
-
+    [Inject]
+    private IDialogService DialogService { get; set; } = null!;
 
     /// <summary>
     /// Sets the ProfessorName and Professor properties
@@ -28,7 +32,6 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
         ProfessorName = workingGroup.Value.Professor.Name;
         ProfessorTitle = workingGroup.Value.Professor.Title;
         Professor = workingGroup.Value.Professor;
-
 
         await base.OnInitializedAsync();
     }
@@ -55,7 +58,6 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
         var dialogReference = await DialogService.ShowAsync<GenericInputPopUp>("Professor bearbeiten", parameters, options);
 
         var result = await dialogReference.Result;
-        var currentWorkingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
 
         if (!result!.Canceled)
         {
@@ -69,7 +71,6 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
                     PhoneNumber = "",
                     Professor = currentWorkingGroup.Value.Professor with { Name = ProfessorName, Title = ProfessorTitle}
                 });
-
             StateHasChanged();
         }
     }
