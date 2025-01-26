@@ -64,7 +64,7 @@
 
     public async Task SaveChanges()
     {
-        bool hasErrors = _assetItemCreateForm.ValidateForm();
+        bool hasErrors = _assetItemCreateForm.ErrorsInForm();
 
         if (hasErrors)
         {

@@ -28,7 +28,7 @@ public partial class ConsumableItemForm
     /// Validate the Inputs
     /// </summary>
     /// <returns>returns false when all Inputs are valid otherwise true</returns>
-    public bool ValidateForm()
+    public bool ErrorsInForm()
     {
         if (
             FormManufacturer == string.Empty

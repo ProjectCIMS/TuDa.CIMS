@@ -20,6 +20,12 @@ public partial class AssetItemEditDialog
     [Parameter]
     public required AssetItem Item { get; set; }
 
+    [Parameter]
+    public EventCallback<AssetItem> OnDeleteRequested { get; set; }
+
+    [Parameter]
+    public EventCallback OnStateHasChanged { get; set; }
+
     /// <summary>
     /// If the Delete was confirmed through the extra dialog this will execute the deletion
     /// </summary>
@@ -37,7 +43,8 @@ public partial class AssetItemEditDialog
 
         if (await DialogService.ShowMessageBox(messageBox) ?? false)
         {
-            await _assetItemEditForm.DeleteItem();
+            await OnStateHasChanged.InvokeAsync();
+            await OnDeleteRequested.InvokeAsync(Item);
             ProductDialog.Close();
         }
     }
@@ -61,7 +68,7 @@ public partial class AssetItemEditDialog
     /// </summary>
     public async Task SaveChanges()
     {
-        bool hasErrors = _assetItemEditForm.ValidateForm();
+        bool hasErrors = _assetItemEditForm.ErrorsInForm();
 
         if (hasErrors)
         {

@@ -33,7 +33,7 @@ public partial class GasCylinderItemForm
     /// Validate the Inputs
     /// </summary>
     /// <returns>returns false when all Inputs are valid otherwise true</returns>
-    public bool ValidateForm()
+    public bool ErrorsInForm()
     {
         if (
             FormVolume == 0.0
