@@ -20,7 +20,7 @@
         <MudChipSet T="AssetItemType?"
                     @bind-SelectedValue="_selectedAssetItemType"
                     CheckMark
-                    SelectionMode="@_selectionMode"
+                    SelectionMode="SelectionMode.SingleSelection"
                     Class="my-4">
             <MudChip Color="Color.Dark"
                      T="AssetItemType?"
@@ -50,8 +50,3 @@
         </MudChipSet>
     </MudItem>
 </MudGrid>
-
-@code
-{
-    private readonly SelectionMode _selectionMode = SelectionMode.SingleSelection;
-}

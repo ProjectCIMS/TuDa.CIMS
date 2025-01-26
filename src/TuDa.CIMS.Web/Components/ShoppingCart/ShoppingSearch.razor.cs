@@ -48,23 +48,14 @@ public partial class ShoppingSearch : ComponentBase
             .GetAllAsync(nameOrCas)
             .Match(value => value, err => new List<AssetItem>());
 
-        switch (_selectedAssetItemType)
+        return _selectedAssetItemType switch
         {
-            case AssetItemType.Chemical:
-                return allItems.Where(item => item is Chemical);
-
-            case AssetItemType.Consumable:
-                return allItems.Where(item => item is Consumable);
-
-            case AssetItemType.Solvent:
-                return allItems.Where(item => item is Solvent);
-
-            case AssetItemType.GasCylinder:
-                return allItems.Where(item => item is GasCylinder);
-
-            default:
-                return allItems;
-        }
+            AssetItemType.Chemical => allItems.Where(item => item is Chemical and not Solvent),
+            AssetItemType.Consumable => allItems.OfType<Consumable>(),
+            AssetItemType.Solvent => allItems.OfType<Solvent>(),
+            AssetItemType.GasCylinder => allItems.OfType<GasCylinder>(),
+            _ => allItems,
+        };
     }
 
     private static string ToString(AssetItem item) =>
