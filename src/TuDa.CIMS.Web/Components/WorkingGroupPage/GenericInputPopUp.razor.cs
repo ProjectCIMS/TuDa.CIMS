@@ -21,4 +21,6 @@ public class GenericInput
 {
     public List<string> Labels { get; set; } = new();
     public List<string> Values { get; set; } = new();
+
+    public string YesText { get; set; } = "Speichern";
 }
