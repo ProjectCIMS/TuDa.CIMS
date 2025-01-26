@@ -13,6 +13,10 @@
                                                        @bind-BuyerIsValid="@BuyerIsValid"/>
                 <ShoppingCartSubmitPopupPurchaseList PurchaseListEntries="PurchaseEntries"/>
             </MudGrid>
+            @if (!BuyerIsValid)
+            {
+                <MudText Color="Color.Error">@BuyerValidationMessage</MudText>
+            }
         </MudContainer>
     </DialogContent>
     <DialogActions>
