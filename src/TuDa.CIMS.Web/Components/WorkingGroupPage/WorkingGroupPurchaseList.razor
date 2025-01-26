@@ -1,4 +1,5 @@
-﻿<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column bg-white rounded">
+﻿@using System.Globalization
+<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column bg-white rounded">
     <MudDataGrid Items="@Purchases"
                  FixedHeader="@true"
                  SortMode="SortMode.None"
@@ -9,7 +10,7 @@
                 Property="@(p => p.CompletionDate)"
                 Title="Datum"/>
             <PropertyColumn
-                Property="@(p => p.TotalPrice)"
+                Property="@(p => p.TotalPrice.ToString("C", CultureInfo.GetCultureInfo("de-DE")))"
                 Title="Preis"/>
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
