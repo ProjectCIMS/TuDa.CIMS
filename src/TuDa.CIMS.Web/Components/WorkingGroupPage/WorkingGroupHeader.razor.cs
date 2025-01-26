@@ -10,7 +10,7 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
 {
     [Parameter] public required Professor Professor { get; set; }
 
-    [CascadingParameter] public string ProfessorName { get; set; } = String.Empty;
+    [Parameter] public string ProfessorName { get; set; } = String.Empty;
 
     [Parameter] public string ProfessorTitle { get; set; } = String.Empty;
 
