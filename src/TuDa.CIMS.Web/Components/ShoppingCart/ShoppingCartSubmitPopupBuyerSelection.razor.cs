@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
@@ -17,17 +19,57 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
     [Parameter]
     public required Person Buyer { get; set; }
 
-    [Parameter] public EventCallback<bool> OnValidationChanged { get; set; }
+    // [Parameter]
+    // public required bool IsValid { get; set; }
+
+    // [Parameter] public EventCallback<bool> OnValidationChanged { get; set; }
 
     private MudForm form;
+    // private bool coerceValue;
+    // private EditContext editContext;
+    // private bool BuyerIsValid;
 
+    [Parameter]
+    public required bool BuyerIsValid { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> BuyerIsValidChanged { get; set; }
+    // private IEnumerable<string> Validate(string value)
+    // {
+    //     if (string.IsNullOrWhiteSpace(value))
+    //     {
+    //         yield return "Ein Käufer muss ausgewählt werden.";
+    //     }
+    // }
+    // public class Choice
+    // {
+    //     [Required]
+    //     public Person SelectedBuyer { get; set;}
+    // }
+    // private Choice choice = new();
     private async Task ValidateSelection()
     {
         await form.Validate();
         bool isValid = form.IsValid;
-        await OnValidationChanged.InvokeAsync(isValid);
+        await BuyerIsValidChanged.InvokeAsync(isValid);
     }
 
+    private async Task OnBuyerChanged(Person buyer)
+    {
+        await ValidateSelection();
+        if (BuyerChanged.HasDelegate)
+        {
+            await BuyerChanged.InvokeAsync(buyer);
+        }
+    }
+    private string ValidateBuyer(Person? value)
+    {
+        if (value == null)
+        {
+            return "Ein Käufer muss ausgewählt werden.";
+        }
+        return "";
+    }
     [Parameter]
     public required EventCallback<Person> BuyerChanged { get; set; }
 

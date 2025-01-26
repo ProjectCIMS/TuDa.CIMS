@@ -3,6 +3,12 @@
 
 @*ShoppingCart SubmitPopup WorkingGroup Selection*@
 <MudItem Class="d-flex align-items-center">
+    @*<EditForm EditContext="editContext">
+        <DataAnnotationsValidator/>*@
+    @*CoerceValue="@coerceValue"
+        ResetValueOnEmptyText="true"
+        For="@(() => choice.SelectedWorkingGroup)"
+        Validation="@(()=>WorkingGroupIsValid=editContext.Validate())"*@
     <MudForm @ref="form">
     <MudAutocomplete
         T="WorkingGroup"
@@ -14,12 +20,12 @@
         Label="Arbeitsgruppe"
         SearchFunc="@Search"
         ToStringFunc="@ToString"
-        ValueChanged="WorkingGroupChanged"
+        ValueChanged="OnWorkingGroupChanged"
         Variant="Variant.Filled"
         Dense="true"
         ShowProgressIndicator="true"
-        OnBlur="ValidateSelection"
-        Immediate="true">
+        Validation="@(() => ValidateWorkingGroup)"
+        Required="true">
         <ItemTemplate>
             <MudItem Class="d-flex align-items-center">
                 <MudIconButton Icon="@Icons.Material.Outlined.Info" Class="mr-2">
@@ -29,5 +35,6 @@
         </ItemTemplate>
     </MudAutocomplete>
     </MudForm>
+    @*</EditForm>*@
 </MudItem>
 

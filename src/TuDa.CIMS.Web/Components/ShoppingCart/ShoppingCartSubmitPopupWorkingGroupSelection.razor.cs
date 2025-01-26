@@ -1,4 +1,6 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
@@ -21,13 +23,54 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
     [Parameter]
     public EventCallback<WorkingGroup> WorkingGroupChanged { get; set; }
 
-    [Parameter] public EventCallback<bool> OnValidationChanged { get; set; }
+    [Parameter]
+    public required bool WorkingGroupIsValid { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> WorkingGroupIsValidChanged { get; set; }
+
+    private async Task OnWorkingGroupChanged(WorkingGroup workingGroup)
+    {
+        await ValidateSelection();
+        if (WorkingGroupChanged.HasDelegate)
+        {
+            await WorkingGroupChanged.InvokeAsync(workingGroup);
+        }
+    }
+
+    // private bool coerceValue;
+    // private EditContext editContext;
+    private string ValidateWorkingGroup(WorkingGroup? value)
+    {
+        if (value == null)
+        {
+            return "Eine Arbeitsgruppe muss ausgewählt werden.";
+        }
+        return "";
+    }
+
+
+    /*private IEnumerable<string> Validate(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            yield return "Eine Arbeitsgruppe muss ausgewählt werden.";
+        }
+    }
+    public class Choice
+    {
+        [Required]
+        public WorkingGroup SelectedWorkingGroup { get; set;}
+    }
+    private Choice choice = new();
+
+    [Parameter] public EventCallback<bool> OnValidationChanged { get; set; }*/
 
     private async Task ValidateSelection()
     {
         await form.Validate();
         bool isValid = form.IsValid;
-        await OnValidationChanged.InvokeAsync(isValid);
+        await WorkingGroupIsValidChanged.InvokeAsync(isValid);
     }
 
     /// Invoke to clear text

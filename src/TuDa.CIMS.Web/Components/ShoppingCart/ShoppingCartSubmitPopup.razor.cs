@@ -19,22 +19,25 @@ public partial class ShoppingCartSubmitPopup
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; } = null!;
 
-    private bool isWorkingGroupValid;
-    private bool isBuyerValid;
-    private bool isFormValid => isWorkingGroupValid && isBuyerValid;
 
-    private void HandleWorkingGroupValidationChanged(bool isValid)
-    {
-        isWorkingGroupValid = isValid;
-        StateHasChanged();
-    }
 
-    private void HandleBuyerValidationChanged(bool isValid)
-    {
-        isBuyerValid = isValid;
-        StateHasChanged();
-    }
-    private string buyerValidationMessage { get; set; }
+    private bool IsValid => WorkingGroupIsValid && BuyerIsValid;
+    public bool WorkingGroupIsValid { get; set;}
+
+    public bool BuyerIsValid { get; set; }
+
+    // private void HandleWorkingGroupValidationChanged(bool isValid)
+    // {
+    //     WorkingGroupIsValid = isValid;
+    //     StateHasChanged();
+    // }
+    //
+    // private void HandleBuyerValidationChanged(bool isValid)
+    // {
+    //     BuyerIsValid = isValid;
+    //     StateHasChanged();
+    // }
+    private string buyerValidationMessage { get; set; } = string.Empty;
 
     /// <summary>
     /// The selected working group.
@@ -62,7 +65,7 @@ public partial class ShoppingCartSubmitPopup
         }
         else
         {
-            isBuyerValid = false;
+            BuyerIsValid = false;
             buyerValidationMessage = "Der ausgewählte Käufer gehört nicht zur ausgewählten Arbeitsgruppe.";
         }
     }
