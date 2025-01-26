@@ -3,37 +3,37 @@
 
 @* AssetItemForm *@
 
-<MudForm>
+<MudForm Class="p-2">
     <MudTextField @bind-Value="FormName"
                   Label="Name"
                   Error="@NameIsError"
                   ErrorText="Der Name muss eingegeben werden!"
                   Placeholder="Name eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
-
+                  FullWidth
+                  Margin="Margin.Dense"/>
     <MudTextField @bind-Value="FormShop"
                   Label="Lieferant"
                   Error="@ShopIsError"
                   ErrorText="Der Lieferant muss eingegeben werden!"
                   Placeholder="Shop eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
-
+                  FullWidth
+                  Margin="Margin.Dense"/>
     <MudTextField @bind-Value="FormItemNumber"
                   Label="Produktnummer"
                   Error="@ItemNumberIsError"
                   ErrorText="Die Produktnummer muss eingegeben werden!"
                   Placeholder="Produktnummer eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
-
+                  FullWidth
+                  Margin="Margin.Dense"/>
     <MudTextField @bind-Value="FormNote"
                   Label="Notiz"
                   Placeholder="Notiz eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
-
+                  FullWidth
+                  Margin="Margin.Dense"/>
     <MudNumericField @bind-Value="FormPrice"
                      Format="C"
                      Culture="@_de"
@@ -43,14 +43,14 @@
                      ErrorText="Der Preis muss eingegeben werden!"
                      Placeholder="Preis eingeben"
                      Variant="Variant.Filled"
-                     FullWidth/>
-
+                     FullWidth
+                     Margin="Margin.Dense"/>
     <MudTextField @bind-Value="FormRoomName"
                   Label="Raumname"
                   Placeholder="Raumname eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
-
+                  FullWidth
+                  Margin="Margin.Dense"/>
     <MudButton Color="Color.Primary"
                Class="mt-3"
                OnClick="ResetInputs">

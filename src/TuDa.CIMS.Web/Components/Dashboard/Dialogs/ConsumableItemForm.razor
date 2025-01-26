@@ -1,19 +1,19 @@
 @* Consumable Item Form *@
 
-<MudForm Class="form-container">
+<MudForm Class="p-2">
     <MudTextField @bind-Value="FormManufacturer"
                   Label=Hersteller
                   Placeholder="Hersteller eingeben"
                   Variant="Variant.Filled"
                   FullWidth
-                  Class="form-field"/>
+                  Margin="Margin.Dense"/>
 
     <MudTextField @bind-Value="FormSerialNumber"
                   Label="Seriennummer"
                   Placeholder="Seriennummer eingeben"
                   Variant="Variant.Filled"
                   FullWidth
-                  Class="form-field"/>
+                  Margin="Margin.Dense"/>
 
     <MudNumericField @bind-Value="FormConsumableAmount"
                      Label="Menge"
@@ -22,16 +22,6 @@
                      Placeholder="Menge eingeben"
                      Variant="Variant.Filled"
                      FullWidth
-                     Class="form-field"/>
+                     Margin="Margin.Dense"/>
 </MudForm>
-
-<style>
-    .form-container {
-        padding: 16px;
-    }
-
-    .form-field {
-        margin-bottom: 16px;
-    }
-</style>
 

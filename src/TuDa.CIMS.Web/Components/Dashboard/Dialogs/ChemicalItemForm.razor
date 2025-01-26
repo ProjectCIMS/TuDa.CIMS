@@ -5,18 +5,20 @@
 @* Substance Item Form *@
 
 
-<MudForm>
+<MudForm Class="p-2">
     <MudTextField @bind-Value="FormCas"
                   Label="CAS"
                   Placeholder="CAS eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
+                  FullWidth
+                  Margin="Margin.Dense"/>
 
     <MudTextField @bind-Value="FormPurity"
                   Label="Reinheit"
                   Placeholder="Reinheit eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
+                  FullWidth
+                  Margin="Margin.Dense"/>
 
     <MudNumericField @bind-Value="FormBindingSize"
                      Culture="@_de"
@@ -24,7 +26,8 @@
                      Label="Größe des Gebindes"
                      Placeholder="Gebindengröße eingeben"
                      Variant="Variant.Filled"
-                     FullWidth/>
+                     FullWidth
+                     Margin="Margin.Dense"/>
 
     <!-- MudSelect for selecting measurement unit -->
     <MudSelect @bind-Value="FormPriceUnit"
@@ -32,7 +35,8 @@
                Error="@IsError"
                ErrorText="Preiseinheit fehlt!"
                Variant="Variant.Filled"
-               FullWidth>
+               FullWidth
+               Margin="Margin.Dense">
         <MudSelectItem T="MeasurementUnits?" Value="null">-</MudSelectItem>
         <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.Gram">Gramm</MudSelectItem>
         <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.KiloGram">Kilogramm</MudSelectItem>

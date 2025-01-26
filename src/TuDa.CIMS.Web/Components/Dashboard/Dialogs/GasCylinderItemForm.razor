@@ -4,18 +4,20 @@
 
 @* Gas Cylinder Item Form *@
 
-<MudForm>
+<MudForm Class="p-2">
     <MudTextField @bind-Value="FormCas"
                   Label="CAS"
                   Placeholder="CAS eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
+                  FullWidth
+                  Margin="Margin.Dense"/>
 
     <MudTextField @bind-Value="FormPurity"
                   Label="Reinheit"
                   Placeholder="Reinheit eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
+                  FullWidth
+                  Margin="Margin.Dense"/>
 
     <!-- MudSelect for selecting measurement unit -->
     <MudSelect @bind-Value="FormPriceUnit"
@@ -38,7 +40,8 @@
                      T="double"
                      Placeholder="Volumen eingeben"
                      Variant="Variant.Filled"
-                     FullWidth/>
+                     FullWidth
+                     Margin="Margin.Dense"/>
 
     <MudNumericField @bind-Value="FormPressure"
                      Label="Pressure"
@@ -46,7 +49,8 @@
                      T="double"
                      Placeholder="Druck eingeben"
                      Variant="Variant.Filled"
-                     FullWidth/>
+                     FullWidth
+                     Margin="Margin.Dense"/>
 </MudForm>
 
 @code
