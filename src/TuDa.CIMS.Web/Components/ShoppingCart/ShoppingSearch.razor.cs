@@ -35,7 +35,7 @@ public partial class ShoppingSearch : ComponentBase
     /// <summary>
     /// To filter for different types of Items
     /// </summary>
-    private AssetItemType _selectedAssetItemType = AssetItemType.Chemical;
+    private AssetItemType? _selectedAssetItemType;
 
     private async Task<IEnumerable<AssetItem>> Search(string nameOrCas, CancellationToken token)
     {
