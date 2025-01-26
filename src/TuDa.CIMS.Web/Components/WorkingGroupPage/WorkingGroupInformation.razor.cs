@@ -8,36 +8,24 @@ namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
 public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) : ComponentBase
 {
-    [Parameter]
-    public Guid WorkingGroupId { get; set; }
+    [Parameter] public Guid WorkingGroupId { get; set; }
 
     [Parameter]
     public WorkingGroup WorkingGroup { get; set; } =
         new WorkingGroup()
         {
-            Professor = new Professor()
-            {
-                Address = new Address(),
-                FirstName = "",
-                Name = "",
-            },
+            Professor = new Professor() { Address = new Address(), FirstName = "", Name = "", },
             Students = new List<Student>(),
             PhoneNumber = "",
             Email = "",
             Purchases = new List<Purchase>(),
         };
 
-    [Inject]
-    private IDialogService DialogService { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
 
     [Parameter]
     public Professor ProfessorInfo { get; set; } =
-        new()
-        {
-            Address = new Address(),
-            FirstName = "",
-            Name = "",
-        };
+        new() { Address = new Address(), FirstName = "", Name = "", };
 
     [CascadingParameter] public string ProfessorName { get; set; } = String.Empty;
 
@@ -53,8 +41,7 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
     {
         GenericInput field = new()
         {
-            Labels = ["Vorname", "Nachname"],
-            Values = [ProfessorInfo.FirstName, ProfessorInfo.Name],
+            Labels = ["Vorname", "Nachname"], Values = [ProfessorInfo.FirstName, ProfessorInfo.Name],
         };
 
         var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
@@ -85,11 +72,7 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
     private async Task EditPhoneNumber()
     {
-        GenericInput field = new()
-        {
-            Labels = ["Telefonnummer"],
-            Values = [WorkingGroup.PhoneNumber],
-        };
+        GenericInput field = new() { Labels = ["Telefonnummer"], Values = [WorkingGroup.PhoneNumber], };
 
         var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
 
@@ -116,11 +99,7 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
     private async Task EditAddressCity()
     {
-        GenericInput field = new()
-        {
-            Labels = ["Stadt"],
-            Values = [ProfessorInfo.Address.City],
-        };
+        GenericInput field = new() { Labels = ["Stadt"], Values = [ProfessorInfo.Address.City], };
 
         var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
 
@@ -138,10 +117,7 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
             await workingGroupApi.UpdateAsync(
                 WorkingGroupId,
-                new UpdateWorkingGroupDto()
-                {
-                    Professor = new() { AddressCity = ProfessorInfo.Address.City },
-                }
+                new UpdateWorkingGroupDto() { Professor = new() { AddressCity = ProfessorInfo.Address.City }, }
             );
         }
 
@@ -189,11 +165,7 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
     private async Task EditAddressZipNumber()
     {
-        GenericInput field = new()
-        {
-            Labels = ["Postleitzahl"],
-            Values = [ProfessorInfo.Address.ZipCode]
-        };
+        GenericInput field = new() { Labels = ["Postleitzahl"], Values = [ProfessorInfo.Address.ZipCode] };
 
         var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
 
@@ -212,10 +184,7 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
             await workingGroupApi.UpdateAsync(
                 WorkingGroupId,
-                new UpdateWorkingGroupDto()
-                {
-                    Professor = new() { AddressZipCode = ProfessorInfo.Address.ZipCode },
-                }
+                new UpdateWorkingGroupDto() { Professor = new() { AddressZipCode = ProfessorInfo.Address.ZipCode }, }
             );
             StateHasChanged();
         }
@@ -223,16 +192,9 @@ public partial class WorkingGroupInformation(IWorkingGroupApi workingGroupApi) :
 
     private async Task EditEmail()
     {
-        GenericInput field = new()
-        {
-            Labels = ["E-Mail"],
-            Values = [WorkingGroup.Email],
-        };
+        GenericInput field = new() { Labels = ["E-Mail"], Values = [WorkingGroup.Email], };
 
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            { up => up.Field, field }
-        };
+        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
 
         var options = new DialogOptions() { CloseOnEscapeKey = true };
 

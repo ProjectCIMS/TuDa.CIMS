@@ -64,4 +64,3 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
         }
     }
 }
-

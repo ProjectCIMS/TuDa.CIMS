@@ -1,7 +1,7 @@
 ﻿<MudDialog>
     <DialogContent>
         <MudForm>
-            @foreach(var i in Enumerable.Range(0, Field.Labels.Count))
+            @foreach (var i in Enumerable.Range(0, Field.Labels.Count))
             {
                 <MudTextField
                     @bind-Value="Field.Values[i]"
