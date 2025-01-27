@@ -154,7 +154,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
         };
 
         // Set Amount to amount purchased to ensure no error is returned
-        assetItem.Amount = entries.Aggregate(0, (i, entry) => i + entry.Amount);
+        assetItem.Amount = entries.Aggregate(0, (i, entry) => i + (int)entry.Amount);
         await _dbContext.SaveChangesAsync();
 
         // Act
