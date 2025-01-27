@@ -37,9 +37,14 @@ public partial class AssetList
 
         var items = SortAssetItems(state, errorOrItems.Value).ToList();
 
+        var filterOptions = new FilterOptions
+        {
+            FilterCaseSensitivity = DataGridFilterCaseSensitivity.CaseInsensitive,
+        };
+
         foreach (var filterDefinition in state.FilterDefinitions)
         {
-            var filterFunction = filterDefinition.GenerateFilterFunction();
+            var filterFunction = filterDefinition.GenerateFilterFunction(filterOptions);
 
             items = items.Where(filterFunction).ToList();
         }
