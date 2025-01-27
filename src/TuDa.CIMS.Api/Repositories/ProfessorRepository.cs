@@ -39,10 +39,12 @@ public class ProfessorRepository : IProfessorRepository
         professor.FirstName = update.FirstName ?? professor.FirstName;
         professor.Title = update.Title ?? professor.Title;
         professor.Gender = update.Gender ?? professor.Gender;
+        professor.PhoneNumber = update.PhoneNumber ?? professor.PhoneNumber;
         professor.Address.City = update.AddressCity ?? professor.Address.City;
         professor.Address.Street = update.AddressStreet ?? professor.Address.Street;
         professor.Address.Number = update.AddressNumber ?? professor.Address.Number;
         professor.Address.ZipCode = update.AddressZipCode ?? professor.Address.ZipCode;
+
 
         await _context.SaveChangesAsync();
 
@@ -55,6 +57,7 @@ public class ProfessorRepository : IProfessorRepository
         {
             Name = create.Name,
             FirstName = create.FirstName,
+            PhoneNumber = create.PhoneNumber,
             Gender = create.Gender,
             Title = create.Title,
             Address = new Address

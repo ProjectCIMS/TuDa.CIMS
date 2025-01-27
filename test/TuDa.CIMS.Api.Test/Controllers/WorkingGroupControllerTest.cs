@@ -110,13 +110,14 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
     [Fact]
     public async Task CreateAsync_ShouldCreateWorkingGroup_WhenWorkingGroupPresent()
     {
+        // Arrange
         Professor professor = new PersonFaker<Professor>();
         string phoneNumber = "Phone";
 
         var createWorkingGroup = new CreateWorkingGroupDto
         {
             Professor = professor.ToCreateDto(),
-            PhoneNumber = phoneNumber,
+            PhoneNumber = phoneNumber
         };
 
         // Act
