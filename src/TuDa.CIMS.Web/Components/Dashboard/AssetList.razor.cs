@@ -21,7 +21,7 @@ public partial class AssetList
     public EventCallback<AssetItem> EditButtonPressed { get; set; }
 
     private readonly IAssetItemApi _assetItemApi;
-    private MudDataGrid<AssetItem> _dataGrid { get; set; }
+    public MudDataGrid<AssetItem> _dataGrid { get; set; }
     private string _searchString { get; set; }
 
     public AssetList(IAssetItemApi assetItemApi)
@@ -29,7 +29,7 @@ public partial class AssetList
         _assetItemApi = assetItemApi;
     }
 
-    private async Task<GridData<AssetItem>> ServerReload(GridState<AssetItem> state)
+    public async Task<GridData<AssetItem>> ServerReload(GridState<AssetItem> state)
     {
         var errorOrItems = await _assetItemApi.GetAllAsync(_searchString);
         if (errorOrItems.IsError)

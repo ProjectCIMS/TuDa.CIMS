@@ -23,9 +23,6 @@ public partial class AssetItemEditDialog
     [Parameter]
     public EventCallback<AssetItem> OnDeleteRequested { get; set; }
 
-    [Parameter]
-    public EventCallback OnStateHasChanged { get; set; }
-
     /// <summary>
     /// If the Delete was confirmed through the extra dialog this will execute the deletion
     /// </summary>
@@ -43,7 +40,6 @@ public partial class AssetItemEditDialog
 
         if (await DialogService.ShowMessageBox(messageBox) ?? false)
         {
-            await OnStateHasChanged.InvokeAsync();
             await OnDeleteRequested.InvokeAsync(Item);
             ProductDialog.Close();
         }

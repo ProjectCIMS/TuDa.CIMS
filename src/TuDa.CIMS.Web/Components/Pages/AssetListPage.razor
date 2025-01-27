@@ -1,4 +1,5 @@
 ﻿@page "/asset-list"
+@using MudBlazor.Extensions
 @using TuDa.CIMS.Shared.Entities
 @using TuDa.CIMS.Web.Components.Dashboard
 @using TuDa.CIMS.Web.Components.Dashboard.Dialogs
@@ -7,7 +8,8 @@
 <div class="container-fluid ">
     <div class="row mt-5">
         <AssetList AddButtonPressed="CreateAssetItem"
-                   EditButtonPressed="EditAssetItem"/>
+                   EditButtonPressed="EditAssetItem"
+                   @ref="_assetList"/>
     </div>
 </div>
 
@@ -16,6 +18,7 @@
     [Inject] private ILogger<AssetListPage> _logger { get; set; } = null!;
     [Inject] public required IDialogService DialogService { get; set; }
     private IAssetItemApi _assetItemApi;
+    private AssetList _assetList;
 
     public AssetListPage(IAssetItemApi assetItemApi)
     {
@@ -36,8 +39,7 @@
         var parameters = new DialogParameters<AssetItemEditDialog>
         {
             { "Item", assetItem },
-            { "OnDeleteRequested", EventCallback.Factory.Create<AssetItem>(this, DeleteItem) },
-            { "OnStateHasChanged", EventCallback.Factory.Create(this, StateHasChanged)}
+            { "OnDeleteRequested", EventCallback.Factory.Create<AssetItem>(this, DeleteItem) }
         };
 
         var options = new DialogOptions { CloseOnEscapeKey = true };
@@ -48,6 +50,7 @@
     private async Task DeleteItem(AssetItem assetItem)
     {
         await _assetItemApi.RemoveAsync(assetItem.Id);
+        await _assetList._dataGrid.ReloadServerData();
     }
 
 }
