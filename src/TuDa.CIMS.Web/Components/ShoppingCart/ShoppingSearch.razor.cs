@@ -35,7 +35,7 @@ public partial class ShoppingSearch : ComponentBase
     /// <summary>
     /// To filter for different types of Items
     /// </summary>
-    private AssetItemType? _selectedAssetItemType;
+    private List<AssetItemType?> _selectedAssetItemType;
 
     private async Task<IEnumerable<AssetItem>> Search(string nameOrCas, CancellationToken token)
     {
@@ -44,18 +44,24 @@ public partial class ShoppingSearch : ComponentBase
             return [];
         }
 
-        var allItems = await _assetItemApi
+        IEnumerable<AssetItem> allItems = await _assetItemApi
             .GetAllAsync(nameOrCas)
-            .Match(value => value, err => new List<AssetItem>());
+            .Match(value => value, err => []);
 
-        return _selectedAssetItemType switch
-        {
-            AssetItemType.Chemical => allItems.Where(item => item is Chemical and not Solvent),
-            AssetItemType.Consumable => allItems.OfType<Consumable>(),
-            AssetItemType.Solvent => allItems.OfType<Solvent>(),
-            AssetItemType.GasCylinder => allItems.OfType<GasCylinder>(),
-            _ => allItems,
-        };
+        return _selectedAssetItemType?.Any() == true
+            ? allItems.Where(item =>
+                (
+                    _selectedAssetItemType.Contains(AssetItemType.Chemical)
+                    && item is Chemical and not Solvent
+                )
+                || (_selectedAssetItemType.Contains(AssetItemType.Consumable) && item is Consumable)
+                || (_selectedAssetItemType.Contains(AssetItemType.Solvent) && item is Solvent)
+                || (
+                    _selectedAssetItemType.Contains(AssetItemType.GasCylinder)
+                    && item is GasCylinder
+                )
+            )
+            : allItems;
     }
 
     private static string ToString(AssetItem item) =>

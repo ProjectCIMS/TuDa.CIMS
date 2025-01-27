@@ -18,15 +18,11 @@
             ShowProgressIndicator="true">
         </MudAutocomplete>
         <MudChipSet T="AssetItemType?"
-                    @bind-SelectedValue="_selectedAssetItemType"
+                    SelectedValues="_selectedAssetItemType"
+                    SelectedValuesChanged="@((values) => _selectedAssetItemType = values.ToList())"
                     CheckMark
-                    SelectionMode="SelectionMode.SingleSelection"
-                    Class="my-4">
-            <MudChip Color="Color.Dark"
-                     T="AssetItemType?"
-                     Value="null">
-                Alle
-            </MudChip>
+                    SelectionMode="SelectionMode.MultiSelection"
+                    Class="my-1">
             <MudChip Color="Color.Primary"
                      T="AssetItemType?"
                      Value="AssetItemType.Chemical">
