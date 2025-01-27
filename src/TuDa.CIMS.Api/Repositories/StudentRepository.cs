@@ -71,10 +71,10 @@ public class StudentRepository : IStudentRepository
 
         var newStudent = new Student()
         {
-            Name = createStudentDto?.Name ?? string.Empty,
-            FirstName = createStudentDto?.FirstName ?? string.Empty,
-            Gender = createStudentDto?.Gender ?? Gender.Unknown,
-            PhoneNumber = createStudentDto!.PhoneNumber
+            Name = createStudentDto.Name,
+            FirstName = createStudentDto.FirstName,
+            Gender = createStudentDto.Gender,
+            PhoneNumber = createStudentDto.PhoneNumber
         };
 
         existingWorkingGroup.Students.Add(newStudent);
