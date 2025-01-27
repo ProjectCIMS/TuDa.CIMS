@@ -71,9 +71,10 @@ public class StudentRepository : IStudentRepository
 
         var newStudent = new Student()
         {
-            Name = createStudentDto?.Name ?? string.Empty,
-            FirstName = createStudentDto?.FirstName ?? string.Empty,
-            Gender = createStudentDto?.Gender ?? Gender.Unknown,
+            Name = createStudentDto.Name,
+            FirstName = createStudentDto.FirstName,
+            Gender = createStudentDto.Gender,
+            PhoneNumber = createStudentDto.PhoneNumber
         };
 
         existingWorkingGroup.Students.Add(newStudent);
@@ -112,6 +113,7 @@ public class StudentRepository : IStudentRepository
         existingStudent.Name = updatedStudentDto.Name ?? existingStudent.Name;
         existingStudent.FirstName = updatedStudentDto.FirstName ?? existingStudent.FirstName;
         existingStudent.Gender = updatedStudentDto.Gender ?? existingStudent.Gender;
+        existingStudent.PhoneNumber = updatedStudentDto.PhoneNumber ?? existingStudent.PhoneNumber;
 
         await _context.SaveChangesAsync();
         return Result.Updated;

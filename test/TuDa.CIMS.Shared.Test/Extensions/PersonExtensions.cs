@@ -12,6 +12,7 @@ public static class PersonExtensions
             FirstName = professor.FirstName,
             Gender = professor.Gender,
             Title = professor.Title,
+            PhoneNumber = professor.PhoneNumber,
             AddressStreet = professor.Address.Street,
             AddressNumber = professor.Address.Number,
             AddressZipCode = professor.Address.ZipCode,
