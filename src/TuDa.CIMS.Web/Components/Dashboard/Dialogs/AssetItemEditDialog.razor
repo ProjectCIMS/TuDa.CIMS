@@ -16,41 +16,29 @@
     </DialogContent>
     <!-- Modal Footer -->
     <DialogActions>
-        <MudContainer Class="dialog-footer">
+        <MudContainer Class="d-flex justify-between align-items-center p-3">
             <MudButton OnClick="Cancel"
                        Color="Color.Secondary"
-                       Class="me-auto action-button">
+                       Class="me-auto mx-1">
                 Schließen
             </MudButton>
             <MudButton OnClick="AssetItemEditFormLoad"
                        Color="Color.Primary"
-                       Class="action-button">
+                       Class="mx-1">
                 Zurücksetzen
             </MudButton>
             <MudButton OnClick="DeleteItem"
                        Color="Color.Error"
                        Variant="Variant.Filled"
-                       Class="action-button">
+                       Class="mx-1">
                 Löschen
             </MudButton>
             <MudButton OnClick="SaveChanges"
                        Color="Color.Success"
                        Variant="Variant.Filled"
-                       Class="action-button">
+                       Class="mx-1">
                 Speichern
             </MudButton>
         </MudContainer>
     </DialogActions>
 </MudDialog>
-
-<style>
-    .dialog-footer {
-        padding: 16px;
-        display: flex;
-        gap: 8px;
-    }
-
-    .action-button {
-        margin: 0 8px;
-    }
-</style>
