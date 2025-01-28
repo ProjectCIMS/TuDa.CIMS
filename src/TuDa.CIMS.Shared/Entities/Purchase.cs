@@ -31,11 +31,6 @@ public record Purchase : BaseEntity
     /// </summary>
     public DateTime? CompletionDate { get; set; }
 
-    /// <summary>
-    /// If the purchase is actually completed.
-    /// </summary>
-    public bool Completed { get; set; }
-
     #region Methods
 
     /// <summary>

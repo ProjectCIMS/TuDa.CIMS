@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Dtos;
-using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Components.WorkingGroupList;
+using TuDa.CIMS.Web.Components.WorkingGroupPage;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.Pages;
@@ -18,22 +18,37 @@ public partial class WorkingGroupListPage
     private async Task OpenDialogAsync()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        var dialog = await DialogService.ShowAsync<WorkingGroupPageWorkingGroupListAddDialog>(
-            "AddWorkingGroupDialog",
+        GenericInput field = new()
+        {
+            Labels =
+            [
+                "Vorname des Professors", "Nachname des Professors", "Titel des Professors",
+                "E-Mail-Adresse", "Telefonnummer"
+            ],
+            Values = [string.Empty, string.Empty, string.Empty, string.Empty, string.Empty],
+            YesText = "Hinzufügen"
+        };
+        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
+        var dialog = await DialogService.ShowAsync<GenericInputPopUp>(
+            "Arbeitsgruppe erstellen",
+            parameters,
             options
         );
         var result = await dialog.Result;
-        var professor = await dialog.GetReturnValueAsync<CreateProfessorDto>();
-
         if (result is { Canceled: false })
         {
-            if (professor != null)
+            var returnedValues = (List<string>)result!.Data!;
+            CreateProfessorDto professor = new()
             {
-                await _workingGroupApi.CreateAsync(
-                    new CreateWorkingGroupDto { Professor = professor }
-                );
-                await _workingGroupList.ReloadDataGridAsync();
-            }
+                FirstName = returnedValues[0], Name = returnedValues[1], Title = returnedValues[2],
+            };
+            await _workingGroupApi.CreateAsync(
+                new CreateWorkingGroupDto
+                {
+                    Professor = professor, Email = returnedValues[3], PhoneNumber = returnedValues[4]
+                }
+            );
+            await _workingGroupList.ReloadDataGridAsync();
         }
     }
 }

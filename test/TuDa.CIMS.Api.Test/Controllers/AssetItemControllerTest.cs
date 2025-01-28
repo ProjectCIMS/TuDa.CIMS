@@ -168,7 +168,10 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             response.IsSuccessStatusCode.Should().BeTrue();
 
             var result = await _dbContext.AssetItems.SingleAsync(i => i.Id == assetItem.Id);
-            result.Should().BeEquivalentTo(updatedItem);
+            result
+                .Should()
+                .BeEquivalentTo(updatedItem, options => options.Excluding(item => item.UpdatedAt));
+            result.UpdatedAt.Should().NotBeNull();
         }
     }
 

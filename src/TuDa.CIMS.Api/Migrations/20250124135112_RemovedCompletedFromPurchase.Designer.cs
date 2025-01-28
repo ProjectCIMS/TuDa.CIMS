@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TuDa.CIMS.Api.Database;
@@ -11,9 +12,11 @@ using TuDa.CIMS.Api.Database;
 namespace TuDa.CIMS.Api.Migrations
 {
     [DbContext(typeof(CIMSDbContext))]
-    partial class CIMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250124135112_RemovedCompletedFromPurchase")]
+    partial class RemovedCompletedFromPurchase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,18 +50,12 @@ namespace TuDa.CIMS.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<int>("Number")
                         .HasColumnType("integer");
 
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ZipCode")
                         .IsRequired()
@@ -74,9 +71,6 @@ namespace TuDa.CIMS.Api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -105,9 +99,6 @@ namespace TuDa.CIMS.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.HasKey("Id");
 
                     b.HasIndex("RoomId");
@@ -131,17 +122,11 @@ namespace TuDa.CIMS.Api.Migrations
                     b.Property<Guid>("ConsumableId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("TransactionReason")
                         .HasColumnType("integer");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -156,9 +141,6 @@ namespace TuDa.CIMS.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("text");
@@ -166,9 +148,6 @@ namespace TuDa.CIMS.Api.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -180,9 +159,6 @@ namespace TuDa.CIMS.Api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -197,13 +173,6 @@ namespace TuDa.CIMS.Api.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -228,15 +197,9 @@ namespace TuDa.CIMS.Api.Migrations
                     b.Property<DateTime?>("CompletionDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<byte[]>("Signature")
                         .IsRequired()
                         .HasColumnType("bytea");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("WorkingGroupId")
                         .HasColumnType("uuid");
@@ -256,23 +219,17 @@ namespace TuDa.CIMS.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("double precision");
+                    b.Property<int>("Amount")
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("AssetItemId")
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<double>("PricePerItem")
                         .HasColumnType("double precision");
 
                     b.Property<Guid?>("PurchaseId")
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -289,15 +246,9 @@ namespace TuDa.CIMS.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -310,9 +261,6 @@ namespace TuDa.CIMS.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
@@ -323,9 +271,6 @@ namespace TuDa.CIMS.Api.Migrations
 
                     b.Property<Guid>("ProfessorId")
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
