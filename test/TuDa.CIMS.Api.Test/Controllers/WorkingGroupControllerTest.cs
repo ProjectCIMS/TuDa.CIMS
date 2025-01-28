@@ -174,10 +174,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
 
         workingGroup
             .Should()
-            .BeEquivalentTo(
-                updatedWorkingGroup,
-                options => options.Excluding(wg => wg.Professor.UpdatedAt)
-            );
+            .BeEquivalentTo(updatedWorkingGroup);
 
         workingGroup
             .Should()
