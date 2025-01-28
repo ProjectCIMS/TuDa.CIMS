@@ -31,6 +31,11 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
         await base.OnInitializedAsync();
     }
 
+    public void OpenInformationDialog()
+    {
+        DialogService.Show<WorkingGroupInfoPopOut>("Informationen zur Arbeitsgruppe", new DialogParameters { { "WorkingGroupId", WorkingGroupId } });
+    }
+
     /// <summary>
     /// Opens the dialog to edit the professor
     /// </summary>
