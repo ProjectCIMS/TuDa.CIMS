@@ -6,12 +6,20 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
-public partial class WorkingGroupPersonList(
-    IDialogService dialogService,
-    IWorkingGroupApi workingGroupApi,
-    IStudentApi studentApi) : ComponentBase
+public partial class WorkingGroupPersonList : ComponentBase
 {
+    private readonly IDialogService dialogService;
+    private readonly IWorkingGroupApi workingGroupApi;
+    private readonly IStudentApi studentApi;
+
     private IEnumerable<Person> _persons = new List<Person>();
+
+    public WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi, IStudentApi studentApi)
+    {
+        this.dialogService = dialogService;
+        this.workingGroupApi = workingGroupApi;
+        this.studentApi = studentApi;
+    }
 
     [Parameter] public Guid WorkingGroupId { get; set; }
 
@@ -43,9 +51,7 @@ public partial class WorkingGroupPersonList(
             if (_persons.Any())
             {
                 await studentApi.RemoveAsync(WorkingGroupId, student.Id);
-                var modifiableList = _persons.ToList();
-                modifiableList.Remove(student);
-                _persons = modifiableList;
+                _persons.ToList().Remove(student);
                 await PersonDeleted.InvokeAsync();
             }
         }
