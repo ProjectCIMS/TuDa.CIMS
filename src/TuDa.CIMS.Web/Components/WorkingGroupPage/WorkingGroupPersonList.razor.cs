@@ -51,6 +51,8 @@ public partial class WorkingGroupPersonList : ComponentBase
             if (_persons.Any())
             {
                 await studentApi.RemoveAsync(WorkingGroupId, student.Id);
+
+                // Have to be like this otherwise the list will only update after reload
                 var modifiedList = _persons.ToList();
                 modifiedList.Remove(student);
                 _persons = modifiedList;
@@ -94,6 +96,7 @@ public partial class WorkingGroupPersonList : ComponentBase
                 }
             );
 
+            // Have to be like this otherwise the list will only update after reload
             var modifiableList = _persons.ToList();
             modifiableList.Add(student);
             _persons = modifiableList;
