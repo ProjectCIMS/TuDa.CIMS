@@ -38,5 +38,29 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
     {
         DialogService.Show<WorkingGroupInfoPopOut>("Informationen zur Arbeitsgruppe",
             new DialogParameters { { "WorkingGroupId", WorkingGroupId } });
+
+        GenericInput field = new() { Labels = ["Titel", "Nachname"], Values = [Professor.Title, Professor.Name], };
+
+        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialogReference =
+            await DialogService.ShowAsync<GenericInputPopUp>("Professor bearbeiten", parameters, options);
+
+        var result = await dialogReference.Result;
+
+        if (!result!.Canceled)
+        {
+            var returnedValues = (List<string>)result.Data!;
+            ProfessorTitle = returnedValues[0];
+            ProfessorName = returnedValues[1];
+
+            await workingGroupApi.UpdateAsync(
+                WorkingGroupId,
+                new UpdateWorkingGroupDto { Professor = new() { Name = ProfessorName, Title = ProfessorTitle } }
+            );
+            StateHasChanged();
+        }
     }
 }
