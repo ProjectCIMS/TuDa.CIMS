@@ -10,7 +10,18 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel" Color="Color.Error">Abbrechen</MudButton>
-        <MudButton OnClick="Submit" Color="Color.Success">@Field.YesText</MudButton>
+        <MudButton OnClick="@(() =>
+                            {
+                                Cancel();
+                                Snackbar.Add("Der Vorgang wurde abgebrochen", Severity.Warning);
+                            })" Color="Color.Error">Abbrechen
+        </MudButton>
+        <MudButton OnClick="@(() =>
+                            {
+                                Submit();
+                                Snackbar.Add("Der Vorgang wurde erfolgreich abgeschlossen", Severity.Success);
+                            })"
+                   Color="Color.Success">@Field.YesText</MudButton>
+
     </DialogActions>
 </MudDialog>

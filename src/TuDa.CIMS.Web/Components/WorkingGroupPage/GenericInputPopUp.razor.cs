@@ -5,6 +5,7 @@ namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
 public partial class GenericInputPopUp : ComponentBase
 {
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
     [CascadingParameter] public required MudDialogInstance MudDialog { get; set; }
 
     [Parameter] public GenericInput Field { get; set; } = new GenericInput();
