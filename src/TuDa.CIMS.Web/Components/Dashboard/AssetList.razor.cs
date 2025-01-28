@@ -29,6 +29,14 @@ public partial class AssetList
         _assetItemApi = assetItemApi;
     }
 
+    /// <summary>
+    /// method to reload the datagrid
+    /// </summary>
+    public async Task ReloadData()
+    {
+        await _dataGrid.ReloadServerData();
+    }
+
     private async Task<GridData<AssetItem>> ServerReload(GridState<AssetItem> state)
     {
         var errorOrItems = await _assetItemApi.GetAllAsync(_searchString);

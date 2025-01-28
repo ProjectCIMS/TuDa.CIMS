@@ -73,24 +73,24 @@ public partial class AssetItemCreateForm
     /// <summary>
     /// Check if all required Inputs are done
     /// </summary>
-    /// <returns></returns>
-    public bool ValidateForm()
+    /// <returns>returns true if an error exist in any form</returns>
+    public bool ErrorsInForm()
     {
         if (
-            _assetItemForm.ValidateForm()
+            _assetItemForm.ErrorsInForm()
             || (
                 (
                     _selectedAssetItemType == AssetItemType.Chemical
                     || _selectedAssetItemType == AssetItemType.Solvent
-                ) && _chemicalItemForm.ValidateForm()
+                ) && _chemicalItemForm.ErrorsInForm()
             )
             || (
                 _selectedAssetItemType == AssetItemType.Consumable
-                && _consumableItemForm.ValidateForm()
+                && _consumableItemForm.ErrorsInForm()
             )
             || (
                 _selectedAssetItemType == AssetItemType.GasCylinder
-                && _gasCylinderForm.ValidateForm()
+                && _gasCylinderForm.ErrorsInForm()
             )
         )
         {
@@ -111,7 +111,7 @@ public partial class AssetItemCreateForm
     public EventCallback OnValidation { get; set; }
 
     /// <summary>
-    /// Functionality of the "Änderungen speichern" Button: Bind the Values to the actual Item
+    /// Functionality of the "Änderungen speichern" Button: Create the Item
     /// </summary>
     public async Task SaveChanges()
     {

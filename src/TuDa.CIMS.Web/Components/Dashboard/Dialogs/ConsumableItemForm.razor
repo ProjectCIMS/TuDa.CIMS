@@ -1,18 +1,19 @@
-@using TuDa.CIMS.Shared.Entities
 @* Consumable Item Form *@
 
-<MudForm>
+<MudForm Class="p-2">
     <MudTextField @bind-Value="FormManufacturer"
                   Label=Hersteller
                   Placeholder="Hersteller eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
+                  FullWidth
+                  Margin="Margin.Dense"/>
 
     <MudTextField @bind-Value="FormSerialNumber"
                   Label="Seriennummer"
                   Placeholder="Seriennummer eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
+                  FullWidth
+                  Margin="Margin.Dense"/>
 
     <MudNumericField @bind-Value="FormConsumableAmount"
                      Label="Menge"
@@ -20,59 +21,7 @@
                      ErrorText="Die Menge muss größer als 0 betragen!"
                      Placeholder="Menge eingeben"
                      Variant="Variant.Filled"
-                     FullWidth/>
+                     FullWidth
+                     Margin="Margin.Dense"/>
 </MudForm>
 
-@code
-{
-    /// <summary>
-    /// Input Fields
-    /// </summary>
-    public string FormManufacturer { get; private set; } = string.Empty;
-    public string FormSerialNumber { get; private set; } = string.Empty;
-    public int FormConsumableAmount { get; private set; }
-
-    [Parameter] public bool FormShowError { get; set; }
-
-    private bool IsError => FormShowError && FormConsumableAmount <= 0;
-
-
-    public void SetForm(Consumable item)
-    {
-        FormManufacturer = item.Manufacturer;
-        FormSerialNumber = item.SerialNumber;
-        FormConsumableAmount = item.Amount;
-    }
-
-    /// <summary>
-    /// Validate the Inputs
-    /// </summary>
-    /// <returns>returns false when all Inputs are valid otherwise true</returns>
-    public bool ValidateForm()
-    {
-        if (
-            FormManufacturer == string.Empty
-            || FormSerialNumber == string.Empty
-            || FormConsumableAmount == 0
-        )
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    [Parameter] public EventCallback OnReset { get; set; }
-
-    /// <summary>
-    /// Resets the Input lines
-    /// </summary>
-    public void ResetInputs()
-    {
-        FormManufacturer = string.Empty;
-        FormSerialNumber = string.Empty;
-        FormConsumableAmount = 0;
-        OnReset.InvokeAsync();
-    }
-
-}

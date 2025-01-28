@@ -1,39 +1,36 @@
-@using System.Globalization
-@using TuDa.CIMS.Shared.Entities
+@* AssetItemForm *@
 
-@* Generic AssetItemForm *@
-
-<MudForm>
+<MudForm Class="p-2">
     <MudTextField @bind-Value="FormName"
                   Label="Name"
                   Error="@NameIsError"
                   ErrorText="Der Name muss eingegeben werden!"
                   Placeholder="Name eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
-
+                  FullWidth
+                  Margin="Margin.Dense"/>
     <MudTextField @bind-Value="FormShop"
                   Label="Lieferant"
                   Error="@ShopIsError"
                   ErrorText="Der Lieferant muss eingegeben werden!"
                   Placeholder="Shop eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
-
+                  FullWidth
+                  Margin="Margin.Dense"/>
     <MudTextField @bind-Value="FormItemNumber"
                   Label="Produktnummer"
                   Error="@ItemNumberIsError"
                   ErrorText="Die Produktnummer muss eingegeben werden!"
                   Placeholder="Produktnummer eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
-
+                  FullWidth
+                  Margin="Margin.Dense"/>
     <MudTextField @bind-Value="FormNote"
                   Label="Notiz"
                   Placeholder="Notiz eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
-
+                  FullWidth
+                  Margin="Margin.Dense"/>
     <MudNumericField @bind-Value="FormPrice"
                      Format="C"
                      Culture="@_de"
@@ -43,89 +40,17 @@
                      ErrorText="Der Preis muss eingegeben werden!"
                      Placeholder="Preis eingeben"
                      Variant="Variant.Filled"
-                     FullWidth/>
-
+                     FullWidth
+                     Margin="Margin.Dense"/>
     <MudTextField @bind-Value="FormRoomName"
                   Label="Raumname"
                   Placeholder="Raumname eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
-
+                  FullWidth
+                  Margin="Margin.Dense"/>
     <MudButton Color="Color.Primary"
                Class="mt-3"
                OnClick="ResetInputs">
         Leeren
     </MudButton>
 </MudForm>
-
-
-
-@code
-{
-    private readonly CultureInfo _de = CultureInfo.GetCultureInfo("de-DE");
-
-    /// <summary>
-    /// Input Fields
-    /// </summary>
-    public string FormName { get; private set; } = string.Empty;
-    public string FormShop { get; private set; } = string.Empty;
-    public string FormItemNumber { get; private set; } = string.Empty;
-    public string FormNote { get; private set; } = string.Empty;
-    public double FormPrice { get; private set; }
-    public string FormRoomName { get; private set; } = string.Empty;
-
-    [Parameter] public bool FormShowError { get; set; }
-
-    private bool PriceIsError => FormShowError && FormPrice <= 0;
-    private bool NameIsError => FormShowError && FormName == string.Empty;
-    private bool ShopIsError => FormShowError && FormShop == string.Empty;
-    private bool ItemNumberIsError => FormShowError && FormItemNumber == string.Empty;
-
-    [Parameter] public EventCallback OnReset { get; set; }
-
-
-    public void SetForm(AssetItem item)
-    {
-        FormName = item.Name;
-        FormNote = item.Note;
-        FormPrice = item.Price;
-        FormShop = item.Shop;
-        FormRoomName = item.Room.Name;
-        FormItemNumber = item.ItemNumber;
-    }
-
-
-    /// <summary>
-    /// Resets the Input lines
-    /// </summary>
-    public void ResetInputs()
-    {
-        FormName = string.Empty;
-        FormShop = string.Empty;
-        FormItemNumber = string.Empty;
-        FormNote = string.Empty;
-        FormPrice = 0.0;
-        FormRoomName = string.Empty;
-        OnReset.InvokeAsync();
-    }
-
-    /// <summary>
-    /// Validate the Inputs
-    /// </summary>
-    /// <returns>returns false when all Inputs are valid otherwise true</returns>
-    public bool ValidateForm()
-    {
-        if (
-            FormName == string.Empty
-            || FormShop == string.Empty
-            || FormItemNumber == string.Empty
-            || FormPrice == 0.0
-            || FormRoomName == string.Empty
-        )
-        {
-            return true;
-        }
-
-        return false;
-    }
-}
