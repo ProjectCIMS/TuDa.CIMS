@@ -16,8 +16,6 @@ public partial class GenericInputPopUp : ComponentBase
         Snackbar.Add("Der Vorgang wurde erfolgreich abgeschlossen", Severity.Success);
     }
 
-
-
     private void Cancel()
     {
         MudDialog.Cancel();

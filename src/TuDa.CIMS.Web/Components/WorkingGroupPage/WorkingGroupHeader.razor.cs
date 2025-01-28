@@ -34,7 +34,7 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
     /// <summary>
     /// Opens the dialog to look up and edit the workinggroup
     /// </summary>
-    public void OpenInformationDialog()
+    public async Task OpenInformationDialog()
     {
         DialogService.Show<WorkingGroupInfoPopOut>("Informationen zur Arbeitsgruppe",
             new DialogParameters { { "WorkingGroupId", WorkingGroupId } });
