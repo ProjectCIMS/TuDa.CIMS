@@ -2,28 +2,21 @@
 using MudBlazor;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
-using TuDa.CIMS.Shared.Entities.Enums;
-using TuDa.CIMS.Web.Components.WorkingGroupPage.WorkingGroupDialogs;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
 public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : ComponentBase
 {
-    [Parameter]
-    public required Professor Professor { get; set; }
+    [Parameter] public required Professor Professor { get; set; }
 
-    [Parameter]
-    public string ProfessorName { get; set; } = String.Empty;
+    [Parameter] public string ProfessorName { get; set; } = String.Empty;
 
-    [Parameter]
-    public string ProfessorTitle { get; set; } = String.Empty;
+    [Parameter] public string ProfessorTitle { get; set; } = String.Empty;
 
-    [Parameter]
-    public Guid WorkingGroupId { get; set; }
+    [Parameter] public Guid WorkingGroupId { get; set; }
 
-    [Inject]
-    private IDialogService DialogService { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
 
     /// <summary>
     /// Sets the ProfessorName and Professor properties
@@ -38,33 +31,33 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
         await base.OnInitializedAsync();
     }
 
+    /// <summary>
+    /// Opens the dialog to edit the professor
+    /// </summary>
     public async Task OpenDialogAsync()
     {
-        var parameters = new DialogParameters
-        {
-            { nameof(WorkingGroupProfessorEditDialog.ProfessorName), ProfessorName },
-        };
+        GenericInput field = new() { Labels = ["Titel", "Nachname"], Values = [Professor.Title, Professor.Name], };
 
-        var options = new DialogOptions() { CloseOnEscapeKey = true };
+        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
 
-        var dialogReference = await DialogService.ShowAsync<WorkingGroupProfessorEditDialog>(
-            "Edit Professor",
-            parameters,
-            options
-        );
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialogReference =
+            await DialogService.ShowAsync<GenericInputPopUp>("Professor bearbeiten", parameters, options);
 
         var result = await dialogReference.Result;
 
         if (!result!.Canceled)
         {
-            ProfessorName = result.Data!.ToString()!;
+            var returnedValues = (List<string>)result.Data!;
+            ProfessorTitle = returnedValues[0];
+            ProfessorName = returnedValues[1];
 
             await workingGroupApi.UpdateAsync(
                 WorkingGroupId,
-                new UpdateWorkingGroupDto()
+                new UpdateWorkingGroupDto
                 {
-                    PhoneNumber = "",
-                    Professor = new() { Name = ProfessorName },
+                    PhoneNumber = "", Professor = new() { Name = ProfessorName, Title = ProfessorTitle }
                 }
             );
             StateHasChanged();
