@@ -1,3 +1,4 @@
+@using System.Globalization
 @using TuDa.CIMS.Shared.Entities
 @using TuDa.CIMS.Shared.Entities.Enums
 
@@ -7,23 +8,19 @@
 <MudForm>
     <MudTextField @bind-Value="FormCas"
                   Label="CAS"
-                  Error="@IsError"
-                  ErrorText="Die CAS muss eingegeben werden!"
                   Placeholder="CAS eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
     <MudTextField @bind-Value="FormPurity"
                   Label="Reinheit"
-                  Error="@IsError"
-                  ErrorText="Die Reinheit muss eingegeben werden!"
                   Placeholder="Reinheit eingeben"
                   Variant="Variant.Filled"
                   FullWidth/>
 
     <MudNumericField @bind-Value="FormBindingSize"
-                     Error="@IsError"
-                     ErrorText="Die Größe des Gebindes muss größer als 0 betragen!"
+                     Culture="@_de"
+                     T="double"
                      Label="Größe des Gebindes"
                      Placeholder="Gebindengröße eingeben"
                      Variant="Variant.Filled"
@@ -32,22 +29,27 @@
     <!-- MudSelect for selecting measurement unit -->
     <MudSelect @bind-Value="FormPriceUnit"
                Label="Preis Einheit wählen"
+               Error="@IsError"
+               ErrorText="Preiseinheit fehlt!"
                Variant="Variant.Filled"
                FullWidth>
-        <MudSelectItem Value="MeasurementUnits.Gram">Gramm</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.KiloGram">Kilogramm</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.MilliLiter">Milliliter</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.Liter">Liter</MudSelectItem>
-        <MudSelectItem Value="MeasurementUnits.Piece">Stück</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="null">-</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.Gram">Gramm</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.KiloGram">Kilogramm</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.MilliLiter">Milliliter</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.Liter">Liter</MudSelectItem>
+        <MudSelectItem T="MeasurementUnits?" Value="MeasurementUnits.Piece">Stück</MudSelectItem>
     </MudSelect>
 </MudForm>
 
 @code
 {
+    private readonly CultureInfo _de = CultureInfo.GetCultureInfo("de-DE");
+
     /// <summary>
     /// Input Fields
     /// </summary>
-    public MeasurementUnits FormPriceUnit { get; private set; }
+    public MeasurementUnits? FormPriceUnit { get; private set; }
     public string FormCas { get; private set; } = string.Empty;
     public string FormPurity { get; private set; } = string.Empty;
     public double FormBindingSize { get; private set; }
@@ -55,7 +57,7 @@
 
     [Parameter] public bool FormShowError { get; set; }
 
-    private bool IsError => FormShowError && (FormCas == string.Empty || FormPurity == string.Empty || FormBindingSize <= 0);
+    private bool IsError => FormPriceUnit == null  && FormShowError;
 
 
     public void SetForm(Chemical item)

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TuDa.CIMS.Api.Controllers;
@@ -40,7 +41,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
         foreach (var purchase in workingGroup.Purchases)
         {
             // Act
-            var response = await _client.GetAsync($"api/purchases/{workingGroup.Id}/{purchase.Id}");
+            var response = await _client.GetAsync($"api/working-groups/{workingGroup.Id}/purchases/{purchase.Id}");
 
             // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
@@ -55,7 +56,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
     public async Task GetAsync_ShouldReturnNotFound_WhenPurchaseNotPresent()
     {
         WorkingGroup workingGroup = new WorkingGroupFaker(purchases: []);
-        var response = await _client.GetAsync($"api/purchases/{workingGroup.Id}/{Guid.NewGuid()}");
+        var response = await _client.GetAsync($"api/working-groups/{workingGroup.Id}/purchases/{Guid.NewGuid()}");
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -70,7 +71,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
         await _dbContext.SaveChangesAsync();
 
         // Act
-        var response = await _client.GetAsync($"api/purchases/{workingGroup.Id}");
+        var response = await _client.GetAsync($"api/working-groups/{workingGroup.Id}/purchases");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -95,7 +96,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
         {
             // Act
             var response = await _client.DeleteAsync(
-                $"api/purchases/{workingGroup.Id}/{purchase.Id}"
+                $"api/working-groups/{workingGroup.Id}/purchases/{purchase.Id}"
             );
 
             // Assert
@@ -118,13 +119,13 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
         await _dbContext.SaveChangesAsync();
 
         var response = await _client.DeleteAsync(
-            $"api/purchases/{workingGroup.Id}/{Guid.NewGuid()}"
+            $"api/working-groups/{workingGroup.Id}/purchases/{Guid.NewGuid()}"
         );
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "There is a bug with already present AssetItems (GH#150)")]
+    [Fact]
     public async Task CreateAsync_ShouldCreatePurchase_WhenWorkingGroupPresent()
     {
         // Arrange
@@ -135,7 +136,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
         await _dbContext.AssetItems.AddAsync(assetItem);
         await _dbContext.SaveChangesAsync();
 
-        var completionDate = DateTime.Now;
+        var completionDate = DateTime.Now.ToUniversalTime();
         var entries = new PurchaseEntryFaker<Consumable>(assetItem).GenerateBetween(1, 10);
 
         var createPurchase = new CreatePurchaseDto
@@ -146,20 +147,24 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
                 .Select(entry => new CreatePurchaseEntryDto
                 {
                     AssetItemId = entry.AssetItem.Id,
-                    Amount = entry.Amount,
+                    Amount = (int)entry.Amount,
                     PricePerItem = entry.PricePerItem,
                 })
                 .ToList(),
         };
 
+        // Set Amount to amount purchased to ensure no error is returned
+        assetItem.Amount = entries.Aggregate(0, (i, entry) => i + (int)entry.Amount);
+        await _dbContext.SaveChangesAsync();
+
         // Act
         var response = await _client.PostAsync(
-            $"api/purchases/{workingGroup.Id}",
+            $"api/working-groups/{workingGroup.Id}/purchases",
             JsonContent.Create(createPurchase)
         );
 
         // Assert
-        response.IsSuccessStatusCode.Should().BeTrue();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var result = await _dbContext
             .Purchases.Include(p => p.Entries)
@@ -175,7 +180,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
     public async Task CreateAsync_ShouldReturnNotFound_WhenWorkingGroupNotPresent()
     {
         var response = await _client.PostAsync(
-            $"api/purchases/{Guid.NewGuid()}",
+            $"api/working-groups/{Guid.NewGuid()}/purchases",
             JsonContent.Create(new CreatePurchaseDto() { Buyer = Guid.NewGuid() })
         );
 

@@ -22,7 +22,7 @@ public class StudentService : IStudentService
     /// <param name="id">the unique id of the Student</param>
     /// <param name="workingGroupId">the unique id of the Working Group</param>
     /// <returns></returns>
-    public async Task<ErrorOr<WorkingGroup>> RemoveAsync(Guid workingGroupId, Guid id)
+    public async Task<ErrorOr<Deleted>> RemoveAsync(Guid workingGroupId, Guid id)
     {
         try
         {
@@ -44,7 +44,7 @@ public class StudentService : IStudentService
     /// <param name="workingGroupId">the unique id of the Working Group</param>
     /// <param name="createStudentDto">to add a student but optional</param>
     /// <returns></returns>
-    public async Task<ErrorOr<WorkingGroup>> AddAsync(
+    public async Task<ErrorOr<Created>> AddAsync(
         Guid workingGroupId,
         CreateStudentDto createStudentDto
     )

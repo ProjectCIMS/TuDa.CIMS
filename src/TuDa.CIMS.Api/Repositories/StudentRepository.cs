@@ -4,6 +4,7 @@ using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Api.Repositories;
 
@@ -11,10 +12,12 @@ namespace TuDa.CIMS.Api.Repositories;
 public class StudentRepository : IStudentRepository
 {
     private readonly CIMSDbContext _context;
+    private readonly IWorkingGroupRepository _workingGroupRepository;
 
-    public StudentRepository(CIMSDbContext context)
+    public StudentRepository(CIMSDbContext context, IWorkingGroupRepository workingGroupRepository)
     {
         _context = context;
+        _workingGroupRepository = workingGroupRepository;
     }
 
     /// <summary>
@@ -23,12 +26,9 @@ public class StudentRepository : IStudentRepository
     /// <param name="id">specific ID of Student</param>
     /// <param name="workingGroupId">specific ID of Working Group</param>
     /// <returns>returns the Working Group in which the Student was removed</returns>
-    public async Task<ErrorOr<WorkingGroup>> RemoveAsync(Guid workingGroupId, Guid id)
+    public async Task<ErrorOr<Deleted>> RemoveAsync(Guid workingGroupId, Guid id)
     {
-        var existingWorkingGroup = await _context
-            .WorkingGroups.Where(i => i.Id == workingGroupId)
-            .Include(workingGroup => workingGroup.Students)
-            .SingleOrDefaultAsync();
+        var existingWorkingGroup = await _workingGroupRepository.GetOneAsync(workingGroupId);
 
         if (existingWorkingGroup is null)
         {
@@ -44,7 +44,8 @@ public class StudentRepository : IStudentRepository
 
         existingWorkingGroup.Students.Remove(existingStudent);
         await _context.SaveChangesAsync();
-        return existingWorkingGroup;
+
+        return Result.Deleted;
     }
 
     /// <summary>
@@ -53,15 +54,12 @@ public class StudentRepository : IStudentRepository
     /// <param name="workingGroupId">specific ID of Working Group</param>
     /// <param name="createStudentDto">model to create a student if necessary</param>
     /// <returns>returns the Working Group in which the Student was added</returns>
-    public async Task<ErrorOr<WorkingGroup>> AddAsync(
+    public async Task<ErrorOr<Created>> AddAsync(
         Guid workingGroupId,
         CreateStudentDto createStudentDto
     )
     {
-        var existingWorkingGroup = await _context
-            .WorkingGroups.Where(i => i.Id == workingGroupId)
-            .Include(workingGroup => workingGroup.Students)
-            .SingleOrDefaultAsync();
+        var existingWorkingGroup = await _workingGroupRepository.GetOneAsync(workingGroupId);
 
         if (existingWorkingGroup is null)
         {
@@ -71,17 +69,18 @@ public class StudentRepository : IStudentRepository
             );
         }
 
-        Student newStudent = new Student()
+        var newStudent = new Student()
         {
-            Name = createStudentDto?.Name ?? string.Empty,
-            FirstName = createStudentDto?.FirstName ?? string.Empty,
+            Name = createStudentDto.Name,
+            FirstName = createStudentDto.FirstName,
+            Gender = createStudentDto.Gender,
+            PhoneNumber = createStudentDto.PhoneNumber
         };
-        _context.Students.Add(newStudent);
 
         existingWorkingGroup.Students.Add(newStudent);
-        _context.Students.Add(newStudent);
         await _context.SaveChangesAsync();
-        return existingWorkingGroup;
+
+        return Result.Created;
     }
 
     /// <summary>
@@ -97,34 +96,25 @@ public class StudentRepository : IStudentRepository
         UpdateStudentDto updatedStudentDto
     )
     {
-        var existingStudent = await _context.Students.FindAsync(id);
-
-        if (existingStudent == null)
-        {
-            return Error.NotFound("Student.update", $"Student with id {id} was not found.");
-        }
-
-        var existingWorkingGroup = await _context
-            .WorkingGroups.Where(i => i.Id == workingGroupId)
-            .Include(workingGroup => workingGroup.Students)
-            .SingleOrDefaultAsync();
+        var existingWorkingGroup = await _workingGroupRepository.GetOneAsync(workingGroupId);
 
         if (existingWorkingGroup == null)
         {
             return Error.NotFound("Student.update", $"WorkingGroup with id {id} was not found.");
         }
 
-        foreach (Student student in existingWorkingGroup.Students)
+        var existingStudent = existingWorkingGroup.Students.SingleOrDefault(s => s.Id == id);
+
+        if (existingStudent == null)
         {
-            if (existingStudent == student)
-            {
-                student.Name = updatedStudentDto.Name;
-                student.FirstName = updatedStudentDto.FirstName;
-            }
+            return Error.NotFound("Student.update", $"Student with id {id} was not found.");
         }
 
-        existingStudent.Name = updatedStudentDto.Name;
-        existingStudent.FirstName = updatedStudentDto.FirstName;
+        existingStudent.Name = updatedStudentDto.Name ?? existingStudent.Name;
+        existingStudent.FirstName = updatedStudentDto.FirstName ?? existingStudent.FirstName;
+        existingStudent.Gender = updatedStudentDto.Gender ?? existingStudent.Gender;
+        existingStudent.PhoneNumber = updatedStudentDto.PhoneNumber ?? existingStudent.PhoneNumber;
+
         await _context.SaveChangesAsync();
         return Result.Updated;
     }

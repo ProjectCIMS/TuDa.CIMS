@@ -1,20 +1,25 @@
 ﻿@using TuDa.CIMS.Shared.Entities
 @*ShoppingCart SubmitPopup WorkingGroup Selection*@
-<MudItem Class="d-flex align-items-center" >
+<MudItem Class="d-flex align-items-center">
+    <MudForm @ref="form">
     <MudAutocomplete T="Person"
                      Label="Käufer"
                      Value="Buyer"
-                     ValueChanged="BuyerChanged"
+                     ValueChanged="OnBuyerChanged"
                      SearchFunc="@Search"
                      ToStringFunc="@ToString"
-                     Disabled="@((WorkingGroup is null))">
+                     Disabled="@((WorkingGroup is null))"
+                     Immediate="true"
+                     Required="true"
+                     Validation="@(() => ValidateBuyer)">
 
         <ItemTemplate>
             <MudItem Class="d-flex align-items-center">
-                <MudIconButton Icon="@Icons.Material.Outlined.Info" Class="mr-2" >
+                <MudIconButton Icon="@Icons.Material.Outlined.Info" Class="mr-2">
                 </MudIconButton>
                 <MudText>@context.Name</MudText>
             </MudItem>
         </ItemTemplate>
     </MudAutocomplete>
+    </MudForm>
 </MudItem>
