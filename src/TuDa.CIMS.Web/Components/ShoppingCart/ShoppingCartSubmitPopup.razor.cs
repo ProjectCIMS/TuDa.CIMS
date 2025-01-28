@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Web.Helper;
 
 namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
@@ -13,22 +14,23 @@ public partial class ShoppingCartSubmitPopup
     public required List<PurchaseEntry> PurchaseEntries { get; set; }
 
     /// <summary>
-    /// List of available WorkingGroups.
-    /// TODO: Replace with WorkingGroupApi and move to WorkingGroupSelection.
-    /// </summary>
-    [Parameter]
-    public required List<WorkingGroup> WorkingGroups { get; set; }
-
-    /// <summary>
-    /// CascadingParamter MudDialag.
+    /// CascadingParameter MudDialog.
     /// </summary>
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; } = null!;
 
+    private bool IsValid => WorkingGroupIsValid && BuyerIsValid;
+
+    public bool WorkingGroupIsValid { get; set;}
+
+    public bool BuyerIsValid { get; set; }
+
+    private string BuyerValidationMessage { get; set; } = string.Empty;
+
     /// <summary>
     /// The selected working group.
     /// </summary>
-    public WorkingGroup? WorkingGroup { get; set; } = null;
+    public WorkingGroup? WorkingGroup { get; set; }
 
     /// <summary>
     /// The selected buyer.
@@ -43,5 +45,20 @@ public partial class ShoppingCartSubmitPopup
     /// <summary>
     /// Closes the MudDialog.
     /// </summary>
-    private void Submit() => MudDialog.Close(DialogResult.Ok(WorkingGroup));
+    private void Submit()
+    {
+        if (WorkingGroup?.Students is not null)
+        {
+            List<Guid> studentIds = WorkingGroup.Students.Select(student => student.Id).ToList();
+            if (IsValid && (WorkingGroup?.Professor.Id == Buyer.Id || studentIds.Contains(Buyer.Id)))
+            {
+                MudDialog.Close(DialogResult.Ok(new WorkingGroupWithBuyer(WorkingGroup!.Id, Buyer.Id)));
+            }
+            else
+            {
+                BuyerIsValid = false;
+                BuyerValidationMessage = "Der ausgewählte Käufer gehört nicht zur ausgewählten Arbeitsgruppe.";
+            }
+        }
+    }
 }

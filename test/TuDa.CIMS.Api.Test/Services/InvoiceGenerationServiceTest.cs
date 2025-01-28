@@ -8,12 +8,16 @@ namespace TuDa.CIMS.Api.Test.Services;
 [TestSubject(typeof(InvoiceGenerationService))]
 public class InvoiceGenerationServiceTest
 {
-    private readonly Mock<IInvoiceRepository> _mockInvoiceRepository = new();
-    private readonly IInvoiceGenerationService _invoiceGeneration;
+    private readonly Mock<IInvoiceRepository> _invoiceRepositoryMock = new();
+    private readonly Mock<IWorkingGroupRepository> _workingGroupRepositoryMock = new();
+    private readonly InvoiceGenerationService _invoiceGeneration;
 
     public InvoiceGenerationServiceTest()
     {
-        _invoiceGeneration = new InvoiceGenerationService(_mockInvoiceRepository.Object);
+        _invoiceGeneration = new InvoiceGenerationService(
+            _invoiceRepositoryMock.Object,
+            _workingGroupRepositoryMock.Object
+        );
     }
 
     [Fact]
@@ -35,11 +39,11 @@ public class InvoiceGenerationServiceTest
         ];
         workingGroup.Purchases = [purchase];
 
-        _mockInvoiceRepository
-            .Setup(r => r.GetProfessorOfWorkingGroup(workingGroup.Id))
-            .ReturnsAsync(workingGroup.Professor);
+        _workingGroupRepositoryMock
+            .Setup(r => r.GetOneAsync(workingGroup.Id))
+            .ReturnsAsync(workingGroup);
 
-        _mockInvoiceRepository
+        _invoiceRepositoryMock
             .Setup(r =>
                 r.GetPurchasesInTimePeriod(
                     workingGroup.Id,
@@ -94,11 +98,11 @@ public class InvoiceGenerationServiceTest
             )
             .ToList();
 
-        _mockInvoiceRepository
-            .Setup(r => r.GetProfessorOfWorkingGroup(workingGroup.Id))
-            .ReturnsAsync(workingGroup.Professor);
+        _workingGroupRepositoryMock
+            .Setup(r => r.GetOneAsync(workingGroup.Id))
+            .ReturnsAsync(workingGroup);
 
-        _mockInvoiceRepository
+        _invoiceRepositoryMock
             .Setup(r =>
                 r.GetPurchasesInTimePeriod(
                     workingGroup.Id,

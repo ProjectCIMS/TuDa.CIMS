@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
-public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi workingGroupApi) : ComponentBase
+public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi workingGroupApi)
+    : ComponentBase
 {
     /// <summary>
     /// CascadingParameter for working group.
@@ -15,16 +17,55 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
     [Parameter]
     public required Person Buyer { get; set; }
 
+    private MudForm form;
+
+    [Parameter]
+    public required bool BuyerIsValid { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> BuyerIsValidChanged { get; set; }
+
+    [Parameter]
+    public required EventCallback<Person> BuyerChanged { get; set; }
 
     private async Task FindWorkingGroup()
     {
-        WorkingGroup = (await workingGroupApi.GetAsync(WorkingGroup!.Id)).Match(value => value, _ => null);
+        WorkingGroup = (await workingGroupApi.GetAsync(WorkingGroup!.Id)).Match(
+            value => value,
+            _ => null
+        );
+    }
+    private async Task ValidateSelection()
+    {
+        await form.Validate();
+        bool isValid = form.IsValid;
+        await BuyerIsValidChanged.InvokeAsync(isValid);
+    }
+
+    private async Task OnBuyerChanged(Person buyer)
+    {
+        await ValidateSelection();
+        if (BuyerChanged.HasDelegate)
+        {
+            await BuyerChanged.InvokeAsync(buyer);
+        }
+    }
+    private string ValidateBuyer(Person? value)
+    {
+        if (value is null)
+        {
+            return "Ein Käufer muss ausgewählt werden.";
+        }
+        return "";
     }
 
     /// <summary>
     /// Search for the selection of the student.
     /// </summary>
-    private async Task<IEnumerable<Person>> Search(string searchText, CancellationToken cancellationToken)
+    private async Task<IEnumerable<Person>> Search(
+        string searchText,
+        CancellationToken cancellationToken
+    )
     {
         await FindWorkingGroup();
         if (WorkingGroup == null)
@@ -56,4 +97,3 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
             _ => $"{buyer.Name} {buyer.FirstName}",
         };
 }
-

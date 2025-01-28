@@ -7,6 +7,8 @@ using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Test.Integration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
+using TuDa.CIMS.Shared.Test.Extensions;
 using TuDa.CIMS.Shared.Test.Faker;
 
 namespace TuDa.CIMS.Api.Test.Controllers;
@@ -108,13 +110,14 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
     [Fact]
     public async Task CreateAsync_ShouldCreateWorkingGroup_WhenWorkingGroupPresent()
     {
+        // Arrange
         Professor professor = new PersonFaker<Professor>();
         string phoneNumber = "Phone";
 
         var createWorkingGroup = new CreateWorkingGroupDto
         {
-            Professor = professor,
-            PhoneNumber = phoneNumber,
+            Professor = professor.ToCreateDto(),
+            PhoneNumber = phoneNumber
         };
 
         // Act
@@ -151,11 +154,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         const string updateProfName = "Changed";
         var updateWorkingGroupDto = new UpdateWorkingGroupDto
         {
-            // TODO: This should be a UpdateProfessorDto (GH#149)
-            Professor = workingGroup.Professor with
-            {
-                Name = updateProfName,
-            },
+            Professor = new() { Name = updateProfName },
         };
         var updatedWorkingGroup = workingGroup with
         {

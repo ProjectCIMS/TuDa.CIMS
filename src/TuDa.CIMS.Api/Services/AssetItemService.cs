@@ -22,13 +22,13 @@ public class AssetItemService : IAssetItemService
     /// Return an an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
     /// or the result of the <see cref="GetAllAsync"/> functionality if successful or if nameOrCas is set the <see cref="SearchAsync"/> functionality.
     /// </summary>
-    public async Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync(string? nameOrCas)
+    public async Task<ErrorOr<List<AssetItem>>> GetAllAsync(string? nameOrCas)
     {
         try
         {
             return nameOrCas != null
-                ? (await _assetItemRepository.SearchAsync(nameOrCas)).ToErrorOr()
-                : (await _assetItemRepository.GetAllAsync()).ToErrorOr();
+                ? await _assetItemRepository.SearchAsync(nameOrCas)
+                : await _assetItemRepository.GetAllAsync();
         }
         catch (Exception e)
         {
@@ -53,7 +53,7 @@ public class AssetItemService : IAssetItemService
     {
         try
         {
-            return (await _assetItemRepository.GetOneAsync(id)) switch
+            return await _assetItemRepository.GetOneAsync(id) switch
             {
                 null => Error.NotFound(
                     "AssetItem.GetOneAsync",
@@ -118,7 +118,9 @@ public class AssetItemService : IAssetItemService
     /// </summary>
     /// <param name="userParams"></param>
     /// <returns></returns>
-    public async Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(AssetItemPaginationQueryParams queryParams)
+    public async Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(
+        AssetItemPaginationQueryParams queryParams
+    )
     {
         try
         {
@@ -133,11 +135,11 @@ public class AssetItemService : IAssetItemService
         }
     }
 
-    public async Task<ErrorOr<Created>> CreateAsync( CreateAssetItemDto createModel)
+    public async Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel)
     {
         try
         {
-            return await _assetItemRepository.CreateAsync (createModel);
+            return await _assetItemRepository.CreateAsync(createModel);
         }
         catch (Exception e)
         {
