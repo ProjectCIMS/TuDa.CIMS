@@ -51,7 +51,9 @@ public partial class WorkingGroupPersonList : ComponentBase
             if (_persons.Any())
             {
                 await studentApi.RemoveAsync(WorkingGroupId, student.Id);
-                _persons.ToList().Remove(student);
+                var modifiedList = _persons.ToList();
+                modifiedList.Remove(student);
+                _persons = modifiedList;
                 await PersonDeleted.InvokeAsync();
             }
         }
