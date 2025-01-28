@@ -1,20 +1,21 @@
-﻿@using System.Globalization
-@using TuDa.CIMS.Shared.Entities
-@using TuDa.CIMS.Shared.Entities.Enums
+﻿@using TuDa.CIMS.Shared.Entities.Enums
+
 @* Gas Cylinder Item Form *@
 
-<MudForm>
+<MudForm Class="p-2">
     <MudTextField @bind-Value="FormCas"
                   Label="CAS"
                   Placeholder="CAS eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
+                  FullWidth
+                  Margin="Margin.Dense"/>
 
     <MudTextField @bind-Value="FormPurity"
                   Label="Reinheit"
                   Placeholder="Reinheit eingeben"
                   Variant="Variant.Filled"
-                  FullWidth/>
+                  FullWidth
+                  Margin="Margin.Dense"/>
 
     <!-- MudSelect for selecting measurement unit -->
     <MudSelect @bind-Value="FormPriceUnit"
@@ -35,77 +36,17 @@
                      Label="Volume"
                      Culture="@_de"
                      T="double"
-                     Error="@IsError"
-                     ErrorText="Das Volumen muss größer als 0 betragen!"
                      Placeholder="Volumen eingeben"
                      Variant="Variant.Filled"
-                     FullWidth/>
+                     FullWidth
+                     Margin="Margin.Dense"/>
 
     <MudNumericField @bind-Value="FormPressure"
                      Label="Pressure"
                      Culture="@_de"
                      T="double"
-                     Error="@IsError"
-                     ErrorText="Der Druck muss größer als 0 betragen!"
                      Placeholder="Druck eingeben"
                      Variant="Variant.Filled"
-                     FullWidth/>
+                     FullWidth
+                     Margin="Margin.Dense"/>
 </MudForm>
-
-@code
-{
-    private readonly CultureInfo _de = CultureInfo.GetCultureInfo("de-DE");
-    /// <summary>
-    /// Input Fields
-    /// </summary>
-    public double FormVolume { get; private set; }
-    public double FormPressure { get; private set; }
-    public MeasurementUnits? FormPriceUnit { get;  set; }
-    public string FormCas { get;  set; } = string.Empty;
-    public string FormPurity { get;  set; } = string.Empty;
-
-    [Parameter] public bool FormShowError { get; set; }
-
-    private bool IsError => FormPriceUnit == null && FormShowError;
-
-    public void SetForm(GasCylinder item)
-    {
-        FormVolume = item.Volume;
-        FormPressure = item.Pressure;
-        FormCas = item.Cas;
-        FormPurity = item.Purity;
-        FormPriceUnit = item.PriceUnit;
-    }
-
-    /// <summary>
-    /// Validate the Inputs
-    /// </summary>
-    /// <returns>returns false when all Inputs are valid otherwise true</returns>
-    public bool ValidateForm()
-    {
-        if (FormVolume == 0.0
-            || FormPressure == 0.0 || FormCas == string.Empty
-            || FormPurity == string.Empty
-           )
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    [Parameter] public EventCallback OnReset { get; set; }
-
-    /// <summary>
-    /// Resets the Input lines
-    /// </summary>
-    public void ResetInputs()
-    {
-        FormVolume = 0.0;
-        FormPressure = 0.0;
-        FormCas = string.Empty;
-        FormPurity = string.Empty;
-        OnReset.InvokeAsync();
-    }
-
-}

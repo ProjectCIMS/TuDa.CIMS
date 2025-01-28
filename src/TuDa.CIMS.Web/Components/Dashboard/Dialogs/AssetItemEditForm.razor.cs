@@ -120,18 +120,18 @@ public partial class AssetItemEditForm
     /// Check if all required Inputs are done
     /// </summary>
     /// <returns></returns>
-    public bool ValidateForm()
+    public bool ErrorsInForm()
     {
         if (
-            _assetItemForm.ValidateForm()
+            _assetItemForm.ErrorsInForm()
             || (
                 (
                     UpdateItem.GetType() == typeof(Chemical)
                     || UpdateItem.GetType() == typeof(Solvent)
-                ) && _chemicalItemForm.ValidateForm()
+                ) && _chemicalItemForm.ErrorsInForm()
             )
-            || (UpdateItem.GetType() == typeof(Consumable) && _consumableItemForm.ValidateForm())
-            || (UpdateItem.GetType() == typeof(GasCylinder) && _gasCylinderForm.ValidateForm())
+            || (UpdateItem.GetType() == typeof(Consumable) && _consumableItemForm.ErrorsInForm())
+            || (UpdateItem.GetType() == typeof(GasCylinder) && _gasCylinderForm.ErrorsInForm())
         )
         {
             ResetInputs();

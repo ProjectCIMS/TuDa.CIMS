@@ -29,6 +29,14 @@ public partial class AssetList
         _assetItemApi = assetItemApi;
     }
 
+    /// <summary>
+    /// method to reload the datagrid
+    /// </summary>
+    public async Task ReloadData()
+    {
+        await _dataGrid.ReloadServerData();
+    }
+
     private async Task<GridData<AssetItem>> ServerReload(GridState<AssetItem> state)
     {
         var errorOrItems = await _assetItemApi.GetAllAsync(_searchString);
@@ -36,6 +44,18 @@ public partial class AssetList
             return new GridData<AssetItem>();
 
         var items = SortAssetItems(state, errorOrItems.Value).ToList();
+
+        var filterOptions = new FilterOptions
+        {
+            FilterCaseSensitivity = DataGridFilterCaseSensitivity.CaseInsensitive,
+        };
+
+        foreach (var filterDefinition in state.FilterDefinitions)
+        {
+            var filterFunction = filterDefinition.GenerateFilterFunction(filterOptions);
+
+            items = items.Where(filterFunction).ToList();
+        }
 
         var pagedData = items.Skip(state.Page * state.PageSize).Take(state.PageSize).ToList();
 
