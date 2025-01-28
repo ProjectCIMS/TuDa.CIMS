@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 
@@ -6,6 +7,8 @@ namespace TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 
 public partial class ChemicalItemForm
 {
+    private readonly CultureInfo _de = CultureInfo.GetCultureInfo("de-DE");
+
     /// <summary>
     /// Input Fields
     /// </summary>

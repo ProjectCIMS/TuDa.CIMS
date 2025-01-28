@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 
@@ -6,10 +7,13 @@ namespace TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 
 public partial class GasCylinderItemForm
 {
+    private readonly CultureInfo _de = CultureInfo.GetCultureInfo("de-DE");
+
     /// <summary>
     /// Input Fields
     /// </summary>
     public double FormVolume { get; private set; }
+
     public double FormPressure { get; private set; }
     public MeasurementUnits? FormPriceUnit { get; set; }
     public string FormCas { get; set; } = string.Empty;

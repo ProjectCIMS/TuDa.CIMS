@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 
 public partial class AssetItemForm
 {
+    private readonly CultureInfo _de = CultureInfo.GetCultureInfo("de-DE");
+
     /// <summary>
     /// Input Fields
     /// </summary>
