@@ -147,14 +147,14 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
                 .Select(entry => new CreatePurchaseEntryDto
                 {
                     AssetItemId = entry.AssetItem.Id,
-                    Amount = entry.Amount,
+                    Amount = (int)entry.Amount,
                     PricePerItem = entry.PricePerItem,
                 })
                 .ToList(),
         };
 
         // Set Amount to amount purchased to ensure no error is returned
-        assetItem.Amount = entries.Aggregate(0, (i, entry) => i + entry.Amount);
+        assetItem.Amount = entries.Aggregate(0, (i, entry) => i + (int)entry.Amount);
         await _dbContext.SaveChangesAsync();
 
         // Act
