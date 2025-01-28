@@ -1,17 +1,23 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
-public partial class WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi, IStudentApi studentApi) : ComponentBase
-{
 
+public partial class WorkingGroupPersonList(
+    IDialogService dialogService,
+    IWorkingGroupApi workingGroupApi,
+    IStudentApi studentApi) : ComponentBase
+{
     private IEnumerable<Person> _persons = new List<Person>();
 
     [Parameter] public Guid WorkingGroupId { get; set; }
 
     [Parameter] public EventCallback<Person> PersonDeleted { get; set; }
+
+    [Parameter] public EventCallback PersonAdded { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -19,6 +25,10 @@ public partial class WorkingGroupPersonList(IDialogService dialogService, IWorki
         _persons = workingGroup.Value.Students;
     }
 
+    /// <summary>
+    /// Removes a student when the user accept the dialog.
+    /// </summary>
+    /// <param name="student">Student that will be removed</param>
     private async Task RemoveBuyer(Person student)
     {
         var messageBox = new MessageBoxOptions
@@ -41,11 +51,45 @@ public partial class WorkingGroupPersonList(IDialogService dialogService, IWorki
         }
     }
 
-
-    private void AddBuyer()
+    /// <summary>
+    /// Adds a student to the list of students.
+    /// </summary>
+    private async Task AddBuyerDialog()
     {
-        // TODO: Implement AddBuyer with a dialog here
+        GenericInput inputField = new GenericInput()
+        {
+            Labels = ["Vorname", "Nachname", "Telefonnummer"], Values = ["", "", ""], YesText = "Hinzufügen"
+        };
+
+        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, inputField } };
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialogReference =
+            await dialogService.ShowAsync<GenericInputPopUp>("Person hinzufügen", parameters, options);
+
+        var result = await dialogReference.Result;
+
+        if (!result!.Canceled)
+        {
+            var returnedValues = (List<string>)result.Data!;
+
+            Student student = new()
+            {
+                FirstName = returnedValues[0], Name = returnedValues[1], PhoneNumber = returnedValues[2]
+            };
+
+            await studentApi.AddAsync(
+                WorkingGroupId,
+                new CreateStudentDto()
+                {
+                    FirstName = returnedValues[0], Name = returnedValues[1], PhoneNumber = returnedValues[2]
+                }
+            );
+
+            var modifiableList = _persons.ToList();
+            modifiableList.Add(student);
+            _persons = modifiableList;
+            await PersonAdded.InvokeAsync();
+        }
     }
-
 }
-
