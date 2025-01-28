@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Testcontainers.PostgreSql;
 using TuDa.CIMS.Api.Database;
+using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Test.Integration;
 
@@ -36,6 +37,12 @@ public class CIMSApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
                     );
                 },
                 ServiceLifetime.Singleton
+            );
+
+            AssertionOptions.AssertEquivalencyUsing(options =>
+                options.Excluding(member =>
+                    member.DeclaringType.IsAssignableTo(typeof(BaseEntity)) &&
+                    (member.Name == nameof(BaseEntity.CreatedAt) || member.Name == nameof(BaseEntity.UpdatedAt)))
             );
         });
     }
