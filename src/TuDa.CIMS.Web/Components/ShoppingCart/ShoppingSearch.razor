@@ -1,4 +1,6 @@
 ﻿@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Entities.Enums
+
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" sm="8" md="8">
         <MudAutocomplete
@@ -15,5 +17,32 @@
             Dense=true
             ShowProgressIndicator="true">
         </MudAutocomplete>
+        <MudChipSet T="AssetItemType?"
+                    SelectedValues="_selectedAssetItemType"
+                    SelectedValuesChanged="@((values) => _selectedAssetItemType = values.ToList())"
+                    CheckMark
+                    SelectionMode="SelectionMode.MultiSelection"
+                    Class="my-1">
+            <MudChip Color="Color.Primary"
+                     T="AssetItemType?"
+                     Value="AssetItemType.Chemical">
+                Chemikalie
+            </MudChip>
+            <MudChip Color="Color.Secondary"
+                     T="AssetItemType?"
+                     Value="AssetItemType.Consumable">
+                Verbrauchsmaterial
+            </MudChip>
+            <MudChip Color="Color.Info"
+                     T="AssetItemType?"
+                     Value="AssetItemType.GasCylinder">
+                Technische Gase
+            </MudChip>
+            <MudChip Color="Color.Success"
+                     T="AssetItemType?"
+                     Value="AssetItemType.Solvent">
+                Lösung
+            </MudChip>
+        </MudChipSet>
     </MudItem>
 </MudGrid>
