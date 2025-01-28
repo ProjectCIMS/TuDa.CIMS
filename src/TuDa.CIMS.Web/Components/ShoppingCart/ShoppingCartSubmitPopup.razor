@@ -1,4 +1,3 @@
-@using TuDa.CIMS.Shared.Entities
 @* Submit Popup *@
 <MudDialog>
     <TitleContent>
@@ -7,15 +6,21 @@
     <DialogContent>
         <MudContainer>
             <MudGrid Justify="Justify.SpaceBetween">
-                <ShoppingCartSubmitPopupWorkingGroupSelection @bind-WorkingGroup="@WorkingGroup" />
-                <ShoppingCartSubmitPopupBuyerSelection @bind-Buyer ="@Buyer"
-                                                       WorkingGroup = "@WorkingGroup"/>
+                <ShoppingCartSubmitPopupWorkingGroupSelection @bind-WorkingGroup="@WorkingGroup"
+                                                              @bind-WorkingGroupIsValid="@WorkingGroupIsValid"/>
+                <ShoppingCartSubmitPopupBuyerSelection @bind-Buyer="@Buyer"
+                                                       WorkingGroup="@WorkingGroup"
+                                                       @bind-BuyerIsValid="@BuyerIsValid"/>
                 <ShoppingCartSubmitPopupPurchaseList PurchaseListEntries="PurchaseEntries"/>
             </MudGrid>
+            @if (!BuyerIsValid)
+            {
+                <MudText Color="Color.Error">@BuyerValidationMessage</MudText>
+            }
         </MudContainer>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Abbrechen</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit" Disabled="@(!IsValid)">Ok</MudButton>
     </DialogActions>
 </MudDialog>

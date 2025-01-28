@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
 
@@ -16,6 +17,14 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
     [Parameter]
     public required Person Buyer { get; set; }
 
+    private MudForm form;
+
+    [Parameter]
+    public required bool BuyerIsValid { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> BuyerIsValidChanged { get; set; }
+
     [Parameter]
     public required EventCallback<Person> BuyerChanged { get; set; }
 
@@ -25,6 +34,29 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
             value => value,
             _ => null
         );
+    }
+    private async Task ValidateSelection()
+    {
+        await form.Validate();
+        bool isValid = form.IsValid;
+        await BuyerIsValidChanged.InvokeAsync(isValid);
+    }
+
+    private async Task OnBuyerChanged(Person buyer)
+    {
+        await ValidateSelection();
+        if (BuyerChanged.HasDelegate)
+        {
+            await BuyerChanged.InvokeAsync(buyer);
+        }
+    }
+    private string ValidateBuyer(Person? value)
+    {
+        if (value is null)
+        {
+            return "Ein Käufer muss ausgewählt werden.";
+        }
+        return "";
     }
 
     /// <summary>
