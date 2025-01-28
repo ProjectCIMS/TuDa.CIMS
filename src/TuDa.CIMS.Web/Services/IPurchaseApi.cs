@@ -9,7 +9,7 @@ namespace TuDa.CIMS.Web.Services;
 /// <summary>
 /// Refit client interface for the purchase API.
 /// </summary>
-[RefitClient("api/working-groups")]
+[RefitClient("/api/working-groups")]
 public interface IPurchaseApi
 {
     /// <summary>
