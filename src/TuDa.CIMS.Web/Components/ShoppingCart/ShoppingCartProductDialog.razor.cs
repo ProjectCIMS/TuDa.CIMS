@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
@@ -17,11 +19,30 @@ public partial class ShoppingCartProductDialog
     public required AssetItem Product { get; set; }
 
     // Amount of Product
-    public int Amount { get; set; } = 1;
-    private bool IsError => Amount <= 0;
+    public double Amount { get; set; } = 1.0;
+    public int AmountInt { get; set; } = 1;
+
+    /// <summary>
+    /// checks if the amount should be inputted as int or double
+    /// </summary>
+    /// <returns>returns true if it should be an integer</returns>
+    public bool IsInt() =>
+        Product is Consumable || (Product as Substance)!.PriceUnit == MeasurementUnits.Piece;
+
+    private bool IsError => Amount <= 0.0 || AmountInt <= 0;
 
     // Simple Functions to Submit and Cancel the Action.
-    private void Submit() => ProductDialog.Close(DialogResult.Ok(Amount));
+    private void Submit()
+    {
+        if (IsInt())
+        {
+            ProductDialog.Close(DialogResult.Ok((double)AmountInt));
+        }
+        else
+        {
+            ProductDialog.Close(DialogResult.Ok(Amount));
+        }
+    }
 
     private void Cancel() => ProductDialog.Cancel();
 

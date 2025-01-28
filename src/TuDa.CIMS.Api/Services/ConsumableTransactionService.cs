@@ -98,14 +98,13 @@ public class ConsumableTransactionService : IConsumableTransactionService
             var consumableEntries = purchase.Entries.Where(e => e.AssetItem is Consumable);
             foreach (var conEntry in consumableEntries)
             {
-                CreateConsumableTransactionDto consumableTransaction =
-                    new()
-                    {
-                        ConsumableId = conEntry.AssetItem.Id,
-                        Date = purchase.CompletionDate.Value,
-                        AmountChange = -conEntry.Amount,
-                        TransactionReason = TransactionReasons.Purchase,
-                    };
+                CreateConsumableTransactionDto consumableTransaction = new()
+                {
+                    ConsumableId = conEntry.AssetItem.Id,
+                    Date = purchase.CompletionDate.Value,
+                    AmountChange = (int)-conEntry.Amount,
+                    TransactionReason = TransactionReasons.Purchase,
+                };
 
                 var created = await _consumableTransactionRepository.CreateAsync(
                     consumableTransaction
