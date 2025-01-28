@@ -50,7 +50,7 @@
     private async Task DeleteItem(AssetItem assetItem)
     {
         await _assetItemApi.RemoveAsync(assetItem.Id);
-        await _assetList._dataGrid.ReloadServerData();
+        await _assetList.ReloadData();
     }
 
 }
