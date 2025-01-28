@@ -1,0 +1,71 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudContainer Class="rounded bg-white" MaxWidth="MaxWidth.Medium">
+            <div class="d-flex flex-column gap-4">
+
+                <MudText Class="d-flex justify-space-between"><MudItem><b>Titel:</b> @ProfessorInfo.Title</MudItem>
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Primary" OnClick="EditProfessorTitle"></MudIconButton>
+                </MudText>
+                <MudDivider/>
+
+                <MudText Class="d-flex justify-space-between"><MudItem><b>Vor- und Nachname:</b> @ProfessorInfo.FirstName @ProfessorName</MudItem>
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Primary" OnClick="EditProfessor"></MudIconButton>
+                </MudText>
+                <MudDivider/>
+
+                <MudText Class="d-flex justify-space-between"> <MudItem><b>TelefonNr.:</b> @WorkingGroup.PhoneNumber
+                    </MudItem>
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.Edit"
+                        Color="Color.Primary"
+                        Size="Size.Small"
+                        OnClick="EditPhoneNumber"></MudIconButton>
+                </MudText>
+                <MudDivider/>
+
+                <MudText Class="d-flex justify-space-between"><MudItem><b>Stadt:</b> @ProfessorInfo.Address.City</MudItem>
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.Edit"
+                        Size="Size.Small"
+                        Color="Color.Primary"
+                        OnClick="EditAddressCity"></MudIconButton>
+                </MudText>
+                <MudDivider/>
+
+                <MudText Class="d-flex justify-space-between"><MudItem>
+                    <b>Straße und Hausnummer:</b> @ProfessorInfo.Address.Street @ProfessorInfo.Address.Number</MudItem>
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.Edit"
+                        Size="Size.Small"
+                        Color="Color.Primary"
+                        OnClick="EditAddressStreetAndNumber"></MudIconButton>
+                </MudText>
+                <MudDivider/>
+
+                <MudText Class="d-flex justify-space-between"><MudItem><b>Postleitzahl:</b> @ProfessorInfo.Address.ZipCode</MudItem>
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.Edit"
+                        Size="Size.Small"
+                        Color="Color.Primary"
+                        OnClick="EditAddressZipNumber"></MudIconButton>
+                </MudText>
+                <MudDivider/>
+
+                <MudText Class="d-flex justify-space-between"><MudItem><b>Email-Adresse:</b> @WorkingGroup.Email</MudItem>
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.Edit"
+                        Size="Size.Small"
+                        Color="Color.Primary"
+                        OnClick="EditEmail"></MudIconButton>
+                </MudText>
+                <MudDivider/>
+            </div>
+        </MudContainer>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="GoBack" Color="Color.Primary">Okay</MudButton>
+    </DialogActions>
+</MudDialog>

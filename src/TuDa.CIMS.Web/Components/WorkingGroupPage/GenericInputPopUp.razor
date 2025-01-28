@@ -10,7 +10,9 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel" Color="Color.Error">Abbrechen</MudButton>
-        <MudButton OnClick="Submit" Color="Color.Success">@Field.YesText</MudButton>
+        <MudButton OnClick="@(Cancel)" Color="Color.Error">Abbrechen
+        </MudButton>
+        <MudButton OnClick="@(Submit)"
+                   Color="Color.Success">@Field.YesText</MudButton>
     </DialogActions>
 </MudDialog>

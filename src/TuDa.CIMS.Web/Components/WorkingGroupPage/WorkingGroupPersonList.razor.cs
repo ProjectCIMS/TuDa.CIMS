@@ -12,8 +12,6 @@ public partial class WorkingGroupPersonList : ComponentBase
     private readonly IWorkingGroupApi workingGroupApi;
     private readonly IStudentApi studentApi;
 
-    private IEnumerable<Person> _persons = new List<Person>();
-
     public WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi, IStudentApi studentApi)
     {
         this.dialogService = dialogService;
@@ -21,7 +19,10 @@ public partial class WorkingGroupPersonList : ComponentBase
         this.studentApi = studentApi;
     }
 
+
     [Parameter] public Guid WorkingGroupId { get; set; }
+
+    private IEnumerable<Person> _persons = new List<Person>();
 
     [Parameter] public EventCallback<Person> PersonDeleted { get; set; }
 
