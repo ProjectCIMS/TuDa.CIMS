@@ -35,11 +35,9 @@ public partial class WorkingGroupListPage
             options
         );
         var result = await dialog.Result;
-        var returnedValues = (List<string>)result!.Data!;
-        if (result is { Canceled: false } && returnedValues[0] != string.Empty && returnedValues[1] != string.Empty
-            && returnedValues[2] != string.Empty && returnedValues[3] != string.Empty
-            && returnedValues[4] != string.Empty)
+        if (result is { Canceled: false })
         {
+            var returnedValues = (List<string>)result!.Data!;
             CreateProfessorDto professor = new()
             {
                 FirstName = returnedValues[0], Name = returnedValues[1], Title = returnedValues[2],
