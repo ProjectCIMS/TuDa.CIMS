@@ -9,7 +9,7 @@ namespace TuDa.CIMS.Web.Services;
 /// <summary>
 /// Refit client interface for performing operations on Students.
 /// </summary>
-[RefitClient("/api/working-group/{working-group-id}/students")]
+[RefitClient("/api/working-groups")]
 public interface IStudentApi
 {
     /// <summary>

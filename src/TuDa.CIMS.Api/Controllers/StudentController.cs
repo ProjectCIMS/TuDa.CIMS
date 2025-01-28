@@ -6,7 +6,7 @@ using TuDa.CIMS.Shared.Dtos;
 namespace TuDa.CIMS.Api.Controllers;
 
 [ApiController]
-[Route("api/working-groups/{workingGroupId}/students")]
+[Route("api/working-groups/{workingGroupId:guid}/students")]
 public class StudentController : ControllerBase
 {
     private readonly IStudentService _studentService;

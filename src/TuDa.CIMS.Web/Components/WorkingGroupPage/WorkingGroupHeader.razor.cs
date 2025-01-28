@@ -55,10 +55,7 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
 
             await workingGroupApi.UpdateAsync(
                 WorkingGroupId,
-                new UpdateWorkingGroupDto
-                {
-                    PhoneNumber = "", Professor = new() { Name = ProfessorName, Title = ProfessorTitle }
-                }
+                new UpdateWorkingGroupDto { Professor = new() { Name = ProfessorName, Title = ProfessorTitle } }
             );
             StateHasChanged();
         }
