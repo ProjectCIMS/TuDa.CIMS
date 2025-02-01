@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
@@ -136,5 +137,10 @@ public class PurchaseRepository : IPurchaseRepository
         await _context.SaveChangesAsync();
 
         return newPurchase;
+    }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await _context.Database.BeginTransactionAsync();
     }
 }

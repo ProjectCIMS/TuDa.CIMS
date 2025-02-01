@@ -1,4 +1,6 @@
-﻿using TuDa.CIMS.Api.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 
@@ -9,7 +11,10 @@ public class PurchaseService : IPurchaseService
     private readonly IPurchaseRepository _purchaseRepository;
     private readonly IConsumableTransactionService _consumableTransactionService;
 
-    public PurchaseService(IPurchaseRepository purchaseRepository,IConsumableTransactionService consumableTransactionService )
+    public PurchaseService(
+        IPurchaseRepository purchaseRepository,
+        IConsumableTransactionService consumableTransactionService
+    )
     {
         _purchaseRepository = purchaseRepository;
         _consumableTransactionService = consumableTransactionService;
@@ -90,6 +95,7 @@ public class PurchaseService : IPurchaseService
         CreatePurchaseDto createModel
     )
     {
+        await using var transaction = await _purchaseRepository.BeginTransactionAsync();
         try
         {
             var purchase = await _purchaseRepository.CreateAsync(workingGroupId, createModel);
@@ -97,13 +103,16 @@ public class PurchaseService : IPurchaseService
             {
                 return purchase.Errors;
             }
+
             await _consumableTransactionService.CreateForPurchaseAsync(purchase.Value);
+            await transaction.CommitAsync();
+
             return purchase;
         }
         catch (Exception ex)
         {
+            await transaction.RollbackAsync();
             return Error.Failure("PurchaseService.CreateAsync", ex.Message);
         }
     }
-
 }
