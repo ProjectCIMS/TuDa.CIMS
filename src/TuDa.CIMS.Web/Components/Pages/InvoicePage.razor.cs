@@ -30,7 +30,7 @@ public partial class InvoicePage
     /// Contains the title and the name of the buyer.
     /// </summary>
     private string BuyerString =>
-        $"{_workingGroup?.Professor.Title} " + " " + $"{_workingGroup?.Professor.Name}";
+        $"{_workingGroup?.Professor.Title} {_workingGroup?.Professor.Name}";
 
     /// <summary>
     /// Selected date range.
@@ -96,31 +96,21 @@ public partial class InvoicePage
         return InvoiceStatistics?.TotalPriceGasCylinders.ToString("0.00", CultureInfo.GetCultureInfo("de-DE")) + "€";
     }
 
-
     private async Task OnDateRangeChanged(DateRange newDateRange)
     {
         _dateRange = newDateRange;
         await SetInvoiceStatistics();
     }
 
-    private DateTime? SelectedDueDate { get; set; } = null!;
-
     private string SelectedInvoiceNumber { get; set; } = null!;
 
     private async Task OpenPdf()
     {
-        if (SelectedDueDate != null && SelectedInvoiceNumber.Length > 0)
+        if (SelectedInvoiceNumber.Length > 0)
         {
             var wgId = workingGroupId;
-            var infos = new AdditionalInvoiceInformation
-            {
-                InvoiceNumber = SelectedInvoiceNumber, DueDate = DateOnly.FromDateTime(SelectedDueDate.Value),
-            };
-            var success = await _invoiceApi.OpenPdfAsync(
-                wgId, infos
-                ,
-                _jsRuntime
-            );
+            var infos = new AdditionalInvoiceInformation { InvoiceNumber = SelectedInvoiceNumber };
+            var success = await _invoiceApi.OpenPdfAsync(wgId, infos, _jsRuntime);
         }
     }
 }

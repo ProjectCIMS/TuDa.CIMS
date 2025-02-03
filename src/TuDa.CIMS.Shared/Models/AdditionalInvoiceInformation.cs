@@ -10,11 +10,6 @@ public record AdditionalInvoiceInformation
     public required string InvoiceNumber { get; init; } = string.Empty;
 
     /// <summary>
-    /// Due date of the invoice. Presented in the summary.
-    /// </summary>
-    public required DateOnly DueDate { get; init; }
-
-    /// <summary>
     /// Issue date of the invoice. Presented on the right side.
     /// </summary>
     public DateOnly IssueDate { get; init; } = DateOnly.FromDateTime(DateTime.Now);

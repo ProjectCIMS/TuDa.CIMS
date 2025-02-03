@@ -95,16 +95,14 @@ public class InvoiceCoverDocument : IDocument
     {
         container.Column(column =>
         {
-            column.Item().PaddingTop(30).Element(ComposeInvoiceIntroduction);
-
-            column.Item().PaddingTop(30).Element(ComposePriceSummary);
+            column.Item().PaddingTop(30).Element(ComposeInvoiceTitleAndAddress);
 
             column
                 .Item()
-                .PaddingTop(70)
-                .Text(
-                    $"bis zum {_information.DueDate} auf die Kostenstelle {_information.CostCenterNumber} oder"
-                );
+                .PaddingTop(90)
+                .Text("Bitte überweisen Sie den Betrag innerhalb von 14 Tagen auf die");
+
+            column.Item().Text($"Kostenstelle {_information.CostCenterNumber} oder");
 
             column
                 .Item()
@@ -114,7 +112,7 @@ public class InvoiceCoverDocument : IDocument
         });
     }
 
-    private void ComposeInvoiceIntroduction(IContainer container)
+    private void ComposeInvoiceTitleAndAddress(IContainer container)
     {
         container.Row(row =>
         {
@@ -122,10 +120,8 @@ public class InvoiceCoverDocument : IDocument
                 .Column(column =>
                 {
                     column.Item().Text($"Rechnung-Nr. {_information.InvoiceNumber}").Bold();
-                    column
-                        .Item()
-                        .PaddingTop(50)
-                        .Text("Wir bitten um Überweisung für den Verbrauch von:");
+
+                    column.Item().PaddingTop(60).Element(ComposePriceSummary);
                 });
             row.AutoItem().Element(ComposeChemicalInventoryAddress);
         });
