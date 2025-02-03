@@ -38,5 +38,5 @@ public record AdditionalInvoiceInformation
     /// <summary>
     /// Number of the project the money is for.
     /// </summary>
-    public string ProjectNumber { get; init; } = "58000373";
+    public string ProjectNumber { get; init; } = "58000520";
 }
