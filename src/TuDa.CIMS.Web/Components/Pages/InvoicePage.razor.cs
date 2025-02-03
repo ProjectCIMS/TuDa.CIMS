@@ -10,18 +10,21 @@ namespace TuDa.CIMS.Web.Components.Pages;
 
 public partial class InvoicePage
 {
-    [Inject] private IJSRuntime _jsRuntime { get; set; } = null!;
-    [Inject] private IWorkingGroupApi _workingGroupApi { get; set; } = null!;
-    [Inject] private IInvoiceApi _invoiceApi { get; set; } = null!;
+    [Inject]
+    private IJSRuntime _jsRuntime { get; set; } = null!;
+
+    [Inject]
+    private IWorkingGroupApi _workingGroupApi { get; set; } = null!;
+
+    [Inject]
+    private IInvoiceApi _invoiceApi { get; set; } = null!;
 
     private WorkingGroup? _workingGroup { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var workingGroupErrorOr = await _workingGroupApi.GetAsync(workingGroupId);
-        if (workingGroupErrorOr.IsError)
-        {
-        }
+        if (workingGroupErrorOr.IsError) { }
 
         _workingGroup = workingGroupErrorOr.Value;
     }
@@ -46,10 +49,14 @@ public partial class InvoicePage
     /// <summary>
     /// The invoice statistics of the purchase.
     /// </summary>
-    private InvoiceStatistics? InvoiceStatistics { get; set; } = new()
-    {
-        TotalPriceConsumables = 0, TotalPriceChemicals = 0, TotalPriceSolvents = 0, TotalPriceGasCylinders = 0
-    };
+    private InvoiceStatistics? InvoiceStatistics { get; set; } =
+        new()
+        {
+            TotalPriceConsumables = 0,
+            TotalPriceChemicals = 0,
+            TotalPriceSolvents = 0,
+            TotalPriceGasCylinders = 0,
+        };
 
     /// <summary>
     /// Sets the invoice statistics.
@@ -58,8 +65,11 @@ public partial class InvoicePage
     {
         if (_dateRange is { Start: not null, End: not null })
         {
-            var errorOrStatistics = await _invoiceApi.GetStatisticsAsync(workingGroupId,
-                DateOnly.FromDateTime(_dateRange.Start.Value), DateOnly.FromDateTime(_dateRange.End.Value));
+            var errorOrStatistics = await _invoiceApi.GetStatisticsAsync(
+                workingGroupId,
+                DateOnly.FromDateTime(_dateRange.Start.Value),
+                DateOnly.FromDateTime(_dateRange.End.Value)
+            );
             if (!errorOrStatistics.IsError)
             {
                 InvoiceStatistics = errorOrStatistics.Value;
@@ -72,28 +82,43 @@ public partial class InvoicePage
     /// </summary>
     private string GetTotalPriceSolvents()
     {
-        return InvoiceStatistics?.TotalPriceSolvents.ToString("0.00", CultureInfo.GetCultureInfo("de-DE")) + "€";
+        return InvoiceStatistics?.TotalPriceSolvents.ToString(
+                "0.00",
+                CultureInfo.GetCultureInfo("de-DE")
+            ) + "€";
     }
+
     /// <summary>
     /// Returns the TotalPriceChemicals text.
     /// </summary>
     private string GetTotalPriceChemicals()
     {
-        return InvoiceStatistics?.TotalPriceChemicals.ToString("0.00", CultureInfo.GetCultureInfo("de-DE")) + "€";
+        return InvoiceStatistics?.TotalPriceChemicals.ToString(
+                "0.00",
+                CultureInfo.GetCultureInfo("de-DE")
+            ) + "€";
     }
+
     /// <summary>
     /// Returns the TotalPriceConsumables text.
     /// </summary>
     private string GetTotalPriceConsumables()
     {
-        return InvoiceStatistics?.TotalPriceConsumables.ToString("0.00", CultureInfo.GetCultureInfo("de-DE")) + "€";
+        return InvoiceStatistics?.TotalPriceConsumables.ToString(
+                "0.00",
+                CultureInfo.GetCultureInfo("de-DE")
+            ) + "€";
     }
+
     /// <summary>
     /// Returns the TotalPriceGasCylinders text.
     /// </summary>
     private string GetTotalPriceGasCylinders()
     {
-        return InvoiceStatistics?.TotalPriceGasCylinders.ToString("0.00", CultureInfo.GetCultureInfo("de-DE")) + "€";
+        return InvoiceStatistics?.TotalPriceGasCylinders.ToString(
+                "0.00",
+                CultureInfo.GetCultureInfo("de-DE")
+            ) + "€";
     }
 
     private async Task OnDateRangeChanged(DateRange newDateRange)
