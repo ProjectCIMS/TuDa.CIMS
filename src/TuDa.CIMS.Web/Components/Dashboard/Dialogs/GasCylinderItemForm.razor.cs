@@ -39,12 +39,7 @@ public partial class GasCylinderItemForm
     /// <returns>returns false when all Inputs are valid otherwise true</returns>
     public bool ErrorsInForm()
     {
-        if (
-            FormVolume == 0.0
-            || FormPressure == 0.0
-            || FormCas == string.Empty
-            || FormPurity == string.Empty
-        )
+        if (FormPriceUnit == null)
         {
             return true;
         }
@@ -64,6 +59,7 @@ public partial class GasCylinderItemForm
         FormPressure = 0.0;
         FormCas = string.Empty;
         FormPurity = string.Empty;
+        FormPriceUnit = null;
         OnReset.InvokeAsync();
     }
 }

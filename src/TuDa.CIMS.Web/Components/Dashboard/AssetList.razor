@@ -35,7 +35,8 @@
                         Title="Produkt"/>
         <PropertyColumn Property="@(x => x.ItemNumber)"
                         Title="Artikelnummer"/>
-        <PropertyColumn Property="@(x => x.Shop)"/>
+        <PropertyColumn Property="@(x => x.Shop)"
+                        Title="Lieferant"/>
         <PropertyColumn Property="@(x => x.Room.Name)"
                         Title="Raum"/>
         <PropertyColumn Property="@(x => GetPriceText(x))"
@@ -64,7 +65,7 @@
             Solvent => "Lösungsmittel",
             Chemical => "Chemikalie",
             Consumable => "Verbrauchsmaterial",
-            GasCylinder => "Druckgasflasche",
+            GasCylinder => "Technisches Gas",
             _ => "-",
         };
 
