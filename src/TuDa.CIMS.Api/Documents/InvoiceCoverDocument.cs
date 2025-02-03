@@ -9,11 +9,6 @@ namespace TuDa.CIMS.Api.Documents;
 public class InvoiceCoverDocument : IDocument
 {
     /// <summary>
-    /// Logo of the organization to present in the heading.
-    /// </summary>
-    private readonly Image? _logo;
-
-    /// <summary>
     /// The invoice, that should be used.
     /// </summary>
     private readonly Invoice _invoice;
@@ -27,14 +22,9 @@ public class InvoiceCoverDocument : IDocument
 
     #endregion
 
-    public InvoiceCoverDocument(
-        Invoice invoice,
-        Image? logo,
-        AdditionalInvoiceInformation information
-    )
+    public InvoiceCoverDocument(Invoice invoice, AdditionalInvoiceInformation information)
     {
         _invoice = invoice;
-        _logo = logo;
         _information = information;
     }
 
@@ -74,9 +64,6 @@ public class InvoiceCoverDocument : IDocument
                 .Row(row =>
                 {
                     row.RelativeItem().Element(ComposeProfessorSalution);
-
-                    if (_logo is not null)
-                        row.RelativeItem(0.6f).Image(_logo);
                 });
         });
     }
