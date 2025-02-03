@@ -6,7 +6,7 @@ namespace TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 
 public partial class AssetItemEditDialog
 {
-    private AssetItemEditForm _assetItemEditForm;
+    private AssetItemEditForm _assetItemEditForm = null!;
     private readonly ISnackbar _snackbar;
     private readonly IDialogService _dialogService;
 

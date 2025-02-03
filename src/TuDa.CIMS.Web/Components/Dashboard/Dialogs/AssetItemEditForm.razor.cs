@@ -23,16 +23,16 @@ public partial class AssetItemEditForm
     /// </summary>
     public bool ShowError = false;
 
-    private string FeedbackMessage = string.Empty;
-    private Severity FeedbackColor = Severity.Success;
+    private string _feedbackMessage = string.Empty;
+    private Severity _feedbackColor = Severity.Success;
 
     /// <summary>
     /// References to the different Forms
     /// </summary>
-    private AssetItemForm _assetItemForm;
-    private ChemicalItemForm _chemicalItemForm;
-    private ConsumableItemForm _consumableItemForm;
-    private GasCylinderItemForm _gasCylinderForm;
+    private AssetItemForm _assetItemForm = null!;
+    private ChemicalItemForm _chemicalItemForm = null!;
+    private ConsumableItemForm _consumableItemForm = null!;
+    private GasCylinderItemForm _gasCylinderForm = null!;
 
     [Parameter]
     public required AssetItem UpdateItem { get; set; }
@@ -196,10 +196,10 @@ public partial class AssetItemEditForm
             },
             _ => null!,
         };
-        FeedbackMessage = "Das Objekt wurde erfolgreich geupdated.";
-        FeedbackColor = Severity.Success;
+        _feedbackMessage = "Das Objekt wurde erfolgreich geupdated.";
+        _feedbackColor = Severity.Success;
 
         await _assetItemApi.UpdateAsync(UpdateItem.Id, dto);
-        _snackbar.Add(FeedbackMessage, FeedbackColor);
+        _snackbar.Add(_feedbackMessage, _feedbackColor);
     }
 }

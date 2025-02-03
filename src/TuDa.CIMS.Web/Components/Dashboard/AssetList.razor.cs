@@ -21,8 +21,8 @@ public partial class AssetList
     public EventCallback<AssetItem> EditButtonPressed { get; set; }
 
     private readonly IAssetItemApi _assetItemApi;
-    private MudDataGrid<AssetItem> _dataGrid { get; set; }
-    private string _searchString { get; set; }
+    private MudDataGrid<AssetItem> _dataGrid { get; set; } = null!;
+    private string _searchString { get; set; } = string.Empty;
 
     public AssetList(IAssetItemApi assetItemApi)
     {

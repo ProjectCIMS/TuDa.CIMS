@@ -2,7 +2,6 @@
 using MudBlazor;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
-using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Components.ShoppingCart;
 using TuDa.CIMS.Web.Helper;
 using TuDa.CIMS.Web.Services;
@@ -56,11 +55,11 @@ public partial class ShoppingCartPage
             parameters,
             options
         );
+        var result = await dialog.Result;
 
-        if ((await dialog.Result).Canceled)
+        if (result is { Canceled: true })
             return;
 
-        //TODO: Send Working Group, Buyer and Purchase to API
         var ids = await dialog.GetReturnValueAsync<WorkingGroupWithBuyer>();
 
         if (ids is null)
@@ -87,7 +86,7 @@ public partial class ShoppingCartPage
         }
 
         var errorOr = await PurchaseApi.CreateAsync(
-            ids.WorkingGroupId,
+            ids!.WorkingGroupId,
             new CreatePurchaseDto
             {
                 Buyer = ids.BuyerId,

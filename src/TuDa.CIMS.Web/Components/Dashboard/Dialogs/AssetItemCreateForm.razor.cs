@@ -35,10 +35,10 @@ public partial class AssetItemCreateForm
     /// <summary>
     /// References to the different Forms
     /// </summary>
-    private AssetItemForm _assetItemForm;
-    private ChemicalItemForm _chemicalItemForm;
-    private ConsumableItemForm _consumableItemForm;
-    private GasCylinderItemForm _gasCylinderForm;
+    private AssetItemForm _assetItemForm = null!;
+    private ChemicalItemForm _chemicalItemForm = null!;
+    private ConsumableItemForm _consumableItemForm = null!;
+    private GasCylinderItemForm _gasCylinderForm = null!;
 
     /// <summary>
     /// Resetting all Inputs on every Form
@@ -137,7 +137,7 @@ public partial class AssetItemCreateForm
     {
         var errorOrItems = await _assetItemApi.GetAllAsync();
         var items = errorOrItems.Value.ToList();
-        Guid RoomId = items.FirstOrDefault().Room.Id;
+        Guid roomId = items.FirstOrDefault()?.Room.Id ?? Guid.NewGuid();
 
         CreateAssetItemDto? createDto = _selectedAssetItemType switch
         {
@@ -152,7 +152,7 @@ public partial class AssetItemCreateForm
                 Purity = _chemicalItemForm.FormPurity,
                 PriceUnit = _chemicalItemForm.FormPriceUnit!.Value,
                 BindingSize = _chemicalItemForm.FormBindingSize,
-                RoomId = RoomId,
+                RoomId = roomId,
             },
 
             AssetItemType.Consumable => new CreateConsumableDto
@@ -162,7 +162,7 @@ public partial class AssetItemCreateForm
                 ItemNumber = _assetItemForm.FormItemNumber,
                 Note = _assetItemForm.FormNote,
                 Price = _assetItemForm.FormPrice,
-                RoomId = RoomId,
+                RoomId = roomId,
                 Manufacturer = _consumableItemForm.FormManufacturer,
                 SerialNumber = _consumableItemForm.FormSerialNumber,
                 Amount = _consumableItemForm.FormConsumableAmount,
@@ -175,7 +175,7 @@ public partial class AssetItemCreateForm
                 ItemNumber = _assetItemForm.FormItemNumber,
                 Note = _assetItemForm.FormNote,
                 Price = _assetItemForm.FormPrice,
-                RoomId = RoomId,
+                RoomId = roomId,
                 Cas = _gasCylinderForm.FormCas,
                 Purity = _gasCylinderForm.FormPurity,
                 Volume = _gasCylinderForm.FormVolume,
@@ -194,7 +194,7 @@ public partial class AssetItemCreateForm
                 Purity = _chemicalItemForm.FormPurity,
                 PriceUnit = _chemicalItemForm.FormPriceUnit!.Value,
                 BindingSize = _chemicalItemForm.FormBindingSize,
-                RoomId = RoomId,
+                RoomId = roomId,
             },
 
             _ => throw new ArgumentOutOfRangeException(

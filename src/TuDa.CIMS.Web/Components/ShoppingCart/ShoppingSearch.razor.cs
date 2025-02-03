@@ -11,14 +11,20 @@ namespace TuDa.CIMS.Web.Components.ShoppingCart;
 /// </summary>
 public partial class ShoppingSearch : ComponentBase
 {
-    private readonly IAssetItemApi _assetItemApi;
-    private MudAutocomplete<AssetItem> _autocomplete = null!; // Is set by blazor component
-
     /// <summary>
     /// Event that is called when an <see cref="AssetItem"/> is selected.
     /// </summary>
     [Parameter]
     public EventCallback<AssetItem> AssetItemSelected { get; set; }
+
+    private readonly IAssetItemApi _assetItemApi;
+
+    private MudAutocomplete<AssetItem> _autocomplete = null!; // Is set by blazor component
+
+    /// <summary>
+    /// To filter for different types of Items
+    /// </summary>
+    private List<AssetItemType?> _selectedAssetItemType = [];
 
     public ShoppingSearch(IAssetItemApi api)
     {
@@ -31,11 +37,6 @@ public partial class ShoppingSearch : ComponentBase
         await _autocomplete.ResetAsync();
         await AssetItemSelected.InvokeAsync(item);
     }
-
-    /// <summary>
-    /// To filter for different types of Items
-    /// </summary>
-    private List<AssetItemType?> _selectedAssetItemType;
 
     private async Task<IEnumerable<AssetItem>> Search(string nameOrCas, CancellationToken token)
     {

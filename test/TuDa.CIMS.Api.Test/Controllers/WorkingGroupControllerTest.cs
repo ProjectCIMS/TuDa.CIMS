@@ -117,7 +117,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         var createWorkingGroup = new CreateWorkingGroupDto
         {
             Professor = professor.ToCreateDto(),
-            PhoneNumber = phoneNumber
+            PhoneNumber = phoneNumber,
         };
 
         // Act
@@ -172,15 +172,13 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
 
         var responseWorkingGroup = await response.Content.FromJsonAsync<WorkingGroup>();
 
-        workingGroup
-            .Should()
-            .BeEquivalentTo(updatedWorkingGroup);
+        workingGroup.Should().BeEquivalentTo(updatedWorkingGroup);
 
         workingGroup
             .Should()
             .BeEquivalentTo(
                 responseWorkingGroup,
-                options => options.Excluding(wg => wg.Professor.UpdatedAt)
+                options => options.Excluding(wg => wg!.Professor.UpdatedAt)
             );
         responseWorkingGroup!.Professor.UpdatedAt.Should().NotBeNull();
     }
