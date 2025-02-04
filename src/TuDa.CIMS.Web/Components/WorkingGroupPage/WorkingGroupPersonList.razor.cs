@@ -19,6 +19,7 @@ public partial class WorkingGroupPersonList : ComponentBase
         this.studentApi = studentApi;
     }
 
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
     [Parameter] public Guid WorkingGroupId { get; set; }
 
@@ -47,6 +48,9 @@ public partial class WorkingGroupPersonList : ComponentBase
             YesText = "Löschen",
             NoText = "Nein",
         };
+
+        Snackbar.Add("Der Vorgang wurde abgebrochen", Severity.Warning);
+
         if (await dialogService.ShowMessageBox(messageBox) == true)
         {
             if (_persons.Any())
