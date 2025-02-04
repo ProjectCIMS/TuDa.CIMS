@@ -1,10 +1,10 @@
 ﻿@using System.Globalization
+@using TuDa.CIMS.Shared.Entities
 <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column bg-white rounded">
     <MudDataGrid Items="@SortedPurchases"
                  FixedHeader="@true"
                  SortMode="SortMode.None"
                  Hover="@true">
-
         <Columns>
             <PropertyColumn
                 Property="@(p => p.CompletionDate.HasValue ? p.CompletionDate.Value.ToString("dd.MM.yyyy", CultureInfo.GetCultureInfo("de-DE")) : "")"
@@ -20,6 +20,10 @@
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
+        <PagerContent>
+            <MudDataGridPager RowsPerPageString="Einkäufe pro Seite:"
+                              T="Purchase"/>
+        </PagerContent>
     </MudDataGrid>
     <WorkingGroupInvoiceButton></WorkingGroupInvoiceButton>
 </MudContainer>

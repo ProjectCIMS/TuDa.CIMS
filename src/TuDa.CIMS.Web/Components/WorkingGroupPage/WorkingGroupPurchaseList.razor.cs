@@ -18,8 +18,6 @@ public partial class WorkingGroupPurchaseList(IPurchaseApi _iPurchaseApi) : Comp
         Purchases = purchases.Value;
     }
 
-
-
     public void NavigateToPurchase()
     {
         // TODO: Implement Navigation to Purchase
