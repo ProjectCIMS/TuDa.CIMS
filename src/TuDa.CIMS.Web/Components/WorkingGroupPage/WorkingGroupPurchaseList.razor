@@ -7,7 +7,7 @@
                  Hover="@true">
         <Columns>
             <PropertyColumn
-                Property="@(p => p.CompletionDate.HasValue ? p.CompletionDate.Value.ToString("dd.MM.yyyy", CultureInfo.GetCultureInfo("de-DE")) : "")"
+                Property="@(p => p.CompletionDate.HasValue ? p.CompletionDate.Value.ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.GetCultureInfo("de-DE")) : "")"
                 Title="Datum"/>
             <PropertyColumn
                 Property="@(p => p.TotalPrice.ToString("C", CultureInfo.GetCultureInfo("de-DE")))"
