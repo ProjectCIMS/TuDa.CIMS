@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
@@ -10,14 +11,17 @@ public class PurchaseService : IPurchaseService
 {
     private readonly IPurchaseRepository _purchaseRepository;
     private readonly IConsumableTransactionService _consumableTransactionService;
+    private readonly CIMSDbContext _context;
 
     public PurchaseService(
         IPurchaseRepository purchaseRepository,
-        IConsumableTransactionService consumableTransactionService
+        IConsumableTransactionService consumableTransactionService,
+        CIMSDbContext context
     )
     {
         _purchaseRepository = purchaseRepository;
         _consumableTransactionService = consumableTransactionService;
+        _context = context;
     }
 
     /// <summary>
@@ -95,24 +99,29 @@ public class PurchaseService : IPurchaseService
         CreatePurchaseDto createModel
     )
     {
-        await using var transaction = await _purchaseRepository.BeginTransactionAsync();
-        try
+        var strategy = _context.Database.CreateExecutionStrategy();
+
+        return await strategy.ExecuteAsync<ErrorOr<Purchase>>(async () =>
         {
-            var purchase = await _purchaseRepository.CreateAsync(workingGroupId, createModel);
-            if (purchase.IsError)
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                return purchase.Errors;
+                var purchase = await _purchaseRepository.CreateAsync(workingGroupId, createModel);
+                if (purchase.IsError)
+                {
+                    return purchase.Errors;
+                }
+
+                await _consumableTransactionService.CreateForPurchaseAsync(purchase.Value);
+                await transaction.CommitAsync();
+
+                return purchase;
             }
-
-            await _consumableTransactionService.CreateForPurchaseAsync(purchase.Value);
-            await transaction.CommitAsync();
-
-            return purchase;
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            return Error.Failure("PurchaseService.CreateAsync", ex.Message);
-        }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return Error.Failure("PurchaseService.CreateAsync", ex.Message);
+            }
+        });
     }
 }

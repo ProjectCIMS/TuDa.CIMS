@@ -138,9 +138,4 @@ public class PurchaseRepository : IPurchaseRepository
 
         return newPurchase;
     }
-
-    public async Task<IDbContextTransaction> BeginTransactionAsync()
-    {
-        return await _context.Database.BeginTransactionAsync();
-    }
 }

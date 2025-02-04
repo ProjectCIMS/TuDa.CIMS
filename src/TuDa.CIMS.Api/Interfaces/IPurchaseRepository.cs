@@ -10,5 +10,4 @@ public interface IPurchaseRepository
     Task<Purchase?> GetOneAsync(Guid id, Guid workingGroupId);
     Task<ErrorOr<Deleted>> RemoveAsync(Guid id, Guid workingGroupId);
     Task<ErrorOr<Purchase>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel);
-    Task<IDbContextTransaction> BeginTransactionAsync();
 }
