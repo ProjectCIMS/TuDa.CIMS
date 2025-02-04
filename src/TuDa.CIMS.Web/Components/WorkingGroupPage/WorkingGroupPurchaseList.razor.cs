@@ -10,6 +10,8 @@ public partial class WorkingGroupPurchaseList(IPurchaseApi _iPurchaseApi) : Comp
 
     [Parameter] public Guid WorkingGroupId { get; set; }
 
+    private List<Purchase> SortedPurchases => Purchases.OrderByDescending(p => p.CompletionDate).ToList();
+
     protected override async Task OnInitializedAsync()
     {
         var purchases = await _iPurchaseApi.GetAllAsync(WorkingGroupId);

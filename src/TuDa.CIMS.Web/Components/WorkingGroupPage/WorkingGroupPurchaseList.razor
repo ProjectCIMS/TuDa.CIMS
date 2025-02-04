@@ -1,13 +1,13 @@
 ﻿@using System.Globalization
 <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column bg-white rounded">
-    <MudDataGrid Items="@Purchases"
+    <MudDataGrid Items="@SortedPurchases"
                  FixedHeader="@true"
                  SortMode="SortMode.None"
                  Hover="@true">
 
         <Columns>
             <PropertyColumn
-                Property="@(p => p.CompletionDate)"
+                Property="@(p => p.CompletionDate.HasValue ? p.CompletionDate.Value.ToString("dd.MM.yyyy", CultureInfo.GetCultureInfo("de-DE")) : "")"
                 Title="Datum"/>
             <PropertyColumn
                 Property="@(p => p.TotalPrice.ToString("C", CultureInfo.GetCultureInfo("de-DE")))"
