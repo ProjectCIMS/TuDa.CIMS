@@ -54,7 +54,7 @@ public class StudentRepository : IStudentRepository
     /// <param name="workingGroupId">specific ID of Working Group</param>
     /// <param name="createStudentDto">model to create a student if necessary</param>
     /// <returns>returns the Working Group in which the Student was added</returns>
-    public async Task<ErrorOr<Created>> AddAsync(
+    public async Task<ErrorOr<Student>> AddAsync(
         Guid workingGroupId,
         CreateStudentDto createStudentDto
     )
@@ -80,7 +80,7 @@ public class StudentRepository : IStudentRepository
         existingWorkingGroup.Students.Add(newStudent);
         await _context.SaveChangesAsync();
 
-        return Result.Created;
+        return newStudent;
     }
 
     /// <summary>

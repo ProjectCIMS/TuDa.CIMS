@@ -49,10 +49,9 @@ public partial class WorkingGroupPersonList : ComponentBase
             NoText = "Nein",
         };
 
-        Snackbar.Add("Der Vorgang wurde abgebrochen", Severity.Warning);
-
         if (await dialogService.ShowMessageBox(messageBox) == true)
         {
+            Snackbar.Add("Die Person wurde erfolgreich entfernt", Severity.Success);
             if (_persons.Any())
             {
                 await studentApi.RemoveAsync(WorkingGroupId, student.Id);
@@ -88,12 +87,7 @@ public partial class WorkingGroupPersonList : ComponentBase
         {
             var returnedValues = (List<string>)result.Data!;
 
-            Student student = new()
-            {
-                FirstName = returnedValues[0], Name = returnedValues[1], PhoneNumber = returnedValues[2]
-            };
-
-            await studentApi.AddAsync(
+            var newStudent = await studentApi.AddAsync(
                 WorkingGroupId,
                 new CreateStudentDto()
                 {
@@ -103,7 +97,7 @@ public partial class WorkingGroupPersonList : ComponentBase
 
             // Have to be like this otherwise the list will only update after reload
             var modifiableList = _persons.ToList();
-            modifiableList.Add(student);
+            modifiableList.Add(newStudent.Value);
             _persons = modifiableList;
             await PersonAdded.InvokeAsync();
         }

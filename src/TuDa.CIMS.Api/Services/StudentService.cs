@@ -44,7 +44,7 @@ public class StudentService : IStudentService
     /// <param name="workingGroupId">the unique id of the Working Group</param>
     /// <param name="createStudentDto">to add a student but optional</param>
     /// <returns></returns>
-    public async Task<ErrorOr<Created>> AddAsync(
+    public async Task<ErrorOr<Student>> AddAsync(
         Guid workingGroupId,
         CreateStudentDto createStudentDto
     )
