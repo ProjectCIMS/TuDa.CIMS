@@ -112,7 +112,7 @@ public class InvoiceTablesDocument : IDocument
                 .PaddingTop(3)
                 .PaddingBottom(20)
                 .Text(
-                    $"Gesamtpreis: {entries.Aggregate(0d, (all, entry) => all + entry.TotalPrice):F2} €"
+                    $"Gesamtpreis: {entries.Aggregate(0d, (all, entry) => all + entry.TotalPrice):C}"
                 )
                 .AlignRight();
         });
@@ -125,51 +125,79 @@ public class InvoiceTablesDocument : IDocument
             table.ColumnsDefinition(columns =>
             {
                 columns.RelativeColumn(0.4f);
-                columns.RelativeColumn(1.5f);
+                columns.ConstantColumn(1); // Vertical Line
+                columns.RelativeColumn(1.7f);
                 columns.RelativeColumn(3.5f);
                 columns.RelativeColumn(2.5f);
-                columns.ConstantColumn(1);
-                columns.RelativeColumn();
+                columns.ConstantColumn(1); // Vertical Line
+                columns.RelativeColumn(0.9f);
                 columns.RelativeColumn(1.5f);
+                columns.ConstantColumn(1); // Vertical Line
+                columns.RelativeColumn(1.4f);
             });
 
             table.Header(header =>
             {
                 header.Cell().Text("#");
+
+                header.Cell(); // Vertical Line
+
                 header.Cell().Text("Datum");
                 header.Cell().Text("Artikel");
                 header.Cell().Text("Name");
 
-                header.Cell();
+                header.Cell(); // Vertical Line
 
-                header.Cell().Text("Anzahl").AlignRight();
-                header.Cell().Text("Stückpreis").AlignRight();
+                header.Cell().Text("Anzahl").AlignCenter();
+                header.Cell().Text("Stückpreis").AlignCenter();
 
-                header.Cell().ColumnSpan(7).PaddingTop(5).BorderBottom(1).BorderColor(Colors.Black);
+                header.Cell(); // Vertical Line
+
+                header.Cell().Text("Endpreis").AlignRight();
+
+                header
+                    .Cell()
+                    .ColumnSpan(10)
+                    .PaddingTop(5)
+                    .BorderBottom(1)
+                    .BorderColor(Colors.Black);
             });
 
             foreach (
                 (int index, InvoiceEntry entry) in entries.OrderBy(x => x.PurchaseDate).Index()
             )
             {
-                table.Cell().Element(CellStyle).Text($"{index + 1 + tableNum * ColumnsOnOnePage}");
-                table.Cell().Element(CellStyle).Text($"{entry.PurchaseDate}");
+                table.Cell().Element(CellStyle).Text($"{index + 1}");
+
+                table.Cell().Element(VerticalLine);
+
+                table.Cell().Element(CellStyle).Text($"{entry.PurchaseDate}").AlignCenter();
                 table.Cell().Element(CellStyle).Text($"{entry.AssetItem.Name}"); // TODO: There need to be more
                 table
                     .Cell()
                     .Element(CellStyle)
+                    .PaddingRight(2)
                     .Text($"{entry.Buyer.Name}, {entry.Buyer.FirstName}");
 
                 table.Cell().Element(VerticalLine);
 
-                table.Cell().Element(CellStyle).Text($"{entry.Amount}").AlignRight();
-                table.Cell().Element(CellStyle).Text($"{entry.PricePerItem:F2}€").AlignRight();
+                table.Cell().Element(CellStyle).Text($"{entry.Amount}").AlignCenter();
+                table
+                    .Cell()
+                    .Element(CellStyle)
+                    .PaddingRight(3)
+                    .Text($"{entry.PricePerItem:C}")
+                    .AlignCenter();
+
+                table.Cell().Element(VerticalLine);
+
+                table.Cell().Element(CellStyle).Text($"{entry.TotalPrice:C}").AlignRight();
             }
         });
     }
 
     private static IContainer CellStyle(IContainer container) =>
-        container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
+        container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(3);
 
     private static IContainer VerticalLine(IContainer container) =>
         container.Background("#000").Width(1).Height(1); // Adjust height as needed
