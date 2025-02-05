@@ -7,7 +7,7 @@
                  Hover="@true">
         <Columns>
             <PropertyColumn
-                Property="@(p => p.CompletionDate.HasValue ? p.CompletionDate.Value.ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.GetCultureInfo("de-DE")) : "")"
+                Property="@(p => FormatCompletionDate(p))"
                 Title="Datum"/>
             <PropertyColumn
                 Property="@(p => p.TotalPrice.ToString("C", CultureInfo.GetCultureInfo("de-DE")))"
@@ -22,7 +22,7 @@
         </Columns>
         <PagerContent>
             <MudDataGridPager RowsPerPageString="Einkäufe pro Seite:"
-                              PageSizeOptions="new int[] { 5, 10, 20 }"
+                              PageSizeOptions="[ 5, 10, 20 ]"
                               T="Purchase"/>
         </PagerContent>
     </MudDataGrid>

@@ -12,7 +12,8 @@ public partial class WorkingGroupPersonList : ComponentBase
     private readonly IWorkingGroupApi workingGroupApi;
     private readonly IStudentApi studentApi;
 
-    public WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi, IStudentApi studentApi)
+    public WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi,
+        IStudentApi studentApi)
     {
         this.dialogService = dialogService;
         this.workingGroupApi = workingGroupApi;
