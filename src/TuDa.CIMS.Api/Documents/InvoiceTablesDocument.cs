@@ -22,7 +22,6 @@ public class InvoiceTablesDocument : IDocument
 
             page.DefaultTextStyle(style => style.FontSize(11));
 
-            page.Header().Element(ComposeHeader);
             page.Content().Element(ComposeContent);
 
             page.Footer()
@@ -36,8 +35,6 @@ public class InvoiceTablesDocument : IDocument
                 });
         });
     }
-
-    private void ComposeHeader(IContainer container) { }
 
     private void ComposeContent(IContainer container)
     {
