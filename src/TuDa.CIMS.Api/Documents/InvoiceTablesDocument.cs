@@ -9,8 +9,6 @@ public class InvoiceTablesDocument : IDocument
 {
     private readonly Invoice _invoice;
 
-    private const int ColumnsOnOnePage = 26;
-
     public InvoiceTablesDocument(Invoice invoice)
     {
         _invoice = invoice;
@@ -108,23 +106,7 @@ public class InvoiceTablesDocument : IDocument
         {
             column.Item().PaddingBottom(7).Text(title).ExtraBold().FontSize(20);
 
-            var tables = new List<List<InvoiceEntry>>();
-
-            for (int i = 0; i < entries.Count / ColumnsOnOnePage + 1; i++)
-            {
-                var table = entries.Skip(i * ColumnsOnOnePage).Take(ColumnsOnOnePage).ToList();
-                if (table.Count > 0)
-                    tables.Add(table);
-            }
-
-            Console.WriteLine(entries.Count);
-
-            for (int i = 0; i < tables.Count; i++)
-            {
-                column.Item().Element(container => ComposeTable(container, tables[i], i));
-                if (i + 1 < tables.Count && tables.Count > 1)
-                    column.Item().PageBreak();
-            }
+            column.Item().Element(container => ComposeTable(container, entries));
 
             column.Item().LineHorizontal(2);
 
@@ -139,7 +121,7 @@ public class InvoiceTablesDocument : IDocument
         });
     }
 
-    private static void ComposeTable(IContainer container, List<InvoiceEntry> entries, int tableNum)
+    private static void ComposeTable(IContainer container, List<InvoiceEntry> entries)
     {
         container.Table(table =>
         {
