@@ -11,15 +11,15 @@ public partial class WorkingGroupPersonList : ComponentBase
     private readonly IDialogService dialogService;
     private readonly IWorkingGroupApi workingGroupApi;
     private readonly IStudentApi studentApi;
+    private readonly ISnackbar snackbar;
 
-    public WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi, IStudentApi studentApi)
+    public WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi, IStudentApi studentApi, ISnackbar snackbar)
     {
         this.dialogService = dialogService;
         this.workingGroupApi = workingGroupApi;
         this.studentApi = studentApi;
+        this.snackbar = snackbar;
     }
-
-    [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
     [Parameter] public Guid WorkingGroupId { get; set; }
 
@@ -51,7 +51,7 @@ public partial class WorkingGroupPersonList : ComponentBase
 
         if (await dialogService.ShowMessageBox(messageBox) == true)
         {
-            Snackbar.Add("Die Person wurde erfolgreich entfernt", Severity.Success);
+            snackbar.Add("Die Person wurde erfolgreich entfernt", Severity.Success);
             if (_persons.Any())
             {
                 await studentApi.RemoveAsync(WorkingGroupId, student.Id);
@@ -97,7 +97,10 @@ public partial class WorkingGroupPersonList : ComponentBase
 
             // Have to be like this otherwise the list will only update after reload
             var modifiableList = _persons.ToList();
-            modifiableList.Add(newStudent.Value);
+
+            if (!newStudent.IsError) modifiableList.Add(newStudent.Value);
+            else snackbar.Add("Ein Fehler ist aufgetreten", Severity.Error);
+
             _persons = modifiableList;
             await PersonAdded.InvokeAsync();
         }
