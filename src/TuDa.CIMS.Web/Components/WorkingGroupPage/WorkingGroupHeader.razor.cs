@@ -6,7 +6,7 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
-public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : ComponentBase
+public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi, NavigationManager navigation) : ComponentBase
 {
     [Parameter] public required Professor Professor { get; set; }
 
@@ -32,11 +32,15 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi) : Comp
     }
 
     /// <summary>
-    /// Opens the dialog to look up and edit the workinggroup
+    /// Opens the dialog to look up and edit the workinggroup.
     /// </summary>
-    public void OpenInformationDialog()
+    public async void OpenInformationDialog()
     {
-        DialogService.Show<WorkingGroupInfoPopOut>("Informationen zur Arbeitsgruppe",
+        var dialogReference = DialogService.Show<WorkingGroupInfoPopOut>("Informationen zur Arbeitsgruppe",
             new DialogParameters { { "WorkingGroupId", WorkingGroupId } });
+
+        // Wait for the dialog to close and then reload the page
+        await dialogReference.Result;
+        navigation.NavigateTo(navigation.Uri, forceLoad: true);
     }
 }
