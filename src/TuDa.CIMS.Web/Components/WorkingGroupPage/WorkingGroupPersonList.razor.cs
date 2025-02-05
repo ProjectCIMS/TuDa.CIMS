@@ -35,6 +35,40 @@ public partial class WorkingGroupPersonList : ComponentBase
     }
 
     /// <summary>
+    /// Updates a specific student.
+    /// </summary>
+    /// <param name="student">The student that will be updated.</param>
+    private async Task EditBuyer(Person student)
+    {
+        GenericInput inputField = new GenericInput()
+        {
+            Labels = ["Vorname", "Nachname", "Telefonnummer"],
+            Values = [student.FirstName, student.Name, student.PhoneNumber],
+            YesText = "Speichern"
+        };
+
+        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, inputField } };
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialogReference =
+        await dialogService.ShowAsync<GenericInputPopUp>("Person bearbeiten", parameters, options);
+
+        var result = await dialogReference.Result;
+        if (!result!.Canceled)
+        {
+            var returnedValues = (List<string>)result.Data!;
+            student.FirstName = returnedValues[0];
+            student.Name = returnedValues[1];
+            student.PhoneNumber = returnedValues[2];
+            await studentApi.UpdateAsync(WorkingGroupId, student.Id, new UpdateStudentDto()
+            {
+                FirstName = returnedValues[0], Name = returnedValues[1], PhoneNumber = returnedValues[2]
+            });
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
     /// Removes a student when the user accept the dialog.
     /// </summary>
     /// <param name="student">Student that will be removed</param>
