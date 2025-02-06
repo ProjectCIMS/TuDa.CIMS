@@ -85,7 +85,7 @@ public partial class AssetList
     private static SortDirection GetSortDirection(bool descending) =>
         descending ? MudBlazor.SortDirection.Descending : MudBlazor.SortDirection.Ascending;
 
-    private List<AssetItemType> _selectedTypes = new List<AssetItemType>();
+    private List<AssetItemType>? _selectedTypes { get; set; }
 
     private async void SelectedChanged(bool value, AssetItemType itemType)
     {
@@ -107,6 +107,13 @@ public partial class AssetList
 
     void OpenFilter()
     {
+        _selectedTypes = new List<AssetItemType>();
         _filterOpen = true;
+    }
+
+    void CloseFilter()
+    {
+        _selectedTypes = new List<AssetItemType>();
+        _filterOpen = false;
     }
 }

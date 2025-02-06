@@ -46,7 +46,14 @@ public interface IAssetItemApi
     public async Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync(
         string? nameOrCas = null,
         List<AssetItemType>? assetItemTypes = null
-    ) => await GetAllAsyncInternal(nameOrCas, assetItemTypes).ToErrorOrAsync();
+    )
+    {
+        if (assetItemTypes == null || assetItemTypes.Count == 0)
+        {
+            return await GetAllAsyncInternal(nameOrCas, null).ToErrorOrAsync(); // Ohne assetItemTypes
+        }
+        return await GetAllAsyncInternal(nameOrCas, assetItemTypes).ToErrorOrAsync();
+    }
 
     /// <summary>
     /// Internal method to retrieve all AssetItems.

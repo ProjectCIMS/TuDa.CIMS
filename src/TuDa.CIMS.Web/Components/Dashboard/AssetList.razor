@@ -33,22 +33,25 @@
                             Style="width:150px">
                     <MudStack Spacing="0">
                         <MudStack Spacing="0" Style="overflow-y:auto;max-height:250px">
-                            <MudCheckBox T="bool" Label="Chemical" Size="Size.Small"
+                            <MudCheckBox T="bool" Label="Chemiekalie" Size="Size.Small"
                                          Value="@_selectedTypes.Contains(AssetItemType.Chemical)"
                                          ValueChanged="@((value) => SelectedChanged(value, AssetItemType.Chemical))" />
 
-                            <MudCheckBox T="bool" Label="Consumable" Size="Size.Small"
+                            <MudCheckBox T="bool" Label="Laborgerät" Size="Size.Small"
                                          Value="@_selectedTypes.Contains(AssetItemType.Consumable)"
                                          ValueChanged="@((value) => SelectedChanged(value, AssetItemType.Consumable))" />
 
-                            <MudCheckBox T="bool" Label="GasCylinder" Size="Size.Small"
+                            <MudCheckBox T="bool" Label="Technische Gase" Size="Size.Small"
                                          Value="@_selectedTypes.Contains(AssetItemType.GasCylinder)"
                                          ValueChanged="@((value) => SelectedChanged(value, AssetItemType.GasCylinder))" />
 
-                            <MudCheckBox T="bool" Label="Solvent" Size="Size.Small"
+                            <MudCheckBox T="bool" Label="Lösungsmittel" Size="Size.Small"
                                          Value="@_selectedTypes.Contains(AssetItemType.Solvent)"
                                          ValueChanged="@((value) => SelectedChanged(value, AssetItemType.Solvent))" />
 
+                        </MudStack>
+                        <MudStack Row="true">
+                            <MudButton OnClick="CloseFilter">Schließen</MudButton>
                         </MudStack>
                     </MudStack>
                 </MudPopover>

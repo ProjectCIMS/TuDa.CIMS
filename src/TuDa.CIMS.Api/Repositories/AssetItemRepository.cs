@@ -32,6 +32,16 @@ public class AssetItemRepository : IAssetItemRepository
     private IQueryable<Substance> SubstancesFilledQuery =>
         AssetItemsFilledQuery.OfType<Substance>().Include(s => s.Hazards);
 
+    private IQueryable<GasCylinder> GasCylindersFilledQuery =>
+        SubstancesFilledQuery.OfType<GasCylinder>();
+
+    private IQueryable<Solvent> SolventsFilledQuery => SubstancesFilledQuery.OfType<Solvent>();
+
+    private IQueryable<Chemical> ChemicalsFilledQuery => SubstancesFilledQuery.OfType<Chemical>();
+
+    private IQueryable<Consumable> ConsumablesFilledQuery =>
+        AssetItemsFilledQuery.OfType<Consumable>();
+
     /// <summary>
     /// Returns all existing AssetItems of the database.
     /// </summary>
@@ -178,20 +188,44 @@ public class AssetItemRepository : IAssetItemRepository
 
     public async Task<List<AssetItem>> SearchTypeAsync(List<AssetItemType> assetItemTypes)
     {
-        IQueryable<AssetItem> query = AssetItemsFilledQuery.Where(item =>
-            (assetItemTypes.Contains(AssetItemType.Chemical) && item.GetType() == typeof(Chemical))
-            || (
-                assetItemTypes.Contains(AssetItemType.Consumable)
-                && item.GetType() == typeof(Consumable)
-            )
-            || (
-                assetItemTypes.Contains(AssetItemType.GasCylinder)
-                && item.GetType() == typeof(GasCylinder)
-            )
-            || (assetItemTypes.Contains(AssetItemType.Solvent) && item.GetType() == typeof(Solvent))
-        );
+        // Start with an empty list to collect results
+        List<AssetItem> result = new List<AssetItem>();
 
-        return await query.ToListAsync();
+        // Check for each asset item type in the provided list and query them individually
+        if (assetItemTypes.Contains(AssetItemType.Chemical))
+        {
+            var chemicals = await ChemicalsFilledQuery
+                .Where(item => item.GetType() == typeof(Chemical))
+                .ToListAsync();
+            result.AddRange(chemicals);
+        }
+
+        if (assetItemTypes.Contains(AssetItemType.Consumable))
+        {
+            var consumables = await ConsumablesFilledQuery
+                .Where(item => item.GetType() == typeof(Consumable))
+                .ToListAsync();
+            result.AddRange(consumables);
+        }
+
+        if (assetItemTypes.Contains(AssetItemType.GasCylinder))
+        {
+            var gasCylinders = await GasCylindersFilledQuery
+                .Where(item => item.GetType() == typeof(GasCylinder))
+                .ToListAsync();
+            result.AddRange(gasCylinders);
+        }
+
+        if (assetItemTypes.Contains(AssetItemType.Solvent))
+        {
+            var solvents = await SolventsFilledQuery
+                .Where(item => item.GetType() == typeof(Solvent))
+                .ToListAsync();
+            result.AddRange(solvents);
+        }
+
+        // Return the combined list of AssetItems
+        return result;
     }
 
     public async Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel)
