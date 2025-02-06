@@ -6,6 +6,7 @@ using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Params;
 
 namespace TuDa.CIMS.Api.Repositories;
@@ -171,6 +172,24 @@ public class AssetItemRepository : IAssetItemRepository
         var query = isCas
             ? SubstancesFilledQuery.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
             : AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
+
+        return await query.ToListAsync();
+    }
+
+    public async Task<List<AssetItem>> SearchTypeAsync(List<AssetItemType> assetItemTypes)
+    {
+        IQueryable<AssetItem> query = AssetItemsFilledQuery.Where(item =>
+            (assetItemTypes.Contains(AssetItemType.Chemical) && item.GetType() == typeof(Chemical))
+            || (
+                assetItemTypes.Contains(AssetItemType.Consumable)
+                && item.GetType() == typeof(Consumable)
+            )
+            || (
+                assetItemTypes.Contains(AssetItemType.GasCylinder)
+                && item.GetType() == typeof(GasCylinder)
+            )
+            || (assetItemTypes.Contains(AssetItemType.Solvent) && item.GetType() == typeof(Solvent))
+        );
 
         return await query.ToListAsync();
     }

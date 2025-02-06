@@ -26,8 +26,36 @@
     <Columns>
         <PropertyColumn Property="@(i => GetItemTypeName(i))"
                         Title="Typ">
+            <FilterTemplate>
+                <MudIconButton OnClick="@OpenFilter" Icon="@_icon" Size="@Size.Small" />
+                <MudOverlay Visible="@_filterOpen" OnClick="@(() => _filterOpen = false)" />
+                <MudPopover Open="@_filterOpen" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter"
+                            Style="width:150px">
+                    <MudStack Spacing="0">
+                        <MudStack Spacing="0" Style="overflow-y:auto;max-height:250px">
+                            <MudCheckBox T="bool" Label="Chemical" Size="Size.Small"
+                                         Value="@_selectedTypes.Contains(AssetItemType.Chemical)"
+                                         ValueChanged="@((value) => SelectedChanged(value, AssetItemType.Chemical))" />
+
+                            <MudCheckBox T="bool" Label="Consumable" Size="Size.Small"
+                                         Value="@_selectedTypes.Contains(AssetItemType.Consumable)"
+                                         ValueChanged="@((value) => SelectedChanged(value, AssetItemType.Consumable))" />
+
+                            <MudCheckBox T="bool" Label="GasCylinder" Size="Size.Small"
+                                         Value="@_selectedTypes.Contains(AssetItemType.GasCylinder)"
+                                         ValueChanged="@((value) => SelectedChanged(value, AssetItemType.GasCylinder))" />
+
+                            <MudCheckBox T="bool" Label="Solvent" Size="Size.Small"
+                                         Value="@_selectedTypes.Contains(AssetItemType.Solvent)"
+                                         ValueChanged="@((value) => SelectedChanged(value, AssetItemType.Solvent))" />
+
+                        </MudStack>
+                    </MudStack>
+                </MudPopover>
+            </FilterTemplate>
             <CellTemplate>
-                <MudIcon Icon="@GetItemTypeIcon(context.Item)" Size="@Size.Medium"/>
+                <MudIcon Icon="@GetItemTypeIcon(context.Item)"
+                         Size="@Size.Medium"/>
                 @GetItemTypeName(context.Item)
             </CellTemplate>
         </PropertyColumn>
@@ -63,7 +91,7 @@
         {
             Solvent => "Lösungsmittel",
             Chemical => "Chemikalie",
-            Consumable => "Verbrauchsmaterial",
+            Consumable => "Laborgerät",
             GasCylinder => "Druckgasflasche",
             _ => "-",
         };

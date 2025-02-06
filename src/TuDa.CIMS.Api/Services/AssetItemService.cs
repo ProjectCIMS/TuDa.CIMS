@@ -4,6 +4,7 @@ using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Params;
 
 namespace TuDa.CIMS.Api.Services;
@@ -22,13 +23,24 @@ public class AssetItemService : IAssetItemService
     /// Return an an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
     /// or the result of the <see cref="GetAllAsync"/> functionality if successful or if nameOrCas is set the <see cref="SearchAsync"/> functionality.
     /// </summary>
-    public async Task<ErrorOr<List<AssetItem>>> GetAllAsync(string? nameOrCas)
+    public async Task<ErrorOr<List<AssetItem>>> GetAllAsync(
+        string? nameOrCas,
+        List<AssetItemType>? assetItemTypes
+    )
     {
         try
         {
-            return nameOrCas != null
-                ? await _assetItemRepository.SearchAsync(nameOrCas)
-                : await _assetItemRepository.GetAllAsync();
+            if (!string.IsNullOrEmpty(nameOrCas))
+            {
+                return await _assetItemRepository.SearchAsync(nameOrCas);
+            }
+
+            if (assetItemTypes != null && assetItemTypes.Count > 0)
+            {
+                return await _assetItemRepository.SearchTypeAsync(assetItemTypes);
+            }
+
+            return await _assetItemRepository.GetAllAsync();
         }
         catch (Exception e)
         {

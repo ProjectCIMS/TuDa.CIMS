@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 using TuDa.CIMS.Web.Services;
 
@@ -21,7 +22,7 @@ public partial class AssetList
     public EventCallback<AssetItem> EditButtonPressed { get; set; }
 
     private readonly IAssetItemApi _assetItemApi;
-    private MudDataGrid<AssetItem> _dataGrid { get; set; }
+    private static MudDataGrid<AssetItem> _dataGrid { get; set; }
     private string _searchString { get; set; }
 
     public AssetList(IAssetItemApi assetItemApi)
@@ -39,7 +40,7 @@ public partial class AssetList
 
     private async Task<GridData<AssetItem>> ServerReload(GridState<AssetItem> state)
     {
-        var errorOrItems = await _assetItemApi.GetAllAsync(_searchString);
+        var errorOrItems = await _assetItemApi.GetAllAsync(_searchString, _selectedTypes);
         if (errorOrItems.IsError)
             return new GridData<AssetItem>();
 
@@ -53,7 +54,6 @@ public partial class AssetList
         foreach (var filterDefinition in state.FilterDefinitions)
         {
             var filterFunction = filterDefinition.GenerateFilterFunction(filterOptions);
-
             items = items.Where(filterFunction).ToList();
         }
 
@@ -84,4 +84,29 @@ public partial class AssetList
 
     private static SortDirection GetSortDirection(bool descending) =>
         descending ? MudBlazor.SortDirection.Descending : MudBlazor.SortDirection.Ascending;
+
+    private List<AssetItemType> _selectedTypes = new List<AssetItemType>();
+
+    private async void SelectedChanged(bool value, AssetItemType itemType)
+    {
+        if (value)
+        {
+            if (!_selectedTypes.Contains(itemType))
+                _selectedTypes.Add(itemType);
+        }
+        else
+        {
+            _selectedTypes.Remove(itemType);
+        }
+
+        await _dataGrid.ReloadServerData();
+    }
+
+    string _icon = Icons.Material.Outlined.FilterAlt;
+    bool _filterOpen = false;
+
+    void OpenFilter()
+    {
+        _filterOpen = true;
+    }
 }
