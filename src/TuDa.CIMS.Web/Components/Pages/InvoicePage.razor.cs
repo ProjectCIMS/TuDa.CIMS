@@ -10,14 +10,25 @@ namespace TuDa.CIMS.Web.Components.Pages;
 
 public partial class InvoicePage
 {
-    [Inject]
-    private IJSRuntime _jsRuntime { get; set; } = null!;
+    /// <summary>
+    /// The id of the working group.
+    /// </summary>
+    [Parameter]
+    public Guid workingGroupId { get; set; }
 
-    [Inject]
-    private IWorkingGroupApi _workingGroupApi { get; set; } = null!;
+    private readonly IJSRuntime _jsRuntime;
+    private readonly IWorkingGroupApi _workingGroupApi;
+    private readonly IInvoiceApi _invoiceApi;
 
-    [Inject]
-    private IInvoiceApi _invoiceApi { get; set; } = null!;
+    public InvoicePage(
+        IJSRuntime jsRuntime,
+        IWorkingGroupApi workingGroupApi,
+        IInvoiceApi invoiceApi)
+    {
+        _jsRuntime = jsRuntime;
+        _workingGroupApi = workingGroupApi;
+        _invoiceApi = invoiceApi;
+    }
 
     private WorkingGroup? _workingGroup { get; set; }
 
@@ -39,12 +50,6 @@ public partial class InvoicePage
     /// Selected date range.
     /// </summary>
     private DateRange _dateRange { get; set; } = new();
-
-    /// <summary>
-    /// The id of the working group.
-    /// </summary>
-    [Parameter]
-    public Guid workingGroupId { get; set; }
 
     /// <summary>
     /// The invoice statistics of the purchase.
