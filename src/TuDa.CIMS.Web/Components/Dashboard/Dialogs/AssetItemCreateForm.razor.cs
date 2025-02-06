@@ -197,7 +197,10 @@ public partial class AssetItemCreateForm
                 RoomId = RoomId,
             },
 
-            _ => null, // Should never happen!
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(_selectedAssetItemType),
+                $"Unsupported asset item type: {_selectedAssetItemType}"
+            ),
         };
         _snackbar.Add("Das Objekt wurde erfolgreich erstellt.", Severity.Success);
         return createDto!;

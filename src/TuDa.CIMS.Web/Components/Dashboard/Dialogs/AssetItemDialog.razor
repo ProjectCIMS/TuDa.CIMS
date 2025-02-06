@@ -60,7 +60,11 @@
         }
 
         CreateAssetItemDto createAssetItemDto = await _assetItemCreateForm.SaveChanges();
-        await OnItemCreated.InvokeAsync(createAssetItemDto);
+
+        if (OnItemCreated.HasDelegate)
+        {
+            await OnItemCreated.InvokeAsync(createAssetItemDto);
+        }
         ProductDialog.Close();
     }
 
