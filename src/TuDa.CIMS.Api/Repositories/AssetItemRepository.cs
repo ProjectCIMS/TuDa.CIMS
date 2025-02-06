@@ -169,8 +169,8 @@ public class AssetItemRepository : IAssetItemRepository
         bool isCas = nameOrCas.All(c => char.IsDigit(c) || c == '-');
 
         var query = isCas
-            ? SubstancesFilledQuery.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
-            : AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
+            ? SubstancesFilledQuery.Where(s => EF.Functions.ILike(s.Cas, $"%{nameOrCas}%"))
+            : AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Name, $"%{nameOrCas}%"));
 
         return await query.ToListAsync();
     }
