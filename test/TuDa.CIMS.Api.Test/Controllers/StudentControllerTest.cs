@@ -31,6 +31,7 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
     [Fact]
     public async Task RemoveAsync_ShouldRemoveStudent_WhenStudentPresent()
     {
+        // Arrange
         List<Student> students = [new StudentFaker(), new StudentFaker()];
         WorkingGroup workingGroup = new WorkingGroupFaker().Generate();
         workingGroup.Students = students;
