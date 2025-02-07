@@ -32,7 +32,7 @@ public class AssetItemService : IAssetItemService
         {
             if (!string.IsNullOrEmpty(nameOrCas))
             {
-                return await _assetItemRepository.SearchAsync(nameOrCas);
+                return await _assetItemRepository.SearchAsync(nameOrCas, assetItemTypes);
             }
 
             if (assetItemTypes != null && assetItemTypes.Count > 0)

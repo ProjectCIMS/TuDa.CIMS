@@ -175,7 +175,7 @@ public class AssetItemRepository : IAssetItemRepository
     /// Returns a list of matching AssetItem based on the provided name or CAS number.
     /// </summary>
     /// <param name="nameOrCas"></param>
-    public async Task<List<AssetItem>> SearchAsync(string nameOrCas)
+    public async Task<List<AssetItem>> SearchAsync(string nameOrCas, List<AssetItemType>? assetItemTypes)
     {
         bool isCas = nameOrCas.All(c => char.IsDigit(c) || c == '-');
 
@@ -183,7 +183,54 @@ public class AssetItemRepository : IAssetItemRepository
             ? SubstancesFilledQuery.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
             : AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
 
+        if (assetItemTypes is not null && assetItemTypes.Count > 0)
+        {
+            return await SearchContinueAsync(query, assetItemTypes);
+        }
+
         return await query.ToListAsync();
+    }
+
+    public async Task<List<AssetItem>> SearchContinueAsync(IQueryable<AssetItem> query, List<AssetItemType> assetItemTypes)
+    {
+        // Start with an empty list to collect results
+        List<AssetItem> result = new List<AssetItem>();
+
+        // Check for each asset item type in the provided list and query them individually
+        if (assetItemTypes.Contains(AssetItemType.Chemical))
+        {
+           var chemicals = await query
+                .Where(item => item.GetType() == typeof(Chemical))
+                .ToListAsync();
+            result.AddRange(chemicals);
+        }
+
+        if (assetItemTypes.Contains(AssetItemType.Consumable))
+        {
+            var consumables = await query
+                .Where(item => item.GetType() == typeof(Consumable))
+                .ToListAsync();
+            result.AddRange(consumables);
+        }
+
+        if (assetItemTypes.Contains(AssetItemType.GasCylinder))
+        {
+            var gasCylinders = await query
+                .Where(item => item.GetType() == typeof(GasCylinder))
+                .ToListAsync();
+            result.AddRange(gasCylinders);
+        }
+
+        if (assetItemTypes.Contains(AssetItemType.Solvent))
+        {
+            var solvents = await query
+                .Where(item => item.GetType() == typeof(Solvent))
+                .ToListAsync();
+            result.AddRange(solvents);
+        }
+
+        // Return the combined list of AssetItems
+        return result;
     }
 
     public async Task<List<AssetItem>> SearchTypeAsync(List<AssetItemType> assetItemTypes)

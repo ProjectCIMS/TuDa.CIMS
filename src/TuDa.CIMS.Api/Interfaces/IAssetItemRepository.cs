@@ -14,8 +14,7 @@ public interface IAssetItemRepository
     Task<ErrorOr<PaginatedResponse<AssetItem>>> GetPaginatedAsync(
         AssetItemPaginationQueryParams queryParams
     );
-
-    Task<List<AssetItem>> SearchAsync(string nameOrCas);
+    Task<List<AssetItem>> SearchAsync(string nameOrCas, List<AssetItemType>? assetItemTypes);
     Task<List<AssetItem>> SearchTypeAsync(List<AssetItemType> assetItemTypes);
     Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel);
 }
