@@ -1,0 +1,27 @@
+﻿<!-- Signature Dialog -->
+
+<MudDialog>
+    <DialogContent>
+        <MudContainer>
+            <SignaturePad @bind-Value="Signature" style="width: 100%; height: 500px;" Options="_options" ClearButtonClass="mud-button mud-button-filled mud-danger"/>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(Cancel)"
+                   Color="Color.Error">Abbrechen
+        </MudButton>
+        <MudButton OnClick="@(Submit)"
+                   Color="Color.Success">Abschließen
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code
+{
+    private SignaturePadOptions _options = new SignaturePadOptions
+    {
+        LineCap = LineCap.Round,
+        LineJoin = LineJoin.Round,
+        LineWidth = 5
+    };
+}
