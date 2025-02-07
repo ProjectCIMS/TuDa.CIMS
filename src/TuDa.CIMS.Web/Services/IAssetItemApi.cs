@@ -50,7 +50,7 @@ public interface IAssetItemApi
     {
         if (assetItemTypes == null || assetItemTypes.Count == 0)
         {
-            return await GetAllAsyncInternal(nameOrCas, null).ToErrorOrAsync(); // Ohne assetItemTypes
+            return await GetAllAsyncInternal(nameOrCas, null).ToErrorOrAsync();
         }
         return await GetAllAsyncInternal(nameOrCas, assetItemTypes).ToErrorOrAsync();
     }
@@ -65,7 +65,7 @@ public interface IAssetItemApi
     [Get("/")]
     protected Task<IApiResponse<IEnumerable<AssetItem>>> GetAllAsyncInternal(
         [FromQuery] string? nameOrCas,
-        [FromQuery] List<AssetItemType>? assetItemTypes
+        [Query(CollectionFormat = CollectionFormat.Multi)] List<AssetItemType>? assetItemTypes
     );
 
     /// <summary>

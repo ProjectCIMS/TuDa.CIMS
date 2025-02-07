@@ -108,12 +108,14 @@ public partial class AssetList
     void OpenFilter()
     {
         _selectedTypes = new List<AssetItemType>();
+        ReloadData();
         _filterOpen = true;
     }
 
     void CloseFilter()
     {
         _selectedTypes = new List<AssetItemType>();
+        ReloadData();
         _filterOpen = false;
     }
 }

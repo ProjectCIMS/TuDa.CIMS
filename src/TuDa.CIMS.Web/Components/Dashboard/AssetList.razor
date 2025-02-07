@@ -30,14 +30,14 @@
                 <MudIconButton OnClick="@OpenFilter" Icon="@_icon" Size="@Size.Small" />
                 <MudOverlay Visible="@_filterOpen" OnClick="@(() => _filterOpen = false)" />
                 <MudPopover Open="@_filterOpen" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter"
-                            Style="width:150px">
+                            Style="width:200px">
                     <MudStack Spacing="0">
                         <MudStack Spacing="0" Style="overflow-y:auto;max-height:250px">
-                            <MudCheckBox T="bool" Label="Chemiekalie" Size="Size.Small"
+                            <MudCheckBox T="bool" Label="Chemiekalien" Size="Size.Small"
                                          Value="@_selectedTypes.Contains(AssetItemType.Chemical)"
                                          ValueChanged="@((value) => SelectedChanged(value, AssetItemType.Chemical))" />
 
-                            <MudCheckBox T="bool" Label="Laborgerät" Size="Size.Small"
+                            <MudCheckBox T="bool" Label="Laborgeräte" Size="Size.Small"
                                          Value="@_selectedTypes.Contains(AssetItemType.Consumable)"
                                          ValueChanged="@((value) => SelectedChanged(value, AssetItemType.Consumable))" />
 
