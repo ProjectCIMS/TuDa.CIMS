@@ -25,7 +25,8 @@ public class AssetItemService : IAssetItemService
     /// </summary>
     public async Task<ErrorOr<List<AssetItem>>> GetAllAsync(
         string? nameOrCas,
-        List<AssetItemType>? assetItemTypes
+        List<AssetItemType>? assetItemTypes,
+        Dictionary<string, string>? filters
     )
     {
         try
@@ -38,6 +39,11 @@ public class AssetItemService : IAssetItemService
             if (assetItemTypes != null && assetItemTypes.Count > 0)
             {
                 return await _assetItemRepository.SearchTypeAsync(assetItemTypes);
+            }
+
+            if (filters != null && filters.Count > 0)
+            {
+                return await _assetItemRepository.FilterAsync(filters);
             }
 
             return await _assetItemRepository.GetAllAsync();

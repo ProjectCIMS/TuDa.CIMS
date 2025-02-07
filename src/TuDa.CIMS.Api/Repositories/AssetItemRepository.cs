@@ -1,5 +1,4 @@
-﻿using Mapster;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Factories;
 using TuDa.CIMS.Api.Interfaces;
@@ -175,6 +174,7 @@ public class AssetItemRepository : IAssetItemRepository
     /// Returns a list of matching AssetItem based on the provided name or CAS number.
     /// </summary>
     /// <param name="nameOrCas"></param>
+    /// <param name="assetItemTypes"></param>
     public async Task<List<AssetItem>> SearchAsync(string nameOrCas, List<AssetItemType>? assetItemTypes)
     {
         bool isCas = nameOrCas.All(c => char.IsDigit(c) || c == '-');
@@ -191,7 +191,41 @@ public class AssetItemRepository : IAssetItemRepository
         return await query.ToListAsync();
     }
 
-    public async Task<List<AssetItem>> SearchContinueAsync(IQueryable<AssetItem> query, List<AssetItemType> assetItemTypes)
+    public async Task<List<AssetItem>> FilterAsync(Dictionary<string, string>? filters)
+    {
+        IQueryable<AssetItem> query = AssetItemsFilledQuery;
+        foreach (var filter in filters)
+        {
+            switch (filter.Key)
+            {
+                case "Produkt":
+                    query = AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Name, $"{filter.Value}%"));
+                    break;
+
+                case "Artikelnummer":
+                    query = AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.ItemNumber, $"{filter.Value}%"));
+                    break;
+
+                case "Lieferant":
+                    query = AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Shop, $"{filter.Value}%"));
+                    break;
+
+                case "Raum":
+                    query = query.Where(i => i.Price.ToString("F").StartsWith(filter.Value));
+                    break;
+
+                case "Preis":
+                    query = query.Where(i => EF.Functions.ILike(EF.Property<string>(i, "Price").ToString(), $"{filter.Value}%"));
+                    break;
+
+                default:
+                    return await GetAllAsync();
+            }
+        }
+        return await query.ToListAsync();
+    }
+
+    private async Task<List<AssetItem>> SearchContinueAsync(IQueryable<AssetItem> query, List<AssetItemType> assetItemTypes)
     {
         // Start with an empty list to collect results
         List<AssetItem> result = new List<AssetItem>();
@@ -250,7 +284,6 @@ public class AssetItemRepository : IAssetItemRepository
         if (assetItemTypes.Contains(AssetItemType.Consumable))
         {
             var consumables = await ConsumablesFilledQuery
-                .Where(item => item.GetType() == typeof(Consumable))
                 .ToListAsync();
             result.AddRange(consumables);
         }
@@ -258,7 +291,6 @@ public class AssetItemRepository : IAssetItemRepository
         if (assetItemTypes.Contains(AssetItemType.GasCylinder))
         {
             var gasCylinders = await GasCylindersFilledQuery
-                .Where(item => item.GetType() == typeof(GasCylinder))
                 .ToListAsync();
             result.AddRange(gasCylinders);
         }
@@ -266,7 +298,6 @@ public class AssetItemRepository : IAssetItemRepository
         if (assetItemTypes.Contains(AssetItemType.Solvent))
         {
             var solvents = await SolventsFilledQuery
-                .Where(item => item.GetType() == typeof(Solvent))
                 .ToListAsync();
             result.AddRange(solvents);
         }

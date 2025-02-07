@@ -22,7 +22,7 @@ public partial class AssetList
     public EventCallback<AssetItem> EditButtonPressed { get; set; }
 
     private readonly IAssetItemApi _assetItemApi;
-    private static MudDataGrid<AssetItem> _dataGrid { get; set; }
+    private MudDataGrid<AssetItem> _dataGrid { get; set; }
     private string _searchString { get; set; }
 
     public AssetList(IAssetItemApi assetItemApi)
@@ -40,22 +40,16 @@ public partial class AssetList
 
     private async Task<GridData<AssetItem>> ServerReload(GridState<AssetItem> state)
     {
-        var errorOrItems = await _assetItemApi.GetAllAsync(_searchString, _selectedTypes);
+        var filters = state.FilterDefinitions.ToDictionary(
+            f => f.Column.Title,
+            f => f.Value.ToString()
+        );
+
+        var errorOrItems = await _assetItemApi.GetAllAsync(_searchString, _selectedTypes, filters);
         if (errorOrItems.IsError)
             return new GridData<AssetItem>();
 
         var items = SortAssetItems(state, errorOrItems.Value).ToList();
-
-        var filterOptions = new FilterOptions
-        {
-            FilterCaseSensitivity = DataGridFilterCaseSensitivity.CaseInsensitive,
-        };
-
-        foreach (var filterDefinition in state.FilterDefinitions)
-        {
-            var filterFunction = filterDefinition.GenerateFilterFunction(filterOptions);
-            items = items.Where(filterFunction).ToList();
-        }
 
         var pagedData = items.Skip(state.Page * state.PageSize).Take(state.PageSize).ToList();
 
@@ -87,7 +81,7 @@ public partial class AssetList
 
     private List<AssetItemType>? _selectedTypes { get; set; }
 
-    private async void SelectedChanged(bool value, AssetItemType itemType)
+    private async Task SelectedChanged(bool value, AssetItemType itemType)
     {
         if (value)
         {

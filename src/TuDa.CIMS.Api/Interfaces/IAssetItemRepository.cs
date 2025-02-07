@@ -16,5 +16,6 @@ public interface IAssetItemRepository
     );
     Task<List<AssetItem>> SearchAsync(string nameOrCas, List<AssetItemType>? assetItemTypes);
     Task<List<AssetItem>> SearchTypeAsync(List<AssetItemType> assetItemTypes);
+    Task<List<AssetItem>> FilterAsync(Dictionary<string, string>? filters);
     Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel);
 }

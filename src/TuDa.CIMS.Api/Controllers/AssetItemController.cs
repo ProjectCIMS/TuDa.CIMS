@@ -26,10 +26,11 @@ public class AssetItemController : CIMSBaseController
     [HttpGet]
     public async Task<IActionResult> GetAllAsync(
         [FromQuery] string? nameOrCas,
-        [FromQuery] List<AssetItemType>? assetItemTypes
+        [FromQuery] List<AssetItemType>? assetItemTypes,
+        [FromQuery] Dictionary<string, string>? filters
     )
     {
-        return (await _assetItemService.GetAllAsync(nameOrCas, assetItemTypes)).Match(
+        return (await _assetItemService.GetAllAsync(nameOrCas, assetItemTypes, filters)).Match(
             onValue: Ok,
             onError: ErrorsToProblem
         );

@@ -45,14 +45,15 @@ public interface IAssetItemApi
 
     public async Task<ErrorOr<IEnumerable<AssetItem>>> GetAllAsync(
         string? nameOrCas = null,
-        List<AssetItemType>? assetItemTypes = null
+        List<AssetItemType>? assetItemTypes = null,
+        Dictionary<string, string>? filters = null
     )
     {
         if (assetItemTypes == null || assetItemTypes.Count == 0)
         {
-            return await GetAllAsyncInternal(nameOrCas, null).ToErrorOrAsync();
+            return await GetAllAsyncInternal(nameOrCas, null, filters).ToErrorOrAsync();
         }
-        return await GetAllAsyncInternal(nameOrCas, assetItemTypes).ToErrorOrAsync();
+        return await GetAllAsyncInternal(nameOrCas, assetItemTypes, filters).ToErrorOrAsync();
     }
 
     /// <summary>
@@ -65,7 +66,8 @@ public interface IAssetItemApi
     [Get("/")]
     protected Task<IApiResponse<IEnumerable<AssetItem>>> GetAllAsyncInternal(
         [FromQuery] string? nameOrCas,
-        [Query(CollectionFormat = CollectionFormat.Multi)] List<AssetItemType>? assetItemTypes
+        [Query(CollectionFormat = CollectionFormat.Multi)] List<AssetItemType>? assetItemTypes,
+        [Query(CollectionFormat = CollectionFormat.Multi)] Dictionary<string, string>? filters
     );
 
     /// <summary>
