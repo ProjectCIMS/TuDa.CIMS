@@ -1,5 +1,6 @@
 ﻿@page "/asset-list"
 @using MudBlazor.Extensions
+@using TuDa.CIMS.Shared.Dtos
 @using TuDa.CIMS.Shared.Entities
 @using TuDa.CIMS.Web.Components.Dashboard
 @using TuDa.CIMS.Web.Components.Dashboard.Dialogs
@@ -29,7 +30,11 @@
     {
         _logger.LogInformation("Added");
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        await DialogService.ShowAsync<AssetItemDialog>("Create Item", options);
+        var parameters = new DialogParameters
+        {
+            { "OnItemCreated", EventCallback.Factory.Create<CreateAssetItemDto>(this, CreateItem) }
+        };
+        await DialogService.ShowAsync<AssetItemDialog>("Create Item", parameters, options);
     }
 
 
@@ -45,6 +50,12 @@
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
         await DialogService.ShowAsync<AssetItemEditDialog>("Edit Item", parameters, options);
+    }
+
+    private async Task CreateItem(CreateAssetItemDto createAssetItemDto)
+    {
+        await _assetItemApi.CreateAsync(createAssetItemDto);
+        await _assetList.ReloadData();
     }
 
     private async Task DeleteItem(AssetItem assetItem)
