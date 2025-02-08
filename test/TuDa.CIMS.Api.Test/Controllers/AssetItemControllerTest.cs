@@ -7,6 +7,7 @@ using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Test.Integration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Test.Faker;
 
 namespace TuDa.CIMS.Api.Test.Controllers;
@@ -215,5 +216,56 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
 
         result1.Should().BeEquivalentTo(assetItems[..2]);
         result2.Should().BeEquivalentTo(assetItems[2..4]);
+    }
+    [Fact]
+    public async Task CreateAsync_ShouldCreateConsumableTransaction_WhenConsumableCreated()
+    {
+        // Arrange
+        var room = new RoomFaker().Generate();
+        await _dbContext.Rooms.AddAsync(room);
+        await _dbContext.SaveChangesAsync();
+
+        var createConsumable = new CreateConsumableDto
+        {
+            ItemNumber = "C-123",
+            Name = "TestConsumable",
+            Note = "Test Note",
+            Price = 50,
+            Shop = "Test Shop",
+            RoomId = room.Id,
+            Amount = 10,
+            Manufacturer = "TestManufacturer",
+            SerialNumber = "SN-001",
+            Reason = TransactionReasons.Init,
+        };
+
+        // Act
+        var response = await _client.PostAsync(
+            $"api/asset-items",
+            JsonContent.Create(createConsumable)
+        );
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeTrue();;
+
+        // Überprüfen, ob das Consumable erstellt wurde
+        var consumable = await _dbContext.Consumables
+            .Include(c => c.Room)
+            .SingleOrDefaultAsync(c => c.ItemNumber == createConsumable.ItemNumber);
+
+        consumable.Should().NotBeNull();
+        consumable!.Amount.Should().Be(createConsumable.Amount);
+        consumable.Manufacturer.Should().Be(createConsumable.Manufacturer);
+        consumable.SerialNumber.Should().Be(createConsumable.SerialNumber);
+
+        // Überprüfen, ob die ConsumableTransaction erstellt wurde
+        var transaction = await _dbContext.ConsumableTransactions
+            .Where(ct => ct.Consumable.Id == consumable.Id)
+            .SingleOrDefaultAsync();
+
+        transaction.Should().NotBeNull();
+        transaction!.AmountChange.Should().Be(createConsumable.Amount);
+        transaction.TransactionReason.Should().Be(TransactionReasons.Init);
+        transaction.Date.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }
 }

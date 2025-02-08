@@ -16,11 +16,11 @@ namespace TuDa.CIMS.Api.Repositories;
 public class AssetItemRepository : IAssetItemRepository
 {
     private readonly CIMSDbContext _context;
-    private readonly ConsumableTransactionRepository _consumableTransactionRepository;
+    private readonly IConsumableTransactionRepository _consumableTransactionRepository;
 
     public AssetItemRepository(
         CIMSDbContext context,
-        ConsumableTransactionRepository consumableTransactionRepository
+        IConsumableTransactionRepository consumableTransactionRepository
     )
     {
         _context = context;
