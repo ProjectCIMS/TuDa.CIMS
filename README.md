@@ -9,9 +9,8 @@ It is a project developed by IT students as part of their 'Bachelor Praktikum.'
 
 1. [Overview](#overview)
 2. [Getting Started](#getting-started)
-3. [Technology Stack](#technology-stack)
-4. [License](#license)
-5. [Contact](#contact)
+3. [License](#license)
+4. [Contact](#contact)
 
 ---
 
@@ -28,7 +27,7 @@ It is a project developed by IT students as part of their 'Bachelor Praktikum.'
 - **Working Group Management**
   - Overview of all working groups with detailed information
 
-## Technology Stack
+### Technology Stack
 
 - **.NET**: Core framework
   - **ASP.NET**: Powers the `TuDa.CIMS.Api`
