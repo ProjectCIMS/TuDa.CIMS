@@ -14,7 +14,7 @@ public partial class WorkingGroupPersonList : ComponentBase
     private readonly ISnackbar snackbar;
 
     public WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi, IStudentApi studentApi, ISnackbar snackbar)
-    {
+
         this.dialogService = dialogService;
         this.workingGroupApi = workingGroupApi;
         this.studentApi = studentApi;
