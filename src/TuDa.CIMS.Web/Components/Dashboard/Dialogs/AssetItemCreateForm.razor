@@ -23,7 +23,7 @@
 <MudGrid Style="width: 575px; height: 550px;">
     <MudItem xs="12" md="6">
         <AssetItemForm @ref="_assetItemForm"
-                       FormShowError="@ShowError"
+                       FormShowError="@_showError"
                        OnReset="ResetInputs"/>
     </MudItem>
 
@@ -34,25 +34,25 @@
             case AssetItemType.Chemical:
                 <ChemicalItemForm
                     @ref="_chemicalItemForm"
-                    FormShowError="@ShowError"
+                    FormShowError="@_showChemicalError"
                     OnReset="@(_ => StateHasChanged())"/>
                 break;
             case AssetItemType.Consumable:
                 <ConsumableItemForm
                     @ref="_consumableItemForm"
-                    FormShowError="@ShowError"
+                    FormShowError="@_showConsumableError"
                     OnReset="@(_ => StateHasChanged())"/>
                 break;
             case AssetItemType.GasCylinder:
                 <GasCylinderItemForm
                     @ref="_gasCylinderForm"
-                    FormShowError="@ShowError"
+                    FormShowError="@_showGasCylinderError"
                     OnReset="@(_ => StateHasChanged())"/>
                 break;
             case AssetItemType.Solvent:
                 <ChemicalItemForm
                     @ref="_chemicalItemForm"
-                    FormShowError="@ShowError"
+                    FormShowError="@_showSolventError"
                     OnReset="@(_ => StateHasChanged())"/>
                 break;
         }

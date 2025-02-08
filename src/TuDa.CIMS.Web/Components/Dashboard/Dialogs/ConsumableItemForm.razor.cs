@@ -30,11 +30,7 @@ public partial class ConsumableItemForm
     /// <returns>returns false when all Inputs are valid otherwise true</returns>
     public bool ErrorsInForm()
     {
-        if (
-            FormManufacturer == string.Empty
-            || FormSerialNumber == string.Empty
-            || FormConsumableAmount == 0
-        )
+        if (FormConsumableAmount <= 0)
         {
             return true;
         }

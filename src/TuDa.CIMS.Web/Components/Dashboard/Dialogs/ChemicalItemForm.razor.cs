@@ -36,9 +36,8 @@ public partial class ChemicalItemForm
     /// <returns>returns false when all Inputs are valid otherwise true</returns>
     public bool ErrorsInForm()
     {
-        if (FormCas == string.Empty || FormBindingSize == 0.0 || FormPurity == string.Empty)
+        if (FormPriceUnit == null)
         {
-            FormShowError = true;
             return true;
         }
 
@@ -56,6 +55,7 @@ public partial class ChemicalItemForm
         FormCas = string.Empty;
         FormPurity = string.Empty;
         FormBindingSize = 0.0;
+        FormPriceUnit = null;
         OnReset.InvokeAsync();
     }
 }
