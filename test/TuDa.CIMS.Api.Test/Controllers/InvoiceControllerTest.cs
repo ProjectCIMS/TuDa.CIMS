@@ -157,11 +157,7 @@ public class InvoiceControllerTest : IClassFixture<CIMSApiFactory>
             4,
             10
         );
-        var information = new AdditionalInvoiceInformation
-        {
-            InvoiceNumber = "Number",
-            DueDate = DateOnly.FromDateTime(DateTime.Today),
-        };
+        var information = new AdditionalInvoiceInformation { InvoiceNumber = "Number" };
 
         workingGroup.Purchases = purchases;
 
