@@ -49,7 +49,7 @@ public class PurchaseRepository : IPurchaseRepository
     /// <param name="id">the specific ID for the purchase</param>
     /// <param name="workingGroupId">the specific id of a workinggroup</param>
     /// <returns></returns>
-    public Task<Purchase?> GetOneAsync(Guid id, Guid workingGroupId) =>
+    public Task<Purchase?> GetOneAsync(Guid workingGroupId, Guid id) =>
         PurchaseFilledQuery(workingGroupId).Where(p => p.Id == id).SingleOrDefaultAsync();
 
     /// <summary>
@@ -58,9 +58,9 @@ public class PurchaseRepository : IPurchaseRepository
     /// <param name="id">the specific ID of the purchase</param>
     /// <param name="workingGroupId">the specific ID of a workinggroup</param>
     /// <returns></returns>
-    public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id, Guid workingGroupId)
+    public async Task<ErrorOr<Deleted>> RemoveAsync(Guid workingGroupId, Guid id)
     {
-        var itemToRemove = await GetOneAsync(id, workingGroupId);
+        var itemToRemove = await GetOneAsync(workingGroupId, id);
 
         if (itemToRemove is null)
         {

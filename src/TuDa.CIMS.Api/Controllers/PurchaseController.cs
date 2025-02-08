@@ -33,13 +33,13 @@ public class PurchaseController : CIMSBaseController
     /// <summary>
     /// Retrieves a purchase with the specific id from the service and returns it in an appropriate HTTP response.
     /// </summary>
-    /// <param name="id">the unique id of the purchase</param>
+    /// <param name="purchaseId">the unique id of the purchase</param>
     /// <param name="workingGroupId">the unique id of a workinggroup </param>
     /// <returns>a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs  </returns>
-    [HttpGet($"{{{nameof(id)}:guid}}")]
-    public async Task<IActionResult> GetOneAsync(Guid id, Guid workingGroupId)
+    [HttpGet($"{{{nameof(purchaseId)}:guid}}")]
+    public async Task<IActionResult> GetOneAsync(Guid workingGroupId, Guid purchaseId)
     {
-        return (await _purchaseService.GetOneAsync(id, workingGroupId)).Match(
+        return (await _purchaseService.GetOneAsync(workingGroupId, purchaseId)).Match(
             onValue: Ok,
             onError: ErrorsToProblem
         );
@@ -49,13 +49,13 @@ public class PurchaseController : CIMSBaseController
     /// Removes a purchase with the specific id from the service.
     /// If the removal is successful, returns a 200 OK response. If an error occurs during the removal, an appropriate error response is returned.
     /// </summary>
-    /// <param name="id">the unique id of the purchase</param>
+    /// <param name="purchaseId">the unique id of the purchase</param>
     /// <param name="workingGroupId">the unique id of a workinggroup </param>
     /// <returns> a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
-    [HttpDelete($"{{{nameof(id)}:guid}}")]
-    public async Task<IActionResult> RemoveAsync(Guid id, Guid workingGroupId)
+    [HttpDelete($"{{{nameof(purchaseId)}:guid}}")]
+    public async Task<IActionResult> RemoveAsync(Guid workingGroupId, Guid purchaseId)
     {
-        return (await _purchaseService.RemoveAsync(id, workingGroupId)).Match(
+        return (await _purchaseService.RemoveAsync(workingGroupId, purchaseId)).Match(
             onValue: _ => Ok(),
             onError: ErrorsToProblem
         );
