@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Numerics;
-
-namespace TuDa.CIMS.Shared.Entities;
+﻿namespace TuDa.CIMS.Shared.Entities;
 
 /// <summary>
 /// An entity representing a purchase in the system.
@@ -30,6 +27,26 @@ public record Purchase : BaseEntity
     /// The date of completion.
     /// </summary>
     public DateTime? CompletionDate { get; set; }
+
+    #region Invalidation
+
+    /// <summary>
+    /// If the purchase is invalidated to correct it with another one.
+    /// </summary>
+    public bool Invalidated => Successor is not null;
+
+    /// <summary>
+    /// Not null when Purchase is invalidated.
+    /// The purchase this purchase is corrected with.
+    /// </summary>
+    public Purchase? Successor { get; set; }
+
+    /// <summary>
+    /// The purchase this purchase is correcting.
+    /// </summary>
+    public Purchase? Predecessor { get; set; }
+
+    #endregion
 
     #region Methods
 
