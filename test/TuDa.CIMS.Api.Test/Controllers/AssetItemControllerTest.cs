@@ -146,7 +146,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
         List<UpdateAssetItemDto> updateAssetItemDtos =
         [
             new UpdateChemicalDto(),
-            new UpdateConsumableDto(),
+            new UpdateConsumableDto(){Reason = TransactionReasons.Restock},
             new UpdateSolventDto(),
             new UpdateGasCylinderDto(),
         ];
@@ -181,7 +181,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
     {
         var response = await _client.PatchAsync(
             $"api/asset-items/{Guid.NewGuid()}",
-            JsonContent.Create<UpdateAssetItemDto>(new UpdateConsumableDto())
+            JsonContent.Create<UpdateAssetItemDto>(new UpdateConsumableDto(){Reason = TransactionReasons.Restock})
         );
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
