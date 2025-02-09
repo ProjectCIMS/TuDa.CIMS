@@ -10,6 +10,16 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
 {
     [Parameter] public Guid WorkingGroupId { get; set; }
 
+    private string StreetAndNumber
+    {
+        get => $"{ProfessorInfo.Address.Street} {ProfessorInfo.Address.Number}";
+    }
+
+    private string FullName
+    {
+        get => $"{ProfessorInfo.FirstName} {ProfessorInfo.Name}";
+    }
+
     [CascadingParameter] public required MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
