@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Dtos.Responses;
 
 namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
@@ -13,7 +13,7 @@ public partial class ShoppingCartFooter : ComponentBase
     /// Parameter for the purchase
     /// </summary>
     [Parameter]
-    public required Purchase Purchase { get; set; }
+    public required PurchaseResponseDto Purchase { get; set; }
 
     /// <summary>
     /// Parameter for the checkout event

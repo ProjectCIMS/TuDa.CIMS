@@ -2,6 +2,8 @@
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared;
 using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Responses;
+using TuDa.CIMS.Shared.Extensions;
 
 namespace TuDa.CIMS.Api.Controllers;
 
@@ -22,10 +24,12 @@ public class PurchaseController : CIMSBaseController
     /// <param name="workingGroupId">the unique id of a workinggroup </param>
     /// <returns>a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
     [HttpGet]
+    [ProducesResponseType<List<PurchaseResponseDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllAsync(Guid workingGroupId)
     {
         return (await _purchaseService.GetAllAsync(workingGroupId)).Match(
-            onValue: Ok,
+            onValue: p => Ok(p.ToResponseDtos()),
             onError: ErrorsToProblem
         );
     }
@@ -37,10 +41,12 @@ public class PurchaseController : CIMSBaseController
     /// <param name="workingGroupId">the unique id of a workinggroup </param>
     /// <returns>a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs  </returns>
     [HttpGet($"{{{nameof(purchaseId)}:guid}}")]
+    [ProducesResponseType<PurchaseResponseDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetOneAsync(Guid workingGroupId, Guid purchaseId)
     {
         return (await _purchaseService.GetOneAsync(workingGroupId, purchaseId)).Match(
-            onValue: Ok,
+            onValue: wg => Ok(wg.ToResponseDto()),
             onError: ErrorsToProblem
         );
     }
@@ -53,6 +59,8 @@ public class PurchaseController : CIMSBaseController
     /// <param name="workingGroupId">the unique id of a workinggroup </param>
     /// <returns> a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
     [HttpDelete($"{{{nameof(purchaseId)}:guid}}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RemoveAsync(Guid workingGroupId, Guid purchaseId)
     {
         return (await _purchaseService.RemoveAsync(workingGroupId, purchaseId)).Match(
@@ -69,13 +77,15 @@ public class PurchaseController : CIMSBaseController
     /// <param name="workingGroupId">the unique id of a workinggroup </param>
     /// <returns>a 200 OK response and the object if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
     [HttpPost]
+    [ProducesResponseType<PurchaseResponseDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateAsync(
         Guid workingGroupId,
         [FromBody] CreatePurchaseDto createModel
     )
     {
         return (await _purchaseService.CreateAsync(workingGroupId, createModel)).Match(
-            onValue: Ok,
+            onValue: p => Ok(p.ToResponseDto()),
             onError: ErrorsToProblem
         );
     }

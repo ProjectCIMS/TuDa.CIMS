@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Web.Components.ShoppingCart;
@@ -14,7 +15,7 @@ public partial class PurchaseEntryList : ComponentBase
     /// A list of <see cref="PurchaseEntry"/> that will be shown in the list.
     /// </summary>
     [Parameter]
-    public required Purchase Purchase { get; set; }
+    public required PurchaseResponseDto Purchase { get; set; }
 
     [Parameter]
     public EventCallback<AssetItem> AssetItemDeleted { get; set; }

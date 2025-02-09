@@ -17,8 +17,7 @@ public partial class ShoppingCartPage
     [Inject]
     private IPurchaseApi PurchaseApi { get; set; } = null!;
 
-    [Inject]
-    private ISnackbar Snackbar { get; set; } = null!;
+    protected PurchaseResponseDto Purchase { get; set; } = new() { Buyer = null! };
 
     private Purchase Purchase { get; set; } = new() { Buyer = null! };
 
