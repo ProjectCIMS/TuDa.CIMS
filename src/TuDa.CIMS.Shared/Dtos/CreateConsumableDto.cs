@@ -18,6 +18,4 @@ public class CreateConsumableDto: CreateAssetItemDto
     /// The serial number of the consumable item.
     /// </summary>
     public string SerialNumber { get; set; } = string.Empty;
-
-    public  TransactionReasons Reason { get; set; }
 }

@@ -104,15 +104,16 @@ public class AssetItemRepository : IAssetItemRepository
         if (
             existingItem is Consumable con
             && updateModel is UpdateConsumableDto updateConsumable
-            && updateConsumable.Amount is not null
+            && updateConsumable.StockUpdate is not null
         )
         {
+            var previousAmount = con.Amount;
             CreateConsumableTransactionDto createConsumableTransaction = new()
             {
                 ConsumableId = con.Id,
                 Date = DateTime.UtcNow,
-                AmountChange = updateConsumable.Amount.Value - con.Amount,
-                TransactionReason = updateConsumable.StockUpdate.Value.Reason,
+                AmountChange = updateConsumable.StockUpdate.Amount - previousAmount,
+                TransactionReason = updateConsumable.StockUpdate.Reason,
             };
             //amount of conusmable is now set in CreateAsync of ConsumableTransaction
             await _consumableTransactionRepository.CreateAsync(createConsumableTransaction);

@@ -5,11 +5,6 @@ namespace TuDa.CIMS.Shared.Dtos;
 public record UpdateConsumableDto : UpdateAssetItemDto
 {
     /// <summary>
-    /// The amount of the consumable item.
-    /// </summary>
-    public int? Amount { get; set; }
-
-    /// <summary>
     /// The name of the consumable item.
     /// </summary>
     public string? Manufacturer { get; set; }
@@ -19,6 +14,6 @@ public record UpdateConsumableDto : UpdateAssetItemDto
     /// </summary>
     public string? SerialNumber { get; set; }
 
-    public (int Amount, TransactionReasons Reason)? StockUpdate {get;set;}
+    public StockUpdateDto? StockUpdate { get; set; }
 
 }
