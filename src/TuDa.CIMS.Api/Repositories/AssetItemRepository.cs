@@ -101,20 +101,21 @@ public class AssetItemRepository : IAssetItemRepository
                 );
         }
 
-        if (existingItem is Consumable con && updateModel is UpdateConsumableDto updateConsumable)
+        if (
+            existingItem is Consumable con
+            && updateModel is UpdateConsumableDto updateConsumable
+            && updateConsumable.Amount is not null
+        )
         {
-            if (updateConsumable.Amount is not null)
+            CreateConsumableTransactionDto createConsumableTransaction = new()
             {
-                CreateConsumableTransactionDto createConsumableTransaction = new()
-                {
-                    ConsumableId = con.Id,
-                    Date = DateTime.UtcNow,
-                    AmountChange = updateConsumable.Amount.Value - con.Amount,
-                    TransactionReason = updateConsumable.Reason,
-                };
-                //amount of conusmable is now set in CreateAsync of ConsumableTransaction
-                await _consumableTransactionRepository.CreateAsync(createConsumableTransaction);
-            }
+                ConsumableId = con.Id,
+                Date = DateTime.UtcNow,
+                AmountChange = updateConsumable.Amount.Value - con.Amount,
+                TransactionReason = updateConsumable.StockUpdate.Value.Reason,
+            };
+            //amount of conusmable is now set in CreateAsync of ConsumableTransaction
+            await _consumableTransactionRepository.CreateAsync(createConsumableTransaction);
         }
 
         if (updateModel.RoomId is not null)
@@ -295,7 +296,7 @@ public class AssetItemRepository : IAssetItemRepository
                 AmountChange = con.Amount,
                 TransactionReason = TransactionReasons.Init,
             };
-             await _context.ConsumableTransactions.AddAsync(consumableTransaction);
+            await _context.ConsumableTransactions.AddAsync(consumableTransaction);
         }
         await _context.AssetItems.AddAsync(newItem);
         await _context.SaveChangesAsync();

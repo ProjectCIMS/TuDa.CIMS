@@ -19,5 +19,6 @@ public record UpdateConsumableDto : UpdateAssetItemDto
     /// </summary>
     public string? SerialNumber { get; set; }
 
-    public required TransactionReasons Reason { get; set; }
+    public (int Amount, TransactionReasons Reason)? StockUpdate {get;set;}
+
 }

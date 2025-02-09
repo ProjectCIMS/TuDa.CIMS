@@ -19,5 +19,5 @@ public class CreateConsumableDto: CreateAssetItemDto
     /// </summary>
     public string SerialNumber { get; set; } = string.Empty;
 
-    public TransactionReasons Reason { get; set; } = TransactionReasons.Init;
+    public  TransactionReasons Reason { get; set; }
 }
