@@ -10,7 +10,8 @@ public partial class WorkingGroupPurchaseList(IPurchaseApi _iPurchaseApi) : Comp
     [Parameter]
     public IEnumerable<PurchaseResponseDto> Purchases { get; set; } = [];
 
-    [Parameter] public Guid WorkingGroupId { get; set; }
+    [Parameter]
+    public Guid WorkingGroupId { get; set; }
 
     private IEnumerable<PurchaseResponseDto> SortedPurchases =>
         Purchases.OrderByDescending(p => p.CompletionDate);

@@ -20,7 +20,7 @@ public class WorkingGroupService : IWorkingGroupService
     /// or the result of the <see cref="GetOneAsync"/> functionality if successful
     /// </summary>
     /// <param name="id">the unique id of the Working Group</param>
-    public async Task<ErrorOr<WorkingGroup?>> GetOneAsync(Guid id)
+    public async Task<ErrorOr<WorkingGroup>> GetOneAsync(Guid id)
     {
         try
         {

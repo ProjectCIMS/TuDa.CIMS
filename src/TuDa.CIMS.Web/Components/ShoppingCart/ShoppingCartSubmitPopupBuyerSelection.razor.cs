@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
 
@@ -12,7 +13,7 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
     /// CascadingParameter for working group.
     /// </summary>
     [Parameter]
-    public WorkingGroup? WorkingGroup { get; set; }
+    public WorkingGroupResponseDto? WorkingGroup { get; set; }
 
     [Parameter]
     public required Person Buyer { get; set; }
@@ -35,6 +36,7 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
             _ => null
         );
     }
+
     private async Task ValidateSelection()
     {
         await form.Validate();
@@ -50,6 +52,7 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
             await BuyerChanged.InvokeAsync(buyer);
         }
     }
+
     private string ValidateBuyer(Person? value)
     {
         if (value is null)
