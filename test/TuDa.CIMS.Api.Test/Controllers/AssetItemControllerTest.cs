@@ -146,7 +146,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
         List<UpdateAssetItemDto> updateAssetItemDtos =
         [
             new UpdateChemicalDto(),
-            new UpdateConsumableDto(){Reason = TransactionReasons.Restock},
+            new UpdateConsumableDto() { Amount = 10, StockUpdate = (10,TransactionReasons.Restock) },
             new UpdateSolventDto(),
             new UpdateGasCylinderDto(),
         ];
@@ -181,7 +181,9 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
     {
         var response = await _client.PatchAsync(
             $"api/asset-items/{Guid.NewGuid()}",
-            JsonContent.Create<UpdateAssetItemDto>(new UpdateConsumableDto(){Reason = TransactionReasons.Restock})
+            JsonContent.Create<UpdateAssetItemDto>(
+                new UpdateConsumableDto() { StockUpdate = (10,TransactionReasons.Restock) }
+            )
         );
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -217,4 +219,42 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
         result1.Should().BeEquivalentTo(assetItems[..2]);
         result2.Should().BeEquivalentTo(assetItems[2..4]);
     }
+
+  /*  [Fact]
+    public async Task UpdateAsync_ShouldCreateConsumableTransaction_WhenAssetItemIsUpdated()
+    {
+        // Arrange
+        var consumable = new ConsumableFaker().Generate();
+        consumable.Amount = 100;
+        var updateConsumableDto = new UpdateConsumableDto
+        {
+            Amount = 15,
+            StockUpdate = (15, TransactionReasons.Restock),
+        };
+
+        await _dbContext.AssetItems.AddAsync(consumable);
+        await _dbContext.SaveChangesAsync();
+
+        // Act
+        var response = await _client.PatchAsync(
+            $"api/asset-items/{consumable.Id}",
+            JsonContent.Create(updateConsumableDto)
+        );
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeTrue();
+
+        var updatedItem = await _dbContext.AssetItems.SingleAsync(i => i.Id == consumable.Id);
+        updatedItem.UpdatedAt.Should().NotBeNull();
+
+        // Prüfe, ob eine ConsumableTransaction erstellt wurde
+        var transaction = await _dbContext.ConsumableTransactions
+            .Where(t => t.Consumable.Id == consumable.Id)
+            .OrderByDescending(t => t.Date)
+            .FirstOrDefaultAsync();
+
+        transaction.Should().NotBeNull();
+        transaction!.AmountChange.Should().Be(15 - consumable.Amount);
+        transaction.TransactionReason.Should().Be(TransactionReasons.Restock);
+    }*/
 }
