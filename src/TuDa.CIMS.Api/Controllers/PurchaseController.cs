@@ -89,4 +89,18 @@ public class PurchaseController : CIMSBaseController
             onError: ErrorsToProblem
         );
     }
+
+    [HttpPatch($"{{{nameof(purchaseId)}:guid}}/invalidate")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> InvalidateAsync(
+        Guid workingGroupId,
+        Guid purchaseId,
+        [FromBody] CreatePurchaseDto createModel
+    )
+    {
+        return (
+            await _purchaseService.InvalidateAsync(workingGroupId, purchaseId, createModel)
+        ).Match(onValue: _ => Ok(), onError: ErrorsToProblem);
+    }
 }

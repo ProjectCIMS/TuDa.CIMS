@@ -116,4 +116,24 @@ public class PurchaseService : IPurchaseService
             return Error.Failure("PurchaseService.CreateAsync", ex.Message);
         }
     }
+
+    public async Task<ErrorOr<Success>> InvalidateAsync(
+        Guid workingGroupId,
+        Guid purchaseId,
+        CreatePurchaseDto createModel
+    )
+    {
+        try
+        {
+            return await _purchaseRepository.InvalidateAsync(
+                workingGroupId,
+                purchaseId,
+                createModel
+            );
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure("PurchaseService.InvalidateAsync", ex.Message);
+        }
+    }
 }

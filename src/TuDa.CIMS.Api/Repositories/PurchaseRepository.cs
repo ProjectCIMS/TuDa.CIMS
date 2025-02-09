@@ -29,6 +29,8 @@ public class PurchaseRepository : IPurchaseRepository
             .WorkingGroups.Where(i => i.Id == workingGroupId)
             .SelectMany(i => i.Purchases)
             .Include(i => i.Buyer)
+            .Include(i => i.Successor)
+            .Include(i => i.Predecessor)
             .Include(i => i.Entries)
             .ThenInclude(i => i.AssetItem);
 
@@ -123,5 +125,44 @@ public class PurchaseRepository : IPurchaseRepository
         await _context.SaveChangesAsync();
 
         return newPurchase;
+    }
+
+    /// <inheritdoc/>
+    public async Task<ErrorOr<Success>> InvalidateAsync(
+        Guid workingGroupId,
+        Guid purchaseId,
+        CreatePurchaseDto createModel
+    )
+    {
+        var strategy = _context.Database.CreateExecutionStrategy();
+
+        return await strategy.ExecuteAsync<ErrorOr<Success>>(async () =>
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
+            var oldPurchase = await GetOneAsync(workingGroupId, purchaseId);
+            if (oldPurchase is null)
+                return Error.NotFound(
+                    "PurchaseRepository.InvalidAsync",
+                    $"Purchase {purchaseId} of working group {workingGroupId} was not found."
+                );
+
+            if (oldPurchase.Invalidated)
+                return Error.Failure(
+                    "PurchaseRepository.InvalidateAsync",
+                    "Purchase is already invalidated."
+                );
+
+            var newPurchase = await CreateAsync(workingGroupId, createModel);
+            if (newPurchase.IsError)
+                return newPurchase.Errors;
+
+            oldPurchase.Successor = newPurchase.Value;
+            newPurchase.Value.Predecessor = oldPurchase;
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+            return Result.Success;
+        });
     }
 }
