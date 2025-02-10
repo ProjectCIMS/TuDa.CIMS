@@ -31,13 +31,25 @@ public class AssetItemRepository : IAssetItemRepository
     private IQueryable<Substance> SubstancesFilledQuery =>
         AssetItemsFilledQuery.OfType<Substance>().Include(s => s.Hazards);
 
+    /// <summary>
+    /// Query for all <see cref="GasCylinder"/>s from the DB with included properties.
+    /// </summary>
     private IQueryable<GasCylinder> GasCylindersFilledQuery =>
         SubstancesFilledQuery.OfType<GasCylinder>();
 
+    /// <summary>
+    /// Query for all <see cref="Solvent"/>s from the DB with included properties.
+    /// </summary>
     private IQueryable<Solvent> SolventsFilledQuery => SubstancesFilledQuery.OfType<Solvent>();
 
+    /// <summary>
+    /// Query for all <see cref="Chemical"/>s from the DB with included properties.
+    /// </summary>
     private IQueryable<Chemical> ChemicalsFilledQuery => SubstancesFilledQuery.OfType<Chemical>();
 
+    /// <summary>
+    /// Query for all <see cref="Consumable"/>s from the DB with included properties.
+    /// </summary>
     private IQueryable<Consumable> ConsumablesFilledQuery =>
         AssetItemsFilledQuery.OfType<Consumable>();
 
@@ -175,77 +187,159 @@ public class AssetItemRepository : IAssetItemRepository
     /// </summary>
     /// <param name="nameOrCas"></param>
     /// <param name="assetItemTypes"></param>
-    public async Task<List<AssetItem>> SearchAsync(string nameOrCas, List<AssetItemType>? assetItemTypes)
+    public async Task<List<AssetItem>> SearchAsync(
+        string nameOrCas,
+        List<AssetItemType>? assetItemTypes
+    )
     {
         bool isCas = nameOrCas.All(c => char.IsDigit(c) || c == '-');
 
         if (assetItemTypes is not null && assetItemTypes.Count > 0)
         {
-            return await SearchContinueAsync(assetItemTypes, isCas, nameOrCas);
+            return await FilterForAssetItemTypes(assetItemTypes, isCas, nameOrCas);
         }
+
         var searchQuery = isCas
-                ? SubstancesFilledQuery.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
-                : AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
-            return await searchQuery.ToListAsync();
+            ? SubstancesFilledQuery.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
+            : AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
+        return await searchQuery.ToListAsync();
     }
 
-    private async Task<List<AssetItem>> SearchContinueAsync(List<AssetItemType> assetItemTypes, bool isCas, string nameOrCas)
-{
-    List<AssetItem> result = new List<AssetItem>();
-
-    if (isCas)
+    private async Task<List<AssetItem>> FilterForAssetItemTypes(
+        List<AssetItemType> assetItemTypes,
+        bool isCas,
+        string nameOrCas
+    )
     {
-        if (assetItemTypes.Contains(AssetItemType.Chemical))
+        List<AssetItem> result = new List<AssetItem>();
+
+        if (isCas)
         {
-            var chemicals = await ChemicalsFilledQuery
-                .Where(c => EF.Functions.ILike(c.Cas, $"{nameOrCas}%"))
-                .ToListAsync();
-            result.AddRange(chemicals);
+            if (assetItemTypes.Contains(AssetItemType.Chemical))
+            {
+                var chemicals = await ChemicalsFilledQuery
+                    .Where(c => c.GetType() == typeof(Chemical))
+                    .Where(c => EF.Functions.ILike(c.Cas, $"{nameOrCas}%"))
+                    .ToListAsync();
+                result.AddRange(chemicals);
+            }
+
+            if (assetItemTypes.Contains(AssetItemType.Solvent))
+            {
+                var solvents = await SolventsFilledQuery
+                    .Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
+                    .ToListAsync();
+                result.AddRange(solvents);
+            }
+        }
+        else
+        {
+            if (assetItemTypes.Contains(AssetItemType.Chemical))
+            {
+                var chemicals = await ChemicalsFilledQuery
+                    .Where(c => c.GetType() == typeof(Chemical))
+                    .Where(c => EF.Functions.ILike(c.Name, $"{nameOrCas}%"))
+                    .ToListAsync();
+                result.AddRange(chemicals);
+            }
+
+            if (assetItemTypes.Contains(AssetItemType.Consumable))
+            {
+                var consumables = await ConsumablesFilledQuery
+                    .Where(c => EF.Functions.ILike(c.Name, $"{nameOrCas}%"))
+                    .ToListAsync();
+                result.AddRange(consumables);
+            }
+
+            if (assetItemTypes.Contains(AssetItemType.GasCylinder))
+            {
+                var gasCylinders = await GasCylindersFilledQuery
+                    .Where(g => EF.Functions.ILike(g.Name, $"{nameOrCas}%"))
+                    .ToListAsync();
+                result.AddRange(gasCylinders);
+            }
+
+            if (assetItemTypes.Contains(AssetItemType.Solvent))
+            {
+                var solvents = await SolventsFilledQuery
+                    .Where(s => EF.Functions.ILike(s.Name, $"{nameOrCas}%"))
+                    .ToListAsync();
+                result.AddRange(solvents);
+            }
         }
 
-        if (assetItemTypes.Contains(AssetItemType.Solvent))
-        {
-            var solvents = await SolventsFilledQuery
-                .Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
-                .ToListAsync();
-            result.AddRange(solvents);
-        }
+        return result;
     }
-    else
+
+    public async Task<List<AssetItem>> CombinedFilterAsync(
+        Dictionary<string, string>? filters,
+        List<AssetItemType> assetItemTypes
+    )
     {
+        // Start with an empty list to collect results
+        List<AssetItem> result = new List<AssetItem>();
+
+        // Check for each asset item type in the provided list and query them individually
         if (assetItemTypes.Contains(AssetItemType.Chemical))
         {
-            var chemicals = await ChemicalsFilledQuery
-                .Where(c => EF.Functions.ILike(c.Name, $"{nameOrCas}%"))
-                .ToListAsync();
-            result.AddRange(chemicals);
+            var chemicals = ChemicalsFilledQuery.Where(item => item.GetType() == typeof(Chemical));
+            result.AddRange(await ApplyFilters(chemicals, filters));
         }
 
         if (assetItemTypes.Contains(AssetItemType.Consumable))
         {
-            var consumables = await ConsumablesFilledQuery
-                .Where(c => EF.Functions.ILike(c.Name, $"{nameOrCas}%"))
-                .ToListAsync();
-            result.AddRange(consumables);
+            result.AddRange(await ApplyFilters(ConsumablesFilledQuery, filters));
         }
+
         if (assetItemTypes.Contains(AssetItemType.GasCylinder))
         {
-            var gasCylinders = await GasCylindersFilledQuery
-                .Where(g => EF.Functions.ILike(g.Name, $"{nameOrCas}%"))
-                .ToListAsync();
-            result.AddRange(gasCylinders);
+            result.AddRange(await ApplyFilters(GasCylindersFilledQuery, filters));
         }
+
         if (assetItemTypes.Contains(AssetItemType.Solvent))
         {
-            var solvents = await SolventsFilledQuery
-                .Where(s => EF.Functions.ILike(s.Name, $"{nameOrCas}%"))
-                .ToListAsync();
-            result.AddRange(solvents);
+            result.AddRange(await ApplyFilters(SolventsFilledQuery, filters));
         }
-    }
-    return result;
-}
 
+        // Return the combined list of AssetItems
+        return result;
+    }
+
+    private async Task<List<AssetItem>> ApplyFilters(
+        IQueryable<AssetItem> query,
+        Dictionary<string, string>? filters
+    )
+    {
+        if (filters == null || filters.Count == 0)
+            return await query.ToListAsync();
+
+        foreach (var (key, value) in filters.Where(f => !string.IsNullOrWhiteSpace(f.Value)))
+        {
+            query = key switch
+            {
+                "Produkt" => ApplyProductFilter(query, value),
+                "Artikelnummer" => query.Where(i => EF.Functions.ILike(i.ItemNumber, $"{value}%")),
+                "Lieferant" => query.Where(i => EF.Functions.ILike(i.Shop, $"{value}%")),
+                "Raum" => query.Where(i => EF.Functions.ILike(i.Room.Name, $"{value}%")),
+                "Preis" => query.Where(i =>
+                    EF.Functions.ILike(EF.Property<string>(i, "Price"), $"{value}%")
+                ),
+                _ => query,
+            };
+        }
+
+        return await query.ToListAsync();
+    }
+
+    private static IQueryable<AssetItem> ApplyProductFilter(
+        IQueryable<AssetItem> query,
+        string value
+    )
+    {
+        return value.All(c => char.IsDigit(c) || c == '-')
+            ? query.Where(i => EF.Functions.ILike((i as Substance)!.Cas, $"{value}%"))
+            : query.Where(i => EF.Functions.ILike(i.Name, $"{value}%"));
+    }
 
     public async Task<List<AssetItem>> FilterAsync(Dictionary<string, string>? filters)
     {
@@ -255,33 +349,51 @@ public class AssetItemRepository : IAssetItemRepository
             switch (filter.Key)
             {
                 case "Produkt":
-                    query = AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Name, $"{filter.Value}%"));
+                    if (string.IsNullOrWhiteSpace(filter.Value))
+                        break;
+
+                    if (filter.Value.All(c => char.IsDigit(c) || c == '-'))
+                    {
+                        query = SubstancesFilledQuery.Where(s =>
+                            EF.Functions.ILike(s.Cas, $"{filter.Value}%")
+                        );
+                    }
+                    else
+                    {
+                        query = query.Where(i => EF.Functions.ILike(i.Name, $"{filter.Value}%"));
+                    }
                     break;
 
                 case "Artikelnummer":
-                    query = AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.ItemNumber, $"{filter.Value}%"));
+                    query = query.Where(i => EF.Functions.ILike(i.ItemNumber, $"{filter.Value}%"));
                     break;
 
                 case "Lieferant":
-                    query = AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Shop, $"{filter.Value}%"));
+                    query = query.Where(i => EF.Functions.ILike(i.Shop, $"{filter.Value}%"));
                     break;
 
                 case "Raum":
-                    query = query.Where(i => i.Price.ToString("F").StartsWith(filter.Value));
+                    query = query.Where(i => EF.Functions.ILike(i.Room.Name, $"{filter.Value}%"));
                     break;
 
                 case "Preis":
-                    query = query.Where(i => EF.Functions.ILike(EF.Property<string>(i, "Price").ToString(), $"{filter.Value}%"));
+                    query = query.Where(i =>
+                        EF.Functions.ILike(
+                            EF.Property<string>(i, "Price").ToString(),
+                            $"{filter.Value}%"
+                        )
+                    );
                     break;
 
                 default:
                     return await GetAllAsync();
             }
         }
+
         return await query.ToListAsync();
     }
 
-    public async Task<List<AssetItem>> SearchTypeAsync(List<AssetItemType> assetItemTypes)
+    public async Task<List<AssetItem>> FilterTypeAsync(List<AssetItemType> assetItemTypes)
     {
         // Start with an empty list to collect results
         List<AssetItem> result = new List<AssetItem>();
@@ -297,22 +409,19 @@ public class AssetItemRepository : IAssetItemRepository
 
         if (assetItemTypes.Contains(AssetItemType.Consumable))
         {
-            var consumables = await ConsumablesFilledQuery
-                .ToListAsync();
+            var consumables = await ConsumablesFilledQuery.ToListAsync();
             result.AddRange(consumables);
         }
 
         if (assetItemTypes.Contains(AssetItemType.GasCylinder))
         {
-            var gasCylinders = await GasCylindersFilledQuery
-                .ToListAsync();
+            var gasCylinders = await GasCylindersFilledQuery.ToListAsync();
             result.AddRange(gasCylinders);
         }
 
         if (assetItemTypes.Contains(AssetItemType.Solvent))
         {
-            var solvents = await SolventsFilledQuery
-                .ToListAsync();
+            var solvents = await SolventsFilledQuery.ToListAsync();
             result.AddRange(solvents);
         }
 

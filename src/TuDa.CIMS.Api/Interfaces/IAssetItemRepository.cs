@@ -15,7 +15,12 @@ public interface IAssetItemRepository
         AssetItemPaginationQueryParams queryParams
     );
     Task<List<AssetItem>> SearchAsync(string nameOrCas, List<AssetItemType>? assetItemTypes);
-    Task<List<AssetItem>> SearchTypeAsync(List<AssetItemType> assetItemTypes);
+    Task<List<AssetItem>> FilterTypeAsync(List<AssetItemType> assetItemTypes);
     Task<List<AssetItem>> FilterAsync(Dictionary<string, string>? filters);
+    Task<List<AssetItem>> CombinedFilterAsync(
+        Dictionary<string, string>? filters,
+        List<AssetItemType> assetItemTypes
+    );
+
     Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel);
 }

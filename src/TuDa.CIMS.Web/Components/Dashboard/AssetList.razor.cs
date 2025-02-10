@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Components.Dashboard.Dialogs;
@@ -99,17 +100,19 @@ public partial class AssetList
     string _icon = Icons.Material.Outlined.FilterAlt;
     bool _filterOpen = false;
 
-    void OpenFilter()
+    void ToggleFilter()
     {
         _selectedTypes = new List<AssetItemType>();
         ReloadData();
-        _filterOpen = true;
+        _filterOpen = !_filterOpen;
     }
+}
 
-    void CloseFilter()
-    {
-        _selectedTypes = new List<AssetItemType>();
-        ReloadData();
-        _filterOpen = false;
-    }
+public static class AssetItemColumns
+{
+    public const string Name = "Name";
+    public const string Shop = "Lieferant";
+    public const string ItemNumber = "Artikelnummer";
+    public const string RoomName = "Raum";
+    public const string Price = "Preis";
 }

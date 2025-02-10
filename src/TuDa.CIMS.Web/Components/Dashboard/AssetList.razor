@@ -27,7 +27,7 @@
         <PropertyColumn Property="@(i => GetItemTypeName(i))"
                         Title="Typ">
             <FilterTemplate>
-                <MudIconButton OnClick="@OpenFilter" Icon="@_icon" Size="@Size.Small" />
+                <MudIconButton OnClick="@ToggleFilter" Icon="@_icon" Size="@Size.Small" />
                 <MudOverlay Visible="@_filterOpen" OnClick="@(() => _filterOpen = false)" />
                 <MudPopover Open="@_filterOpen" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter"
                             Style="width:200px">
@@ -51,7 +51,7 @@
 
                         </MudStack>
                         <MudStack Row="true">
-                            <MudButton OnClick="CloseFilter">Schließen</MudButton>
+                            <MudButton OnClick="ToggleFilter">Schließen</MudButton>
                         </MudStack>
                     </MudStack>
                 </MudPopover>

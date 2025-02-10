@@ -38,7 +38,11 @@ public class AssetItemService : IAssetItemService
 
             if (assetItemTypes != null && assetItemTypes.Count > 0)
             {
-                return await _assetItemRepository.SearchTypeAsync(assetItemTypes);
+                if (filters != null && filters.Count > 0)
+                {
+                    return await _assetItemRepository.CombinedFilterAsync(filters, assetItemTypes);
+                }
+                return await _assetItemRepository.FilterTypeAsync(assetItemTypes);
             }
 
             if (filters != null && filters.Count > 0)
