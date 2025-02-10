@@ -34,12 +34,13 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi, Naviga
     /// <summary>
     /// Opens the dialog to look up and edit the workinggroup.
     /// </summary>
-    public async void OpenInformationDialog()
+    public async Task OpenInformationDialog()
     {
         var dialogReference = DialogService.Show<WorkingGroupInfoPopOut>("Informationen zur Arbeitsgruppe",
             new DialogParameters { { "WorkingGroupId", WorkingGroupId } });
 
         // Wait for the dialog to close and then reload the page
+        // TODO: This is a workaround to reload the page after the dialog closes, change this to a better solution
         await dialogReference.Result;
         navigation.NavigateTo(navigation.Uri, forceLoad: true);
     }
