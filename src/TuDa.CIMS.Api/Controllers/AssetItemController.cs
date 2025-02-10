@@ -24,16 +24,11 @@ public class AssetItemController : CIMSBaseController
     /// </summary>
     /// <returns> a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync(
-        [FromQuery] string? nameOrCas,
-        [FromQuery] List<AssetItemType>? assetItemTypes,
-        [FromQuery] Dictionary<string, string>? filters
-    )
+    public async Task<IActionResult> GetAllAsync([FromQuery] AssetItemFilterDto filter)
     {
-        return (await _assetItemService.GetAllAsync(nameOrCas, assetItemTypes, filters)).Match(
-            onValue: Ok,
-            onError: ErrorsToProblem
-        );
+        return await _assetItemService
+            .GetAllAsync(filter)
+            .Match(onValue: Ok, onError: ErrorsToProblem);
     }
 
     /// <summary>

@@ -5,6 +5,7 @@ using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Constants;
 using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Params;
 
@@ -271,34 +272,31 @@ public class AssetItemRepository : IAssetItemRepository
         return result;
     }
 
-    public async Task<List<AssetItem>> CombinedFilterAsync(
-        Dictionary<string, string>? filters,
-        List<AssetItemType> assetItemTypes
-    )
+    public async Task<List<AssetItem>> CombinedFilterAsync(AssetItemFilterDto filter)
     {
         // Start with an empty list to collect results
         List<AssetItem> result = new List<AssetItem>();
 
         // Check for each asset item type in the provided list and query them individually
-        if (assetItemTypes.Contains(AssetItemType.Chemical))
+        if (filter.AssetItemTypes!.Contains(AssetItemType.Chemical))
         {
             var chemicals = ChemicalsFilledQuery.Where(item => item.GetType() == typeof(Chemical));
-            result.AddRange(await ApplyFilters(chemicals, filters));
+            result.AddRange(await ApplyFilters(chemicals, filter));
         }
 
-        if (assetItemTypes.Contains(AssetItemType.Consumable))
+        if (filter.AssetItemTypes.Contains(AssetItemType.Consumable))
         {
-            result.AddRange(await ApplyFilters(ConsumablesFilledQuery, filters));
+            result.AddRange(await ApplyFilters(ConsumablesFilledQuery, filter));
         }
 
-        if (assetItemTypes.Contains(AssetItemType.GasCylinder))
+        if (filter.AssetItemTypes.Contains(AssetItemType.GasCylinder))
         {
-            result.AddRange(await ApplyFilters(GasCylindersFilledQuery, filters));
+            result.AddRange(await ApplyFilters(GasCylindersFilledQuery, filter));
         }
 
-        if (assetItemTypes.Contains(AssetItemType.Solvent))
+        if (filter.AssetItemTypes.Contains(AssetItemType.Solvent))
         {
-            result.AddRange(await ApplyFilters(SolventsFilledQuery, filters));
+            result.AddRange(await ApplyFilters(SolventsFilledQuery, filter));
         }
 
         // Return the combined list of AssetItems
@@ -307,25 +305,43 @@ public class AssetItemRepository : IAssetItemRepository
 
     private async Task<List<AssetItem>> ApplyFilters(
         IQueryable<AssetItem> query,
-        Dictionary<string, string>? filters
+        AssetItemFilterDto filter
     )
     {
-        if (filters == null || filters.Count == 0)
+        if (
+            string.IsNullOrEmpty(filter.Product)
+            && string.IsNullOrEmpty(filter.Shop)
+            && string.IsNullOrEmpty(filter.ItemNumber)
+            && string.IsNullOrEmpty(filter.RoomName)
+            && string.IsNullOrEmpty(filter.Price)
+        )
             return await query.ToListAsync();
 
-        foreach (var (key, value) in filters.Where(f => !string.IsNullOrWhiteSpace(f.Value)))
+        if (!string.IsNullOrEmpty(filter.Product))
         {
-            query = key switch
-            {
-                "Produkt" => ApplyProductFilter(query, value),
-                "Artikelnummer" => query.Where(i => EF.Functions.ILike(i.ItemNumber, $"{value}%")),
-                "Lieferant" => query.Where(i => EF.Functions.ILike(i.Shop, $"{value}%")),
-                "Raum" => query.Where(i => EF.Functions.ILike(i.Room.Name, $"{value}%")),
-                "Preis" => query.Where(i =>
-                    EF.Functions.ILike(EF.Property<string>(i, "Price"), $"{value}%")
-                ),
-                _ => query,
-            };
+            query = ApplyProductFilter(query, filter.Product);
+        }
+
+        if (!string.IsNullOrEmpty(filter.Shop))
+        {
+            query = query.Where(i => EF.Functions.ILike(i.Shop, $"{filter.Shop}%"));
+        }
+
+        if (!string.IsNullOrEmpty(filter.ItemNumber))
+        {
+            query = query.Where(i => EF.Functions.ILike(i.ItemNumber, $"{filter.ItemNumber}%"));
+        }
+
+        if (!string.IsNullOrEmpty(filter.RoomName))
+        {
+            query = query.Where(i => EF.Functions.ILike(i.Room.Name, $"{filter.RoomName}%"));
+        }
+
+        if (!string.IsNullOrEmpty(filter.Price))
+        {
+            query = query.Where(i =>
+                EF.Functions.ILike(EF.Property<string>(i, "Price").ToString(), $"{filter.Price}%")
+            );
         }
 
         return await query.ToListAsync();
@@ -333,54 +349,61 @@ public class AssetItemRepository : IAssetItemRepository
 
     private static IQueryable<AssetItem> ApplyProductFilter(
         IQueryable<AssetItem> query,
-        string value
+        string? value
     )
     {
+        if (string.IsNullOrEmpty(value))
+            return query;
+
         return value.All(c => char.IsDigit(c) || c == '-')
             ? query.Where(i => EF.Functions.ILike((i as Substance)!.Cas, $"{value}%"))
             : query.Where(i => EF.Functions.ILike(i.Name, $"{value}%"));
     }
 
-    public async Task<List<AssetItem>> FilterAsync(Dictionary<string, string>? filters)
+    public async Task<List<AssetItem>> FilterAsync(AssetItemFilterDto filter)
     {
         IQueryable<AssetItem> query = AssetItemsFilledQuery;
-        foreach (var filter in filters)
+        foreach (var column in filter.AssetItemColumnsList)
         {
-            switch (filter.Key)
+            switch (column)
             {
-                case "Produkt":
-                    if (string.IsNullOrWhiteSpace(filter.Value))
+                case AssetItemColumns.Product:
+                    if (string.IsNullOrWhiteSpace(filter.Product))
                         break;
 
-                    if (filter.Value.All(c => char.IsDigit(c) || c == '-'))
+                    if (filter.Product.All(c => char.IsDigit(c) || c == '-'))
                     {
                         query = SubstancesFilledQuery.Where(s =>
-                            EF.Functions.ILike(s.Cas, $"{filter.Value}%")
+                            EF.Functions.ILike(s.Cas, $"{filter.Product}%")
                         );
                     }
                     else
                     {
-                        query = query.Where(i => EF.Functions.ILike(i.Name, $"{filter.Value}%"));
+                        query = query.Where(i => EF.Functions.ILike(i.Name, $"{filter.Product}%"));
                     }
                     break;
 
                 case "Artikelnummer":
-                    query = query.Where(i => EF.Functions.ILike(i.ItemNumber, $"{filter.Value}%"));
+                    query = query.Where(i =>
+                        EF.Functions.ILike(i.ItemNumber, $"{filter.ItemNumber}%")
+                    );
                     break;
 
                 case "Lieferant":
-                    query = query.Where(i => EF.Functions.ILike(i.Shop, $"{filter.Value}%"));
+                    query = query.Where(i => EF.Functions.ILike(i.Shop, $"{filter.Shop}%"));
                     break;
 
                 case "Raum":
-                    query = query.Where(i => EF.Functions.ILike(i.Room.Name, $"{filter.Value}%"));
+                    query = query.Where(i =>
+                        EF.Functions.ILike(i.Room.Name, $"{filter.RoomName}%")
+                    );
                     break;
 
                 case "Preis":
                     query = query.Where(i =>
                         EF.Functions.ILike(
                             EF.Property<string>(i, "Price").ToString(),
-                            $"{filter.Value}%"
+                            $"{filter.Price}%"
                         )
                     );
                     break;

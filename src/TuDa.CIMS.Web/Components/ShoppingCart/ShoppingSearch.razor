@@ -18,8 +18,8 @@
             ShowProgressIndicator="true">
         </MudAutocomplete>
         <MudChipSet T="AssetItemType"
-                    SelectedValues="_selectedAssetItemType"
-                    SelectedValuesChanged="@((values) => _selectedAssetItemType = values.ToList())"
+                    SelectedValues="_selectedAssetItemTypes"
+                    SelectedValuesChanged="@((values) => _selectedAssetItemTypes = values.ToList())"
                     CheckMark
                     SelectionMode="SelectionMode.MultiSelection"
                     Class="my-1">

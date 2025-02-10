@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Services;
@@ -35,7 +36,7 @@ public partial class ShoppingSearch : ComponentBase
     /// <summary>
     /// To filter for different types of Items
     /// </summary>
-    private List<AssetItemType> _selectedAssetItemType = [];
+    private List<AssetItemType> _selectedAssetItemTypes = [];
 
     private async Task<IEnumerable<AssetItem>> Search(string nameOrCas, CancellationToken token)
     {
@@ -44,9 +45,13 @@ public partial class ShoppingSearch : ComponentBase
             return [];
         }
 
-        return await _assetItemApi
-            .GetAllAsync(nameOrCas, _selectedAssetItemType)
-            .Match(value => value, err => []);
+        var filterDto = new AssetItemFilterDto
+        {
+            NameOrCas = nameOrCas,
+            AssetItemTypes = _selectedAssetItemTypes,
+        };
+
+        return await _assetItemApi.GetAllAsync(filterDto).Match(value => value, err => []);
     }
 
     private static string ToString(AssetItem item) =>

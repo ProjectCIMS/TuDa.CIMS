@@ -23,41 +23,52 @@ public class AssetItemService : IAssetItemService
     /// Return an an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
     /// or the result of the <see cref="GetAllAsync"/> functionality if successful or if nameOrCas is set the <see cref="SearchAsync"/> functionality.
     /// </summary>
-    public async Task<ErrorOr<List<AssetItem>>> GetAllAsync(
-        string? nameOrCas,
-        List<AssetItemType>? assetItemTypes,
-        Dictionary<string, string>? filters
-    )
+    public async Task<ErrorOr<List<AssetItem>>> GetAllAsync(AssetItemFilterDto filter)
     {
         try
         {
-            if (!string.IsNullOrEmpty(nameOrCas))
+            if (!string.IsNullOrEmpty(filter.NameOrCas))
             {
-                return await _assetItemRepository.SearchAsync(nameOrCas, assetItemTypes);
+                return await _assetItemRepository.SearchAsync(
+                    filter.NameOrCas,
+                    filter.AssetItemTypes
+                );
             }
 
-            if (assetItemTypes != null && assetItemTypes.Count > 0)
+            if (filter.AssetItemTypes.Count > 0)
             {
-                if (filters != null && filters.Count > 0)
+                if (
+                    !string.IsNullOrEmpty(filter.Product)
+                    || !string.IsNullOrEmpty(filter.Shop)
+                    || !string.IsNullOrEmpty(filter.ItemNumber)
+                    || !string.IsNullOrEmpty(filter.RoomName)
+                    || !string.IsNullOrEmpty(filter.Price)
+                )
                 {
-                    return await _assetItemRepository.CombinedFilterAsync(filters, assetItemTypes);
+                    return await _assetItemRepository.CombinedFilterAsync(filter);
                 }
-                return await _assetItemRepository.FilterTypeAsync(assetItemTypes);
+                return await _assetItemRepository.FilterTypeAsync(filter.AssetItemTypes);
             }
 
-            if (filters != null && filters.Count > 0)
+            if (
+                !string.IsNullOrEmpty(filter.Product)
+                || !string.IsNullOrEmpty(filter.Shop)
+                || !string.IsNullOrEmpty(filter.ItemNumber)
+                || !string.IsNullOrEmpty(filter.RoomName)
+                || !string.IsNullOrEmpty(filter.Price)
+            )
             {
-                return await _assetItemRepository.FilterAsync(filters);
+                return await _assetItemRepository.FilterAsync(filter);
             }
 
             return await _assetItemRepository.GetAllAsync();
         }
         catch (Exception e)
         {
-            return nameOrCas != null
+            return filter.NameOrCas != null
                 ? Error.Failure(
                     "AssetItem.SearchAsync",
-                    $"Failed to search AssetItem with name {nameOrCas}. Exception: {e.Message}"
+                    $"Failed to search AssetItem with name {filter.NameOrCas}. Exception: {e.Message}"
                 )
                 : Error.Failure(
                     "AssetItem.GetAllAsync",

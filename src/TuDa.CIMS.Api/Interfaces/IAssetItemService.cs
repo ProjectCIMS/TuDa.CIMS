@@ -8,11 +8,7 @@ namespace TuDa.CIMS.Api.Interfaces;
 
 public interface IAssetItemService
 {
-    Task<ErrorOr<List<AssetItem>>> GetAllAsync(
-        string? nameOrCas,
-        List<AssetItemType>? assetItemTypes,
-        Dictionary<string, string>? filters
-    );
+    Task<ErrorOr<List<AssetItem>>> GetAllAsync(AssetItemFilterDto filter);
     Task<ErrorOr<AssetItem>> GetOneAsync(Guid id);
     Task<ErrorOr<Updated>> UpdateAsync(Guid id, UpdateAssetItemDto updateModel);
     Task<ErrorOr<Deleted>> RemoveAsync(Guid id);
