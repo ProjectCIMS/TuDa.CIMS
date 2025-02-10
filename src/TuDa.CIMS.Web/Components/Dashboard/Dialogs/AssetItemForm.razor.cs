@@ -25,6 +25,7 @@ public partial class AssetItemForm
     private bool NameIsError => FormShowError && FormName == string.Empty;
     private bool ShopIsError => FormShowError && FormShop == string.Empty;
     private bool ItemNumberIsError => FormShowError && FormItemNumber == string.Empty;
+    private bool IsError => PriceIsError || NameIsError || ShopIsError || ItemNumberIsError;
 
     [Parameter]
     public EventCallback OnReset { get; set; }
@@ -59,13 +60,7 @@ public partial class AssetItemForm
     /// <returns>returns false when all Inputs are valid otherwise true</returns>
     public bool ErrorsInForm()
     {
-        if (
-            FormName == string.Empty
-            || FormShop == string.Empty
-            || FormItemNumber == string.Empty
-            || FormPrice == 0.0
-            || FormRoomName == string.Empty
-        )
+        if (IsError)
         {
             return true;
         }
