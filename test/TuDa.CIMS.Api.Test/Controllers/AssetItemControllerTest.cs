@@ -286,7 +286,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             }
         }
     }
-   /* [Fact]
+    [Fact]
     public async Task CreateAsync_ShouldCreateConsumableTransaction_WhenConsumableIsCreated()
     {
         // Arrange
@@ -310,7 +310,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
         // Act
         var response = await _client.PostAsync(
             "api/asset-items",
-            JsonContent.Create(createConsumable)
+            JsonContent.Create<CreateAssetItemDto>(createConsumable)
         );
 
         // Assert
@@ -327,5 +327,5 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
         transaction.Should().NotBeNull();
         transaction.AmountChange.Should().Be(createConsumable.Amount);
         transaction.TransactionReason.Should().Be(TransactionReasons.Init);
-    }*/
+    }
 }
