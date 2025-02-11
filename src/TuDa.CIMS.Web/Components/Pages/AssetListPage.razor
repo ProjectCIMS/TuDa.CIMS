@@ -1,5 +1,4 @@
 ﻿@page "/asset-list"
-@using MudBlazor.Extensions
 @using TuDa.CIMS.Shared.Dtos
 @using TuDa.CIMS.Shared.Entities
 @using TuDa.CIMS.Web.Components.Dashboard
@@ -16,14 +15,21 @@
 
 @code
 {
-    [Inject] private ILogger<AssetListPage> _logger { get; set; } = null!;
-    [Inject] public required IDialogService DialogService { get; set; }
-    private IAssetItemApi _assetItemApi;
-    private AssetList _assetList;
+    private AssetList _assetList = null!;
 
-    public AssetListPage(IAssetItemApi assetItemApi)
+    private readonly ILogger<AssetListPage> _logger;
+    private readonly IDialogService _dialogService;
+    private readonly IAssetItemApi _assetItemApi;
+
+    public AssetListPage(
+        IAssetItemApi assetItemApi,
+        IDialogService dialogService,
+        ILogger<AssetListPage> logger
+    )
     {
         _assetItemApi = assetItemApi;
+        _dialogService = dialogService;
+        _logger = logger;
     }
 
     private async Task CreateAssetItem()
@@ -34,7 +40,7 @@
         {
             { "OnItemCreated", EventCallback.Factory.Create<CreateAssetItemDto>(this, CreateItem) }
         };
-        await DialogService.ShowAsync<AssetItemDialog>("Create Item", parameters, options);
+        await _dialogService.ShowAsync<AssetItemDialog>("Create Item", options);
     }
 
 
@@ -49,7 +55,7 @@
 
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        await DialogService.ShowAsync<AssetItemEditDialog>("Edit Item", parameters, options);
+        await _dialogService.ShowAsync<AssetItemEditDialog>("Edit Item", parameters, options);
     }
 
     private async Task CreateItem(CreateAssetItemDto createAssetItemDto)

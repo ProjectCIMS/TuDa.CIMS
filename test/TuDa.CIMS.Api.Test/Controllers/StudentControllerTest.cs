@@ -59,7 +59,9 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
     public async Task RemoveAsync_ShouldReturnNotFound_WhenStudentNotPresent()
     {
         WorkingGroup workingGroup = new WorkingGroupFaker().Generate();
-        var response = await _client.DeleteAsync($"/api/working-groups/{workingGroup.Id}/students/{new Guid()}");
+        var response = await _client.DeleteAsync(
+            $"/api/working-groups/{workingGroup.Id}/students/{Guid.NewGuid()}"
+        );
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -77,11 +79,12 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
         await _dbContext.SaveChangesAsync();
 
         const string updatedName = "Updated Student Name";
-        List<UpdateStudentDto> updateStudentDtos = new ()
-        {
-            new UpdateStudentDto { Name = updatedName },
-            new UpdateStudentDto { Name = updatedName }
-        };
+        List<UpdateStudentDto> updateStudentDtos =
+            new()
+            {
+                new UpdateStudentDto { Name = updatedName },
+                new UpdateStudentDto { Name = updatedName },
+            };
 
         // Act
         foreach (var (student, updateStudentDto) in students.Zip(updateStudentDtos))
@@ -103,13 +106,12 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
         workingGroup.Students.All(s => s.Name == updatedName).Should().BeTrue();
     }
 
-
     [Fact]
     public async Task UpdateAsync_ShouldReturnNotFound_WhenStudentNotPresent()
     {
         var workingGroup = new WorkingGroupFaker().Generate();
         var response = await _client.PatchAsync(
-            $"/api/working-groups/{workingGroup.Id}/students/{new Guid()}",
+            $"/api/working-groups/{workingGroup.Id}/students/{Guid.NewGuid()}",
             JsonContent.Create(new UpdateStudentDto())
         );
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -160,7 +162,7 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
     public async Task AddAsync_ShouldReturnNotFound_WhenWorkingGroupNotPresent()
     {
         var response = await _client.PostAsync(
-            $"/api/working-groups/{new Guid()}/students",
+            $"/api/working-groups/{Guid.NewGuid()}/students",
             JsonContent.Create(new CreateStudentDto() { Name = "New Student" })
         );
         response.IsSuccessStatusCode.Should().BeFalse();
