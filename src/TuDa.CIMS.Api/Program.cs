@@ -14,7 +14,12 @@ builder.AddNpgsqlDbContext<CIMSDbContext>("CIMS");
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.UseAllOfForInheritance();
+    options.UseOneOfForPolymorphism();
+});
+
 builder.Services.AddServices();
 builder.Services.AddProblemDetails();
 builder.Services.AddJsonDecoder();
@@ -33,7 +38,10 @@ app.MapControllers();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger(options =>
+    {
+        options.RouteTemplate = "/openapi/{documentName}.json";
+    });
     app.SetupScalar();
 }
 
