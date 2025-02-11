@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
 
@@ -7,9 +8,10 @@ namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupApi api)
 {
-    [Parameter] public required WorkingGroup WorkingGroup { get; set; }
+    [Parameter]
+    public required WorkingGroupResponseDto WorkingGroup { get; set; }
 
-    private MudAutocomplete<WorkingGroup> _autocomplete = null!; // Is set by blazor component
+    private MudAutocomplete<WorkingGroupResponseDto> _autocomplete = null!; // Is set by blazor component
 
     private MudForm form = null!;
 
@@ -17,7 +19,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
     /// Event that is called when an <see cref="Shared.Entities.WorkingGroup"/> is selected.
     /// </summary>
     [Parameter]
-    public EventCallback<WorkingGroup> WorkingGroupChanged { get; set; }
+    public EventCallback<WorkingGroupResponseDto> WorkingGroupChanged { get; set; }
 
     [Parameter]
     public required bool WorkingGroupIsValid { get; set; }
@@ -25,7 +27,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
     [Parameter]
     public EventCallback<bool> WorkingGroupIsValidChanged { get; set; }
 
-    private async Task OnWorkingGroupChanged(WorkingGroup workingGroup)
+    private async Task OnWorkingGroupChanged(WorkingGroupResponseDto workingGroup)
     {
         await ValidateSelection();
         if (WorkingGroupChanged.HasDelegate)
@@ -54,13 +56,16 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
     }
 
     /// Invoke to clear text
-    private async Task WorkingGroupSelectedInternal(WorkingGroup item)
+    private async Task WorkingGroupSelectedInternal(WorkingGroupResponseDto item)
     {
         await _autocomplete.ResetAsync();
         await WorkingGroupChanged.InvokeAsync(item);
     }
 
-    private async Task<IEnumerable<WorkingGroup>> Search(string name, CancellationToken token)
+    private async Task<IEnumerable<WorkingGroupResponseDto>> Search(
+        string name,
+        CancellationToken token
+    )
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -72,7 +77,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
     /// <summary>
     /// Returns the name of a given working group.
     /// </summary>
-    private static string ToString(WorkingGroup workingGroup) =>
+    private static string ToString(WorkingGroupResponseDto workingGroup) =>
         workingGroup switch
         {
             null => "",

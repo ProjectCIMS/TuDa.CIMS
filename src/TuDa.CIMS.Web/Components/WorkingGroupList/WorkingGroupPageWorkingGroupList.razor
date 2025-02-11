@@ -1,6 +1,7 @@
+@using TuDa.CIMS.Shared.Dtos.Responses
 @using TuDa.CIMS.Shared.Entities
 
-<MudDataGrid @ref="_dataGrid" T="WorkingGroup" ServerData="ServerReload" Filterable="false"
+<MudDataGrid @ref="_dataGrid" T="WorkingGroupResponseDto" ServerData="ServerReload" Filterable="false"
              RowClick="GoToWorkingGroupInfoPage">
     <ToolBarContent>
         <MudTextField

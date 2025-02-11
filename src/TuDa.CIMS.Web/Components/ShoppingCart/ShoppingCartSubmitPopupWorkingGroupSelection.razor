@@ -1,11 +1,11 @@
-@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Dtos.Responses
 @namespace TuDa.CIMS.Web.Components.ShoppingCart
 
 @*ShoppingCart SubmitPopup WorkingGroup Selection*@
 <MudItem Class="d-flex align-items-center">
     <MudForm @ref="form">
     <MudAutocomplete
-        T="WorkingGroup"
+        T="WorkingGroupResponseDto"
         @ref="_autocomplete"
         Clearable="@true"
         AdornmentIcon="@Icons.Material.Filled.Search"

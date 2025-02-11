@@ -6,8 +6,10 @@ using TuDa.CIMS.Api.Controllers;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Test.Integration;
 using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
+using TuDa.CIMS.Shared.Extensions;
 using TuDa.CIMS.Shared.Test.Extensions;
 using TuDa.CIMS.Shared.Test.Faker;
 
@@ -45,9 +47,9 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var result = await response.Content.FromJsonAsync<WorkingGroup>();
+        var result = await response.Content.FromJsonAsync<WorkingGroupResponseDto>();
 
-        result.Should().BeEquivalentTo(workingGroup);
+        result.Should().BeEquivalentTo(workingGroup.ToResponseDto());
     }
 
     [Fact]
@@ -74,9 +76,9 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var result = await response.Content.FromJsonAsync<List<WorkingGroup>>();
+        var result = await response.Content.FromJsonAsync<List<WorkingGroupResponseDto>>();
 
-        result.Should().BeEquivalentTo(workingGroups);
+        result.Should().BeEquivalentTo(workingGroups.ToResponseDtos());
     }
 
     [Fact]
@@ -129,10 +131,11 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var createResult = await response.Content.FromJsonAsync<WorkingGroup>();
+        var createResult = await response.Content.FromJsonAsync<WorkingGroupResponseDto>();
 
         var result = await _dbContext.WorkingGroups.Include(wg => wg.Professor).SingleAsync();
         result
+            .ToResponseDto()
             .Professor.Should()
             .BeEquivalentTo(
                 professor,
@@ -140,7 +143,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
             );
         result.PhoneNumber.Should().BeEquivalentTo(phoneNumber);
 
-        result.Should().BeEquivalentTo(createResult);
+        result.ToResponseDto().Should().BeEquivalentTo(createResult);
     }
 
     [Fact]
@@ -170,16 +173,11 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var responseWorkingGroup = await response.Content.FromJsonAsync<WorkingGroup>();
+        var responseWorkingGroup = await response.Content.FromJsonAsync<WorkingGroupResponseDto>();
 
         workingGroup.Should().BeEquivalentTo(updatedWorkingGroup);
 
-        workingGroup
-            .Should()
-            .BeEquivalentTo(
-                responseWorkingGroup,
-                options => options.Excluding(wg => wg!.Professor.UpdatedAt)
-            );
+        workingGroup.ToResponseDto().Should().BeEquivalentTo(responseWorkingGroup);
         responseWorkingGroup!.Professor.UpdatedAt.Should().NotBeNull();
     }
 

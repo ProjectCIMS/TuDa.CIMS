@@ -1,22 +1,14 @@
-﻿namespace TuDa.CIMS.Shared.Entities;
+﻿using System.Text.Json.Serialization;
+using TuDa.CIMS.Shared.Entities;
 
-/// <summary>
-/// An entity representing a purchase in the system.
-/// </summary>
-public record Purchase : BaseEntity
+namespace TuDa.CIMS.Shared.Dtos.Responses;
+
+public record PurchaseResponseDto : BaseEntityResponseDto
 {
     /// <summary>
     /// The person that purchase the items.
     /// </summary>
     public required Person Buyer { get; set; }
-
-    /// <summary>
-    /// The signature of the buyer.
-    /// </summary>
-    /// <remarks>
-    /// TODO: The saving strategy is not final.
-    /// </remarks>
-    public byte[] Signature { get; set; } = [];
 
     /// <summary>
     /// All entries of the purchase.
@@ -31,20 +23,21 @@ public record Purchase : BaseEntity
     #region Invalidation
 
     /// <summary>
-    /// If the purchase is invalidated to correct it with another one.
-    /// </summary>
-    public bool Invalidated => Successor is not null;
-
-    /// <summary>
     /// Not null when Purchase is invalidated.
     /// The purchase this purchase is corrected with.
     /// </summary>
-    public Purchase? Successor { get; set; }
+    public Guid? SuccessorId { get; set; }
 
     /// <summary>
     /// The purchase this purchase is correcting.
     /// </summary>
-    public Purchase? Predecessor { get; set; }
+    public Guid? PredecessorId { get; set; }
+
+    /// <summary>
+    /// If the purchase is invalidated to correct it with another one.
+    /// </summary>
+    [JsonIgnore]
+    public bool Invalidated => SuccessorId is not null;
 
     #endregion
 
@@ -53,6 +46,7 @@ public record Purchase : BaseEntity
     /// <summary>
     /// Calculates the TotalPrice of this purchase.
     /// </summary>
+    [JsonIgnore]
     public double TotalPrice => Entries.Aggregate(0.0, (total, entry) => total + entry.TotalPrice);
 
     #endregion

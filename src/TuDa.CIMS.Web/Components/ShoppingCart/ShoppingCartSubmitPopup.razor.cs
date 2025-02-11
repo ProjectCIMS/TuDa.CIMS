@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Helper;
 
@@ -21,7 +22,7 @@ public partial class ShoppingCartSubmitPopup
 
     private bool IsValid => WorkingGroupIsValid && BuyerIsValid;
 
-    public bool WorkingGroupIsValid { get; set;}
+    public bool WorkingGroupIsValid { get; set; }
 
     public bool BuyerIsValid { get; set; }
 
@@ -30,7 +31,7 @@ public partial class ShoppingCartSubmitPopup
     /// <summary>
     /// The selected working group.
     /// </summary>
-    public WorkingGroup? WorkingGroup { get; set; }
+    public WorkingGroupResponseDto? WorkingGroup { get; set; }
 
     /// <summary>
     /// The selected buyer.
@@ -50,14 +51,19 @@ public partial class ShoppingCartSubmitPopup
         if (WorkingGroup?.Students is not null)
         {
             List<Guid> studentIds = WorkingGroup.Students.Select(student => student.Id).ToList();
-            if (IsValid && (WorkingGroup?.Professor.Id == Buyer.Id || studentIds.Contains(Buyer.Id)))
+            if (
+                IsValid && (WorkingGroup?.Professor.Id == Buyer.Id || studentIds.Contains(Buyer.Id))
+            )
             {
-                MudDialog.Close(DialogResult.Ok(new WorkingGroupWithBuyer(WorkingGroup!.Id, Buyer.Id)));
+                MudDialog.Close(
+                    DialogResult.Ok(new WorkingGroupWithBuyer(WorkingGroup!.Id, Buyer.Id))
+                );
             }
             else
             {
                 BuyerIsValid = false;
-                BuyerValidationMessage = "Der ausgewählte Käufer gehört nicht zur ausgewählten Arbeitsgruppe.";
+                BuyerValidationMessage =
+                    "Der ausgewählte Käufer gehört nicht zur ausgewählten Arbeitsgruppe.";
             }
         }
     }

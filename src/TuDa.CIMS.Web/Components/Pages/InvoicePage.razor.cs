@@ -2,6 +2,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Models;
 using TuDa.CIMS.Web.Services;
@@ -23,14 +24,15 @@ public partial class InvoicePage
     public InvoicePage(
         IJSRuntime jsRuntime,
         IWorkingGroupApi workingGroupApi,
-        IInvoiceApi invoiceApi)
+        IInvoiceApi invoiceApi
+    )
     {
         _jsRuntime = jsRuntime;
         _workingGroupApi = workingGroupApi;
         _invoiceApi = invoiceApi;
     }
 
-    private WorkingGroup? _workingGroup { get; set; }
+    private WorkingGroupResponseDto? _workingGroup { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

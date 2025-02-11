@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
+﻿using MudBlazor;
 using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Components.ShoppingCart;
 using TuDa.CIMS.Web.Helper;
@@ -10,25 +10,31 @@ namespace TuDa.CIMS.Web.Components.Pages;
 
 public partial class ShoppingCartPage
 {
-    [Inject]
-    private IDialogService DialogService { get; set; } = null!;
+    private readonly IDialogService _dialogService;
+    private readonly IPurchaseApi _purchaseApi;
+    private readonly ISnackbar _snackbar;
 
-    [Inject]
-    private IPurchaseApi PurchaseApi { get; set; } = null!;
+    public ShoppingCartPage(
+        IDialogService dialogService,
+        IPurchaseApi purchaseApi,
+        ISnackbar snackbar
+    )
+    {
+        _dialogService = dialogService;
+        _purchaseApi = purchaseApi;
+        _snackbar = snackbar;
+    }
 
-    [Inject]
-    private ISnackbar Snackbar { get; set; } = null!;
+    protected PurchaseResponseDto Purchase { get; set; } = new() { Buyer = null! };
 
-    private Purchase Purchase { get; set; } = new() { Buyer = null! };
-
-    private async Task OpenDialogAsync(AssetItem product)
+    private async Task OpenSelectDialogAsync(AssetItem product)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
         // Set Parameters
         var parameters = new DialogParameters { { "Product", product } };
 
-        var dialog = await DialogService.ShowAsync<ShoppingCartProductDialog>(
+        var dialog = await _dialogService.ShowAsync<ShoppingCartProductDialog>(
             "Mengenangabe",
             parameters,
             options
@@ -45,12 +51,12 @@ public partial class ShoppingCartPage
         }
     }
 
-    private async Task OpenSubmitDialogAsync()
+    protected virtual async Task OpenSubmitDialogAsync()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         var parameters = new DialogParameters { { "PurchaseEntries", Purchase.Entries } };
 
-        var dialog = await DialogService.ShowAsync<ShoppingCartSubmitPopup>(
+        var dialog = await _dialogService.ShowAsync<ShoppingCartSubmitPopup>(
             "Einkauf Bestätigen",
             parameters,
             options
@@ -63,16 +69,48 @@ public partial class ShoppingCartPage
         var ids = await dialog.GetReturnValueAsync<WorkingGroupWithBuyer>();
 
         if (ids is null)
-            Snackbar.Add("Beim abschließen ist etwas schiefgelaufen", Severity.Error);
+            _snackbar.Add("Beim abschließen ist etwas schiefgelaufen", Severity.Error);
 
+        byte[]? signResult = await OpenSigningDialog();
+
+        if (signResult is null)
+            return;
+
+        var errorOr = await _purchaseApi.CreateAsync(
+            ids!.WorkingGroupId,
+            new CreatePurchaseDto
+            {
+                Buyer = ids.BuyerId,
+                Entries = Purchase
+                    .Entries.Select(entry => new CreatePurchaseEntryDto
+                    {
+                        AssetItemId = entry.AssetItem.Id, Amount = entry.Amount, PricePerItem = entry.PricePerItem,
+                    })
+                    .ToList(),
+                CompletionDate = DateTime.Now.ToUniversalTime(),
+                Signature = signResult,
+            }
+        );
+
+        if (errorOr.IsError)
+        {
+            _snackbar.Add("Beim abschließen ist etwas schiefgelaufen", Severity.Error);
+        }
+        else
+        {
+            _snackbar.Add("Kauf erfolgreich abgeschlossen", Severity.Success);
+            ResetEntries();
+            StateHasChanged();
+        }
+    }
+
+    protected async Task<byte[]?> OpenSigningDialog()
+    {
         var signOptions = new DialogOptions
         {
-            CloseOnEscapeKey = true,
-            BackdropClick = false,
-            FullWidth = true,
-            MaxWidth = MaxWidth.Large,
+            CloseOnEscapeKey = true, BackdropClick = false, FullWidth = true, MaxWidth = MaxWidth.Large,
         };
-        var signDialog = await DialogService.ShowAsync<SignDialog>(
+        var signDialog = await _dialogService.ShowAsync<SignDialog>(
             "Unterschrift erforderlich",
             signOptions
         );
@@ -81,38 +119,11 @@ public partial class ShoppingCartPage
 
         if (signResult?.Canceled ?? false)
         {
-            Snackbar.Add("Unterschrift wurde abgebrochen", Severity.Warning);
-            return;
+            _snackbar.Add("Unterschrift wurde abgebrochen", Severity.Warning);
+            return null;
         }
 
-        var errorOr = await PurchaseApi.CreateAsync(
-            ids!.WorkingGroupId,
-            new CreatePurchaseDto
-            {
-                Buyer = ids.BuyerId,
-                Entries = Purchase
-                    .Entries.Select(entry => new CreatePurchaseEntryDto
-                    {
-                        AssetItemId = entry.AssetItem.Id,
-                        Amount = entry.Amount,
-                        PricePerItem = entry.PricePerItem,
-                    })
-                    .ToList(),
-                CompletionDate = DateTime.Now.ToUniversalTime(),
-                Signature = (signResult!.Data as byte[])!,
-            }
-        );
-
-        if (errorOr.IsError)
-        {
-            Snackbar.Add("Beim abschließen ist etwas schiefgelaufen", Severity.Error);
-        }
-        else
-        {
-            Snackbar.Add("Kauf erfolgreich abgeschlossen", Severity.Success);
-            ResetEntries();
-            StateHasChanged();
-        }
+        return signResult?.Data as byte[];
     }
 
     private void ResetEntries()
@@ -123,12 +134,7 @@ public partial class ShoppingCartPage
     private void AddProductEntry(double amount, AssetItem product)
     {
         Purchase.Entries.Add(
-            new PurchaseEntry()
-            {
-                Amount = amount,
-                AssetItem = product,
-                PricePerItem = product.Price,
-            }
+            new PurchaseEntry() { Amount = amount, AssetItem = product, PricePerItem = product.Price, }
         );
     }
 }

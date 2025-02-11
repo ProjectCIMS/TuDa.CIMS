@@ -1,13 +1,14 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TuDa.CIMS.Api.Controllers;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Test.Integration;
 using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Extensions;
 using TuDa.CIMS.Shared.Test.Faker;
 
 namespace TuDa.CIMS.Api.Test.Controllers;
@@ -41,14 +42,16 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
         foreach (var purchase in workingGroup.Purchases)
         {
             // Act
-            var response = await _client.GetAsync($"api/working-groups/{workingGroup.Id}/purchases/{purchase.Id}");
+            var response = await _client.GetAsync(
+                $"api/working-groups/{workingGroup.Id}/purchases/{purchase.Id}"
+            );
 
             // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
 
-            var result = await response.Content.FromJsonAsync<Purchase>();
+            var result = await response.Content.FromJsonAsync<PurchaseResponseDto>();
 
-            result.Should().BeEquivalentTo(purchase);
+            result.Should().BeEquivalentTo(purchase.ToResponseDto());
         }
     }
 
@@ -56,7 +59,9 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
     public async Task GetAsync_ShouldReturnNotFound_WhenPurchaseNotPresent()
     {
         WorkingGroup workingGroup = new WorkingGroupFaker(purchases: []);
-        var response = await _client.GetAsync($"api/working-groups/{workingGroup.Id}/purchases/{Guid.NewGuid()}");
+        var response = await _client.GetAsync(
+            $"api/working-groups/{workingGroup.Id}/purchases/{Guid.NewGuid()}"
+        );
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -76,9 +81,9 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var result = await response.Content.FromJsonAsync<List<Purchase>>();
+        var result = await response.Content.FromJsonAsync<List<PurchaseResponseDto>>();
 
-        result.Should().BeEquivalentTo(workingGroup.Purchases);
+        result.Should().BeEquivalentTo(workingGroup.Purchases.ToResponseDtos());
     }
 
     [Fact]
@@ -173,8 +178,7 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
             .SingleAsync();
         result.Buyer.Should().BeEquivalentTo(workingGroup.Professor);
         result.CompletionDate.Should().Be(completionDate);
-        result.Entries.Should()
-            .BeEquivalentTo(entries, options => options.Excluding(e => e.Id));
+        result.Entries.Should().BeEquivalentTo(entries, options => options.Excluding(e => e.Id));
     }
 
     [Fact]

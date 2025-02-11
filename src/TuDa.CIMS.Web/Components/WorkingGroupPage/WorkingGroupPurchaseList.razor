@@ -1,5 +1,6 @@
 ﻿@using System.Globalization
-@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Dtos.Responses
+
 <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column bg-white rounded">
     <MudDataGrid Items="@SortedPurchases"
                  FixedHeader="@true"
@@ -14,16 +15,17 @@
                 Title="Preis"/>
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
+                    <!-- TODO: Return the icon info-->
                     <MudIconButton Size="@Size.Small"
-                                   Icon="@Icons.Material.Outlined.Info"
-                                   @onclick="@(NavigateToPurchase)"/>
+                                   Icon="@Icons.Material.Outlined.Recycling"
+                                   @onclick="@(() => NavigateToPurchase(context.Item))"/>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
         <PagerContent>
             <MudDataGridPager RowsPerPageString="Einkäufe pro Seite:"
                               PageSizeOptions="[ 5, 10, 20 ]"
-                              T="Purchase"/>
+                              T="PurchaseResponseDto"/>
         </PagerContent>
     </MudDataGrid>
     <WorkingGroupInvoiceButton></WorkingGroupInvoiceButton>

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupList;
@@ -12,15 +12,16 @@ public partial class WorkingGroupPageWorkingGroupList
         _workingGroupApi = workingGroupApi;
     }
 
-    private MudDataGrid<WorkingGroup> _dataGrid { get; set; } = new();
+    private MudDataGrid<WorkingGroupResponseDto> _dataGrid { get; set; } = new();
 
     private readonly IWorkingGroupApi _workingGroupApi;
 
     private string _searchString { get; set; } = string.Empty;
 
-    [Inject] private NavigationManager _navigationManager { get; set; } = null!;
+    [Inject]
+    private NavigationManager _navigationManager { get; set; } = null!;
 
-    private void GoToWorkingGroupInfoPage(DataGridRowClickEventArgs<WorkingGroup> args)
+    private void GoToWorkingGroupInfoPage(DataGridRowClickEventArgs<WorkingGroupResponseDto> args)
     {
         var id = args.Item.Id;
         _navigationManager.NavigateTo($"working-groups/{id}");
@@ -32,19 +33,25 @@ public partial class WorkingGroupPageWorkingGroupList
     [Parameter]
     public EventCallback CreateGroupSelected { get; set; }
 
-    private async Task<GridData<WorkingGroup>> ServerReload(GridState<WorkingGroup> state)
+    private async Task<GridData<WorkingGroupResponseDto>> ServerReload(
+        GridState<WorkingGroupResponseDto> state
+    )
     {
         var errorOrGroups = await _workingGroupApi.GetAllAsync(_searchString);
         if (errorOrGroups.IsError)
-            return new GridData<WorkingGroup>();
+            return new GridData<WorkingGroupResponseDto>();
         var groups = SortWorkingGroups(state, errorOrGroups.Value).ToList();
         var pagedData = groups.Skip(state.Page * state.PageSize).Take(state.PageSize).ToList();
-        return new GridData<WorkingGroup> { TotalItems = groups.Count, Items = pagedData };
+        return new GridData<WorkingGroupResponseDto>
+        {
+            TotalItems = groups.Count,
+            Items = pagedData,
+        };
     }
 
-    private IEnumerable<WorkingGroup> SortWorkingGroups(
-        GridState<WorkingGroup> state,
-        IEnumerable<WorkingGroup> workingGroups
+    private IEnumerable<WorkingGroupResponseDto> SortWorkingGroups(
+        GridState<WorkingGroupResponseDto> state,
+        IEnumerable<WorkingGroupResponseDto> workingGroups
     )
     {
         var sortDefinition = state.SortDefinitions.FirstOrDefault();

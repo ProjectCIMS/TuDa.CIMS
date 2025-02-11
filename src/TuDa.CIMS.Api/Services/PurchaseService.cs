@@ -49,11 +49,11 @@ public class PurchaseService : IPurchaseService
     /// <param name="id">the unique id of the purchase</param>
     /// <param name="workingGroupId">the unique id of a workinggroup</param>
     /// <returns></returns>
-    public async Task<ErrorOr<Purchase>> GetOneAsync(Guid id, Guid workingGroupId)
+    public async Task<ErrorOr<Purchase>> GetOneAsync(Guid workingGroupId, Guid id)
     {
         try
         {
-            return (await _purchaseRepository.GetOneAsync(id, workingGroupId)) switch
+            return (await _purchaseRepository.GetOneAsync(workingGroupId, id)) switch
             {
                 null => Error.NotFound(
                     "PurchaseService.GetOneAsync",
@@ -75,11 +75,11 @@ public class PurchaseService : IPurchaseService
     /// <param name="id">the unique id of the purchase</param>
     /// <param name="workingGroupId">the unique id of a workinggroup</param>
     /// <returns></returns>
-    public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id, Guid workingGroupId)
+    public async Task<ErrorOr<Deleted>> RemoveAsync(Guid workingGroupId, Guid id)
     {
         try
         {
-            return await _purchaseRepository.RemoveAsync(id, workingGroupId);
+            return await _purchaseRepository.RemoveAsync(workingGroupId, id);
         }
         catch (Exception ex)
         {
@@ -128,5 +128,25 @@ public class PurchaseService : IPurchaseService
                 return Error.Failure("PurchaseService.CreateAsync", ex.Message);
             }
         });
+    }
+
+    public async Task<ErrorOr<Success>> InvalidateAsync(
+        Guid workingGroupId,
+        Guid purchaseId,
+        CreatePurchaseDto createModel
+    )
+    {
+        try
+        {
+            return await _purchaseRepository.InvalidateAsync(
+                workingGroupId,
+                purchaseId,
+                createModel
+            );
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure("PurchaseService.InvalidateAsync", ex.Message);
+        }
     }
 }

@@ -85,6 +85,12 @@ public class CIMSDbContext : DbContext
                     j.HasKey("SubstanceId", "HazardId"); // Composite primary key
                 }
             );
+
+        modelBuilder
+            .Entity<Purchase>()
+            .HasOne(p => p.Successor)
+            .WithOne(p => p.Predecessor)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 
     public override int SaveChanges()
