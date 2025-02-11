@@ -66,6 +66,26 @@ public partial class ShoppingCartPage
         if (ids is null)
             Snackbar.Add("Beim abschließen ist etwas schiefgelaufen", Severity.Error);
 
+        var signOptions = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large,
+        };
+        var signDialog = await DialogService.ShowAsync<SignDialog>(
+            "Unterschrift erforderlich",
+            signOptions
+        );
+
+        var signResult = await signDialog.Result;
+
+        if (signResult.Canceled)
+        {
+            Snackbar.Add("Unterschrift wurde abgebrochen", Severity.Warning);
+            return;
+        }
+
         var errorOr = await PurchaseApi.CreateAsync(
             ids.WorkingGroupId,
             new CreatePurchaseDto
@@ -80,6 +100,7 @@ public partial class ShoppingCartPage
                     })
                     .ToList(),
                 CompletionDate = DateTime.Now.ToUniversalTime(),
+                Signature = (signResult.Data as byte[])!,
             }
         );
 

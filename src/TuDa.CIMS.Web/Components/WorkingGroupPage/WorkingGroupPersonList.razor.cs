@@ -13,14 +13,14 @@ public partial class WorkingGroupPersonList : ComponentBase
     private readonly IStudentApi studentApi;
     private readonly ISnackbar snackbar;
 
-    public WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi, IStudentApi studentApi)
+    public WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi, IStudentApi studentApi, ISnackbar snackbar)
     {
+
         this.dialogService = dialogService;
         this.workingGroupApi = workingGroupApi;
         this.studentApi = studentApi;
         this.snackbar = snackbar;
     }
-
 
     [Parameter] public Guid WorkingGroupId { get; set; }
 
@@ -89,8 +89,10 @@ public partial class WorkingGroupPersonList : ComponentBase
             YesText = "Löschen",
             NoText = "Nein",
         };
+
         if (await dialogService.ShowMessageBox(messageBox) == true)
         {
+            snackbar.Add("Die Person wurde erfolgreich entfernt", Severity.Success);
             if (_persons.Any())
             {
                 await studentApi.RemoveAsync(WorkingGroupId, student.Id);
@@ -126,12 +128,7 @@ public partial class WorkingGroupPersonList : ComponentBase
         {
             var returnedValues = (List<string>)result.Data!;
 
-            Student student = new()
-            {
-                FirstName = returnedValues[0], Name = returnedValues[1], PhoneNumber = returnedValues[2]
-            };
-
-            await studentApi.AddAsync(
+            var newStudent = await studentApi.AddAsync(
                 WorkingGroupId,
                 new CreateStudentDto()
                 {
@@ -141,7 +138,10 @@ public partial class WorkingGroupPersonList : ComponentBase
 
             // Have to be like this otherwise the list will only update after reload
             var modifiableList = _persons.ToList();
-            modifiableList.Add(student);
+
+            if (!newStudent.IsError) modifiableList.Add(newStudent.Value);
+            else snackbar.Add("Ein Fehler ist aufgetreten", Severity.Error);
+
             _persons = modifiableList;
             await PersonAdded.InvokeAsync();
         }

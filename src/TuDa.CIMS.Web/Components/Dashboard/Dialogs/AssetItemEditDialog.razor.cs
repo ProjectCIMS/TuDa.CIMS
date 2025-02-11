@@ -7,12 +7,17 @@ namespace TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 public partial class AssetItemEditDialog
 {
     private AssetItemEditForm _assetItemEditForm;
+    private readonly ISnackbar _snackbar;
+    private readonly IDialogService _dialogService;
+
+    public AssetItemEditDialog(ISnackbar snackbar, IDialogService dialogService)
+    {
+        _snackbar = snackbar;
+        _dialogService = dialogService;
+    }
 
     [CascadingParameter]
     public required MudDialogInstance ProductDialog { get; set; }
-
-    [Inject]
-    public required IDialogService DialogService { get; set; }
 
     [Parameter]
     public bool ShowError { get; set; }
@@ -28,8 +33,6 @@ public partial class AssetItemEditDialog
     /// </summary>
     private async Task DeleteItem()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = false, BackdropClick = false };
-
         var messageBox = new MessageBoxOptions
         {
             Title = "Eintrag löschen",
@@ -38,10 +41,11 @@ public partial class AssetItemEditDialog
             NoText = "Nein",
         };
 
-        if (await DialogService.ShowMessageBox(messageBox) ?? false)
+        if (await _dialogService.ShowMessageBox(messageBox) ?? false)
         {
             await OnDeleteRequested.InvokeAsync(Item);
             ProductDialog.Close();
+            _snackbar.Add("Eintrag erfolgreich gelöscht!", Severity.Error);
         }
     }
 
@@ -55,7 +59,6 @@ public partial class AssetItemEditDialog
 
     private void Cancel()
     {
-        _assetItemEditForm.ShowError = false;
         ProductDialog.Cancel();
     }
 
