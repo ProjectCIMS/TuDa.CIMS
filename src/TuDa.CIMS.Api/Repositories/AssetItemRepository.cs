@@ -15,10 +15,15 @@ namespace TuDa.CIMS.Api.Repositories;
 public class AssetItemRepository : IAssetItemRepository
 {
     private readonly CIMSDbContext _context;
+    private readonly IConsumableTransactionRepository _consumableTransactionRepository;
 
-    public AssetItemRepository(CIMSDbContext context)
+    public AssetItemRepository(
+        CIMSDbContext context,
+        IConsumableTransactionRepository consumableTransactionRepository
+    )
     {
         _context = context;
+        _consumableTransactionRepository = consumableTransactionRepository;
     }
 
     /// <summary>
@@ -106,7 +111,6 @@ public class AssetItemRepository : IAssetItemRepository
                 break;
 
             case (Consumable consumable, UpdateConsumableDto update):
-                consumable.Amount = update.Amount ?? consumable.Amount;
                 consumable.Manufacturer = update.Manufacturer ?? consumable.Manufacturer;
                 consumable.SerialNumber = update.SerialNumber ?? consumable.SerialNumber;
                 break;
@@ -116,6 +120,24 @@ public class AssetItemRepository : IAssetItemRepository
                     "Assetitem.update",
                     $"The provided update model does not match the type of the AssetItem with ID {id}."
                 );
+        }
+
+        if (
+            existingItem is Consumable con
+            && updateModel is UpdateConsumableDto updateConsumable
+            && updateConsumable.StockUpdate is not null
+        )
+        {
+            var previousAmount = con.Amount;
+            CreateConsumableTransactionDto createConsumableTransaction = new()
+            {
+                ConsumableId = con.Id,
+                Date = DateTime.UtcNow,
+                AmountChange = updateConsumable.StockUpdate.Amount - previousAmount,
+                TransactionReason = updateConsumable.StockUpdate.Reason,
+            };
+            //amount of conusmable is now set in CreateAsync of ConsumableTransaction
+            await _consumableTransactionRepository.CreateAsync(createConsumableTransaction);
         }
 
         if (updateModel.RoomId is not null)
@@ -539,6 +561,18 @@ public class AssetItemRepository : IAssetItemRepository
             },
             _ => throw new ArgumentException("Unsupported create model type", nameof(createModel)),
         };
+
+        if (newItem is Consumable con)
+        {
+            ConsumableTransaction consumableTransaction = new()
+            {
+                Consumable = con,
+                Date = DateTime.UtcNow,
+                AmountChange = con.Amount,
+                TransactionReason = TransactionReasons.Init,
+            };
+            await _context.ConsumableTransactions.AddAsync(consumableTransaction);
+        }
         await _context.AssetItems.AddAsync(newItem);
         await _context.SaveChangesAsync();
         return Result.Created;

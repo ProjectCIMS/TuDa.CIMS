@@ -1,4 +1,6 @@
-﻿namespace TuDa.CIMS.Shared.Dtos;
+﻿using TuDa.CIMS.Shared.Entities.Enums;
+
+namespace TuDa.CIMS.Shared.Dtos;
 
 public class CreateConsumableDto: CreateAssetItemDto
 {

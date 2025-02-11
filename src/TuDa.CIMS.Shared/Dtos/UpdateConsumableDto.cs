@@ -1,12 +1,9 @@
-﻿namespace TuDa.CIMS.Shared.Dtos;
+﻿using TuDa.CIMS.Shared.Entities.Enums;
+
+namespace TuDa.CIMS.Shared.Dtos;
 
 public record UpdateConsumableDto : UpdateAssetItemDto
 {
-    /// <summary>
-    /// The amount of the consumable item.
-    /// </summary>
-    public int? Amount { get; set; }
-
     /// <summary>
     /// The name of the consumable item.
     /// </summary>
@@ -16,4 +13,7 @@ public record UpdateConsumableDto : UpdateAssetItemDto
     /// The serial number of the consumable item.
     /// </summary>
     public string? SerialNumber { get; set; }
+
+    public StockUpdateDto? StockUpdate { get; set; }
+
 }

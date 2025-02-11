@@ -178,7 +178,7 @@ public partial class AssetItemEditForm
                 Price = _assetItemForm.FormPrice,
                 Manufacturer = _consumableItemForm.FormManufacturer,
                 SerialNumber = _consumableItemForm.FormSerialNumber,
-                Amount = _consumableItemForm.FormConsumableAmount,
+                StockUpdate= new StockUpdateDto(_consumableItemForm.FormConsumableAmount, TransactionReasons.Restock)
             },
 
             GasCylinder => new UpdateGasCylinderDto()
