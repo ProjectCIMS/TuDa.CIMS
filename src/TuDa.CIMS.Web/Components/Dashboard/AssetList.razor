@@ -50,8 +50,9 @@
                                          ValueChanged="@((value) => SelectedChanged(value, AssetItemType.Solvent))" />
 
                         </MudStack>
-                        <MudStack Row="true">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center">
                             <MudButton OnClick="ToggleFilter">Schließen</MudButton>
+                            <MudIconButton OnClick="Clear" Icon="@Icons.Material.Filled.Delete" />
                         </MudStack>
                     </MudStack>
                 </MudPopover>

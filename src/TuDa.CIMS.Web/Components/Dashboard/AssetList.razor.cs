@@ -24,9 +24,9 @@ public partial class AssetList
 
     private readonly IAssetItemApi _assetItemApi;
     private MudDataGrid<AssetItem> _dataGrid { get; set; }
-    private string _searchString { get; set; }
+    private string _searchString { get; set; } = string.Empty;
 
-    private List<AssetItemType>? _selectedTypes { get; set; }
+    private List<AssetItemType>? _selectedTypes { get; set; } = [];
 
     public AssetList(IAssetItemApi assetItemApi)
     {
@@ -130,8 +130,12 @@ public partial class AssetList
 
     void ToggleFilter()
     {
+        _filterOpen = !_filterOpen;
+    }
+
+    void Clear()
+    {
         _selectedTypes = new List<AssetItemType>();
         ReloadData();
-        _filterOpen = !_filterOpen;
     }
 }
