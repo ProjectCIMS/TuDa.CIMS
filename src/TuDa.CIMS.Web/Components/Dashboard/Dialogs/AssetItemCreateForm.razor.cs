@@ -21,7 +21,11 @@ public partial class AssetItemCreateForm
     /// <summary>
     /// Fields for Errors and Feedback
     /// </summary>
-    public bool ShowError = false;
+    private bool _showError = false;
+    private bool _showChemicalError = false;
+    private bool _showConsumableError = false;
+    private bool _showGasCylinderError = false;
+    private bool _showSolventError = false;
 
     /// <summary>
     /// To choose from the different forms for inputting
@@ -67,7 +71,11 @@ public partial class AssetItemCreateForm
                 break;
             }
         }
-        ShowError = false;
+        _showError = false;
+        _showChemicalError = false;
+        _showConsumableError = false;
+        _showGasCylinderError = false;
+        _showSolventError = false;
     }
 
     /// <summary>
@@ -76,26 +84,38 @@ public partial class AssetItemCreateForm
     /// <returns>returns true if an error exist in any form</returns>
     public bool ErrorsInForm()
     {
-        if (
-            _assetItemForm.ErrorsInForm()
-            || (
-                (
-                    _selectedAssetItemType == AssetItemType.Chemical
-                    || _selectedAssetItemType == AssetItemType.Solvent
-                ) && _chemicalItemForm.ErrorsInForm()
-            )
-            || (
-                _selectedAssetItemType == AssetItemType.Consumable
-                && _consumableItemForm.ErrorsInForm()
-            )
-            || (
-                _selectedAssetItemType == AssetItemType.GasCylinder
-                && _gasCylinderForm.ErrorsInForm()
-            )
-        )
+        // Überprüfe nur die Form, die dem aktuellen AssetItemType entspricht
+        bool hasErrors = false;
+
+        switch (_selectedAssetItemType)
         {
-            ResetInputs();
-            ShowError = true;
+            case AssetItemType.Chemical:
+                hasErrors = _chemicalItemForm.ErrorsInForm() || _assetItemForm.ErrorsInForm();
+                _showChemicalError = hasErrors;
+                break;
+            case AssetItemType.Solvent:
+                hasErrors = _chemicalItemForm.ErrorsInForm() || _assetItemForm.ErrorsInForm();
+                _showSolventError = hasErrors;
+                break;
+
+            case AssetItemType.Consumable:
+                hasErrors = _consumableItemForm.ErrorsInForm() || _assetItemForm.ErrorsInForm();
+                _showConsumableError = hasErrors;
+                break;
+
+            case AssetItemType.GasCylinder:
+                hasErrors = _gasCylinderForm.ErrorsInForm() || _assetItemForm.ErrorsInForm();
+                _showGasCylinderError = hasErrors;
+                break;
+
+            default:
+                hasErrors = _assetItemForm.ErrorsInForm();
+                _showError = hasErrors;
+                break;
+        }
+        if (hasErrors)
+        {
+            _showError = true;
             OnValidation.InvokeAsync();
             return true;
         }
@@ -113,10 +133,8 @@ public partial class AssetItemCreateForm
     /// <summary>
     /// Functionality of the "Änderungen speichern" Button: Create the Item
     /// </summary>
-    public async Task SaveChanges()
+    public async Task<CreateAssetItemDto> SaveChanges()
     {
-        string feedbackMessage;
-        Severity feedbackColor;
         var errorOrItems = await _assetItemApi.GetAllAsync();
         var items = errorOrItems.Value.ToList();
         Guid RoomId = items.FirstOrDefault().Room.Id;
@@ -179,29 +197,12 @@ public partial class AssetItemCreateForm
                 RoomId = RoomId,
             },
 
-            _ => null,
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(_selectedAssetItemType),
+                $"Unsupported asset item type: {_selectedAssetItemType}"
+            ),
         };
-
-        if (createDto != null)
-        {
-            try
-            {
-                await _assetItemApi.CreateAsync(createDto);
-                feedbackMessage = "Das Objekt wurde erfolgreich erstellt.";
-                feedbackColor = Severity.Success;
-            }
-            catch (Exception ex)
-            {
-                feedbackMessage = $"Fehler bei der Erstellung: {ex.Message}";
-                feedbackColor = Severity.Error;
-            }
-        }
-        else
-        {
-            feedbackMessage = "Ungültiger Objekttyp.";
-            feedbackColor = Severity.Error;
-        }
-
-        _snackbar.Add(feedbackMessage, feedbackColor);
+        _snackbar.Add("Das Objekt wurde erfolgreich erstellt.", Severity.Success);
+        return createDto!;
     }
 }

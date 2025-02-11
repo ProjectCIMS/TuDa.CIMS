@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Api.Services;
+using TuDa.CIMS.Shared;
 using TuDa.CIMS.Shared.Dtos;
 
 namespace TuDa.CIMS.Api.Controllers;
 
 [ApiController]
 [Route("api/working-groups/{workingGroupId:guid}/students")]
-public class StudentController : ControllerBase
+public class StudentController : CIMSBaseController
 {
     private readonly IStudentService _studentService;
 
@@ -31,9 +32,10 @@ public class StudentController : ControllerBase
         UpdateStudentDto updateModel
     )
     {
-        return (
-            await _studentService.UpdateAsync(workingGroupId, id, updateModel)
-        ).Match<IActionResult>(_ => Ok(), err => BadRequest(err));
+        return (await _studentService.UpdateAsync(workingGroupId, id, updateModel)).Match(
+            onValue: _ => Ok(),
+            onError: ErrorsToProblem
+        );
     }
 
     /// <summary>
@@ -46,9 +48,9 @@ public class StudentController : ControllerBase
     [HttpDelete($"{{{nameof(id)}:guid}}")]
     public async Task<IActionResult> RemoveAsync(Guid workingGroupId, Guid id)
     {
-        return (await _studentService.RemoveAsync(workingGroupId, id)).Match<IActionResult>(
-            value => Ok(value),
-            err => BadRequest(err)
+        return (await _studentService.RemoveAsync(workingGroupId, id)).Match(
+            onValue: _ => Ok(),
+            onError: ErrorsToProblem
         );
     }
 
@@ -65,8 +67,9 @@ public class StudentController : ControllerBase
         CreateStudentDto createStudentDto
     )
     {
-        return (
-            await _studentService.AddAsync(workingGroupId, createStudentDto)
-        ).Match<IActionResult>(value => Ok(value), err => BadRequest(err));
+        return (await _studentService.AddAsync(workingGroupId, createStudentDto)).Match(
+            onValue: Ok,
+            onError: ErrorsToProblem
+        );
     }
 }

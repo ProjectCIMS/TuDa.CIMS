@@ -3,64 +3,82 @@
         <MudContainer Class="rounded bg-white" MaxWidth="MaxWidth.Medium">
             <div class="d-flex flex-column gap-4">
 
-                <MudText Class="d-flex justify-space-between"><MudItem><b>Titel:</b> @ProfessorInfo.Title</MudItem>
-                    <MudIconButton
-                        Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Primary" OnClick="EditProfessorTitle"></MudIconButton>
-                </MudText>
-                <MudDivider/>
+                <MudTextField Text="@ProfessorInfo.Title"
+                              T="string"
+                              Label="Titel"
+                              Variant="Variant.Outlined"
+                              ReadOnly="true"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditProfessorTitle"
+                              AdornmentColor="Color.Primary">
+                </MudTextField>
 
-                <MudText Class="d-flex justify-space-between"><MudItem><b>Vor- und Nachname:</b> @ProfessorInfo.FirstName @ProfessorName</MudItem>
-                    <MudIconButton
-                        Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Primary" OnClick="EditProfessor"></MudIconButton>
-                </MudText>
-                <MudDivider/>
+                <MudTextField Text="@FullName"
+                              T="string"
+                              Label="Vor- und Nachname"
+                              Variant="Variant.Outlined"
+                              ReadOnly="true"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditProfessor"
+                              AdornmentColor="Color.Primary">
+                </MudTextField>
 
-                <MudText Class="d-flex justify-space-between"> <MudItem><b>TelefonNr.:</b> @WorkingGroup.PhoneNumber
-                    </MudItem>
-                    <MudIconButton
-                        Icon="@Icons.Material.Filled.Edit"
-                        Color="Color.Primary"
-                        Size="Size.Small"
-                        OnClick="EditPhoneNumber"></MudIconButton>
-                </MudText>
-                <MudDivider/>
+                <MudTextField Text="@WorkingGroup.PhoneNumber"
+                              T="string"
+                              Label="TelefonNr."
+                              Variant="Variant.Outlined"
+                              ReadOnly="true"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditPhoneNumber"
+                              AdornmentColor="Color.Primary">
+                </MudTextField>
 
-                <MudText Class="d-flex justify-space-between"><MudItem><b>Stadt:</b> @ProfessorInfo.Address.City</MudItem>
-                    <MudIconButton
-                        Icon="@Icons.Material.Filled.Edit"
-                        Size="Size.Small"
-                        Color="Color.Primary"
-                        OnClick="EditAddressCity"></MudIconButton>
-                </MudText>
-                <MudDivider/>
+                <MudTextField Text="@ProfessorInfo.Address.City"
+                              T="string"
+                              Label="Stadt"
+                              Variant="Variant.Outlined"
+                              ReadOnly="true"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditAddressCity"
+                              AdornmentColor="Color.Primary">
+                </MudTextField>
 
-                <MudText Class="d-flex justify-space-between"><MudItem>
-                    <b>Straße und Hausnummer:</b> @ProfessorInfo.Address.Street @ProfessorInfo.Address.Number</MudItem>
-                    <MudIconButton
-                        Icon="@Icons.Material.Filled.Edit"
-                        Size="Size.Small"
-                        Color="Color.Primary"
-                        OnClick="EditAddressStreetAndNumber"></MudIconButton>
-                </MudText>
-                <MudDivider/>
+                <MudTextField Text="@StreetAndNumber"
+                              T="string"
+                              Label="Straße und Hausnummer"
+                              Variant="Variant.Outlined"
+                              ReadOnly="true"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditAddressStreetAndNumber"
+                              AdornmentColor="Color.Primary">
+                </MudTextField>
 
-                <MudText Class="d-flex justify-space-between"><MudItem><b>Postleitzahl:</b> @ProfessorInfo.Address.ZipCode</MudItem>
-                    <MudIconButton
-                        Icon="@Icons.Material.Filled.Edit"
-                        Size="Size.Small"
-                        Color="Color.Primary"
-                        OnClick="EditAddressZipNumber"></MudIconButton>
-                </MudText>
-                <MudDivider/>
+                <MudTextField Text="@ProfessorInfo.Address.ZipCode"
+                              T="string"
+                              Label="PLZ"
+                              Variant="Variant.Outlined"
+                              ReadOnly="true"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditAddressZipNumber"
+                              AdornmentColor="Color.Primary">
+                </MudTextField>
 
-                <MudText Class="d-flex justify-space-between"><MudItem><b>Email-Adresse:</b> @WorkingGroup.Email</MudItem>
-                    <MudIconButton
-                        Icon="@Icons.Material.Filled.Edit"
-                        Size="Size.Small"
-                        Color="Color.Primary"
-                        OnClick="EditEmail"></MudIconButton>
-                </MudText>
-                <MudDivider/>
+                <MudTextField Text="@WorkingGroup.Email"
+                              T="string"
+                              Label="Email-Adresse"
+                              Variant="Variant.Outlined"
+                              ReadOnly="true"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditEmail"
+                              AdornmentColor="Color.Primary">
+                </MudTextField>
             </div>
         </MudContainer>
 

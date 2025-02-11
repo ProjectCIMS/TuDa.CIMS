@@ -11,14 +11,16 @@ public partial class WorkingGroupPersonList : ComponentBase
     private readonly IDialogService dialogService;
     private readonly IWorkingGroupApi workingGroupApi;
     private readonly IStudentApi studentApi;
+    private readonly ISnackbar snackbar;
 
-    public WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi, IStudentApi studentApi)
+    public WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi, IStudentApi studentApi, ISnackbar snackbar)
     {
+
         this.dialogService = dialogService;
         this.workingGroupApi = workingGroupApi;
         this.studentApi = studentApi;
+        this.snackbar = snackbar;
     }
-
 
     [Parameter] public Guid WorkingGroupId { get; set; }
 
@@ -35,6 +37,46 @@ public partial class WorkingGroupPersonList : ComponentBase
     }
 
     /// <summary>
+    /// Updates a specific student.
+    /// </summary>
+    /// <param name="student">The student that will be updated.</param>
+    private async Task EditBuyer(Person student)
+    {
+        GenericInput inputField = new GenericInput()
+        {
+            Labels = ["Vorname", "Nachname", "Telefonnummer"],
+            Values = [student.FirstName, student.Name, student.PhoneNumber],
+            YesText = "Speichern"
+        };
+
+        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, inputField } };
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialogReference =
+        await dialogService.ShowAsync<GenericInputPopUp>("Person bearbeiten", parameters, options);
+
+        var result = await dialogReference.Result;
+        if (!result!.Canceled)
+        {
+            var returnedValues = (List<string>)result.Data!;
+            student.FirstName = returnedValues[0];
+            student.Name = returnedValues[1];
+            student.PhoneNumber = returnedValues[2];
+            var updatedStudent = await studentApi.UpdateAsync(WorkingGroupId, student.Id, new UpdateStudentDto()
+            {
+                FirstName = returnedValues[0], Name = returnedValues[1], PhoneNumber = returnedValues[2]
+            });
+
+            if (updatedStudent.IsError)
+            {
+                snackbar.Add("Beim Speichervorgang ist ein Fehler aufgetreten", Severity.Error);
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
     /// Removes a student when the user accept the dialog.
     /// </summary>
     /// <param name="student">Student that will be removed</param>
@@ -47,8 +89,10 @@ public partial class WorkingGroupPersonList : ComponentBase
             YesText = "Löschen",
             NoText = "Nein",
         };
+
         if (await dialogService.ShowMessageBox(messageBox) == true)
         {
+            snackbar.Add("Die Person wurde erfolgreich entfernt", Severity.Success);
             if (_persons.Any())
             {
                 await studentApi.RemoveAsync(WorkingGroupId, student.Id);
@@ -84,12 +128,7 @@ public partial class WorkingGroupPersonList : ComponentBase
         {
             var returnedValues = (List<string>)result.Data!;
 
-            Student student = new()
-            {
-                FirstName = returnedValues[0], Name = returnedValues[1], PhoneNumber = returnedValues[2]
-            };
-
-            await studentApi.AddAsync(
+            var newStudent = await studentApi.AddAsync(
                 WorkingGroupId,
                 new CreateStudentDto()
                 {
@@ -99,7 +138,10 @@ public partial class WorkingGroupPersonList : ComponentBase
 
             // Have to be like this otherwise the list will only update after reload
             var modifiableList = _persons.ToList();
-            modifiableList.Add(student);
+
+            if (!newStudent.IsError) modifiableList.Add(newStudent.Value);
+            else snackbar.Add("Ein Fehler ist aufgetreten", Severity.Error);
+
             _persons = modifiableList;
             await PersonAdded.InvokeAsync();
         }
