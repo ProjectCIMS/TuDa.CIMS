@@ -60,10 +60,13 @@ public partial class WorkingGroupPersonList : ComponentBase
             student.FirstName = returnedValues[0];
             student.Name = returnedValues[1];
             student.PhoneNumber = returnedValues[2];
-            await studentApi.UpdateAsync(WorkingGroupId, student.Id, new UpdateStudentDto()
+            var updatedStudent = await studentApi.UpdateAsync(WorkingGroupId, student.Id, new UpdateStudentDto()
             {
                 FirstName = returnedValues[0], Name = returnedValues[1], PhoneNumber = returnedValues[2]
             });
+
+            if(updatedStudent.IsError){throw new Exception(updatedStudent.Errors!.First().ToString());}
+
             StateHasChanged();
         }
     }
