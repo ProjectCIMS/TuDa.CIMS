@@ -70,25 +70,10 @@ public partial class ShoppingCartPage
         if (ids is null)
             _snackbar.Add("Beim abschließen ist etwas schiefgelaufen", Severity.Error);
 
-        var signOptions = new DialogOptions
-        {
-            CloseOnEscapeKey = true,
-            BackdropClick = false,
-            FullWidth = true,
-            MaxWidth = MaxWidth.Large,
-        };
-        var signDialog = await DialogService.ShowAsync<SignDialog>(
-            "Unterschrift erforderlich",
-            signOptions
-        );
+        byte[]? signResult = await OpenSigningDialog();
 
-        var signResult = await signDialog.Result;
-
-        if (signResult.Canceled)
-        {
-            _snackbar.Add("Unterschrift wurde abgebrochen", Severity.Warning);
+        if (signResult is null)
             return;
-        }
 
         var errorOr = await _purchaseApi.CreateAsync(
             ids.WorkingGroupId,
@@ -98,13 +83,11 @@ public partial class ShoppingCartPage
                 Entries = Purchase
                     .Entries.Select(entry => new CreatePurchaseEntryDto
                     {
-                        AssetItemId = entry.AssetItem.Id,
-                        Amount = entry.Amount,
-                        PricePerItem = entry.PricePerItem,
+                        AssetItemId = entry.AssetItem.Id, Amount = entry.Amount, PricePerItem = entry.PricePerItem,
                     })
                     .ToList(),
                 CompletionDate = DateTime.Now.ToUniversalTime(),
-                Signature = (signResult.Data as byte[])!,
+                Signature = signResult,
             }
         );
 
@@ -120,6 +103,28 @@ public partial class ShoppingCartPage
         }
     }
 
+    protected async Task<byte[]?> OpenSigningDialog()
+    {
+        var signOptions = new DialogOptions
+        {
+            CloseOnEscapeKey = true, BackdropClick = false, FullWidth = true, MaxWidth = MaxWidth.Large,
+        };
+        var signDialog = await _dialogService.ShowAsync<SignDialog>(
+            "Unterschrift erforderlich",
+            signOptions
+        );
+
+        var signResult = await signDialog.Result;
+
+        if (signResult?.Canceled ?? false)
+        {
+            _snackbar.Add("Unterschrift wurde abgebrochen", Severity.Warning);
+            return null;
+        }
+
+        return signResult?.Data as byte[];
+    }
+
     private void ResetEntries()
     {
         Purchase.Entries.Clear();
@@ -128,12 +133,7 @@ public partial class ShoppingCartPage
     private void AddProductEntry(double amount, AssetItem product)
     {
         Purchase.Entries.Add(
-            new PurchaseEntry()
-            {
-                Amount = amount,
-                AssetItem = product,
-                PricePerItem = product.Price,
-            }
+            new PurchaseEntry() { Amount = amount, AssetItem = product, PricePerItem = product.Price, }
         );
     }
 }
