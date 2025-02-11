@@ -85,8 +85,6 @@ public partial class ShoppingCartPage
             Snackbar.Add("Unterschrift wurde abgebrochen", Severity.Warning);
             return;
         }
-        // TODO: use the Result of Dialog
-        var signData = signResult.Data!;
 
         var errorOr = await PurchaseApi.CreateAsync(
             ids.WorkingGroupId,
@@ -102,9 +100,9 @@ public partial class ShoppingCartPage
                     })
                     .ToList(),
                 CompletionDate = DateTime.Now.ToUniversalTime(),
+                Signature = (signResult.Data as byte[])!,
             }
         );
-        Snackbar.Add("Der Vorgang wurde erfolgreich abgeschlossen", Severity.Success);
 
         if (errorOr.IsError)
         {

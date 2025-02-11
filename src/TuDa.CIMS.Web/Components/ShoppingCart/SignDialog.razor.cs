@@ -6,7 +6,7 @@ namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 public partial class SignDialog
 {
-    public byte[] Signature { get; set; } = [];
+    private byte[] Signature { get; set; } = [];
 
     [CascadingParameter]
     public required MudDialogInstance MudDialog { get; set; }
