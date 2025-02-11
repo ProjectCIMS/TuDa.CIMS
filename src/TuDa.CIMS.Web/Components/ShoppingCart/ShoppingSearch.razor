@@ -16,29 +16,29 @@
             Dense=true
             ShowProgressIndicator="true">
         </MudAutocomplete>
-        <MudChipSet T="AssetItemType?"
-                    SelectedValues="_selectedAssetItemType"
-                    SelectedValuesChanged="@((values) => _selectedAssetItemType = values.ToList())"
+        <MudChipSet T="AssetItemType"
+                    SelectedValues="_selectedAssetItemTypes"
+                    SelectedValuesChanged="@((values) => _selectedAssetItemTypes = values.ToList())"
                     CheckMark
                     SelectionMode="SelectionMode.MultiSelection"
                     Class="my-1">
             <MudChip Color="Color.Primary"
-                     T="AssetItemType?"
+                     T="AssetItemType"
                      Value="AssetItemType.Chemical">
                 Chemikalie
             </MudChip>
             <MudChip Color="Color.Secondary"
-                     T="AssetItemType?"
+                     T="AssetItemType"
                      Value="AssetItemType.Consumable">
                 Verbrauchsmaterial
             </MudChip>
             <MudChip Color="Color.Info"
-                     T="AssetItemType?"
+                     T="AssetItemType"
                      Value="AssetItemType.GasCylinder">
                 Technische Gase
             </MudChip>
             <MudChip Color="Color.Success"
-                     T="AssetItemType?"
+                     T="AssetItemType"
                      Value="AssetItemType.Solvent">
                 Lösung
             </MudChip>
