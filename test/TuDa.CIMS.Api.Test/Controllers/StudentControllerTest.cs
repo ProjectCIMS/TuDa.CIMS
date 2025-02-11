@@ -145,7 +145,7 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
 
         var createResult = await response.Content.FromJsonAsync<Student>();
 
-        var result = await _dbContext.Students.SingleAsync(s => s.Id == createResult.Id);
+        var result = await _dbContext.Students.SingleAsync(s => s.Id == createResult!.Id);
 
         result.Should().NotBeNull();
         result.Name.Should().Be(student.Name);
