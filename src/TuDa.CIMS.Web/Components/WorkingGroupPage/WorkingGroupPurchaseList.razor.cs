@@ -5,7 +5,7 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
-public partial class WorkingGroupPurchaseList(IPurchaseApi _iPurchaseApi) : ComponentBase
+public partial class WorkingGroupPurchaseList(IPurchaseApi _iPurchaseApi, NavigationManager _navigation) : ComponentBase
 {
     [Parameter]
     public IEnumerable<PurchaseResponseDto> Purchases { get; set; } = [];
@@ -27,7 +27,7 @@ public partial class WorkingGroupPurchaseList(IPurchaseApi _iPurchaseApi) : Comp
     /// </summary>
     /// <param name="value">The chosen purchase</param>
     /// <returns>Returns the formatted date as string</returns>
-    private string FormatCompletionDate(PurchaseResponseDto? value)
+    private static string FormatCompletionDate(PurchaseResponseDto? value)
     {
         return value!.CompletionDate.HasValue
             ? value.CompletionDate.Value.ToString(
@@ -37,8 +37,8 @@ public partial class WorkingGroupPurchaseList(IPurchaseApi _iPurchaseApi) : Comp
             : "";
     }
 
-    public void NavigateToPurchase()
+    private void NavigateToPurchase(PurchaseResponseDto purchase)
     {
-        // TODO: Implement Navigation to Purchase
+        _navigation.NavigateTo($"shop/{WorkingGroupId}/{purchase.Id}");
     }
 }
