@@ -7,6 +7,7 @@ using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Test.Integration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Test.Faker;
 
 namespace TuDa.CIMS.Api.Test.Controllers;
@@ -145,7 +146,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
         List<UpdateAssetItemDto> updateAssetItemDtos =
         [
             new UpdateChemicalDto(),
-            new UpdateConsumableDto(),
+            new UpdateConsumableDto() { StockUpdate = new StockUpdateDto(10, TransactionReasons.Restock) },
             new UpdateSolventDto(),
             new UpdateGasCylinderDto(),
         ];
@@ -180,7 +181,9 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
     {
         var response = await _client.PatchAsync(
             $"api/asset-items/{Guid.NewGuid()}",
-            JsonContent.Create<UpdateAssetItemDto>(new UpdateConsumableDto())
+            JsonContent.Create<UpdateAssetItemDto>(
+                new UpdateConsumableDto() { StockUpdate = new StockUpdateDto(10, TransactionReasons.Restock)}
+            )
         );
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -215,5 +218,114 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
 
         result1.Should().BeEquivalentTo(assetItems[..2]);
         result2.Should().BeEquivalentTo(assetItems[2..4]);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldCreateConsumableTransaction_WhenAssetItemIsUpdated()
+    {
+        // Arrange
+        var consumableFaker = new ConsumableFaker().Generate();
+        consumableFaker.Amount = 100;
+        List<AssetItem> assetItems =
+        [
+            new ChemicalFaker(),
+            consumableFaker,
+            new SolventFaker(),
+            new GasCylinderFaker(),
+        ];
+
+        const string updatedName = "Updated";
+        const int updatedAmount = 15;
+
+        List<UpdateAssetItemDto> updateAssetItemDtos =
+        [
+            new UpdateChemicalDto(),
+            new UpdateConsumableDto
+            {
+                Name = updatedName,
+                StockUpdate = new StockUpdateDto(updatedAmount, TransactionReasons.Restock)
+            },
+            new UpdateSolventDto(),
+            new UpdateGasCylinderDto(),
+        ];
+
+        await _dbContext.AssetItems.AddRangeAsync(assetItems);
+        await _dbContext.SaveChangesAsync();
+
+        var previousAmount = consumableFaker.Amount;
+        foreach (var (assetItem, updateAssetItemDto) in assetItems.Zip(updateAssetItemDtos))
+        {
+            var updatedItem = assetItem with { Name = updatedName };
+            updateAssetItemDto.Name = updatedName;
+
+            // Act
+            var response = await _client.PatchAsync(
+                $"api/asset-items/{assetItem.Id}",
+                JsonContent.Create(updateAssetItemDto)
+            );
+
+            // Assert
+            response.IsSuccessStatusCode.Should().BeTrue();
+
+            var result = await _dbContext.AssetItems.SingleAsync(i => i.Id == assetItem.Id);
+            result
+                .Should()
+                .BeEquivalentTo(updatedItem, options => options.Excluding(item => item.UpdatedAt));
+            result.UpdatedAt.Should().NotBeNull();
+
+            if (assetItem is Consumable)
+            {
+                var transaction = await _dbContext.ConsumableTransactions
+                    .Where(t => t.Consumable.Id == assetItem.Id)
+                    .OrderByDescending(t => t.Date)
+                    .FirstOrDefaultAsync();
+
+                transaction.Should().NotBeNull();
+                transaction!.AmountChange.Should().Be(updatedAmount - previousAmount);
+                transaction.TransactionReason.Should().Be(TransactionReasons.Restock);
+            }
+        }
+    }
+    [Fact]
+    public async Task CreateAsync_ShouldCreateConsumableTransaction_WhenConsumableIsCreated()
+    {
+        // Arrange
+        var room = new Room { Name = "test", Id = Guid.NewGuid() };
+        await _dbContext.Rooms.AddAsync(room);
+        await _dbContext.SaveChangesAsync();
+
+        var createConsumable = new CreateConsumableDto
+        {
+            ItemNumber = "12345",
+            Name = "Test Consumable",
+            Note = "Test Note",
+            Price = 50,
+            Shop = "Test Shop",
+            RoomId = room.Id,
+            Amount = 10,
+            Manufacturer = "Test Manufacturer",
+            SerialNumber = "ABC123"
+        };
+
+        // Act
+        var response = await _client.PostAsync(
+            "api/asset-items",
+            JsonContent.Create<CreateAssetItemDto>(createConsumable)
+        );
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeTrue();;
+
+        var createdConsumable = await _dbContext.Consumables.SingleAsync();
+        createdConsumable.Should().NotBeNull();
+        createdConsumable.Amount.Should().Be(createConsumable.Amount);
+
+        var transaction = await _dbContext.ConsumableTransactions
+            .Where(t => t.Consumable.Id == createdConsumable.Id)
+            .SingleAsync();
+
+        transaction.Should().NotBeNull();
+        transaction.AmountChange.Should().Be(createConsumable.Amount);
+        transaction.TransactionReason.Should().Be(TransactionReasons.Init);
     }
 }

@@ -41,7 +41,7 @@ public class Worker(
         }
         catch (Exception ex)
         {
-            activity?.RecordException(ex);
+            activity?.AddException(ex);
             throw;
         }
 
@@ -83,10 +83,7 @@ public class Worker(
     {
         Randomizer.Seed = new Random(12345);
 
-        (Consumable consumable, Chemical chemical) = await SeedAssetItem(
-            dbContext,
-            cancellationToken
-        );
+        (Consumable consumable, Chemical _) = await SeedAssetItem(dbContext, cancellationToken);
 
         var professor = new ProfessorFaker().Generate();
         var students = new PersonFaker<Student>().GenerateBetween(5, 5);

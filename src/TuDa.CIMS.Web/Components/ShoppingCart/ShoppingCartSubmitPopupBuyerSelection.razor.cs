@@ -18,7 +18,7 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
     [Parameter]
     public required Person Buyer { get; set; }
 
-    private MudForm form;
+    private MudForm form = null!;
 
     [Parameter]
     public required bool BuyerIsValid { get; set; }
@@ -33,7 +33,7 @@ public partial class ShoppingCartSubmitPopupBuyerSelection(IWorkingGroupApi work
     {
         WorkingGroup = (await workingGroupApi.GetAsync(WorkingGroup!.Id)).Match(
             value => value,
-            _ => null
+            _ => null!
         );
     }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Services;
@@ -11,14 +12,20 @@ namespace TuDa.CIMS.Web.Components.ShoppingCart;
 /// </summary>
 public partial class ShoppingSearch : ComponentBase
 {
-    private readonly IAssetItemApi _assetItemApi;
-    private MudAutocomplete<AssetItem> _autocomplete = null!; // Is set by blazor component
-
     /// <summary>
     /// Event that is called when an <see cref="AssetItem"/> is selected.
     /// </summary>
     [Parameter]
     public EventCallback<AssetItem> AssetItemSelected { get; set; }
+
+    private readonly IAssetItemApi _assetItemApi;
+
+    private MudAutocomplete<AssetItem> _autocomplete = null!; // Is set by blazor component
+
+    /// <summary>
+    /// To filter for different types of Items
+    /// </summary>
+    private List<AssetItemType> _selectedAssetItemTypes = [];
 
     public ShoppingSearch(IAssetItemApi api)
     {
@@ -32,11 +39,6 @@ public partial class ShoppingSearch : ComponentBase
         await AssetItemSelected.InvokeAsync(item);
     }
 
-    /// <summary>
-    /// To filter for different types of Items
-    /// </summary>
-    private List<AssetItemType?> _selectedAssetItemType;
-
     private async Task<IEnumerable<AssetItem>> Search(string nameOrCas, CancellationToken token)
     {
         if (string.IsNullOrWhiteSpace(nameOrCas))
@@ -44,24 +46,13 @@ public partial class ShoppingSearch : ComponentBase
             return [];
         }
 
-        IEnumerable<AssetItem> allItems = await _assetItemApi
-            .GetAllAsync(nameOrCas)
-            .Match(value => value, err => []);
+        var filterDto = new AssetItemFilterDto
+        {
+            NameOrCas = nameOrCas,
+            AssetItemTypes = _selectedAssetItemTypes,
+        };
 
-        return _selectedAssetItemType?.Any() == true
-            ? allItems.Where(item =>
-                (
-                    _selectedAssetItemType.Contains(AssetItemType.Chemical)
-                    && item is Chemical and not Solvent
-                )
-                || (_selectedAssetItemType.Contains(AssetItemType.Consumable) && item is Consumable)
-                || (_selectedAssetItemType.Contains(AssetItemType.Solvent) && item is Solvent)
-                || (
-                    _selectedAssetItemType.Contains(AssetItemType.GasCylinder)
-                    && item is GasCylinder
-                )
-            )
-            : allItems;
+        return await _assetItemApi.GetAllAsync(filterDto).Match(value => value, err => []);
     }
 
     private static string ToString(AssetItem item) =>

@@ -84,7 +84,7 @@ public class InvoiceCoverDocument : IDocument
 
             var professor = _invoice.Professor;
 
-            column.Item().PaddingTop(15).Text(professor.Gender.ToSalution());
+            column.Item().PaddingTop(15).Text(professor.Gender.ToSalutation());
             column.Item().Text($"{professor.Title} {professor.FirstName} {professor.Name}");
             column.Item().Text($"{professor.Address.Street} {professor.Address.Number}");
             column.Item().Text($"{professor.Address.ZipCode} {professor.Address.City}");

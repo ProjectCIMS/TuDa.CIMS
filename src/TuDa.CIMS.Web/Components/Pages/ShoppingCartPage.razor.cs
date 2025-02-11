@@ -61,8 +61,9 @@ public partial class ShoppingCartPage
             parameters,
             options
         );
+        var result = await dialog.Result;
 
-        if ((await dialog.Result).Canceled)
+        if (result is { Canceled: true })
             return;
 
         var ids = await dialog.GetReturnValueAsync<WorkingGroupWithBuyer>();
@@ -76,7 +77,7 @@ public partial class ShoppingCartPage
             return;
 
         var errorOr = await _purchaseApi.CreateAsync(
-            ids.WorkingGroupId,
+            ids!.WorkingGroupId,
             new CreatePurchaseDto
             {
                 Buyer = ids.BuyerId,

@@ -9,7 +9,7 @@ namespace TuDa.CIMS.Api.Test.Faker;
 public class InvoiceEntryFaker<TAssetItem> : PurchaseEntryFaker<InvoiceEntry, TAssetItem>
     where TAssetItem : AssetItem
 {
-    public InvoiceEntryFaker(TAssetItem assetItem)
+    public InvoiceEntryFaker(TAssetItem? assetItem)
         : this(null, assetItem) { }
 
     public InvoiceEntryFaker(

@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace TuDa.CIMS.Shared.Entities.Enums;
 
 public enum Gender
@@ -10,11 +12,14 @@ public enum Gender
 
 public static class GenderExtensions
 {
-    public static string ToSalution(this Gender gender) =>
+    public static string ToSalutation(this Gender gender) =>
         gender switch
         {
             Gender.Unknown or Gender.Divers => string.Empty,
             Gender.Male => "Herrn",
             Gender.Female => "Frau",
+            _ => throw new InvalidEnumArgumentException(
+                $"{gender} is not a known member of the enum {nameof(Gender)}"
+            ),
         };
 }

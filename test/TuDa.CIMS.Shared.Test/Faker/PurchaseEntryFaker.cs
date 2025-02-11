@@ -7,7 +7,7 @@ public class PurchaseEntryFaker<T, TAssetItem> : BaseEntityFaker<T>
     where T : PurchaseEntry
     where TAssetItem : AssetItem
 {
-    public PurchaseEntryFaker(TAssetItem assetItem)
+    public PurchaseEntryFaker(TAssetItem? assetItem)
         : this(null, assetItem) { }
 
     public PurchaseEntryFaker(
