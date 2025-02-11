@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Mapster" Version="7.4.0"/>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1" />
+    <!--<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />-->
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">
       <PrivateAssets>all</PrivateAssets>
@@ -17,8 +17,10 @@
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.2" />
     <PackageReference Include="QuestPDF" Version="2024.12.2" />
-    <PackageReference Include="Scalar.AspNetCore" Version="1.2.76" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.0.12" />
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
+    <!-- Use this until Microsoft fixes their package -->
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.2.0" /> 
   </ItemGroup>
 
   <ItemGroup>
