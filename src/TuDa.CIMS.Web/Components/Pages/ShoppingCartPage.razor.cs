@@ -99,7 +99,7 @@ public partial class ShoppingCartPage
                     })
                     .ToList(),
                 CompletionDate = DateTime.Now.ToUniversalTime(),
-                Signature = (signResult.Data as byte[])!,
+                Signature = (signResult!.Data as byte[])!,
             }
         );
 
