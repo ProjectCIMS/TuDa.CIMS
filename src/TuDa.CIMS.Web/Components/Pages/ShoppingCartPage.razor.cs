@@ -79,7 +79,7 @@ public partial class ShoppingCartPage
 
         var signResult = await signDialog.Result;
 
-        if (signResult.Canceled)
+        if (signResult?.Canceled ?? false)
         {
             Snackbar.Add("Unterschrift wurde abgebrochen", Severity.Warning);
             return;
