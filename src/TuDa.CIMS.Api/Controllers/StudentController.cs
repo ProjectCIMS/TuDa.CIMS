@@ -68,7 +68,7 @@ public class StudentController : CIMSBaseController
     )
     {
         return (await _studentService.AddAsync(workingGroupId, createStudentDto)).Match(
-            onValue: _ => Ok(),
+            onValue: Ok,
             onError: ErrorsToProblem
         );
     }
