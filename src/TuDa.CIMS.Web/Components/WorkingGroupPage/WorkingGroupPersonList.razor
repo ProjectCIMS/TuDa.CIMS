@@ -1,4 +1,5 @@
-﻿<MudContainer MaxWidth="MaxWidth.Small" Class="bg-white rounded">
+﻿@using TuDa.CIMS.Shared.Entities
+<MudContainer MaxWidth="MaxWidth.Small" Class="bg-white rounded">
     <MudDataGrid Items="@_persons"
                  FixedHeader="@true"
                  SortMode="SortMode.None"
@@ -22,6 +23,11 @@
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
+        <PagerContent>
+            <MudDataGridPager RowsPerPageString="Personen pro Seite:"
+                              PageSizeOptions="[ 5, 10, 20 ]"
+                              T="Person"/>
+        </PagerContent>
     </MudDataGrid>
     <div Class="d-flex justify-content-end">
         <MudButton Class="mt-4 mb-4" FullWidth="true" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add"
