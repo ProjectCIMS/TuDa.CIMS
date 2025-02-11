@@ -25,7 +25,7 @@ public partial class ShoppingSearch : ComponentBase
     /// <summary>
     /// To filter for different types of Items
     /// </summary>
-    private List<AssetItemType?> _selectedAssetItemType = [];
+    private List<AssetItemType> _selectedAssetItemTypes = [];
 
     public ShoppingSearch(IAssetItemApi api)
     {

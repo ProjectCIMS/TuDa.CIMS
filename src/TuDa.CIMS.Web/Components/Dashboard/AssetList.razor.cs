@@ -26,7 +26,7 @@ public partial class AssetList
     private MudDataGrid<AssetItem> _dataGrid { get; set; } = null!;
     private string _searchString { get; set; } = string.Empty;
 
-    private List<AssetItemType>? _selectedTypes { get; set; } = [];
+    private List<AssetItemType> _selectedTypes { get; set; } = [];
 
     public AssetList(IAssetItemApi assetItemApi)
     {
@@ -51,27 +51,27 @@ public partial class AssetList
 
         foreach (var filter in state.FilterDefinitions)
         {
-            switch (filter.Column.Title)
+            switch (filter.Column!.Title)
             {
                 case AssetItemColumns.Product:
                     filterDto.AssetItemColumnsList.Add(AssetItemColumns.Product);
-                    filterDto.Product = filter.Value.ToString();
+                    filterDto.Product = filter.Value!.ToString();
                     break;
                 case AssetItemColumns.Shop:
                     filterDto.AssetItemColumnsList.Add(AssetItemColumns.Shop);
-                    filterDto.Shop = filter.Value.ToString();
+                    filterDto.Shop = filter.Value!.ToString();
                     break;
                 case AssetItemColumns.ItemNumber:
                     filterDto.AssetItemColumnsList.Add(AssetItemColumns.ItemNumber);
-                    filterDto.ItemNumber = filter.Value.ToString();
+                    filterDto.ItemNumber = filter.Value!.ToString();
                     break;
                 case AssetItemColumns.RoomName:
                     filterDto.AssetItemColumnsList.Add(AssetItemColumns.RoomName);
-                    filterDto.RoomName = filter.Value.ToString();
+                    filterDto.RoomName = filter.Value!.ToString();
                     break;
                 case AssetItemColumns.Price:
                     filterDto.AssetItemColumnsList.Add(AssetItemColumns.Price);
-                    filterDto.Price = filter.Value.ToString();
+                    filterDto.Price = filter.Value!.ToString();
                     break;
             }
         }
@@ -128,14 +128,14 @@ public partial class AssetList
     string _icon = Icons.Material.Outlined.FilterAlt;
     bool _filterOpen = false;
 
-    void ToggleFilter()
+    private void ToggleFilter()
     {
         _filterOpen = !_filterOpen;
     }
 
-    void Clear()
+    private async Task Clear()
     {
         _selectedTypes = new List<AssetItemType>();
-        ReloadData();
+        await ReloadData();
     }
 }
