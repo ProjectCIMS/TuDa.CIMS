@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared;
 using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Params;
 
 namespace TuDa.CIMS.Api.Controllers;
@@ -23,12 +24,11 @@ public class AssetItemController : CIMSBaseController
     /// </summary>
     /// <returns> a 200 OK response if the operation is successfully and a 400 BadRequest response if any error occurs </returns>
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync([FromQuery] string? nameOrCas)
+    public async Task<IActionResult> GetAllAsync([FromQuery] AssetItemFilterDto filter)
     {
-        return (await _assetItemService.GetAllAsync(nameOrCas)).Match(
-            onValue: Ok,
-            onError: ErrorsToProblem
-        );
+        return await _assetItemService
+            .GetAllAsync(filter)
+            .Match(onValue: Ok, onError: ErrorsToProblem);
     }
 
     /// <summary>

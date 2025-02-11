@@ -1,4 +1,5 @@
-﻿<!-- AssetItemDialog -->
+﻿@using TuDa.CIMS.Shared.Dtos
+<!-- AssetItemDialog -->
 
 <MudDialog>
     <TitleContent>
@@ -14,18 +15,23 @@
     </TitleContent>
     <!-- Modal Body -->
     <DialogContent>
-        <AssetItemCreateForm @ref="_assetItemCreateForm" OnValidation ="@(_ => StateHasChanged())"/>
+        <AssetItemCreateForm @ref="_assetItemCreateForm" OnValidation="@(_ => StateHasChanged())"/>
     </DialogContent>
     <!-- Modal Footer -->
     <DialogActions>
-        <MudButton OnClick="Cancel"
-                   Color="Color.Secondary">
-            Schließen
-        </MudButton>
-        <MudButton OnClick="SaveChanges"
-                   Color="Color.Primary">
-            Änderungen speichern
-        </MudButton>
+        <MudContainer Class="d-flex justify-between align-items-center p-3">
+            <MudButton OnClick="Cancel"
+                       Color="Color.Secondary"
+                       Class="mx-1">
+                Schließen
+            </MudButton>
+            <MudButton OnClick="SaveChanges"
+                       Color="Color.Success"
+                       Variant="Variant.Filled"
+                       Class="ml-auto mx-1">
+                Speichern
+            </MudButton>
+        </MudContainer>
     </DialogActions>
 
 </MudDialog>
@@ -35,25 +41,31 @@
 
     [CascadingParameter] public required MudDialogInstance ProductDialog { get; set; }
 
-    [Parameter] public bool ShowError { get; set; }
+    [Parameter]
+    public EventCallback<CreateAssetItemDto> OnItemCreated { get; set; }
 
     private void Cancel()
     {
-        _assetItemCreateForm.ShowError = false;
         ProductDialog.Cancel();
     }
 
 
     public async Task SaveChanges()
     {
-        bool hasErrors = _assetItemCreateForm.ValidateForm();
+        bool hasErrors = _assetItemCreateForm.ErrorsInForm();
 
         if (hasErrors)
         {
             return;
         }
 
-        await _assetItemCreateForm.SaveChanges();
+        CreateAssetItemDto createAssetItemDto = await _assetItemCreateForm.SaveChanges();
+
+        if (OnItemCreated.HasDelegate)
+        {
+            await OnItemCreated.InvokeAsync(createAssetItemDto);
+        }
         ProductDialog.Close();
     }
+
 }

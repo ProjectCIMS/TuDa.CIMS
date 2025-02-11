@@ -25,4 +25,9 @@ public abstract record Person : BaseEntity
     /// The gender of the person.
     /// </summary>
     public Gender Gender { get; set; } = Gender.Unknown;
+
+    /// <summary>
+    /// The phone number of the person.
+    /// </summary>
+    public string PhoneNumber { get; set; } = string.Empty;
 }

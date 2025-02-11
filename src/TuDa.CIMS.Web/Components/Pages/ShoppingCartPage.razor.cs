@@ -38,7 +38,7 @@ public partial class ShoppingCartPage
 
         if (result is { Canceled: false })
         {
-            int amount = (int)result.Data!;
+            double amount = (double)result.Data!;
             if (amount > 0)
             {
                 AddProductEntry(amount, product);
@@ -66,6 +66,26 @@ public partial class ShoppingCartPage
         if (ids is null)
             Snackbar.Add("Beim abschließen ist etwas schiefgelaufen", Severity.Error);
 
+        var signOptions = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large,
+        };
+        var signDialog = await DialogService.ShowAsync<SignDialog>(
+            "Unterschrift erforderlich",
+            signOptions
+        );
+
+        var signResult = await signDialog.Result;
+
+        if (signResult.Canceled)
+        {
+            Snackbar.Add("Unterschrift wurde abgebrochen", Severity.Warning);
+            return;
+        }
+
         var errorOr = await PurchaseApi.CreateAsync(
             ids.WorkingGroupId,
             new CreatePurchaseDto
@@ -80,6 +100,7 @@ public partial class ShoppingCartPage
                     })
                     .ToList(),
                 CompletionDate = DateTime.Now.ToUniversalTime(),
+                Signature = (signResult.Data as byte[])!,
             }
         );
 
@@ -100,7 +121,7 @@ public partial class ShoppingCartPage
         Purchase.Entries.Clear();
     }
 
-    private void AddProductEntry(int amount, AssetItem product)
+    private void AddProductEntry(double amount, AssetItem product)
     {
         Purchase.Entries.Add(
             new PurchaseEntry()

@@ -1,12 +1,16 @@
 ﻿@page "/asset-list"
+@using MudBlazor.Extensions
+@using TuDa.CIMS.Shared.Dtos
 @using TuDa.CIMS.Shared.Entities
 @using TuDa.CIMS.Web.Components.Dashboard
 @using TuDa.CIMS.Web.Components.Dashboard.Dialogs
+@using TuDa.CIMS.Web.Services
 
 <div class="container-fluid ">
     <div class="row mt-5">
         <AssetList AddButtonPressed="CreateAssetItem"
-                   EditButtonPressed="EditAssetItem"/>
+                   EditButtonPressed="EditAssetItem"
+                   @ref="_assetList"/>
     </div>
 </div>
 
@@ -14,25 +18,50 @@
 {
     [Inject] private ILogger<AssetListPage> _logger { get; set; } = null!;
     [Inject] public required IDialogService DialogService { get; set; }
+    private IAssetItemApi _assetItemApi;
+    private AssetList _assetList;
+
+    public AssetListPage(IAssetItemApi assetItemApi)
+    {
+        _assetItemApi = assetItemApi;
+    }
 
     private async Task CreateAssetItem()
     {
         _logger.LogInformation("Added");
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        await DialogService.ShowAsync<AssetItemDialog>("Create Item", options);
+        var parameters = new DialogParameters
+        {
+            { "OnItemCreated", EventCallback.Factory.Create<CreateAssetItemDto>(this, CreateItem) }
+        };
+        await DialogService.ShowAsync<AssetItemDialog>("Create Item", parameters, options);
     }
 
 
     private async Task EditAssetItem(AssetItem assetItem)
     {
         _logger.LogInformation("Edit {Item.Name}", assetItem.Name);
-        var parameters = new DialogParameters
+        var parameters = new DialogParameters<AssetItemEditDialog>
         {
-            { "Item", assetItem }
+            { "Item", assetItem },
+            { "OnDeleteRequested", EventCallback.Factory.Create<AssetItem>(this, DeleteItem) }
         };
+
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
         await DialogService.ShowAsync<AssetItemEditDialog>("Edit Item", parameters, options);
+    }
+
+    private async Task CreateItem(CreateAssetItemDto createAssetItemDto)
+    {
+        await _assetItemApi.CreateAsync(createAssetItemDto);
+        await _assetList.ReloadData();
+    }
+
+    private async Task DeleteItem(AssetItem assetItem)
+    {
+        await _assetItemApi.RemoveAsync(assetItem.Id);
+        await _assetList.ReloadData();
     }
 
 }

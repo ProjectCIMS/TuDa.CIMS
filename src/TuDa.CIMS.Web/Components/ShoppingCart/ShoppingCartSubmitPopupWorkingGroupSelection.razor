@@ -3,6 +3,7 @@
 
 @*ShoppingCart SubmitPopup WorkingGroup Selection*@
 <MudItem Class="d-flex align-items-center">
+    <MudForm @ref="form">
     <MudAutocomplete
         T="WorkingGroup"
         @ref="_autocomplete"
@@ -13,11 +14,12 @@
         Label="Arbeitsgruppe"
         SearchFunc="@Search"
         ToStringFunc="@ToString"
-        ValueChanged="WorkingGroupChanged"
+        ValueChanged="OnWorkingGroupChanged"
         Variant="Variant.Filled"
-        Dense=true
-        ShowProgressIndicator="true">
-
+        Dense="true"
+        ShowProgressIndicator="true"
+        Validation="@(() => ValidateWorkingGroup)"
+        Required="true">
         <ItemTemplate>
             <MudItem Class="d-flex align-items-center">
                 <MudIconButton Icon="@Icons.Material.Outlined.Info" Class="mr-2">
@@ -26,5 +28,6 @@
             </MudItem>
         </ItemTemplate>
     </MudAutocomplete>
+    </MudForm>
 </MudItem>
 

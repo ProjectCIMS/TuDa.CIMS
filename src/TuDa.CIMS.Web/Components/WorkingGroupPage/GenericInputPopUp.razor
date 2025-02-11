@@ -1,0 +1,18 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudForm>
+            @foreach (var i in Enumerable.Range(0, Field.Labels.Count))
+            {
+                <MudTextField
+                    @bind-Value="Field.Values[i]"
+                    Label="@Field.Labels[i]"/>
+            }
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(Cancel)" Color="Color.Error">Abbrechen
+        </MudButton>
+        <MudButton OnClick="@(Submit)"
+                   Color="Color.Success">@Field.YesText</MudButton>
+    </DialogActions>
+</MudDialog>

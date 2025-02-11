@@ -21,6 +21,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\infrastructure\TuDa.CIMS.ServiceDefaults\TuDa.CIMS.ServiceDefaults.csproj" />
     <ProjectReference Include="..\TuDa.CIMS.Shared\TuDa.CIMS.Shared.csproj" />
+    <PackageReference Include="MudBlazor.Translations" Version="1.6.0" />
+    <PackageReference Include="Blazor.SignaturePad" Version="9.0.0" />
   </ItemGroup>
+
 
 </Project>

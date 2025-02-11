@@ -26,18 +26,11 @@ public class InvoiceRepository : IInvoiceRepository
             .Include(wg => wg.Purchases)
             .SelectMany(wg => wg.Purchases)
             .Where(p =>
-                (p.Completed && p.CompletionDate != null)
+                (p.CompletionDate != null)
                 && (p.CompletionDate.Value >= beginDate && p.CompletionDate.Value <= endDate)
             )
             .Include(p => p.Entries)
             .ThenInclude(e => e.AssetItem)
             .Include(p => p.Buyer)
             .ToListAsync();
-
-    public Task<Professor?> GetProfessorOfWorkingGroup(Guid workingGroupId) =>
-        _context
-            .WorkingGroups.Where(wg => wg.Id == workingGroupId)
-            .Include(wg => wg.Professor.Address)
-            .Select(wg => wg.Professor)
-            .SingleOrDefaultAsync();
 }

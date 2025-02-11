@@ -23,7 +23,4 @@ public record UpdatePurchaseDto
     /// Completion date of the purchase.
     /// </summary>
     public DateTime? CompletionDate { get; set; }
-
-    /// TODO: This should be a deleted in an extra issue
-    public bool? Completed { get; set; }
 }

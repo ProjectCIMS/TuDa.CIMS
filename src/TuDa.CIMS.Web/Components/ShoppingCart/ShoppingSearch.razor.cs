@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.ShoppingCart;
@@ -31,6 +33,11 @@ public partial class ShoppingSearch : ComponentBase
         await AssetItemSelected.InvokeAsync(item);
     }
 
+    /// <summary>
+    /// To filter for different types of Items
+    /// </summary>
+    private List<AssetItemType> _selectedAssetItemTypes = [];
+
     private async Task<IEnumerable<AssetItem>> Search(string nameOrCas, CancellationToken token)
     {
         if (string.IsNullOrWhiteSpace(nameOrCas))
@@ -38,7 +45,13 @@ public partial class ShoppingSearch : ComponentBase
             return [];
         }
 
-        return await _assetItemApi.GetAllAsync(nameOrCas).Match(value => value, err => []);
+        var filterDto = new AssetItemFilterDto
+        {
+            NameOrCas = nameOrCas,
+            AssetItemTypes = _selectedAssetItemTypes,
+        };
+
+        return await _assetItemApi.GetAllAsync(filterDto).Match(value => value, err => []);
     }
 
     private static string ToString(AssetItem item) =>

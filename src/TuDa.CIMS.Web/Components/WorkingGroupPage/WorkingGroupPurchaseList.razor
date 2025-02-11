@@ -1,15 +1,16 @@
-﻿<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column bg-white rounded">
-    <MudDataGrid Items="@Purchases"
+﻿@using System.Globalization
+@using TuDa.CIMS.Shared.Entities
+<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column bg-white rounded">
+    <MudDataGrid Items="@SortedPurchases"
                  FixedHeader="@true"
                  SortMode="SortMode.None"
                  Hover="@true">
-
         <Columns>
             <PropertyColumn
-                Property="@(p => p.CompletionDate)"
+                Property="@(p => FormatCompletionDate(p))"
                 Title="Datum"/>
             <PropertyColumn
-                Property="@(p => p.TotalPrice)"
+                Property="@(p => p.TotalPrice.ToString("C", CultureInfo.GetCultureInfo("de-DE")))"
                 Title="Preis"/>
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
@@ -19,6 +20,11 @@
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
+        <PagerContent>
+            <MudDataGridPager RowsPerPageString="Einkäufe pro Seite:"
+                              PageSizeOptions="[ 5, 10, 20 ]"
+                              T="Purchase"/>
+        </PagerContent>
     </MudDataGrid>
     <WorkingGroupInvoiceButton></WorkingGroupInvoiceButton>
 </MudContainer>

@@ -5,8 +5,8 @@ namespace TuDa.CIMS.Api.Interfaces;
 
 public interface IStudentRepository
 {
-    Task<ErrorOr<WorkingGroup>> RemoveAsync(Guid workingGroupId, Guid id);
-    Task<ErrorOr<WorkingGroup>> AddAsync(Guid workingGroupId, CreateStudentDto createStudentDto);
+    Task<ErrorOr<Deleted>> RemoveAsync(Guid workingGroupId, Guid id);
+    Task<ErrorOr<Student>> AddAsync(Guid workingGroupId, CreateStudentDto createStudentDto);
     Task<ErrorOr<Updated>> UpdateAsync(
         Guid workingGroupId,
         Guid id,

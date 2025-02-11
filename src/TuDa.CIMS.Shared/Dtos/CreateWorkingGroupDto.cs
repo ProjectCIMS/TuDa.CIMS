@@ -7,7 +7,7 @@ public record CreateWorkingGroupDto
     /// <summary>
     /// The professor of the group.
     /// </summary>
-    public required Professor Professor { get; set; }
+    public required CreateProfessorDto Professor { get; set; }
 
     /// <summary>
     /// A phone number to contact the group.

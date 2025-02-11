@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Services;
 
@@ -10,7 +11,7 @@ public partial class WorkingGroupPurchaseList(IPurchaseApi _iPurchaseApi) : Comp
 
     [Parameter] public Guid WorkingGroupId { get; set; }
 
-    // TODO: Navigate to the bills page
+    private List<Purchase> SortedPurchases => Purchases.OrderByDescending(p => p.CompletionDate).ToList();
 
     protected override async Task OnInitializedAsync()
     {
@@ -18,7 +19,15 @@ public partial class WorkingGroupPurchaseList(IPurchaseApi _iPurchaseApi) : Comp
         Purchases = purchases.Value;
     }
 
-
+    /// <summary>
+    /// Formats the completion date of a purchase in the wished form.
+    /// </summary>
+    /// <param name="value">The chosen purchase</param>
+    /// <returns>Returns the formatted date as string</returns>
+    private string FormatCompletionDate(Purchase? value)
+    {
+        return value!.CompletionDate.HasValue ? value.CompletionDate.Value.ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.GetCultureInfo("de-DE")) : "";
+    }
 
     public void NavigateToPurchase()
     {

@@ -30,11 +30,11 @@ public class PurchaseService : IPurchaseService
     /// </summary>
     /// <param name="workingGroupId">the unique id of a workinggroup</param>
     /// <returns></returns>
-    public async Task<ErrorOr<IEnumerable<Purchase>>> GetAllAsync(Guid workingGroupId)
+    public async Task<ErrorOr<List<Purchase>>> GetAllAsync(Guid workingGroupId)
     {
         try
         {
-            return (await _purchaseRepository.GetAllAsync(workingGroupId)).ToErrorOr();
+            return await _purchaseRepository.GetAllAsync(workingGroupId);
         }
         catch (Exception ex)
         {
@@ -112,7 +112,12 @@ public class PurchaseService : IPurchaseService
                     return purchase.Errors;
                 }
 
-                await _consumableTransactionService.CreateForPurchaseAsync(purchase.Value);
+                var errorOrCreated = await _consumableTransactionService.CreateForPurchaseAsync(purchase.Value);
+                if (errorOrCreated.IsError)
+                {
+                    return errorOrCreated.Errors;
+                }
+                
                 await transaction.CommitAsync();
 
                 return purchase;
