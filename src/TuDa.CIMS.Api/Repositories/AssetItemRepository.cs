@@ -343,7 +343,6 @@ public class AssetItemRepository : IAssetItemRepository
                 EF.Functions.ILike(EF.Property<string>(i, "Price").ToString(), $"{filter.Price}%")
             );
         }
-
         return await query.ToListAsync();
     }
 
