@@ -1,11 +1,12 @@
-﻿using Mapster;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Factories;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Constants;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Params;
 
 namespace TuDa.CIMS.Api.Repositories;
@@ -14,10 +15,15 @@ namespace TuDa.CIMS.Api.Repositories;
 public class AssetItemRepository : IAssetItemRepository
 {
     private readonly CIMSDbContext _context;
+    private readonly IConsumableTransactionRepository _consumableTransactionRepository;
 
-    public AssetItemRepository(CIMSDbContext context)
+    public AssetItemRepository(
+        CIMSDbContext context,
+        IConsumableTransactionRepository consumableTransactionRepository
+    )
     {
         _context = context;
+        _consumableTransactionRepository = consumableTransactionRepository;
     }
 
     /// <summary>
@@ -30,6 +36,28 @@ public class AssetItemRepository : IAssetItemRepository
     /// </summary>
     private IQueryable<Substance> SubstancesFilledQuery =>
         AssetItemsFilledQuery.OfType<Substance>().Include(s => s.Hazards);
+
+    /// <summary>
+    /// Query for all <see cref="GasCylinder"/>s from the DB with included properties.
+    /// </summary>
+    private IQueryable<GasCylinder> GasCylindersFilledQuery =>
+        SubstancesFilledQuery.OfType<GasCylinder>();
+
+    /// <summary>
+    /// Query for all <see cref="Solvent"/>s from the DB with included properties.
+    /// </summary>
+    private IQueryable<Solvent> SolventsFilledQuery => SubstancesFilledQuery.OfType<Solvent>();
+
+    /// <summary>
+    /// Query for all <see cref="Chemical"/>s from the DB with included properties.
+    /// </summary>
+    private IQueryable<Chemical> ChemicalsFilledQuery => SubstancesFilledQuery.OfType<Chemical>();
+
+    /// <summary>
+    /// Query for all <see cref="Consumable"/>s from the DB with included properties.
+    /// </summary>
+    private IQueryable<Consumable> ConsumablesFilledQuery =>
+        AssetItemsFilledQuery.OfType<Consumable>();
 
     /// <summary>
     /// Returns all existing AssetItems of the database.
@@ -83,7 +111,6 @@ public class AssetItemRepository : IAssetItemRepository
                 break;
 
             case (Consumable consumable, UpdateConsumableDto update):
-                consumable.Amount = update.Amount ?? consumable.Amount;
                 consumable.Manufacturer = update.Manufacturer ?? consumable.Manufacturer;
                 consumable.SerialNumber = update.SerialNumber ?? consumable.SerialNumber;
                 break;
@@ -93,6 +120,24 @@ public class AssetItemRepository : IAssetItemRepository
                     "Assetitem.update",
                     $"The provided update model does not match the type of the AssetItem with ID {id}."
                 );
+        }
+
+        if (
+            existingItem is Consumable con
+            && updateModel is UpdateConsumableDto updateConsumable
+            && updateConsumable.StockUpdate is not null
+        )
+        {
+            var previousAmount = con.Amount;
+            CreateConsumableTransactionDto createConsumableTransaction = new()
+            {
+                ConsumableId = con.Id,
+                Date = DateTime.UtcNow,
+                AmountChange = updateConsumable.StockUpdate.Amount - previousAmount,
+                TransactionReason = updateConsumable.StockUpdate.Reason,
+            };
+            //amount of conusmable is now set in CreateAsync of ConsumableTransaction
+            await _consumableTransactionRepository.CreateAsync(createConsumableTransaction);
         }
 
         if (updateModel.RoomId is not null)
@@ -164,15 +209,268 @@ public class AssetItemRepository : IAssetItemRepository
     /// Returns a list of matching AssetItem based on the provided name or CAS number.
     /// </summary>
     /// <param name="nameOrCas"></param>
-    public async Task<List<AssetItem>> SearchAsync(string nameOrCas)
+    /// <param name="assetItemTypes"></param>
+    public async Task<List<AssetItem>> SearchAsync(
+        string nameOrCas,
+        List<AssetItemType>? assetItemTypes
+    )
     {
         bool isCas = nameOrCas.All(c => char.IsDigit(c) || c == '-');
 
-        var query = isCas
+        if (assetItemTypes is not null && assetItemTypes.Count > 0)
+        {
+            return await FilterForAssetItemTypes(assetItemTypes, isCas, nameOrCas);
+        }
+
+        var searchQuery = isCas
             ? SubstancesFilledQuery.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
-            : AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Name, $"%{nameOrCas}%"));
+            : AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
+        return await searchQuery.ToListAsync();
+    }
+
+    private async Task<List<AssetItem>> FilterForAssetItemTypes(
+        List<AssetItemType> assetItemTypes,
+        bool isCas,
+        string nameOrCas
+    )
+    {
+        List<AssetItem> result = new List<AssetItem>();
+
+        if (isCas)
+        {
+            if (assetItemTypes.Contains(AssetItemType.Chemical))
+            {
+                var chemicals = await ChemicalsFilledQuery
+                    .Where(c => c.GetType() == typeof(Chemical))
+                    .Where(c => EF.Functions.ILike(c.Cas, $"{nameOrCas}%"))
+                    .ToListAsync();
+                result.AddRange(chemicals);
+            }
+
+            if (assetItemTypes.Contains(AssetItemType.Solvent))
+            {
+                var solvents = await SolventsFilledQuery
+                    .Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
+                    .ToListAsync();
+                result.AddRange(solvents);
+            }
+        }
+        else
+        {
+            if (assetItemTypes.Contains(AssetItemType.Chemical))
+            {
+                var chemicals = await ChemicalsFilledQuery
+                    .Where(c => c.GetType() == typeof(Chemical))
+                    .Where(c => EF.Functions.ILike(c.Name, $"{nameOrCas}%"))
+                    .ToListAsync();
+                result.AddRange(chemicals);
+            }
+
+            if (assetItemTypes.Contains(AssetItemType.Consumable))
+            {
+                var consumables = await ConsumablesFilledQuery
+                    .Where(c => EF.Functions.ILike(c.Name, $"{nameOrCas}%"))
+                    .ToListAsync();
+                result.AddRange(consumables);
+            }
+
+            if (assetItemTypes.Contains(AssetItemType.GasCylinder))
+            {
+                var gasCylinders = await GasCylindersFilledQuery
+                    .Where(g => EF.Functions.ILike(g.Name, $"{nameOrCas}%"))
+                    .ToListAsync();
+                result.AddRange(gasCylinders);
+            }
+
+            if (assetItemTypes.Contains(AssetItemType.Solvent))
+            {
+                var solvents = await SolventsFilledQuery
+                    .Where(s => EF.Functions.ILike(s.Name, $"{nameOrCas}%"))
+                    .ToListAsync();
+                result.AddRange(solvents);
+            }
+        }
+
+        return result;
+    }
+
+    public async Task<List<AssetItem>> CombinedFilterAsync(AssetItemFilterDto filter)
+    {
+        // Start with an empty list to collect results
+        List<AssetItem> result = new List<AssetItem>();
+
+        // Check for each asset item type in the provided list and query them individually
+        if (filter.AssetItemTypes!.Contains(AssetItemType.Chemical))
+        {
+            var chemicals = ChemicalsFilledQuery.Where(item => item.GetType() == typeof(Chemical));
+            result.AddRange(await ApplyFilters(chemicals, filter));
+        }
+
+        if (filter.AssetItemTypes.Contains(AssetItemType.Consumable))
+        {
+            result.AddRange(await ApplyFilters(ConsumablesFilledQuery, filter));
+        }
+
+        if (filter.AssetItemTypes.Contains(AssetItemType.GasCylinder))
+        {
+            result.AddRange(await ApplyFilters(GasCylindersFilledQuery, filter));
+        }
+
+        if (filter.AssetItemTypes.Contains(AssetItemType.Solvent))
+        {
+            result.AddRange(await ApplyFilters(SolventsFilledQuery, filter));
+        }
+
+        // Return the combined list of AssetItems
+        return result;
+    }
+
+    private async Task<List<AssetItem>> ApplyFilters(
+        IQueryable<AssetItem> query,
+        AssetItemFilterDto filter
+    )
+    {
+        if (
+            string.IsNullOrEmpty(filter.Product)
+            && string.IsNullOrEmpty(filter.Shop)
+            && string.IsNullOrEmpty(filter.ItemNumber)
+            && string.IsNullOrEmpty(filter.RoomName)
+            && string.IsNullOrEmpty(filter.Price)
+        )
+            return await query.ToListAsync();
+
+        if (!string.IsNullOrEmpty(filter.Product))
+        {
+            query = ApplyProductFilter(query, filter.Product);
+        }
+
+        if (!string.IsNullOrEmpty(filter.Shop))
+        {
+            query = query.Where(i => EF.Functions.ILike(i.Shop, $"{filter.Shop}%"));
+        }
+
+        if (!string.IsNullOrEmpty(filter.ItemNumber))
+        {
+            query = query.Where(i => EF.Functions.ILike(i.ItemNumber, $"{filter.ItemNumber}%"));
+        }
+
+        if (!string.IsNullOrEmpty(filter.RoomName))
+        {
+            query = query.Where(i => EF.Functions.ILike(i.Room.Name, $"{filter.RoomName}%"));
+        }
+
+        if (!string.IsNullOrEmpty(filter.Price))
+        {
+            query = query.Where(i =>
+                EF.Functions.ILike(EF.Property<string>(i, "Price").ToString(), $"{filter.Price}%")
+            );
+        }
+        return await query.ToListAsync();
+    }
+
+    private static IQueryable<AssetItem> ApplyProductFilter(
+        IQueryable<AssetItem> query,
+        string? value
+    )
+    {
+        if (string.IsNullOrEmpty(value))
+            return query;
+
+        return value.All(c => char.IsDigit(c) || c == '-')
+            ? query.Where(i => EF.Functions.ILike((i as Substance)!.Cas, $"{value}%"))
+            : query.Where(i => EF.Functions.ILike(i.Name, $"{value}%"));
+    }
+
+    public async Task<List<AssetItem>> FilterAsync(AssetItemFilterDto filter)
+    {
+        IQueryable<AssetItem> query = AssetItemsFilledQuery;
+        foreach (var column in filter.AssetItemColumnsList)
+        {
+            switch (column)
+            {
+                case AssetItemColumns.Product:
+                    if (string.IsNullOrWhiteSpace(filter.Product))
+                        break;
+
+                    if (filter.Product.All(c => char.IsDigit(c) || c == '-'))
+                    {
+                        query = SubstancesFilledQuery.Where(s =>
+                            EF.Functions.ILike(s.Cas, $"{filter.Product}%")
+                        );
+                    }
+                    else
+                    {
+                        query = query.Where(i => EF.Functions.ILike(i.Name, $"{filter.Product}%"));
+                    }
+                    break;
+
+                case "Artikelnummer":
+                    query = query.Where(i =>
+                        EF.Functions.ILike(i.ItemNumber, $"{filter.ItemNumber}%")
+                    );
+                    break;
+
+                case "Lieferant":
+                    query = query.Where(i => EF.Functions.ILike(i.Shop, $"{filter.Shop}%"));
+                    break;
+
+                case "Raum":
+                    query = query.Where(i =>
+                        EF.Functions.ILike(i.Room.Name, $"{filter.RoomName}%")
+                    );
+                    break;
+
+                case "Preis":
+                    query = query.Where(i =>
+                        EF.Functions.ILike(
+                            EF.Property<string>(i, "Price").ToString(),
+                            $"{filter.Price}%"
+                        )
+                    );
+                    break;
+
+                default:
+                    return await GetAllAsync();
+            }
+        }
 
         return await query.ToListAsync();
+    }
+
+    public async Task<List<AssetItem>> FilterTypeAsync(List<AssetItemType> assetItemTypes)
+    {
+        // Start with an empty list to collect results
+        List<AssetItem> result = new List<AssetItem>();
+
+        // Check for each asset item type in the provided list and query them individually
+        if (assetItemTypes.Contains(AssetItemType.Chemical))
+        {
+            var chemicals = await ChemicalsFilledQuery
+                .Where(item => item.GetType() == typeof(Chemical))
+                .ToListAsync();
+            result.AddRange(chemicals);
+        }
+
+        if (assetItemTypes.Contains(AssetItemType.Consumable))
+        {
+            var consumables = await ConsumablesFilledQuery.ToListAsync();
+            result.AddRange(consumables);
+        }
+
+        if (assetItemTypes.Contains(AssetItemType.GasCylinder))
+        {
+            var gasCylinders = await GasCylindersFilledQuery.ToListAsync();
+            result.AddRange(gasCylinders);
+        }
+
+        if (assetItemTypes.Contains(AssetItemType.Solvent))
+        {
+            var solvents = await SolventsFilledQuery.ToListAsync();
+            result.AddRange(solvents);
+        }
+
+        // Return the combined list of AssetItems
+        return result;
     }
 
     public async Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel)
@@ -263,6 +561,18 @@ public class AssetItemRepository : IAssetItemRepository
             },
             _ => throw new ArgumentException("Unsupported create model type", nameof(createModel)),
         };
+
+        if (newItem is Consumable con)
+        {
+            ConsumableTransaction consumableTransaction = new()
+            {
+                Consumable = con,
+                Date = DateTime.UtcNow,
+                AmountChange = con.Amount,
+                TransactionReason = TransactionReasons.Init,
+            };
+            await _context.ConsumableTransactions.AddAsync(consumableTransaction);
+        }
         await _context.AssetItems.AddAsync(newItem);
         await _context.SaveChangesAsync();
         return Result.Created;

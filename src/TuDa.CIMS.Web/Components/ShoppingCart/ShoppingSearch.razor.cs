@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Services;
@@ -45,24 +46,13 @@ public partial class ShoppingSearch : ComponentBase
             return [];
         }
 
-        IEnumerable<AssetItem> allItems = await _assetItemApi
-            .GetAllAsync(nameOrCas)
-            .Match(value => value, err => []);
+        var filterDto = new AssetItemFilterDto
+        {
+            NameOrCas = nameOrCas,
+            AssetItemTypes = _selectedAssetItemTypes,
+        };
 
-        return _selectedAssetItemType?.Any() == true
-            ? allItems.Where(item =>
-                (
-                    _selectedAssetItemType.Contains(AssetItemType.Chemical)
-                    && item is Chemical and not Solvent
-                )
-                || (_selectedAssetItemType.Contains(AssetItemType.Consumable) && item is Consumable)
-                || (_selectedAssetItemType.Contains(AssetItemType.Solvent) && item is Solvent)
-                || (
-                    _selectedAssetItemType.Contains(AssetItemType.GasCylinder)
-                    && item is GasCylinder
-                )
-            )
-            : allItems;
+        return await _assetItemApi.GetAllAsync(filterDto).Match(value => value, err => []);
     }
 
     private static string ToString(AssetItem item) =>

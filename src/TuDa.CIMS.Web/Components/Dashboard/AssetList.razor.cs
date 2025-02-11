@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
-using TuDa.CIMS.Web.Components.Dashboard.Dialogs;
+using TuDa.CIMS.Shared.Entities.Constants;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.Dashboard;
@@ -24,6 +26,8 @@ public partial class AssetList
     private MudDataGrid<AssetItem> _dataGrid { get; set; } = null!;
     private string _searchString { get; set; } = string.Empty;
 
+    private List<AssetItemType>? _selectedTypes { get; set; } = [];
+
     public AssetList(IAssetItemApi assetItemApi)
     {
         _assetItemApi = assetItemApi;
@@ -39,23 +43,44 @@ public partial class AssetList
 
     private async Task<GridData<AssetItem>> ServerReload(GridState<AssetItem> state)
     {
-        var errorOrItems = await _assetItemApi.GetAllAsync(_searchString);
+        var filterDto = new AssetItemFilterDto
+        {
+            NameOrCas = _searchString,
+            AssetItemTypes = _selectedTypes,
+        };
+
+        foreach (var filter in state.FilterDefinitions)
+        {
+            switch (filter.Column.Title)
+            {
+                case AssetItemColumns.Product:
+                    filterDto.AssetItemColumnsList.Add(AssetItemColumns.Product);
+                    filterDto.Product = filter.Value.ToString();
+                    break;
+                case AssetItemColumns.Shop:
+                    filterDto.AssetItemColumnsList.Add(AssetItemColumns.Shop);
+                    filterDto.Shop = filter.Value.ToString();
+                    break;
+                case AssetItemColumns.ItemNumber:
+                    filterDto.AssetItemColumnsList.Add(AssetItemColumns.ItemNumber);
+                    filterDto.ItemNumber = filter.Value.ToString();
+                    break;
+                case AssetItemColumns.RoomName:
+                    filterDto.AssetItemColumnsList.Add(AssetItemColumns.RoomName);
+                    filterDto.RoomName = filter.Value.ToString();
+                    break;
+                case AssetItemColumns.Price:
+                    filterDto.AssetItemColumnsList.Add(AssetItemColumns.Price);
+                    filterDto.Price = filter.Value.ToString();
+                    break;
+            }
+        }
+
+        var errorOrItems = await _assetItemApi.GetAllAsync(filterDto);
         if (errorOrItems.IsError)
             return new GridData<AssetItem>();
 
         var items = SortAssetItems(state, errorOrItems.Value).ToList();
-
-        var filterOptions = new FilterOptions
-        {
-            FilterCaseSensitivity = DataGridFilterCaseSensitivity.CaseInsensitive,
-        };
-
-        foreach (var filterDefinition in state.FilterDefinitions)
-        {
-            var filterFunction = filterDefinition.GenerateFilterFunction(filterOptions);
-
-            items = items.Where(filterFunction).ToList();
-        }
 
         var pagedData = items.Skip(state.Page * state.PageSize).Take(state.PageSize).ToList();
 
@@ -84,4 +109,33 @@ public partial class AssetList
 
     private static SortDirection GetSortDirection(bool descending) =>
         descending ? MudBlazor.SortDirection.Descending : MudBlazor.SortDirection.Ascending;
+
+    private async Task SelectedChanged(bool value, AssetItemType itemType)
+    {
+        if (value)
+        {
+            if (!_selectedTypes.Contains(itemType))
+                _selectedTypes.Add(itemType);
+        }
+        else
+        {
+            _selectedTypes.Remove(itemType);
+        }
+
+        await _dataGrid.ReloadServerData();
+    }
+
+    string _icon = Icons.Material.Outlined.FilterAlt;
+    bool _filterOpen = false;
+
+    void ToggleFilter()
+    {
+        _filterOpen = !_filterOpen;
+    }
+
+    void Clear()
+    {
+        _selectedTypes = new List<AssetItemType>();
+        ReloadData();
+    }
 }

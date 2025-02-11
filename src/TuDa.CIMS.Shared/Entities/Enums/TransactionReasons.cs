@@ -6,5 +6,6 @@ public enum TransactionReasons
     Consumption,
     Loss,
     Adjustment,
-    Restock
+    Restock,
+    Init
 }

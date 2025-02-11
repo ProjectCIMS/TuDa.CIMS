@@ -26,8 +26,40 @@
     <Columns>
         <PropertyColumn Property="@(i => GetItemTypeName(i))"
                         Title="Typ">
+            <FilterTemplate>
+                <MudIconButton OnClick="@ToggleFilter" Icon="@_icon" Size="@Size.Small" />
+                <MudOverlay Visible="@_filterOpen" OnClick="@(() => _filterOpen = false)" />
+                <MudPopover Open="@_filterOpen" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter"
+                            Style="width:200px">
+                    <MudStack Spacing="0">
+                        <MudStack Spacing="0" Style="overflow-y:auto;max-height:250px">
+                            <MudCheckBox T="bool" Label="Chemiekalien" Size="Size.Small"
+                                         Value="@_selectedTypes.Contains(AssetItemType.Chemical)"
+                                         ValueChanged="@((value) => SelectedChanged(value, AssetItemType.Chemical))" />
+
+                            <MudCheckBox T="bool" Label="Laborgeräte" Size="Size.Small"
+                                         Value="@_selectedTypes.Contains(AssetItemType.Consumable)"
+                                         ValueChanged="@((value) => SelectedChanged(value, AssetItemType.Consumable))" />
+
+                            <MudCheckBox T="bool" Label="Technische Gase" Size="Size.Small"
+                                         Value="@_selectedTypes.Contains(AssetItemType.GasCylinder)"
+                                         ValueChanged="@((value) => SelectedChanged(value, AssetItemType.GasCylinder))" />
+
+                            <MudCheckBox T="bool" Label="Lösungsmittel" Size="Size.Small"
+                                         Value="@_selectedTypes.Contains(AssetItemType.Solvent)"
+                                         ValueChanged="@((value) => SelectedChanged(value, AssetItemType.Solvent))" />
+
+                        </MudStack>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center">
+                            <MudButton OnClick="ToggleFilter">Schließen</MudButton>
+                            <MudIconButton OnClick="Clear" Icon="@Icons.Material.Filled.Delete" />
+                        </MudStack>
+                    </MudStack>
+                </MudPopover>
+            </FilterTemplate>
             <CellTemplate>
-                <MudIcon Icon="@GetItemTypeIcon(context.Item)" Size="@Size.Medium"/>
+                <MudIcon Icon="@GetItemTypeIcon(context.Item)"
+                         Size="@Size.Medium"/>
                 @GetItemTypeName(context.Item)
             </CellTemplate>
         </PropertyColumn>
@@ -64,7 +96,7 @@
         {
             Solvent => "Lösungsmittel",
             Chemical => "Chemikalie",
-            Consumable => "Verbrauchsmaterial",
+            Consumable => "Laborgerät",
             GasCylinder => "Technisches Gas",
             _ => "-",
         };
