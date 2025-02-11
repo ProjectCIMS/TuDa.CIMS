@@ -17,6 +17,10 @@
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
                     <MudIconButton Size="@Size.Small"
+                                   Icon="@Icons.Material.Outlined.Edit"
+                                   Color="Color.Primary"
+                                   Onclick="@(() => EditBuyer(context.Item!))"/>
+                    <MudIconButton Size="@Size.Small"
                                    Icon="@Icons.Material.Outlined.Delete"
                                    Color="Color.Error"
                                    Onclick="@(() => RemoveBuyer(context.Item!))"/>
