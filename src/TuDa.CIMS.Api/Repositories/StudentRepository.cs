@@ -53,7 +53,7 @@ public class StudentRepository : IStudentRepository
     /// </summary>
     /// <param name="workingGroupId">specific ID of Working Group</param>
     /// <param name="createStudentDto">model to create a student if necessary</param>
-    /// <returns>returns the Working Group in which the Student was added</returns>
+    /// <returns>Returns an error or the added student.</returns>
     public async Task<ErrorOr<Student>> AddAsync(
         Guid workingGroupId,
         CreateStudentDto createStudentDto

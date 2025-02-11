@@ -50,8 +50,8 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
 
             // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
-
         }
+
         workingGroup.Students.Should().BeEmpty();
     }
 
@@ -68,11 +68,7 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
     public async Task UpdateAsync_ShouldUpdateStudent_WhenStudentPresent()
     {
         // Arrange
-        List<Student> students = new List<Student>
-        {
-            new StudentFaker(),
-            new StudentFaker()
-        };
+        List<Student> students = new List<Student> { new StudentFaker(), new StudentFaker() };
         var workingGroup = new WorkingGroupFaker().Generate();
         workingGroup.Students = students;
 
@@ -145,25 +141,21 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
         );
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.IsSuccessStatusCode.Should().BeTrue();
 
-        var updatedWorkingGroup = await _dbContext.WorkingGroups
-            .Include(wg => wg.Students)
-            .SingleAsync(wg => wg.Id == workingGroup.Id);
+        var createResult = await response.Content.FromJsonAsync<Student>();
 
-        var result = updatedWorkingGroup.Students
-            .SingleOrDefault(s =>
-                s.Name == student.Name &&
-                s.FirstName == student.FirstName &&
-                s.Gender == student.Gender &&
-                s.PhoneNumber == student.PhoneNumber);
+        var result = await _dbContext.Students.SingleAsync(s => s.Id == createResult.Id);
 
         result.Should().NotBeNull();
         result.Name.Should().Be(student.Name);
         result.FirstName.Should().Be(student.FirstName);
         result.Gender.Should().Be(student.Gender);
         result.PhoneNumber.Should().Be(student.PhoneNumber);
+
+        result.Should().BeEquivalentTo(createResult);
     }
+
     [Fact]
     public async Task AddAsync_ShouldReturnNotFound_WhenWorkingGroupNotPresent()
     {
