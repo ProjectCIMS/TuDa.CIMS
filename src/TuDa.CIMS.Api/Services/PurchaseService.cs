@@ -1,4 +1,7 @@
-﻿using TuDa.CIMS.Api.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using TuDa.CIMS.Api.Database;
+using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 
@@ -8,14 +11,17 @@ public class PurchaseService : IPurchaseService
 {
     private readonly IPurchaseRepository _purchaseRepository;
     private readonly IConsumableTransactionService _consumableTransactionService;
+    private readonly CIMSDbContext _context;
 
     public PurchaseService(
         IPurchaseRepository purchaseRepository,
-        IConsumableTransactionService consumableTransactionService
+        IConsumableTransactionService consumableTransactionService,
+        CIMSDbContext context
     )
     {
         _purchaseRepository = purchaseRepository;
         _consumableTransactionService = consumableTransactionService;
+        _context = context;
     }
 
     /// <summary>
@@ -93,27 +99,34 @@ public class PurchaseService : IPurchaseService
         CreatePurchaseDto createModel
     )
     {
-        try
-        {
-            var purchase = await _purchaseRepository.CreateAsync(workingGroupId, createModel);
-            if (purchase.IsError)
-            {
-                return purchase.Errors;
-            }
+        var strategy = _context.Database.CreateExecutionStrategy();
 
-            var errorOrCreated = await _consumableTransactionService.CreateForPurchaseAsync(
-                purchase.Value
-            );
-            if (errorOrCreated.IsError)
-            {
-                return errorOrCreated.Errors;
-            }
-
-            return purchase;
-        }
-        catch (Exception ex)
+        return await strategy.ExecuteAsync<ErrorOr<Purchase>>(async () =>
         {
-            return Error.Failure("PurchaseService.CreateAsync", ex.Message);
-        }
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var purchase = await _purchaseRepository.CreateAsync(workingGroupId, createModel);
+                if (purchase.IsError)
+                {
+                    return purchase.Errors;
+                }
+
+                var errorOrCreated = await _consumableTransactionService.CreateForPurchaseAsync(purchase.Value);
+                if (errorOrCreated.IsError)
+                {
+                    return errorOrCreated.Errors;
+                }
+                
+                await transaction.CommitAsync();
+
+                return purchase;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return Error.Failure("PurchaseService.CreateAsync", ex.Message);
+            }
+        });
     }
 }
