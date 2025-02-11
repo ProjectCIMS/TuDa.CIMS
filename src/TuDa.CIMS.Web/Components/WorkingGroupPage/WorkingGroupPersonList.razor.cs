@@ -11,12 +11,14 @@ public partial class WorkingGroupPersonList : ComponentBase
     private readonly IDialogService dialogService;
     private readonly IWorkingGroupApi workingGroupApi;
     private readonly IStudentApi studentApi;
+    private readonly ISnackbar snackbar;
 
     public WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi, IStudentApi studentApi)
     {
         this.dialogService = dialogService;
         this.workingGroupApi = workingGroupApi;
         this.studentApi = studentApi;
+        this.snackbar = snackbar;
     }
 
 
@@ -65,7 +67,10 @@ public partial class WorkingGroupPersonList : ComponentBase
                 FirstName = returnedValues[0], Name = returnedValues[1], PhoneNumber = returnedValues[2]
             });
 
-            if(updatedStudent.IsError){throw new Exception(updatedStudent.Errors!.First().ToString());}
+            if (updatedStudent.IsError)
+            {
+                snackbar.Add("Beim Speichervorgang ist ein Fehler aufgetreten", Severity.Error);
+            }
 
             StateHasChanged();
         }
