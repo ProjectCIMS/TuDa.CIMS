@@ -11,7 +11,7 @@ public enum MeasurementUnits
 
 public static class MeasurementUnitsExtension
 {
-    public static string ToAbbrevation(this MeasurementUnits unit) =>
+    public static string ToAbbreviation(this MeasurementUnits unit) =>
         unit switch
         {
             MeasurementUnits.KiloGram => "kg",
