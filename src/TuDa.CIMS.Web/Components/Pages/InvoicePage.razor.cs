@@ -1,9 +1,7 @@
-using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
 using TuDa.CIMS.Shared.Dtos.Responses;
-using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Models;
 using TuDa.CIMS.Web.Services;
 
@@ -15,32 +13,27 @@ public partial class InvoicePage
     /// The id of the working group.
     /// </summary>
     [Parameter]
-    public Guid workingGroupId { get; set; }
+    public Guid WorkingGroupId { get; set; }
 
     private readonly IJSRuntime _jsRuntime;
+    private readonly ISnackbar _snackbar;
     private readonly IWorkingGroupApi _workingGroupApi;
     private readonly IInvoiceApi _invoiceApi;
 
     public InvoicePage(
         IJSRuntime jsRuntime,
         IWorkingGroupApi workingGroupApi,
-        IInvoiceApi invoiceApi
+        IInvoiceApi invoiceApi,
+        ISnackbar snackbar
     )
     {
         _jsRuntime = jsRuntime;
         _workingGroupApi = workingGroupApi;
         _invoiceApi = invoiceApi;
+        _snackbar = snackbar;
     }
 
     private WorkingGroupResponseDto? _workingGroup { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var workingGroupErrorOr = await _workingGroupApi.GetAsync(workingGroupId);
-        if (workingGroupErrorOr.IsError) { }
-
-        _workingGroup = workingGroupErrorOr.Value;
-    }
 
     /// <summary>
     /// Contains the title and the name of the buyer.
@@ -53,10 +46,18 @@ public partial class InvoicePage
     /// </summary>
     private DateRange _dateRange { get; set; } = new();
 
+    private string SelectedInvoiceNumber { get; set; } = string.Empty;
+
+    private (DateOnly? Start, DateOnly? End) DateOnlyRange =>
+        (
+            _dateRange.Start is not null ? DateOnly.FromDateTime(_dateRange.Start.Value) : null,
+            _dateRange.End is not null ? DateOnly.FromDateTime(_dateRange.End.Value) : null
+        );
+
     /// <summary>
     /// The invoice statistics of the purchase.
     /// </summary>
-    private InvoiceStatistics? InvoiceStatistics { get; set; } =
+    private InvoiceStatistics InvoiceStatistics { get; set; } =
         new()
         {
             TotalPriceConsumables = 0,
@@ -66,66 +67,48 @@ public partial class InvoicePage
         };
 
     /// <summary>
+    /// The TotalPriceSolvents text.
+    /// </summary>
+    private string TotalPriceSolvents => $"{InvoiceStatistics.TotalPriceSolvents:C}";
+
+    /// <summary>
+    /// The TotalPriceChemicals text.
+    /// </summary>
+    private string TotalPriceChemicals => $"{InvoiceStatistics.TotalPriceChemicals:C}";
+
+    /// <summary>
+    /// The TotalPriceConsumables text.
+    /// </summary>
+    private string TotalPriceConsumables => $"{InvoiceStatistics.TotalPriceConsumables:C}";
+
+    /// <summary>
+    /// The TotalPriceGasCylinders text.
+    /// </summary>
+    private string TotalPriceGasCylinders => $"{InvoiceStatistics.TotalPriceGasCylinders:C}";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var workingGroupErrorOr = await _workingGroupApi.GetAsync(WorkingGroupId);
+        if (workingGroupErrorOr.IsError) { }
+
+        _workingGroup = workingGroupErrorOr.Value;
+    }
+
+    /// <summary>
     /// Sets the invoice statistics.
     /// </summary>
     private async Task SetInvoiceStatistics()
     {
-        if (_dateRange is { Start: not null, End: not null })
+        var dates = DateOnlyRange;
+        var errorOrStatistics = await _invoiceApi.GetStatisticsAsync(
+            WorkingGroupId,
+            dates.Start,
+            dates.End
+        );
+        if (!errorOrStatistics.IsError)
         {
-            var errorOrStatistics = await _invoiceApi.GetStatisticsAsync(
-                workingGroupId,
-                DateOnly.FromDateTime(_dateRange.Start.Value),
-                DateOnly.FromDateTime(_dateRange.End.Value)
-            );
-            if (!errorOrStatistics.IsError)
-            {
-                InvoiceStatistics = errorOrStatistics.Value;
-            }
+            InvoiceStatistics = errorOrStatistics.Value;
         }
-    }
-
-    /// <summary>
-    /// Returns the TotalPriceSolvents text.
-    /// </summary>
-    private string GetTotalPriceSolvents()
-    {
-        return InvoiceStatistics?.TotalPriceSolvents.ToString(
-                "0.00",
-                CultureInfo.GetCultureInfo("de-DE")
-            ) + "€";
-    }
-
-    /// <summary>
-    /// Returns the TotalPriceChemicals text.
-    /// </summary>
-    private string GetTotalPriceChemicals()
-    {
-        return InvoiceStatistics?.TotalPriceChemicals.ToString(
-                "0.00",
-                CultureInfo.GetCultureInfo("de-DE")
-            ) + "€";
-    }
-
-    /// <summary>
-    /// Returns the TotalPriceConsumables text.
-    /// </summary>
-    private string GetTotalPriceConsumables()
-    {
-        return InvoiceStatistics?.TotalPriceConsumables.ToString(
-                "0.00",
-                CultureInfo.GetCultureInfo("de-DE")
-            ) + "€";
-    }
-
-    /// <summary>
-    /// Returns the TotalPriceGasCylinders text.
-    /// </summary>
-    private string GetTotalPriceGasCylinders()
-    {
-        return InvoiceStatistics?.TotalPriceGasCylinders.ToString(
-                "0.00",
-                CultureInfo.GetCultureInfo("de-DE")
-            ) + "€";
     }
 
     private async Task OnDateRangeChanged(DateRange newDateRange)
@@ -134,15 +117,22 @@ public partial class InvoicePage
         await SetInvoiceStatistics();
     }
 
-    private string SelectedInvoiceNumber { get; set; } = null!;
-
     private async Task OpenPdf()
     {
-        if (SelectedInvoiceNumber.Length > 0)
+        var dates = DateOnlyRange;
+        var wgId = WorkingGroupId;
+        var infos = new AdditionalInvoiceInformation { InvoiceNumber = SelectedInvoiceNumber };
+        var success = await _invoiceApi.OpenPdfAsync(
+            wgId,
+            infos,
+            _jsRuntime,
+            dates.Start,
+            dates.End
+        );
+
+        if (success.IsError)
         {
-            var wgId = workingGroupId;
-            var infos = new AdditionalInvoiceInformation { InvoiceNumber = SelectedInvoiceNumber };
-            var success = await _invoiceApi.OpenPdfAsync(wgId, infos, _jsRuntime);
+            _snackbar.Add("Etwas hat bei der Erstellung nicht funktioniert.", Severity.Error);
         }
     }
 }

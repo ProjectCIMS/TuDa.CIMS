@@ -1,4 +1,4 @@
-@page "/working-groups/{workingGroupId:guid}/invoice"
+@page "/working-groups/{WorkingGroupId:guid}/invoice"
 <MudContainer MaxWidth="MaxWidth.Large" Class="p-4">
     <MudGrid Spacing="2">
         <MudItem xs="12" Class="mt-4">
@@ -26,19 +26,19 @@
                         <MudStack Spacing="1" Class="m-lg-4">
                             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                                 <MudText>Chemikalien:</MudText>
-                                <MudText Align="Align.Right">@GetTotalPriceChemicals()</MudText>
+                                <MudText Align="Align.Right">@TotalPriceChemicals</MudText>
                             </MudStack>
                             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                                 <MudText>Verbrauchsgegenstände:</MudText>
-                                <MudText Align="Align.Right">@GetTotalPriceConsumables()</MudText>
+                                <MudText Align="Align.Right">@TotalPriceConsumables</MudText>
                             </MudStack>
                             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                                 <MudText>Lösungsmittel:</MudText>
-                                <MudText Align="Align.Right">@GetTotalPriceSolvents()</MudText>
+                                <MudText Align="Align.Right">@TotalPriceSolvents</MudText>
                             </MudStack>
                             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                                 <MudText>Technische Gase:</MudText>
-                                <MudText Align="Align.Right">@GetTotalPriceGasCylinders()</MudText>
+                                <MudText Align="Align.Right">@TotalPriceGasCylinders</MudText>
                             </MudStack>
                         </MudStack>
                     </MudStack>
