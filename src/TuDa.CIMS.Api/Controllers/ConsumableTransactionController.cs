@@ -44,29 +44,4 @@ public class ConsumableTransactionController : CIMSBaseController
             onError: ErrorsToProblem
         );
     }
-
-    /// <summary>
-    /// Updates the amount of the specific Consumamble of the ConsumableTransaction and creates a new transaction for a consumable item.
-    /// If this is successful, returns a 200 OK response. If an error occurs during the update, an appropriate error response is returned.
-    /// </summary>
-    /// <param name="createModel"></param>
-
-   /* [HttpPost]
-    public async Task<IActionResult> CreateAsync(CreateConsumableTransactionDto createModel)
-    {
-        return (await _consumableTransactionService.CreateAsync(createModel)).Match(
-            onValue: _ => Ok(),
-            onError: ErrorsToProblem
-        );
-    }*/
-
-    [HttpPost]
-    public async Task<IActionResult> CreateForPurchaseAsync(Purchase purchase)
-    {
-        return (await _consumableTransactionService.CreateForPurchaseAsync(purchase)).Match(
-            onValue: _ => Ok(),
-            onError: ErrorsToProblem
-        );
-    }
-
 }
