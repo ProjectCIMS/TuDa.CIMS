@@ -28,7 +28,7 @@ public class InvoiceRepository : IInvoiceRepository
             .Where(p =>
                 (p.CompletionDate != null) // Purchase is not completed
                 && (p.CompletionDate.Value >= beginDate && p.CompletionDate.Value <= endDate) // Purchase is in DateSpan
-                && (p.Successor != null) // Purchase is invalidated
+                && (p.Successor == null) // Purchase is not invalidated
             )
             .Include(p => p.Entries)
             .ThenInclude(e => e.AssetItem)
