@@ -13,7 +13,9 @@ public class ConsumableTransactionController : CIMSBaseController
 {
     private readonly IConsumableTransactionService _consumableTransactionService;
 
-    public ConsumableTransactionController(IConsumableTransactionService consumableTransactionService)
+    public ConsumableTransactionController(
+        IConsumableTransactionService consumableTransactionService
+    )
     {
         _consumableTransactionService = consumableTransactionService;
     }
