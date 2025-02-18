@@ -1,0 +1,23 @@
+<MudPaper>
+    <MudStack Spacing="2" Style="display: flex; flex-direction: column-reverse; overflow: auto; max-height: 400px;">
+        @foreach (var purchaseEntry in _purchaseEntries)
+        {
+            <MudItem Class="p-2">
+                <MudItem>
+                    <MudText Typo="Typo.h6">@purchaseEntry.AssetItem.Name</MudText>
+                </MudItem>
+                <MudStack Spacing="1">
+                    <MudItem>
+                        @GetPricePerItemString(@purchaseEntry)
+                    </MudItem>
+                    <MudItem>
+                        @GetAmountString(@purchaseEntry)
+                    </MudItem>
+                    <MudItem>
+                        @GetTotalPriceString(@purchaseEntry)
+                    </MudItem>
+                </MudStack>
+            </MudItem>
+        }
+    </MudStack>
+</MudPaper>

@@ -1,0 +1,11 @@
+@using System.Text
+<MudPaper>
+    <MudStack>
+        <MudItem>
+            <MudText Typo="Typo.h6">Käufer: @Purchase.Buyer.FirstName @Purchase.Buyer.Name</MudText>
+        </MudItem>
+        <MudItem>
+            @SignatureAsBase64
+        </MudItem>
+    </MudStack>
+</MudPaper>

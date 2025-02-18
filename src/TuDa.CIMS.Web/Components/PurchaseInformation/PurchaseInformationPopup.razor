@@ -1,0 +1,29 @@
+<MudDialog>
+    <TitleContent>
+        <MudItem>@Purchase.CreatedAt.ToString("dd.MM.yyyy")</MudItem>
+        <MudItem>
+            @if (Purchase.Invalidated)
+            {
+                <MudChip T="string" Color="Color.Error">Rechnung ist ungültig</MudChip>
+            }
+            @if(!Purchase.Invalidated){
+            <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => GoToInvalidation())">Invalidieren</MudButton>
+            }
+        </MudItem>
+    </TitleContent>
+    <DialogContent>
+        <MudItem xs="6">
+            <PurchaseInformationPurchaseEntryList PurchaseId="PurchaseId" WorkingGroupId="WorkingGroupId"/>
+        </MudItem>
+        <MudItem xs="6">
+            <MudStack>
+                <MudItem>
+                    <PurchaseInformationBuyerInformation PurchaseId="PurchaseId" WorkingGroupId="WorkingGroupId"/>
+                </MudItem>
+                <MudItem>
+                    <PurchaseInformationStatistics PurchaseId="PurchaseId" WorkingGroupId="WorkingGroupId"/>
+                </MudItem>
+            </MudStack>
+        </MudItem>
+    </DialogContent>
+</MudDialog>
