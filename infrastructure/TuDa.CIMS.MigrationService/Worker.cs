@@ -7,6 +7,7 @@ using OpenTelemetry.Trace;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.ExcelImporter;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Test.Faker;
 
 namespace TuDa.CIMS.MigrationService;
@@ -83,7 +84,7 @@ public class Worker(
     {
         Randomizer.Seed = new Random(12345);
 
-        (Consumable consumable, Chemical _) = await SeedAssetItem(dbContext, cancellationToken);
+        (Consumable consumable, Chemical _) = await SeedAssetItem(dbContext,cancellationToken);
 
         var professor = new ProfessorFaker().Generate();
         var students = new PersonFaker<Student>().GenerateBetween(5, 5);
@@ -135,7 +136,9 @@ public class Worker(
         CancellationToken cancellationToken
     )
     {
-        var room = new RoomFaker().Generate();
+        var values = Enum.GetValues<Rooms>();
+
+        var room = values[new Random().Next(values.Length)];
 
         Chemical chemical;
         Consumable consumable;
@@ -166,12 +169,6 @@ public class Worker(
             Solvent solvent = new SolventFaker().Generate();
             GasCylinder gasCylinder = new GasCylinderFaker().Generate();
             consumable = new ConsumableFaker(room).Generate();
-            if (!await dbContext.Rooms.AnyAsync(cancellationToken))
-            {
-                await dbContext.Rooms.AddAsync(room, cancellationToken);
-                logger.LogInformation("Seeding Room with Id {RoomId}", room.Id);
-            }
-
             if (
                 !await dbContext.Chemicals.Where(ch => !(ch is Solvent)).AnyAsync(cancellationToken)
             )
