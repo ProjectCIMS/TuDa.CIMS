@@ -3,30 +3,32 @@ using MudBlazor;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
+public record GenericInputField
+{
+    public string Label { get; init; }
+    public string? Value { get; set; }
+    public bool Required { get; init; } = false;
+
+    public GenericInputField(string label, string? value = null, bool required = false)
+    {
+        Label = label;
+        Value = value;
+        Required = required;
+    }
+};
+
 public partial class GenericInputPopUp : ComponentBase
 {
-    [Inject] private ISnackbar Snackbar { get; set; } = null!;
-    [CascadingParameter] public required MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter]
+    public required MudDialogInstance MudDialog { get; set; }
 
-    [Parameter] public GenericInput Field { get; set; } = new GenericInput();
+    [Parameter]
+    public List<GenericInputField> Fields { get; set; } = [];
 
-    private void Submit()
-    {
-        MudDialog.Close(DialogResult.Ok(Field.Values));
-        Snackbar.Add("Der Vorgang wurde erfolgreich abgeschlossen", Severity.Success);
-    }
-
-    private void Cancel()
-    {
-        MudDialog.Cancel();
-        Snackbar.Add("Der Vorgang wurde abgebrochen", Severity.Warning);
-    }
-}
-
-public class GenericInput
-{
-    public List<string> Labels { get; set; } = new();
-    public List<string> Values { get; set; } = new();
-
+    [Parameter]
     public string YesText { get; set; } = "Speichern";
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(Fields.Select(f => f.Value)));
+
+    private void Cancel() => MudDialog.Cancel();
 }
