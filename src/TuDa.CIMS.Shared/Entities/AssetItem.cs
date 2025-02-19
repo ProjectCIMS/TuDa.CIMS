@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Shared.Entities;
 
@@ -25,7 +26,7 @@ public abstract record AssetItem : BaseEntity
     /// <summary>
     /// The room in which the item is located.
     /// </summary>
-    public required Room Room { get; set; }
+    public required Rooms Room { get; set; }
 
     /// <summary>
     /// The item number of the item.
