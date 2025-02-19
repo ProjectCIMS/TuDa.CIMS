@@ -182,7 +182,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
         var response = await _client.PatchAsync(
             $"api/asset-items/{Guid.NewGuid()}",
             JsonContent.Create<UpdateAssetItemDto>(
-                new UpdateConsumableDto() { StockUpdate = new StockUpdateDto(10, TransactionReasons.Restock)}
+                new UpdateConsumableDto() { StockUpdate = new StockUpdateDto(10, TransactionReasons.Restock) }
             )
         );
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -290,10 +290,6 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
     public async Task CreateAsync_ShouldCreateConsumableTransaction_WhenConsumableIsCreated()
     {
         // Arrange
-        var room = new Room { Name = "test", Id = Guid.NewGuid() };
-        await _dbContext.Rooms.AddAsync(room);
-        await _dbContext.SaveChangesAsync();
-
         var createConsumable = new CreateConsumableDto
         {
             ItemNumber = "12345",
@@ -301,7 +297,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             Note = "Test Note",
             Price = 50,
             Shop = "Test Shop",
-            RoomId = room.Id,
+            Room = Rooms.G27,
             Amount = 10,
             Manufacturer = "Test Manufacturer",
             SerialNumber = "ABC123"
@@ -314,7 +310,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
         );
 
         // Assert
-        response.IsSuccessStatusCode.Should().BeTrue();;
+        response.IsSuccessStatusCode.Should().BeTrue(); ;
 
         var createdConsumable = await _dbContext.Consumables.SingleAsync();
         createdConsumable.Should().NotBeNull();
