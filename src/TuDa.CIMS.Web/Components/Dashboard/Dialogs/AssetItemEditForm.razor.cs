@@ -163,6 +163,7 @@ public partial class AssetItemEditForm
                 Shop = _assetItemForm.FormShop,
                 ItemNumber = _assetItemForm.FormItemNumber,
                 Note = _assetItemForm.FormNote,
+                Room = _assetItemForm.FormRoom,
                 Cas = _chemicalItemForm.FormCas,
                 Price = _assetItemForm.FormPrice,
                 Purity = _chemicalItemForm.FormPurity,
@@ -176,9 +177,13 @@ public partial class AssetItemEditForm
                 ItemNumber = _assetItemForm.FormItemNumber,
                 Note = _assetItemForm.FormNote,
                 Price = _assetItemForm.FormPrice,
+                Room = _assetItemForm.FormRoom,
                 Manufacturer = _consumableItemForm.FormManufacturer,
                 SerialNumber = _consumableItemForm.FormSerialNumber,
-                StockUpdate= new StockUpdateDto(_consumableItemForm.FormConsumableAmount, TransactionReasons.Restock)
+                StockUpdate = new StockUpdateDto(
+                    _consumableItemForm.FormConsumableAmount,
+                    TransactionReasons.Restock
+                ),
             },
 
             GasCylinder => new UpdateGasCylinderDto()
@@ -188,6 +193,7 @@ public partial class AssetItemEditForm
                 ItemNumber = _assetItemForm.FormItemNumber,
                 Note = _assetItemForm.FormNote,
                 Price = _assetItemForm.FormPrice,
+                Room = _assetItemForm.FormRoom,
                 Cas = _chemicalItemForm.FormCas,
                 Purity = _chemicalItemForm.FormPurity,
                 Volume = _gasCylinderForm.FormVolume,

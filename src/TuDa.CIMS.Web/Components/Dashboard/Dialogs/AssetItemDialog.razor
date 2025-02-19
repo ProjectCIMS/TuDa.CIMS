@@ -59,7 +59,7 @@
             return;
         }
 
-        CreateAssetItemDto createAssetItemDto = await _assetItemCreateForm.SaveChanges();
+        CreateAssetItemDto createAssetItemDto = _assetItemCreateForm.SaveChanges();
 
         if (OnItemCreated.HasDelegate)
         {
