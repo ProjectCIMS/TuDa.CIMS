@@ -23,7 +23,7 @@ public partial class WorkingGroupListPage
         List<GenericInputField> fields =
         [
             new("Vorname des Professors"),
-            new("Nachname des Professors"),
+            new("Nachname des Professors", true),
             new("Titel des Professors"),
             new("E-Mail-Adresse"),
             new("Telefonnummer"),

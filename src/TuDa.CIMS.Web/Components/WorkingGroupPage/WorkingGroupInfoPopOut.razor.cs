@@ -97,7 +97,7 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
         {
             {
                 up => up.Fields,
-                [new("Vorname", ProfessorInfo.FirstName), new("Nachname", ProfessorInfo.Name)]
+                [new("Vorname", ProfessorInfo.FirstName), new("Nachname", ProfessorInfo.Name, true)]
             },
         };
 

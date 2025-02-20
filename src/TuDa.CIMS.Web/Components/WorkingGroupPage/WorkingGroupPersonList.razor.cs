@@ -56,7 +56,7 @@ public partial class WorkingGroupPersonList : ComponentBase
 
                 [
                     new("Vorname", student.FirstName),
-                    new("Nachname", student.Name),
+                    new("Nachname", student.Name, true),
                     new("Telefonnummer", student.PhoneNumber),
                 ]
             },
