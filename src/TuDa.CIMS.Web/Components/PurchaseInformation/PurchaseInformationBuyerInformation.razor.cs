@@ -18,7 +18,7 @@ public partial class PurchaseInformationBuyerInformation
     // {
     //     _purchaseApi = purchaseApi;
     // }
-
+    [CascadingParameter]
     private Purchase Purchase { get; set; } = new() { Buyer = new Professor { Name = "Mülller", FirstName = "Peter" } };
 
     private string SignatureAsBase64 => Encoding.UTF8.GetString(Purchase.Signature);

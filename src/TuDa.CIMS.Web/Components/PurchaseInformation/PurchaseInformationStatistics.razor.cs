@@ -8,24 +8,19 @@ namespace TuDa.CIMS.Web.Components.PurchaseInformation;
 
 public partial class PurchaseInformationStatistics
 {
-    [Parameter]
-    public Guid WorkingGroupId { get; set; }
+    [Parameter] public Guid WorkingGroupId { get; set; }
 
-    [Parameter]
-    public Guid PurchaseId { get; set; }
+    [Parameter] public Guid PurchaseId { get; set; }
 
     private readonly IPurchaseApi _purchaseApi = null!;
 
-    private readonly IInvoiceApi _invoiceApi = null!;
 
-    private Purchase Purchase { get; set; } = null!;
+    [CascadingParameter] private Purchase Purchase { get; set; } = null!;
 
-    public PurchaseInformationStatistics(IPurchaseApi purchaseApi, IInvoiceApi invoiceApi)
+    public PurchaseInformationStatistics(IPurchaseApi purchaseApi)
     {
         _purchaseApi = purchaseApi;
-        _invoiceApi = invoiceApi;
     }
-
 
     /*protected override async Task OnInitializedAsync()
     {
@@ -41,46 +36,13 @@ public partial class PurchaseInformationStatistics
     }*/
 
     /// <summary>
-    /// The invoice statistics of the purchase.
-    /// </summary>
-    private InvoiceStatistics? InvoiceStatistics { get; set; } =
-        new()
-        {
-            TotalPriceConsumables = 0,
-            TotalPriceChemicals = 0,
-            TotalPriceSolvents = 0,
-            TotalPriceGasCylinders = 0,
-        };
-
-    /// <summary>
-    /// Sets the invoice statistics.
-    /// </summary>
-    private async Task SetInvoiceStatistics()
-    {
-        if (Purchase.CompletionDate is not null)
-        {
-            var errorOrStatistics = await _invoiceApi.GetStatisticsAsync(
-                WorkingGroupId,
-                DateOnly.FromDateTime(Purchase.CreatedAt),
-                // CompletionDate probably wrong here
-                DateOnly.FromDateTime((DateTime)Purchase.CompletionDate)
-            );
-            if (!errorOrStatistics.IsError)
-            {
-                InvoiceStatistics = errorOrStatistics.Value;
-            }
-        }
-    }
-
-    /// <summary>
     /// Returns the TotalPriceChemicals text.
     /// </summary>
     private string GetTotalPriceChemicals()
     {
-        return InvoiceStatistics?.TotalPriceChemicals.ToString(
-            "0.00",
-            CultureInfo.GetCultureInfo("de-DE")
-        ) + "€";
+        double sum = Purchase.Entries.Where(entry => entry.AssetItem is Chemical and not Solvent)
+            .Sum(entry => entry.AssetItem.Price);
+        return sum.ToString("C", CultureInfo.GetCultureInfo("de-DE"));
     }
 
     /// <summary>
@@ -88,10 +50,9 @@ public partial class PurchaseInformationStatistics
     /// </summary>
     private string GetTotalPriceSolvents()
     {
-        return InvoiceStatistics?.TotalPriceSolvents.ToString(
-            "0.00",
-            CultureInfo.GetCultureInfo("de-DE")
-        ) + "€";
+        double sum = Purchase.Entries.Where(entry => entry.AssetItem is Solvent)
+            .Sum(entry => entry.AssetItem.Price);
+        return sum.ToString("C", CultureInfo.GetCultureInfo("de-DE"));
     }
 
     /// <summary>
@@ -99,21 +60,9 @@ public partial class PurchaseInformationStatistics
     /// </summary>
     private string GetTotalPriceGasCylinders()
     {
-        return InvoiceStatistics?.TotalPriceGasCylinders.ToString(
-            "0.00",
-            CultureInfo.GetCultureInfo("de-DE")
-        ) + "€";
-    }
-
-    /// <summary>
-    /// Returns the TotalPrice text.
-    /// </summary>
-    private string GetTotalPrice()
-    {
-        return Purchase.TotalPrice.ToString(
-            "0.00",
-            CultureInfo.GetCultureInfo("de-DE")
-        ) + "€";
+        double sum = Purchase.Entries.Where(entry => entry.AssetItem is GasCylinder)
+            .Sum(entry => entry.AssetItem.Price);
+        return sum.ToString("C", CultureInfo.GetCultureInfo("de-DE"));
     }
 
     /// <summary>
@@ -121,10 +70,16 @@ public partial class PurchaseInformationStatistics
     /// </summary>
     private string GetTotalPriceConsumables()
     {
-        return InvoiceStatistics?.TotalPriceConsumables.ToString(
-            "0.00",
-            CultureInfo.GetCultureInfo("de-DE")
-        ) + "€";
+        double sum = Purchase.Entries.Where(entry => entry.AssetItem is Consumable)
+            .Sum(entry => entry.AssetItem.Price);
+        return sum.ToString("C", CultureInfo.GetCultureInfo("de-DE"));
     }
 
+    /// <summary>
+    /// Returns the TotalPrice text.
+    /// </summary>
+    private string GetTotalPrice()
+    {
+        return Purchase.TotalPrice.ToString("C", CultureInfo.GetCultureInfo("de-DE"));
+    }
 }

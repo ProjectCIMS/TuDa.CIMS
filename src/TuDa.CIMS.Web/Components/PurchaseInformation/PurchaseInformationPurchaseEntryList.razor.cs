@@ -32,8 +32,9 @@ public partial class PurchaseInformationPurchaseEntryList
     // {
     //     _purchaseApi = purchaseApi;
     // }
-
+    [CascadingParameter]
     private Purchase Purchase { get; set; } = null!;
+
     private List<PurchaseEntry> _purchaseEntries =
     [
         new()
@@ -81,34 +82,25 @@ public partial class PurchaseInformationPurchaseEntryList
     {
         string temp = purchaseEntry.AssetItem switch
         {
-            Solvent solvent => solvent.PriceUnit.ToString(),
-            Chemical chemical => chemical.PriceUnit.ToString(),
-            GasCylinder gasCylinder => gasCylinder.PriceUnit.ToString(),
+            Substance substance => substance.PriceUnit.ToAbbrevation(),
             _ => "Stück"
         };
-        return "Stückpreis: " + $"{purchaseEntry.PricePerItem.ToString(
-            "0.00",
-            CultureInfo.GetCultureInfo("de-DE")
-        )}" + "€" + "/" + temp;
+        return $"Preis: {purchaseEntry.PricePerItem:C}/{temp}";
     }
 
     private string GetTotalPriceString(PurchaseEntry purchaseEntry)
     {
-        return "Endpreis: " + purchaseEntry.TotalPrice.ToString("0.00",
-            CultureInfo.GetCultureInfo("de-DE")
-        ) + "€";
+        return $"Endpreis: {purchaseEntry.TotalPrice:C}";
     }
 
     private string GetAmountString(PurchaseEntry purchaseEntry)
     {
         string temp = purchaseEntry.AssetItem switch
         {
-            Solvent solvent => solvent.PriceUnit.ToString(),
-            Chemical chemical => chemical.PriceUnit.ToString(),
-            GasCylinder gasCylinder => gasCylinder.PriceUnit.ToString(),
+            Substance substance => substance.PriceUnit.ToAbbrevation(),
             _ => "Stück"
         };
-        return "Menge: " + $"{purchaseEntry.Amount }" + " " + temp;
+        return $"Menge: {purchaseEntry.Amount:C}/{temp}";
     }
 
 }

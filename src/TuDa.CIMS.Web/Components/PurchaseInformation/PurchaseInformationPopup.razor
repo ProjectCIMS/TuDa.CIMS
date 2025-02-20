@@ -6,22 +6,31 @@
             {
                 <MudChip T="string" Color="Color.Error">Rechnung ist ungültig</MudChip>
             }
-            @if(!Purchase.Invalidated){
-            <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => GoToInvalidation())">Invalidieren</MudButton>
+            @if (!Purchase.Invalidated)
+            {
+                <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => GoToInvalidation())">
+                    Invalidieren
+                </MudButton>
             }
         </MudItem>
     </TitleContent>
     <DialogContent>
         <MudItem xs="6">
-            <PurchaseInformationPurchaseEntryList PurchaseId="PurchaseId" WorkingGroupId="WorkingGroupId"/>
+            <CascadingValue Value="Purchase">
+                <PurchaseInformationPurchaseEntryList PurchaseId="PurchaseId" WorkingGroupId="WorkingGroupId"/>
+            </CascadingValue>
         </MudItem>
         <MudItem xs="6">
             <MudStack>
                 <MudItem>
-                    <PurchaseInformationBuyerInformation PurchaseId="PurchaseId" WorkingGroupId="WorkingGroupId"/>
+                    <CascadingValue Value="Purchase">
+                        <PurchaseInformationBuyerInformation PurchaseId="PurchaseId" WorkingGroupId="WorkingGroupId"/>
+                    </CascadingValue>
                 </MudItem>
                 <MudItem>
-                    <PurchaseInformationStatistics PurchaseId="PurchaseId" WorkingGroupId="WorkingGroupId"/>
+                    <CascadingValue Value="Purchase">
+                        <PurchaseInformationStatistics PurchaseId="PurchaseId" WorkingGroupId="WorkingGroupId"/>
+                    </CascadingValue>
                 </MudItem>
             </MudStack>
         </MudItem>
