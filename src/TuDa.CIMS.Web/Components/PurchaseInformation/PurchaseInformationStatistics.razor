@@ -3,29 +3,24 @@
         <MudStack Spacing="1" Class="m-lg-4">
             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                 <MudText>Laborgeräte: </MudText>
-                @*@GetTotalPriceConsumables()*@
-                <MudText Align="Align.Right">3,99$</MudText>
+                <MudText Align="Align.Right">@GetTotalPriceConsumables()</MudText>
             </MudStack>
             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                 <MudText>Lösungsmittel: </MudText>
-                @*@GetTotalPriceSolvents()*@
-                <MudText Align="Align.Right">4,99$</MudText>
+                <MudText Align="Align.Right">@GetTotalPriceSolvents()</MudText>
             </MudStack>
             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                 <MudText>Chemikaliem: </MudText>
-                @*@GetTotalPriceChemicals()*@
-                <MudText Align="Align.Right">5,99$</MudText>
+                <MudText Align="Align.Right">@GetTotalPriceChemicals()</MudText>
             </MudStack>
             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                 <MudText>Technische Gase: </MudText>
-                @*@GetTotalPriceGasCylinders()*@
-                <MudText Align="Align.Right">3,99$</MudText>
+                <MudText Align="Align.Right">@GetTotalPriceGasCylinders()</MudText>
             </MudStack>
             <MudDivider Class="my-2" Style="border: 2px solid black;" />
             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                 <MudText>Summe: </MudText>
-                @*@GetTotalPrice()*@
-                <MudText Align="Align.Right">4,55$</MudText>
+                <MudText Align="Align.Right">@GetTotalPrice()</MudText>
             </MudStack>
         </MudStack>
     </MudStack>

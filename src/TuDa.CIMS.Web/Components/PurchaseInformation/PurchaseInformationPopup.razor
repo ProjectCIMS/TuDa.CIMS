@@ -15,24 +15,20 @@
         </MudItem>
     </TitleContent>
     <DialogContent>
-        <MudItem xs="6">
-            <CascadingValue Value="Purchase">
+        <CascadingValue Value="Purchase">
+            <MudItem xs="6">
                 <PurchaseInformationPurchaseEntryList PurchaseId="PurchaseId" WorkingGroupId="WorkingGroupId"/>
-            </CascadingValue>
-        </MudItem>
-        <MudItem xs="6">
-            <MudStack>
-                <MudItem>
-                    <CascadingValue Value="Purchase">
+            </MudItem>
+            <MudItem xs="6">
+                <MudStack>
+                    <MudItem>
                         <PurchaseInformationBuyerInformation PurchaseId="PurchaseId" WorkingGroupId="WorkingGroupId"/>
-                    </CascadingValue>
-                </MudItem>
-                <MudItem>
-                    <CascadingValue Value="Purchase">
+                    </MudItem>
+                    <MudItem>
                         <PurchaseInformationStatistics PurchaseId="PurchaseId" WorkingGroupId="WorkingGroupId"/>
-                    </CascadingValue>
-                </MudItem>
-            </MudStack>
-        </MudItem>
+                    </MudItem>
+                </MudStack>
+            </MudItem>
+        </CascadingValue>
     </DialogContent>
 </MudDialog>

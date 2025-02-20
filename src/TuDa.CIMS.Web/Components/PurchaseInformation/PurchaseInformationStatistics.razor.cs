@@ -8,10 +8,6 @@ namespace TuDa.CIMS.Web.Components.PurchaseInformation;
 
 public partial class PurchaseInformationStatistics
 {
-    [Parameter] public Guid WorkingGroupId { get; set; }
-
-    [Parameter] public Guid PurchaseId { get; set; }
-
     private readonly IPurchaseApi _purchaseApi = null!;
 
 
@@ -42,7 +38,7 @@ public partial class PurchaseInformationStatistics
     {
         double sum = Purchase.Entries.Where(entry => entry.AssetItem is Chemical and not Solvent)
             .Sum(entry => entry.AssetItem.Price);
-        return sum.ToString("C", CultureInfo.GetCultureInfo("de-DE"));
+        return $"{sum:C}";
     }
 
     /// <summary>
@@ -52,7 +48,7 @@ public partial class PurchaseInformationStatistics
     {
         double sum = Purchase.Entries.Where(entry => entry.AssetItem is Solvent)
             .Sum(entry => entry.AssetItem.Price);
-        return sum.ToString("C", CultureInfo.GetCultureInfo("de-DE"));
+        return $"{sum:C}";
     }
 
     /// <summary>
@@ -62,7 +58,7 @@ public partial class PurchaseInformationStatistics
     {
         double sum = Purchase.Entries.Where(entry => entry.AssetItem is GasCylinder)
             .Sum(entry => entry.AssetItem.Price);
-        return sum.ToString("C", CultureInfo.GetCultureInfo("de-DE"));
+        return $"{sum:C}";
     }
 
     /// <summary>
@@ -72,7 +68,7 @@ public partial class PurchaseInformationStatistics
     {
         double sum = Purchase.Entries.Where(entry => entry.AssetItem is Consumable)
             .Sum(entry => entry.AssetItem.Price);
-        return sum.ToString("C", CultureInfo.GetCultureInfo("de-DE"));
+        return $"{sum:C}";
     }
 
     /// <summary>
@@ -80,6 +76,6 @@ public partial class PurchaseInformationStatistics
     /// </summary>
     private string GetTotalPrice()
     {
-        return Purchase.TotalPrice.ToString("C", CultureInfo.GetCultureInfo("de-DE"));
+        return $"{Purchase.TotalPrice:C}";
     }
 }

@@ -8,12 +8,6 @@ namespace TuDa.CIMS.Web.Components.PurchaseInformation;
 
 public partial class PurchaseInformationPurchaseEntryList
 {
-    [Parameter]
-    public Guid WorkingGroupId { get; set; }
-
-    [Parameter]
-    public Guid PurchaseId { get; set; }
-
    // private readonly IPurchaseApi _purchaseApi = null!;
 
     // protected override async Task OnInitializedAsync()

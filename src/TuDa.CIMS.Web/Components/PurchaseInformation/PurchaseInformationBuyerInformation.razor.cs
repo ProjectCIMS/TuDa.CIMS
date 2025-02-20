@@ -6,12 +6,6 @@ namespace TuDa.CIMS.Web.Components.PurchaseInformation;
 
 public partial class PurchaseInformationBuyerInformation
 {
-    [Parameter]
-    public Guid WorkingGroupId { get; set; }
-
-    [Parameter]
-    public Guid PurchaseId { get; set; }
-
     //private readonly IPurchaseApi _purchaseApi;
 
     // public PurchaseInformationBuyerInformation(IPurchaseApi purchaseApi)
