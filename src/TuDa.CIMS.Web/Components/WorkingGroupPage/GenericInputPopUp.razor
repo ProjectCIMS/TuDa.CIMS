@@ -1,12 +1,13 @@
 ﻿<MudDialog>
     <DialogContent>
-        <MudForm>
-            @for(var i = 0; i< Fields.Count; i++)
+        <MudForm @ref="_form">
+            @foreach (var field in Fields)
             {
                 <MudTextField
-                    @bind-Value="Fields[i].Value"
-                    Label="@Fields[i].Label"
-                    Required="@Fields[i].Required"/>
+                    @bind-Value="field.Value"
+                    Label="@field.Label"
+                    RequiredError="@($"{field.Label} muss gefüllt werden.")"
+                    Required="@field.Required"/>
             }
         </MudForm>
     </DialogContent>

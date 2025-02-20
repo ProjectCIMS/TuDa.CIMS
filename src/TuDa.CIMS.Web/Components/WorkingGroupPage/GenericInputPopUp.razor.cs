@@ -15,6 +15,12 @@ public record GenericInputField
         Value = value;
         Required = required;
     }
+
+    public GenericInputField(string label, bool required)
+    {
+        Label = label;
+        Required = required;
+    }
 };
 
 public partial class GenericInputPopUp : ComponentBase
@@ -28,7 +34,15 @@ public partial class GenericInputPopUp : ComponentBase
     [Parameter]
     public string YesText { get; set; } = "Speichern";
 
-    private void Submit() => MudDialog.Close(DialogResult.Ok(Fields.Select(f => f.Value)));
+    private MudForm _form { get; set; } = null!;
+
+    private void Submit()
+    {
+        if (_form.IsValid)
+        {
+            MudDialog.Close(DialogResult.Ok(Fields.Select(f => f.Value).ToList()));
+        }
+    }
 
     private void Cancel() => MudDialog.Cancel();
 }
