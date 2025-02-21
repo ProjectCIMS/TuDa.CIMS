@@ -1,6 +1,6 @@
 <MudDialog>
     <TitleContent>
-        <MudItem>@Purchase.CreatedAt.ToString("dd.MM.yyyy")</MudItem>
+        <MudItem>@Purchase.CompletionDate?.ToString("dd.MM.yyyy")</MudItem>
         <MudItem>
             @if (Purchase.Invalidated)
             {
