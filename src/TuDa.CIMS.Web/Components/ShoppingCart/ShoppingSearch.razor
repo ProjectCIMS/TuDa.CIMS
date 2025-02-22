@@ -10,7 +10,8 @@
             AdornmentIcon="@Icons.Material.Filled.Search"
             AdornmentColor="@Color.Primary"
             SearchFunc="@Search"
-            ToStringFunc="@ToString"
+            ToStringFunc="@ItemToString"
+            Value="@selectedItem"
             ValueChanged="@AssetItemSelectedInternal"
             Variant="Variant.Filled"
             Dense=true
@@ -18,7 +19,7 @@
         </MudAutocomplete>
         <MudChipSet T="AssetItemType"
                     SelectedValues="_selectedAssetItemTypes"
-                    SelectedValuesChanged="@((values) => _selectedAssetItemTypes = values.ToList())"
+                    SelectedValuesChanged="@((values) => _selectedAssetItemTypes = values!.ToList())"
                     CheckMark
                     SelectionMode="SelectionMode.MultiSelection"
                     Class="my-1">
@@ -30,12 +31,12 @@
             <MudChip Color="Color.Secondary"
                      T="AssetItemType"
                      Value="AssetItemType.Consumable">
-                Verbrauchsmaterial
+                Laborgerät
             </MudChip>
             <MudChip Color="Color.Info"
                      T="AssetItemType"
                      Value="AssetItemType.GasCylinder">
-                Technische Gase
+                Technisches Gas
             </MudChip>
             <MudChip Color="Color.Success"
                      T="AssetItemType"
