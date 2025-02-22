@@ -17,57 +17,107 @@
 {
     private AssetList _assetList = null!;
 
-    private readonly ILogger<AssetListPage> _logger;
     private readonly IDialogService _dialogService;
     private readonly IAssetItemApi _assetItemApi;
+    private readonly ISnackbar _snackbar;
+    private readonly ILogger<AssetListPage> _logger;
 
     public AssetListPage(
         IAssetItemApi assetItemApi,
         IDialogService dialogService,
+        ISnackbar snackbar,
         ILogger<AssetListPage> logger
     )
     {
         _assetItemApi = assetItemApi;
         _dialogService = dialogService;
+        _snackbar = snackbar;
         _logger = logger;
     }
 
     private async Task CreateAssetItem()
     {
-        _logger.LogInformation("Added");
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        var parameters = new DialogParameters
+        var dialog = await _dialogService.ShowAsync<AssetItemDialog>("Create Item", options);
+
+        var createDto = await dialog.GetReturnValueAsync<CreateAssetItemDto>();
+
+        if (createDto is null) return;
+
+        var errorOrSuccess = await _assetItemApi.CreateAsync(createDto);
+        if (errorOrSuccess.IsError)
         {
-            { "OnItemCreated", EventCallback.Factory.Create<CreateAssetItemDto>(this, CreateItem) }
-        };
-        await _dialogService.ShowAsync<AssetItemDialog>("Create Item", options);
+            _logger.LogError("Something went wrong with the creation of an assetItem: {Errors}", errorOrSuccess.Errors);
+            SomethingWentWrong();
+            return;
+        }
+
+        _logger.LogInformation("AssetItem created successfully");
+        _snackbar.Add("Erfolgreich erstellt", Severity.Success);
+        await _assetList.ReloadData();
     }
 
 
     private async Task EditAssetItem(AssetItem assetItem)
     {
-        _logger.LogInformation("Edit {Item.Name}", assetItem.Name);
         var parameters = new DialogParameters<AssetItemEditDialog>
         {
-            { "Item", assetItem },
-            { "OnDeleteRequested", EventCallback.Factory.Create<AssetItem>(this, DeleteItem) }
+            { d => d.Item, assetItem },
         };
 
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        await _dialogService.ShowAsync<AssetItemEditDialog>("Edit Item", parameters, options);
+        var dialog = await _dialogService.ShowAsync<AssetItemEditDialog>("Edit Item", parameters, options);
+
+        var result = await dialog.GetReturnValueAsync<object>();
+
+        switch (result)
+        {
+            case bool delete:
+                if (delete) await RemoveItemAsync(assetItem.Id);
+                break;
+            case UpdateAssetItemDto updateDto:
+                await UpdateItemAsync(assetItem.Id, updateDto);
+                break;
+        }
     }
 
-    private async Task CreateItem(CreateAssetItemDto createAssetItemDto)
+    private async Task UpdateItemAsync(Guid assetItemId, UpdateAssetItemDto updateDto)
     {
-        await _assetItemApi.CreateAsync(createAssetItemDto);
-        await _assetList.ReloadData();
+        var errorOrUpdated = await _assetItemApi.UpdateAsync(assetItemId, updateDto);
+
+        if (errorOrUpdated.IsError)
+        {
+            _logger.LogError("Something went wrong when updating the assetItem {Id} with {UpdateDto}. Errors: {Errors}", assetItemId, updateDto, errorOrUpdated.Errors);
+            SomethingWentWrong();
+        }
+        else
+        {
+            _logger.LogInformation("Updating assetItem {Id} with {UpdateDto} successfully", assetItemId, updateDto);
+            _snackbar.Add("Erfolgreich aktualisiert", Severity.Success);
+            await _assetList.ReloadData();
+        }
+
     }
 
-    private async Task DeleteItem(AssetItem assetItem)
+    private async Task RemoveItemAsync(Guid assetItemId)
     {
-        await _assetItemApi.RemoveAsync(assetItem.Id);
-        await _assetList.ReloadData();
+        var errorOrDeleted = await _assetItemApi.RemoveAsync(assetItemId);
+
+        if (errorOrDeleted.IsError)
+        {
+            _logger.LogError("Something went wrong when deleting the assetItem {Id}. Errors: {Errors}", assetItemId, errorOrDeleted.Errors);
+            SomethingWentWrong();
+        }
+        else
+        {
+            _logger.LogInformation("Deleted assetItem {Id} successfully", assetItemId);
+            _snackbar.Add("Erfolgreich gelöscht", Severity.Success);
+            await _assetList.ReloadData();
+        }
+
     }
+
+    private void SomethingWentWrong() => _snackbar.Add("Etwas ist schiefgelaufen", Severity.Error);
 
 }

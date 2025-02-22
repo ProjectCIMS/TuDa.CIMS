@@ -23,9 +23,6 @@ public partial class AssetItemEditDialog
     [Parameter]
     public required AssetItem Item { get; set; }
 
-    [Parameter]
-    public EventCallback<AssetItem> OnDeleteRequested { get; set; }
-
     /// <summary>
     /// If the Delete was confirmed through the extra dialog this will execute the deletion
     /// </summary>
@@ -41,9 +38,8 @@ public partial class AssetItemEditDialog
 
         if (await _dialogService.ShowMessageBox(messageBox) ?? false)
         {
-            await OnDeleteRequested.InvokeAsync(Item);
-            ProductDialog.Close();
-            _snackbar.Add("Eintrag erfolgreich gelöscht!", Severity.Error);
+            // True indicates assetItem should be removed
+            ProductDialog.Close(DialogResult.Ok(true));
         }
     }
 
@@ -63,7 +59,7 @@ public partial class AssetItemEditDialog
     /// <summary>
     /// Method will check for errors and will save the changes if no errors occur
     /// </summary>
-    public async Task SaveChanges()
+    public void SaveChanges()
     {
         bool hasErrors = _assetItemEditForm.ErrorsInForm();
 
@@ -72,7 +68,7 @@ public partial class AssetItemEditDialog
             return;
         }
 
-        await _assetItemEditForm.SaveChanges();
-        ProductDialog.Close();
+        var updateDto = _assetItemEditForm.SaveChanges();
+        ProductDialog.Close(DialogResult.Ok(updateDto));
     }
 }

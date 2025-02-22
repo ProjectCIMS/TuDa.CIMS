@@ -1,21 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
-using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 
 public partial class AssetItemEditForm
 {
-    private readonly IAssetItemApi _assetItemApi;
-
-    public AssetItemEditForm(IAssetItemApi assetItemApi)
-    {
-        _assetItemApi = assetItemApi;
-    }
-
     /// <summary>
     /// Fields for Errors and Feedback
     /// </summary>
@@ -148,9 +139,9 @@ public partial class AssetItemEditForm
     /// <summary>
     /// Functionality of the "Änderungen speichern" Button: Bind the Values to the actual Item
     /// </summary>
-    public async Task SaveChanges()
+    public UpdateAssetItemDto SaveChanges()
     {
-        UpdateAssetItemDto? dto = UpdateItem switch
+        UpdateAssetItemDto dto = UpdateItem switch
         {
             Chemical => new UpdateChemicalDto()
             {
@@ -173,7 +164,10 @@ public partial class AssetItemEditForm
                 Price = _assetItemForm.FormPrice,
                 Manufacturer = _consumableItemForm.FormManufacturer,
                 SerialNumber = _consumableItemForm.FormSerialNumber,
-                StockUpdate= new StockUpdateDto(_consumableItemForm.FormConsumableAmount, TransactionReasons.Restock)
+                StockUpdate = new StockUpdateDto(
+                    _consumableItemForm.FormConsumableAmount,
+                    TransactionReasons.Restock
+                ),
             },
 
             GasCylinder => new UpdateGasCylinderDto()
@@ -191,6 +185,6 @@ public partial class AssetItemEditForm
             },
             _ => null!,
         };
-        await _assetItemApi.UpdateAsync(UpdateItem.Id, dto);
+        return dto;
     }
 }
