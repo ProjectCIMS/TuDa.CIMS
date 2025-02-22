@@ -22,7 +22,7 @@
 
 @code
 {
-    [Parameter]
+    [CascadingParameter]
     public required PurchaseResponseDto Purchase { get; set; }
 
     private string GetPricePerItemString(PurchaseEntry purchaseEntry)
