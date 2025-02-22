@@ -9,7 +9,7 @@ using TuDa.CIMS.ExcelImporter;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Test.Faker;
 
-namespace TuDa.CIMS.MigrationService;
+namespace TuDa.CIMS.TestingDataService;
 
 public class Worker(
     IServiceProvider serviceProvider,

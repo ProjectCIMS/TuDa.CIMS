@@ -11,7 +11,7 @@ var api = builder
 builder.AddProject<Projects.TuDa_CIMS_Web>("cims-web").WithReference(api).WaitFor(api);
 
 builder
-    .AddProject<Projects.TuDa_CIMS_MigrationService>("cims-migration")
+    .AddProject<Projects.TuDa_CIMS_TestingDataService>("cims-testing-data")
     .WithReference(postgresDb)
     .WaitFor(api);
 

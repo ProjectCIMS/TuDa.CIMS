@@ -1,5 +1,5 @@
 using TuDa.CIMS.Api.Database;
-using TuDa.CIMS.MigrationService;
+using TuDa.CIMS.TestingDataService;
 
 var builder = Host.CreateApplicationBuilder(args);
 
