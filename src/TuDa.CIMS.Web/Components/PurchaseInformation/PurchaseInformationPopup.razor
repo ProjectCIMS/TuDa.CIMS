@@ -15,20 +15,18 @@
         </MudItem>
     </TitleContent>
     <DialogContent>
-        <CascadingValue Value="Purchase">
             <MudItem xs="6">
-                <PurchaseInformationPurchaseEntryList/>
+                <PurchaseInformationPurchaseEntryList Purchase="Purchase"/>
             </MudItem>
             <MudItem xs="6">
                 <MudStack>
                     <MudItem>
-                        <PurchaseInformationBuyerInformation/>
+                        <PurchaseInformationBuyerInformation Purchase="Purchase"/>
                     </MudItem>
                     <MudItem>
-                        <PurchaseInformationStatistics/>
+                        <PurchaseInformationStatistics Purchase="Purchase"/>
                     </MudItem>
                 </MudStack>
             </MudItem>
-        </CascadingValue>
     </DialogContent>
 </MudDialog>

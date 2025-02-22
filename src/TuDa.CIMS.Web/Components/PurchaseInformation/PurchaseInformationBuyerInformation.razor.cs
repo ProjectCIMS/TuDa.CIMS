@@ -7,7 +7,8 @@ namespace TuDa.CIMS.Web.Components.PurchaseInformation;
 
 public partial class PurchaseInformationBuyerInformation
 {
-    [CascadingParameter]
-    public required Purchase Purchase { get; set; }
-    private string SignatureAsBase64 => Encoding.UTF8.GetString(Purchase.Signature);
+    [Parameter]
+    public required PurchaseResponseDto Purchase { get; set; }
+    // TODO: Dto for the signature is needed here
+    //private string SignatureAsBase64 => Encoding.UTF8.GetString(Purchase.Signature);
 }

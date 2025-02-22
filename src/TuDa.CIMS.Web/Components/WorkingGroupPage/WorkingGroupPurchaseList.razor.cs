@@ -10,7 +10,7 @@ namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 public partial class WorkingGroupPurchaseList
 {
     private readonly IDialogService _dialogService;
-    private NavigationManager _navigation;
+    private readonly NavigationManager _navigation;
     private readonly IPurchaseApi _iPurchaseApi;
 
     public WorkingGroupPurchaseList(
@@ -57,7 +57,11 @@ public partial class WorkingGroupPurchaseList
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
         // Set Parameters
-        var parameters = new DialogParameters { { "WorkingGroupId", WorkingGroupId }, { "PurchaseId", purchase.Id } };
+        var parameters = new DialogParameters
+        {
+            { "WorkingGroupId", WorkingGroupId }, { "PurchaseId", purchase.Id },
+            {"Purchase", purchase}
+        };
         await _dialogService.ShowAsync<PurchaseInformationPopup>(
             "Rechnungsinformationen",
             parameters,
