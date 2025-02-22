@@ -1,5 +1,7 @@
 ﻿using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using TuDa.CIMS.Api.Database;
 
 namespace TuDa.CIMS.Api;
 
@@ -34,5 +36,13 @@ public static class ConfigureServices
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
         return services;
+    }
+
+    public static async Task<IApplicationBuilder> MigrateDatabase(this IApplicationBuilder builder)
+    {
+        using var scope = builder.ApplicationServices.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<CIMSDbContext>();
+        await context.Database.MigrateAsync();
+        return builder;
     }
 }

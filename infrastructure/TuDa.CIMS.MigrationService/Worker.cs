@@ -13,7 +13,6 @@ namespace TuDa.CIMS.MigrationService;
 
 public class Worker(
     IServiceProvider serviceProvider,
-    IConfiguration configuration,
     IHostApplicationLifetime hostApplicationLifetime,
     ILogger<Worker> logger
 ) : BackgroundService
@@ -34,9 +33,6 @@ public class Worker(
             var dbContext = scope.ServiceProvider.GetRequiredService<CIMSDbContext>();
 
             await EnsureDatabaseAsync(dbContext, stoppingToken);
-            await RunMigrationAsync(dbContext, stoppingToken);
-            if (!configuration.GetValue<bool>("Seeding"))
-                return;
             await SeedDataAsync(dbContext, stoppingToken);
         }
         catch (Exception ex)
@@ -64,18 +60,6 @@ public class Worker(
             {
                 await dbCreator.CreateAsync(cancellationToken);
             }
-        });
-    }
-
-    private static async Task RunMigrationAsync(
-        CIMSDbContext dbContext,
-        CancellationToken cancellationToken
-    )
-    {
-        var strategy = dbContext.Database.CreateExecutionStrategy();
-        await strategy.ExecuteAsync(async () =>
-        {
-            await dbContext.Database.MigrateAsync(cancellationToken);
         });
     }
 
