@@ -10,21 +10,16 @@ namespace TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 public partial class AssetItemEditForm
 {
     private readonly IAssetItemApi _assetItemApi;
-    private readonly ISnackbar _snackbar;
 
-    public AssetItemEditForm(IAssetItemApi assetItemApi, ISnackbar snackbar)
+    public AssetItemEditForm(IAssetItemApi assetItemApi)
     {
         _assetItemApi = assetItemApi;
-        _snackbar = snackbar;
     }
 
     /// <summary>
     /// Fields for Errors and Feedback
     /// </summary>
     public bool ShowError = false;
-
-    private string _feedbackMessage = string.Empty;
-    private Severity _feedbackColor = Severity.Success;
 
     /// <summary>
     /// References to the different Forms
@@ -196,10 +191,6 @@ public partial class AssetItemEditForm
             },
             _ => null!,
         };
-        _feedbackMessage = "Das Objekt wurde erfolgreich geupdated.";
-        _feedbackColor = Severity.Success;
-
         await _assetItemApi.UpdateAsync(UpdateItem.Id, dto);
-        _snackbar.Add(_feedbackMessage, _feedbackColor);
     }
 }
