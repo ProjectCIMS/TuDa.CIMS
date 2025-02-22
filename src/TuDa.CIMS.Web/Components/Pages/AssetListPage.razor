@@ -44,17 +44,7 @@
 
         if (createDto is null) return;
 
-        var errorOrSuccess = await _assetItemApi.CreateAsync(createDto);
-        if (errorOrSuccess.IsError)
-        {
-            _logger.LogError("Something went wrong with the creation of an assetItem: {Errors}", errorOrSuccess.Errors);
-            SomethingWentWrong();
-            return;
-        }
 
-        _logger.LogInformation("AssetItem created successfully");
-        _snackbar.Add("Erfolgreich erstellt", Severity.Success);
-        await _assetList.ReloadData();
     }
 
 
@@ -82,6 +72,21 @@
         }
     }
 
+    private async Task CreateItemAsync(CreateAssetItemDto createDto)
+    {
+        var errorOrCreated = await _assetItemApi.CreateAsync(createDto);
+        if (errorOrCreated.IsError)
+        {
+            _logger.LogError("Something went wrong with the creation of an assetItem: {Errors}", errorOrCreated.Errors);
+            SomethingWentWrongSnack();
+            return;
+        }
+
+        _logger.LogInformation("AssetItem created successfully");
+        _snackbar.Add("Erfolgreich erstellt", Severity.Success);
+        await _assetList.ReloadData();
+    }
+
     private async Task UpdateItemAsync(Guid assetItemId, UpdateAssetItemDto updateDto)
     {
         var errorOrUpdated = await _assetItemApi.UpdateAsync(assetItemId, updateDto);
@@ -89,7 +94,7 @@
         if (errorOrUpdated.IsError)
         {
             _logger.LogError("Something went wrong when updating the assetItem {Id} with {UpdateDto}. Errors: {Errors}", assetItemId, updateDto, errorOrUpdated.Errors);
-            SomethingWentWrong();
+            SomethingWentWrongSnack();
         }
         else
         {
@@ -107,7 +112,7 @@
         if (errorOrDeleted.IsError)
         {
             _logger.LogError("Something went wrong when deleting the assetItem {Id}. Errors: {Errors}", assetItemId, errorOrDeleted.Errors);
-            SomethingWentWrong();
+            SomethingWentWrongSnack();
         }
         else
         {
@@ -118,6 +123,6 @@
 
     }
 
-    private void SomethingWentWrong() => _snackbar.Add("Etwas ist schiefgelaufen", Severity.Error);
+    private void SomethingWentWrongSnack() => _snackbar.Add("Etwas ist schiefgelaufen", Severity.Error);
 
 }
