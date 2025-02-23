@@ -150,7 +150,7 @@ public class PurchaseService : IPurchaseService
         }
     }
 
-    public async Task<ErrorOr<byte[]>> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId)
+    public async Task<ErrorOr<string>> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId)
     {
         try
         {

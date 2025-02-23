@@ -167,7 +167,7 @@ public class PurchaseRepository : IPurchaseRepository
         });
     }
 
-    public async Task<ErrorOr<byte[]>> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId)
+    public async Task<ErrorOr<string>> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId)
     {
         var purchase = await GetOneAsync(workingGroupId, purchaseId);
         if (purchase is null)
@@ -178,6 +178,8 @@ public class PurchaseRepository : IPurchaseRepository
             );
         }
         byte[] signature = purchase.Signature;
-        return signature;
+        string signatureAsBase64 = Convert.ToBase64String(signature);
+        await _context.SaveChangesAsync();
+        return signatureAsBase64;
     }
 }

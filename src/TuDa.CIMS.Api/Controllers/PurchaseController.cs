@@ -111,6 +111,6 @@ public class PurchaseController : CIMSBaseController
     {
         return (
             await _purchaseService.RetrieveSignatureAsync(workingGroupId, purchaseId)
-        ).Match(onValue: value => File(value, "image/png"), onError: ErrorsToProblem);
+        ).Match(onValue: value => Ok(value), onError: ErrorsToProblem);
     }
 }
