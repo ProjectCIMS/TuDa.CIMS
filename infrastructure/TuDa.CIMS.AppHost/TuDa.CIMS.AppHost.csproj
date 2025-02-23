@@ -20,7 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\TuDa.CIMS.Api\TuDa.CIMS.Api.csproj" />
     <ProjectReference Include="..\..\src\TuDa.CIMS.Web\TuDa.CIMS.Web.csproj" />
-    <ProjectReference Include="..\TuDa.CIMS.MigrationService\TuDa.CIMS.MigrationService.csproj" />
+    <ProjectReference Include="..\TuDa.CIMS.TestingDataService\TuDa.CIMS.TestingDataService.csproj" />
   </ItemGroup>
 
 </Project>

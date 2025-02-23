@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
+using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Services;
 
+[ScopedService]
 public class PurchaseService : IPurchaseService
 {
     private readonly IPurchaseRepository _purchaseRepository;
@@ -112,7 +113,9 @@ public class PurchaseService : IPurchaseService
                     return purchase.Errors;
                 }
 
-                var errorOrCreated = await _consumableTransactionService.CreateForPurchaseAsync(purchase.Value);
+                var errorOrCreated = await _consumableTransactionService.CreateForPurchaseAsync(
+                    purchase.Value
+                );
                 if (errorOrCreated.IsError)
                 {
                     return errorOrCreated.Errors;
