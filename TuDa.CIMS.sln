@@ -28,7 +28,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.AppHost", "infras
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TuDa.CIMS.ServiceDefaults", "infrastructure\TuDa.CIMS.ServiceDefaults\TuDa.CIMS.ServiceDefaults.csproj", "{010B5E27-E764-4C39-9BD5-645604184711}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.MigrationService", "infrastructure\TuDa.CIMS.MigrationService\TuDa.CIMS.MigrationService.csproj", "{06216752-C73E-4496-9899-B8FE77871137}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.TestingDataService", "infrastructure\TuDa.CIMS.TestingDataService\TuDa.CIMS.TestingDataService.csproj", "{06216752-C73E-4496-9899-B8FE77871137}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.ExcelImporter", "infrastructure\TuDa.CIMS.ExcelImporter\TuDa.CIMS.ExcelImporter.csproj", "{FEE3854D-2321-48DA-ADCB-CF95BFF0F9D7}"
 EndProject

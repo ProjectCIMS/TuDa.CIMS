@@ -1,8 +1,6 @@
 @using TuDa.CIMS.Shared.Entities.Enums
 @* AssetItemCreateForm *@
 
-<MudSnackbarProvider/>
-
 <!-- Modal Body -->
 <MudChipSet T="AssetItemType" @bind-SelectedValue="_selectedAssetItemType" CheckMark SelectionMode="@_selectionMode"
             Class="my-4">
@@ -10,10 +8,10 @@
         Chemikalie
     </MudChip>
     <MudChip Color="Color.Secondary" Value="AssetItemType.Consumable">
-        Verbrauchsmaterial
+        Laborgerät
     </MudChip>
     <MudChip Color="Color.Info" Value="AssetItemType.GasCylinder">
-        Technische Gase
+        Technisches Gas
     </MudChip>
     <MudChip Color="Color.Success" Value="AssetItemType.Solvent">
         Lösung

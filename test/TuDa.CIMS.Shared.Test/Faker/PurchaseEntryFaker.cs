@@ -1,5 +1,4 @@
-﻿using Bogus;
-using TuDa.CIMS.Shared.Entities;
+﻿using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Shared.Test.Faker;
 
@@ -30,8 +29,14 @@ public class PurchaseEntryFaker<T, TAssetItem> : BaseEntityFaker<T>
                     }
                 )
         );
-        RuleFor(e => e.Amount, f => f.Random.Int(min: 1, max: 40));
-        RuleFor(e => e.PricePerItem, f => f.Random.Double(max: 50));
+        RuleFor(
+            e => e.Amount,
+            f =>
+                assetItemFaker is ConsumableFaker || assetItem is Consumable
+                    ? f.Random.Int(min: 1, max: 100)
+                    : f.Random.Double(min: 1, max: 100)
+        );
+        RuleFor(e => e.PricePerItem, f => f.Random.Double(max: 1000));
     }
 }
 

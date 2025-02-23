@@ -20,7 +20,7 @@
     /// <returns></returns>
     private string PriceText(AssetItem product) => product switch
     {
-        Substance substance => $"{substance.Price:F}€/{substance.PriceUnit.ToAbbrevation()}",
+        Substance substance => $"{substance.Price:F}€/{substance.PriceUnit.ToAbbreviation()}",
         _ => $"{Product.Price:F}€/Stück"
     };
 

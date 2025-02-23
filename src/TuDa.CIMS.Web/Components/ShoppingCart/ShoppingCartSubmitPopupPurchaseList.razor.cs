@@ -19,7 +19,7 @@ public partial class ShoppingCartSubmitPopupPurchaseList
         $"{purchaseEntry.Amount}"
         + purchaseEntry.AssetItem switch
         {
-            Substance substance => substance.PriceUnit.ToAbbrevation(),
+            Substance substance => substance.PriceUnit.ToAbbreviation(),
             _ => "Stück",
         };
 }
