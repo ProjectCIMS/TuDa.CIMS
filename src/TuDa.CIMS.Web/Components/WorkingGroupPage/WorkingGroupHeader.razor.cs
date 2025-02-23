@@ -44,4 +44,14 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi, Naviga
         await dialogReference.Result;
         navigation.NavigateTo(navigation.Uri, forceLoad: true);
     }
+
+    public async Task ToggleWorkingGroupStatus()
+    {
+        await workingGroupApi.ToggleActiveAsync(WorkingGroupId);
+    }
+
+    private bool IsGroupDeactivated()
+    {
+        return workingGroupApi.GetAsync(WorkingGroupId).Result.Value.IsDeactivated;
+    }
 }

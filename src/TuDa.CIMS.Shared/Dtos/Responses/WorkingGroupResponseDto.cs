@@ -30,4 +30,9 @@ public record WorkingGroupResponseDto : BaseEntityResponseDto
     /// All purchases done by the group.
     /// </summary>
     public List<PurchaseResponseDto> Purchases { get; set; } = [];
+
+    /// <summary>
+    /// Every group can be deactivated or activated.
+    /// </summary>
+    public bool IsDeactivated { get; set; } = false;
 }

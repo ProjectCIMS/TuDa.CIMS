@@ -4,7 +4,7 @@
             @ProfessorName</MudText>
         <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Primary" OnClick="OpenInformationDialog"></MudIconButton>
     </MudItem>
-    <MudButton Class="align-items-end" Variant="Variant.Outlined">
-        Deaktivieren
+    <MudButton Class="align-items-end" Variant="Variant.Outlined" OnClick="ToggleWorkingGroupStatus">
+        @(IsGroupDeactivated() ?  "Aktivieren" : "Deaktivieren" )
     </MudButton>
 </MudContainer>
