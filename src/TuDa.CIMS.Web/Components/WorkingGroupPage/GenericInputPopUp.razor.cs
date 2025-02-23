@@ -3,30 +3,46 @@ using MudBlazor;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
+public record GenericInputField
+{
+    public string Label { get; init; }
+    public string? Value { get; set; }
+    public bool Required { get; init; } = false;
+
+    public GenericInputField(string label, string? value = null, bool required = false)
+    {
+        Label = label;
+        Value = value;
+        Required = required;
+    }
+
+    public GenericInputField(string label, bool required)
+    {
+        Label = label;
+        Required = required;
+    }
+};
+
 public partial class GenericInputPopUp : ComponentBase
 {
-    [Inject] private ISnackbar Snackbar { get; set; } = null!;
-    [CascadingParameter] public required MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter]
+    public required MudDialogInstance MudDialog { get; set; }
 
-    [Parameter] public GenericInput Field { get; set; } = new GenericInput();
+    [Parameter]
+    public List<GenericInputField> Fields { get; set; } = [];
+
+    [Parameter]
+    public string YesText { get; set; } = "Speichern";
+
+    private MudForm _form { get; set; } = null!;
 
     private void Submit()
     {
-        MudDialog.Close(DialogResult.Ok(Field.Values));
-        Snackbar.Add("Der Vorgang wurde erfolgreich abgeschlossen", Severity.Success);
+        if (_form.IsValid)
+        {
+            MudDialog.Close(DialogResult.Ok(Fields.Select(f => f.Value).ToList()));
+        }
     }
 
-    private void Cancel()
-    {
-        MudDialog.Cancel();
-        Snackbar.Add("Der Vorgang wurde abgebrochen", Severity.Warning);
-    }
-}
-
-public class GenericInput
-{
-    public List<string> Labels { get; set; } = new();
-    public List<string> Values { get; set; } = new();
-
-    public string YesText { get; set; } = "Speichern";
+    private void Cancel() => MudDialog.Cancel();
 }

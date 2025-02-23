@@ -13,22 +13,29 @@ public partial class WorkingGroupPersonList : ComponentBase
     private readonly IStudentApi studentApi;
     private readonly ISnackbar snackbar;
 
-    public WorkingGroupPersonList(IDialogService dialogService, IWorkingGroupApi workingGroupApi, IStudentApi studentApi, ISnackbar snackbar)
+    public WorkingGroupPersonList(
+        IDialogService dialogService,
+        IWorkingGroupApi workingGroupApi,
+        IStudentApi studentApi,
+        ISnackbar snackbar
+    )
     {
-
         this.dialogService = dialogService;
         this.workingGroupApi = workingGroupApi;
         this.studentApi = studentApi;
         this.snackbar = snackbar;
     }
 
-    [Parameter] public Guid WorkingGroupId { get; set; }
+    [Parameter]
+    public Guid WorkingGroupId { get; set; }
 
     private IEnumerable<Person> _persons = new List<Person>();
 
-    [Parameter] public EventCallback<Person> PersonDeleted { get; set; }
+    [Parameter]
+    public EventCallback<Person> PersonDeleted { get; set; }
 
-    [Parameter] public EventCallback PersonAdded { get; set; }
+    [Parameter]
+    public EventCallback PersonAdded { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -42,18 +49,26 @@ public partial class WorkingGroupPersonList : ComponentBase
     /// <param name="student">The student that will be updated.</param>
     private async Task EditBuyer(Person student)
     {
-        GenericInput inputField = new GenericInput()
+        var parameters = new DialogParameters<GenericInputPopUp>
         {
-            Labels = ["Vorname", "Nachname", "Telefonnummer"],
-            Values = [student.FirstName, student.Name, student.PhoneNumber],
-            YesText = "Speichern"
-        };
+            {
+                up => up.Fields,
 
-        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, inputField } };
+                [
+                    new("Vorname", student.FirstName),
+                    new("Nachname", student.Name, true),
+                    new("Telefonnummer", student.PhoneNumber),
+                ]
+            },
+            { up => up.YesText, "Speichern" },
+        };
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        var dialogReference =
-        await dialogService.ShowAsync<GenericInputPopUp>("Person bearbeiten", parameters, options);
+        var dialogReference = await dialogService.ShowAsync<GenericInputPopUp>(
+            "Person bearbeiten",
+            parameters,
+            options
+        );
 
         var result = await dialogReference.Result;
         if (!result!.Canceled)
@@ -62,10 +77,16 @@ public partial class WorkingGroupPersonList : ComponentBase
             student.FirstName = returnedValues[0];
             student.Name = returnedValues[1];
             student.PhoneNumber = returnedValues[2];
-            var updatedStudent = await studentApi.UpdateAsync(WorkingGroupId, student.Id, new UpdateStudentDto()
-            {
-                FirstName = returnedValues[0], Name = returnedValues[1], PhoneNumber = returnedValues[2]
-            });
+            var updatedStudent = await studentApi.UpdateAsync(
+                WorkingGroupId,
+                student.Id,
+                new UpdateStudentDto()
+                {
+                    FirstName = returnedValues[0],
+                    Name = returnedValues[1],
+                    PhoneNumber = returnedValues[2],
+                }
+            );
 
             if (updatedStudent.IsError)
             {
@@ -111,16 +132,18 @@ public partial class WorkingGroupPersonList : ComponentBase
     /// </summary>
     private async Task AddBuyerDialog()
     {
-        GenericInput inputField = new GenericInput()
+        var parameters = new DialogParameters<GenericInputPopUp>
         {
-            Labels = ["Vorname", "Nachname", "Telefonnummer"], Values = ["", "", ""], YesText = "Hinzufügen"
+            { up => up.Fields, [new("Vorname"), new("Nachname"), new("Telefonnummer")] },
+            { up => up.YesText, "Hinzufügen" },
         };
-
-        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, inputField } };
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        var dialogReference =
-            await dialogService.ShowAsync<GenericInputPopUp>("Person hinzufügen", parameters, options);
+        var dialogReference = await dialogService.ShowAsync<GenericInputPopUp>(
+            "Person hinzufügen",
+            parameters,
+            options
+        );
 
         var result = await dialogReference.Result;
 
@@ -132,15 +155,19 @@ public partial class WorkingGroupPersonList : ComponentBase
                 WorkingGroupId,
                 new CreateStudentDto()
                 {
-                    FirstName = returnedValues[0], Name = returnedValues[1], PhoneNumber = returnedValues[2]
+                    FirstName = returnedValues[0],
+                    Name = returnedValues[1],
+                    PhoneNumber = returnedValues[2],
                 }
             );
 
             // Have to be like this otherwise the list will only update after reload
             var modifiableList = _persons.ToList();
 
-            if (!newStudent.IsError) modifiableList.Add(newStudent.Value);
-            else snackbar.Add("Ein Fehler ist aufgetreten", Severity.Error);
+            if (!newStudent.IsError)
+                modifiableList.Add(newStudent.Value);
+            else
+                snackbar.Add("Ein Fehler ist aufgetreten", Severity.Error);
 
             _persons = modifiableList;
             await PersonAdded.InvokeAsync();

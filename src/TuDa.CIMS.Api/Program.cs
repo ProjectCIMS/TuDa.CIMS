@@ -28,9 +28,10 @@ builder.Services.AddControllers();
 
 // Setup QuestPdf License
 Settings.License = LicenseType.Community;
-builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
-builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+
 var app = builder.Build();
+
+await app.MigrateDatabase();
 
 app.MapDefaultEndpoints();
 app.MapControllers();

@@ -33,7 +33,7 @@
                             Style="width:200px">
                     <MudStack Spacing="0">
                         <MudStack Spacing="0" Style="overflow-y:auto;max-height:250px">
-                            <MudCheckBox T="bool" Label="Chemiekalien" Size="Size.Small"
+                            <MudCheckBox T="bool" Label="Chemikalien" Size="Size.Small"
                                          Value="@_selectedTypes.Contains(AssetItemType.Chemical)"
                                          ValueChanged="@((value) => SelectedChanged(value, AssetItemType.Chemical))" />
 
@@ -123,7 +123,7 @@
         + " €/"
         + assetItem switch
         {
-            Substance substance => substance.PriceUnit.ToAbbrevation(),
+            Substance substance => substance.PriceUnit.ToAbbreviation(),
             _ => "Stück",
         };
 

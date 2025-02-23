@@ -42,9 +42,6 @@
 
     [CascadingParameter] public required MudDialogInstance ProductDialog { get; set; }
 
-    [Parameter]
-    public EventCallback<CreateAssetItemDto> OnItemCreated { get; set; }
-
     private void Cancel()
     {
         ProductDialog.Cancel();
@@ -59,12 +56,7 @@
             return;
         }
 
-        CreateAssetItemDto createAssetItemDto = await _assetItemCreateForm.SaveChanges();
-
-        if (OnItemCreated.HasDelegate)
-        {
-            await OnItemCreated.InvokeAsync(createAssetItemDto);
-        }
-        ProductDialog.Close();
+        var createAssetItemDto = await _assetItemCreateForm.SaveChanges();
+        ProductDialog.Close(DialogResult.Ok(createAssetItemDto));
     }
 }

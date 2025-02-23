@@ -22,6 +22,8 @@ public partial class ShoppingSearch : ComponentBase
 
     private MudAutocomplete<AssetItem> _autocomplete = null!; // Is set by blazor component
 
+    private AssetItem selectedItem = null!;
+
     /// <summary>
     /// To filter for different types of Items
     /// </summary>
@@ -35,7 +37,7 @@ public partial class ShoppingSearch : ComponentBase
     /// Invoke to clear text
     private async Task AssetItemSelectedInternal(AssetItem item)
     {
-        await _autocomplete.ResetAsync();
+        await _autocomplete.ClearAsync();
         await AssetItemSelected.InvokeAsync(item);
     }
 
@@ -55,7 +57,7 @@ public partial class ShoppingSearch : ComponentBase
         return await _assetItemApi.GetAllAsync(filterDto).Match(value => value, err => []);
     }
 
-    private static string ToString(AssetItem item) =>
+    private static string ItemToString(AssetItem item) =>
         item switch
         {
             Substance substance => $"{substance.Name} ({substance.Cas})",
