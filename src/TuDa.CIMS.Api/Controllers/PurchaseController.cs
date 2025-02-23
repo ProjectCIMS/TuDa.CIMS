@@ -103,4 +103,12 @@ public class PurchaseController : CIMSBaseController
             await _purchaseService.InvalidateAsync(workingGroupId, purchaseId, createModel)
         ).Match(onValue: _ => Ok(), onError: ErrorsToProblem);
     }
+
+    [HttpGet($"{{{nameof(purchaseId)}:guid}}/signature")]
+    public async Task<IActionResult> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId)
+    {
+        return (
+            await _purchaseService.RetrieveSignatureAsync(workingGroupId, purchaseId)
+        ).Match(onValue: _ => Ok(), onError: ErrorsToProblem);
+    }
 }

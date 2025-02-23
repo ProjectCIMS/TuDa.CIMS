@@ -10,6 +10,8 @@ public interface IPurchaseRepository
     Task<ErrorOr<Deleted>> RemoveAsync(Guid workingGroupId, Guid id);
     Task<ErrorOr<Purchase>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel);
 
+    Task<ErrorOr<string>> RetrieveSignatureAsync(Guid workingGroupId, Guid id);
+
     /// <summary>
     /// Invalidate a purchase and correct it with a new one.
     /// </summary>
