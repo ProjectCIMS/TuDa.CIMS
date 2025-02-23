@@ -1,11 +1,13 @@
 ﻿<MudDialog>
     <DialogContent>
-        <MudForm>
-            @foreach (var i in Enumerable.Range(0, Field.Labels.Count))
+        <MudForm @ref="_form">
+            @foreach (var field in Fields)
             {
                 <MudTextField
-                    @bind-Value="Field.Values[i]"
-                    Label="@Field.Labels[i]"/>
+                    @bind-Value="field.Value"
+                    Label="@field.Label"
+                    RequiredError="@($"{field.Label} muss gefüllt werden.")"
+                    Required="@field.Required"/>
             }
         </MudForm>
     </DialogContent>
@@ -13,6 +15,6 @@
         <MudButton OnClick="@(Cancel)" Color="Color.Error">Abbrechen
         </MudButton>
         <MudButton OnClick="@(Submit)"
-                   Color="Color.Success">@Field.YesText</MudButton>
+                   Color="Color.Success">@YesText</MudButton>
     </DialogActions>
 </MudDialog>

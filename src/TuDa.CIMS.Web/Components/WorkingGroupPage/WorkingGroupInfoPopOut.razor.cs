@@ -18,8 +18,7 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
     private string StreetAndNumber =>
         $"{ProfessorInfo.Address.Street} {ProfessorInfo.Address.Number}";
 
-    private string FullName =>
-        $"{ProfessorInfo.FirstName} {ProfessorInfo.Name}";
+    private string FullName => $"{ProfessorInfo.FirstName} {ProfessorInfo.Name}";
 
     [Parameter]
     public WorkingGroupResponseDto WorkingGroup { get; set; } =
@@ -64,9 +63,10 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
 
     private async Task EditProfessorTitle()
     {
-        GenericInput field = new() { Labels = ["Titel"], Values = [ProfessorInfo.Title] };
-
-        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
+        var parameters = new DialogParameters<GenericInputPopUp>
+        {
+            { up => up.Fields, [new("Titel", ProfessorInfo.Title)] },
+        };
 
         var options = new DialogOptions() { CloseOnEscapeKey = true };
 
@@ -93,14 +93,13 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
 
     private async Task EditProfessor()
     {
-        GenericInput field =
-            new()
+        var parameters = new DialogParameters<GenericInputPopUp>
+        {
             {
-                Labels = ["Vorname", "Nachname"],
-                Values = [ProfessorInfo.FirstName, ProfessorInfo.Name],
-            };
-
-        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
+                up => up.Fields,
+                [new("Vorname", ProfessorInfo.FirstName), new("Nachname", ProfessorInfo.Name, true)]
+            },
+        };
 
         var options = new DialogOptions() { CloseOnEscapeKey = true };
 
@@ -135,10 +134,10 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
 
     private async Task EditPhoneNumber()
     {
-        GenericInput field =
-            new() { Labels = ["Telefonnummer"], Values = [WorkingGroup.PhoneNumber] };
-
-        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
+        var parameters = new DialogParameters<GenericInputPopUp>
+        {
+            { up => up.Fields, [new("Telefonnummer", WorkingGroup.PhoneNumber)] },
+        };
 
         var options = new DialogOptions() { CloseOnEscapeKey = true };
 
@@ -165,9 +164,10 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
 
     private async Task EditAddressCity()
     {
-        GenericInput field = new() { Labels = ["Stadt"], Values = [ProfessorInfo.Address.City] };
-
-        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
+        var parameters = new DialogParameters<GenericInputPopUp>
+        {
+            { up => up.Fields, [new("Stadt", ProfessorInfo.Address.City)] },
+        };
 
         var options = new DialogOptions() { CloseOnEscapeKey = true };
 
@@ -198,14 +198,17 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
 
     private async Task EditAddressStreetAndNumber()
     {
-        GenericInput field =
-            new()
+        var parameters = new DialogParameters<GenericInputPopUp>
+        {
             {
-                Labels = ["Straße", "Hausnummer"],
-                Values = [ProfessorInfo.Address.Street, ProfessorInfo.Address.Number.ToString()],
-            };
+                up => up.Fields,
 
-        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
+                [
+                    new("Straße", ProfessorInfo.Address.Street),
+                    new("Hausnummer", ProfessorInfo.Address.Number.ToString()),
+                ]
+            },
+        };
 
         var options = new DialogOptions() { CloseOnEscapeKey = true };
 
@@ -240,16 +243,18 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
 
     private async Task EditAddressZipNumber()
     {
-        GenericInput field =
-            new() { Labels = ["Postleitzahl"], Values = [ProfessorInfo.Address.ZipCode] };
-
-        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
+        var parameters = new DialogParameters<GenericInputPopUp>
+        {
+            { up => up.Fields, [new("Postleitzahl", ProfessorInfo.Address.ZipCode)] },
+        };
 
         var options = new DialogOptions() { CloseOnEscapeKey = true };
 
-        var dialogReference =
-            await DialogService.ShowAsync<GenericInputPopUp>("Postleitzahl bearbeiten", parameters, options);
-
+        var dialogReference = await DialogService.ShowAsync<GenericInputPopUp>(
+            "Postleitzahl bearbeiten",
+            parameters,
+            options
+        );
 
         var result = await dialogReference.Result;
 
@@ -271,9 +276,10 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
 
     private async Task EditEmail()
     {
-        GenericInput field = new() { Labels = ["E-Mail"], Values = [WorkingGroup.Email] };
-
-        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
+        var parameters = new DialogParameters<GenericInputPopUp>
+        {
+            { up => up.Fields, [new("Email", WorkingGroup.Email)] },
+        };
 
         var options = new DialogOptions() { CloseOnEscapeKey = true };
 
