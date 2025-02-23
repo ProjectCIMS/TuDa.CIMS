@@ -14,9 +14,12 @@ builder.Services.AddMudServices();
 builder.Services.AddServices();
 builder.Services.AddMudTranslations();
 
+builder.Services.AddHealthChecks().AddCheck<ApiHealthCheck>("api");
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
+app.MapHealthEndpoint();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

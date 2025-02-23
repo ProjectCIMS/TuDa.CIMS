@@ -26,6 +26,8 @@ builder.Services.AddJsonDecoder();
 
 builder.Services.AddControllers();
 
+builder.Services.AddHealthChecks().AddDbContextCheck<CIMSDbContext>("database");
+
 // Setup QuestPdf License
 Settings.License = LicenseType.Community;
 builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
@@ -34,6 +36,8 @@ var app = builder.Build();
 
 app.MapDefaultEndpoints();
 app.MapControllers();
+
+app.MapHealthEndpoint();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
