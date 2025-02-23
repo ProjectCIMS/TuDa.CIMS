@@ -11,4 +11,6 @@ public interface IWorkingGroupService
     Task<ErrorOr<Deleted>> RemoveAsync(Guid id);
 
     Task<ErrorOr<WorkingGroup>> CreateAsync(CreateWorkingGroupDto createModel);
+
+    Task<ErrorOr<Success>> ToggleActiveAsync(Guid id);
 }

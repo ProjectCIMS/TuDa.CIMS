@@ -100,4 +100,21 @@ public class WorkingGroupController : CIMSBaseController
             onError: ErrorsToProblem
         );
     }
+
+    /// <summary>
+    /// Deactivates or reactivates a Working Group by its ID.
+    /// If the operation is successful, returns a 200 OK response.
+    /// If an error occurs during the operation, an appropriate error response is returned.
+    /// </summary>
+    /// <param name="id">The id of the deactivated/reactivated working group</param>
+    [HttpPatch($"{{{nameof(id)}:guid}}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ToggleActiveAsync(Guid id)
+    {
+        return (await _workingGroupService.ToggleActiveAsync(id)).Match(
+            onValue: _ => Ok(),
+            onError: ErrorsToProblem
+        );
+    }
 }

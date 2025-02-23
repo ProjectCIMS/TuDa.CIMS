@@ -128,4 +128,22 @@ public class WorkingGroupService : IWorkingGroupService
             );
         }
     }
+
+    /// <summary>
+    /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
+    /// or the result of the <see cref="ToggleActiveAsync"/> functionality if successful
+    /// </summary>
+    /// <param name="id">The id of the deativated/reactivated working group.</param>
+    public async Task<ErrorOr<Success>> ToggleActiveAsync(Guid id)
+    {
+        try
+        {
+            return await _workingGroupRepository.ToggleActiveAsync(id);
+        }
+        catch (Exception e)
+        {
+            return Error.Failure(
+                "WorkingGroups.ToggleActiveAsync", e.Message);
+        }
+    }
 }

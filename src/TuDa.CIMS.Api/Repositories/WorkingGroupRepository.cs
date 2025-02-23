@@ -81,7 +81,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     /// <summary>
     /// Removes a Working Group with the specific id from the database.
     /// </summary>
-    /// <param name="id">the specific id of the Working Group</param>
+    /// <param name="id">The specific id of the Working Group.</param>
     /// <returns>Returns that the Working Group was successfully deleted</returns>
     public async Task<ErrorOr<Deleted>> RemoveAsync(Guid id)
     {
@@ -143,10 +143,37 @@ public class WorkingGroupRepository : IWorkingGroupRepository
         });
     }
 
+    /// <summary>
+    /// Search for working groups by the name of the professor.
+    /// </summary>
+    /// <param name="name">Name of the professor.</param>
+    /// <returns>Returns matching working groups.</returns>
     public async Task<List<WorkingGroup>> SearchAsync(string name)
     {
         return await WorkingGroupsFilledQuery
             .Where(s => EF.Functions.ILike(s.Professor.Name, $"%{name}%"))
             .ToListAsync();
+    }
+
+    /// <summary>
+    /// Deactivates or reactivates a Working Group by its ID.
+    /// </summary>
+    /// <param name="id">The specific id of the Working Group.</param>
+    public async Task<ErrorOr<Success>> ToggleActiveAsync(Guid id)
+    {
+        var workingGroup = await GetOneAsync(id);
+
+        if (workingGroup is null)
+        {
+            return Error.NotFound(
+                "WorkingGroups.ToggleActiveAsync",
+                $"Working Group with id {id} was not found."
+            );
+        }
+
+        workingGroup.IsDeactivated = !workingGroup.IsDeactivated;
+
+        await _context.SaveChangesAsync();
+        return Result.Success;
     }
 }

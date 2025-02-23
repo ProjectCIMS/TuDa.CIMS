@@ -13,4 +13,6 @@ public interface IWorkingGroupRepository
 
     Task<ErrorOr<WorkingGroup>> CreateAsync(CreateWorkingGroupDto createModel);
     Task<List<WorkingGroup>> SearchAsync(string name);
+
+    Task<ErrorOr<Success>> ToggleActiveAsync(Guid id);
 }
