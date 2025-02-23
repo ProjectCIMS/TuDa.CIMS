@@ -1,14 +1,4 @@
 ﻿services:
-  cims-migration:
-    build:
-      context: .
-      dockerfile: infrastructure/TuDa.CIMS.MigrationService/Dockerfile
-    depends_on:
-      - cims-db
-    environment:
-      - ConnectionStrings__CIMS=Host=cims-db;Port=5432;Database=CIMS;Username=postgres;Password=postgres
-      - Seeding=true
-
   cims-web:
     image: ghcr.io/projectcims/cims-web:latest
     build:
