@@ -105,10 +105,12 @@ public class PurchaseController : CIMSBaseController
     }
 
     [HttpGet($"{{{nameof(purchaseId)}:guid}}/signature")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId)
     {
         return (
             await _purchaseService.RetrieveSignatureAsync(workingGroupId, purchaseId)
-        ).Match(onValue: _ => Ok(), onError: ErrorsToProblem);
+        ).Match(onValue: value => File(value, "image/png"), onError: ErrorsToProblem);
     }
 }

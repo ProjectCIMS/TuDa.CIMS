@@ -9,7 +9,7 @@ public interface IPurchaseService
     Task<ErrorOr<Purchase>> GetOneAsync(Guid workingGroupId, Guid id);
     Task<ErrorOr<Deleted>> RemoveAsync(Guid workingGroupId, Guid id);
     Task<ErrorOr<Purchase>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel);
-    Task<ErrorOr<string>> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId);
+    Task<ErrorOr<byte[]>> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId);
 
     /// <summary>
     /// Invalidate a purchase and correct it with a new one.
