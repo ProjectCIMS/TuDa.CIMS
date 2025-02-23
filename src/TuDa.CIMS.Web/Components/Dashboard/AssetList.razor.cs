@@ -43,6 +43,18 @@ public partial class AssetList
 
     private async Task<GridData<AssetItem>> ServerReload(GridState<AssetItem> state)
     {
+        if (!state.SortDefinitions.Any())
+        {
+            state.SortDefinitions.Add(
+                new SortDefinition<AssetItem>(
+                    SortBy: "Produkt",
+                    Descending: false,
+                    Index: 0,
+                    SortFunc: x => GetItemName(x)
+                )
+            );
+        }
+
         var filterDto = new AssetItemFilterDto
         {
             NameOrCas = _searchString,
