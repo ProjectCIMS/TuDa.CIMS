@@ -2,7 +2,7 @@
 @using TuDa.CIMS.Shared.Entities
 @using TuDa.CIMS.Shared.Entities.Enums
 <MudPaper>
-    <MudStack Spacing="2" Style="display: flex; flex-direction: column-reverse; overflow: auto; max-height: 400px;">
+    <MudStack Spacing="2" Style="display: flex; flex-direction: column-reverse; overflow: auto; height: 400px;">
         @foreach (var purchaseEntry in Purchase.Entries)
         {
             <MudItem Class="p-2">
@@ -14,7 +14,6 @@
                     <MudItem xs="4">@GetAmountString(purchaseEntry)</MudItem>
                     <MudItem xs="4">@GetTotalPriceString(purchaseEntry)</MudItem>
                 </MudGrid>
-
             </MudItem>
         }
     </MudStack>
@@ -25,28 +24,28 @@
     [CascadingParameter]
     public required PurchaseResponseDto Purchase { get; set; }
 
-    private string GetPricePerItemString(PurchaseEntry purchaseEntry)
+    private MarkupString GetPricePerItemString(PurchaseEntry purchaseEntry)
     {
         var temp = purchaseEntry.AssetItem switch
         {
             Substance substance => substance.PriceUnit.ToAbbrevation(),
             _ => "Stück"
         };
-        return $"Preis: {purchaseEntry.PricePerItem:C}/{temp}";
+        return (MarkupString)$"Preis:<br>{purchaseEntry.PricePerItem:C}/{temp}";
     }
 
-    private string GetTotalPriceString(PurchaseEntry purchaseEntry)
+    private MarkupString GetTotalPriceString(PurchaseEntry purchaseEntry)
     {
-        return $"Endpreis: {purchaseEntry.TotalPrice:C}";
+        return (MarkupString)$"Endpreis:<br>{purchaseEntry.TotalPrice:C}";
     }
 
-    private string GetAmountString(PurchaseEntry purchaseEntry)
+    private MarkupString GetAmountString(PurchaseEntry purchaseEntry)
     {
         var temp = purchaseEntry.AssetItem switch
         {
             Substance substance => substance.PriceUnit.ToAbbrevation(),
             _ => "Stück"
         };
-        return $"Menge: {purchaseEntry.Amount:C}/{temp}";
+        return (MarkupString)$"Menge:<br>{purchaseEntry.Amount} {temp}";
     }
 }

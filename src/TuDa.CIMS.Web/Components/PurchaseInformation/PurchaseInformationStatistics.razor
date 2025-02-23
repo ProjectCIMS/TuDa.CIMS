@@ -12,7 +12,7 @@
                 <MudText Align="Align.Right">@GetTotalPriceSolvents()</MudText>
             </MudStack>
             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-                <MudText>Chemikaliem: </MudText>
+                <MudText>Chemikalien: </MudText>
                 <MudText Align="Align.Right">@GetTotalPriceChemicals()</MudText>
             </MudStack>
             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
@@ -38,8 +38,9 @@
     /// </summary>
     private string GetTotalPriceChemicals()
     {
-        var sum = Purchase.Entries.Where(entry => entry.AssetItem is Chemical and not Solvent)
-            .Sum(entry => entry.AssetItem.Price);
+        var sum = Purchase.Entries
+            .Where(entry => entry.AssetItem is Chemical and not Solvent)
+            .Sum(entry => entry.PricePerItem * entry.Amount);
         return $"{sum:C}";
     }
 
@@ -48,8 +49,9 @@
     /// </summary>
     private string GetTotalPriceSolvents()
     {
-        var sum = Purchase.Entries.Where(entry => entry.AssetItem is Solvent)
-            .Sum(entry => entry.AssetItem.Price);
+        var sum = Purchase.Entries
+            .Where(entry => entry.AssetItem is Solvent)
+            .Sum(entry => entry.PricePerItem * entry.Amount);
         return $"{sum:C}";
     }
 
@@ -58,8 +60,9 @@
     /// </summary>
     private string GetTotalPriceGasCylinders()
     {
-        var sum = Purchase.Entries.Where(entry => entry.AssetItem is GasCylinder)
-            .Sum(entry => entry.AssetItem.Price);
+        var sum = Purchase.Entries
+            .Where(entry => entry.AssetItem is GasCylinder)
+            .Sum(entry => entry.PricePerItem * entry.Amount);
         return $"{sum:C}";
     }
 
@@ -68,8 +71,9 @@
     /// </summary>
     private string GetTotalPriceConsumables()
     {
-        var sum = Purchase.Entries.Where(entry => entry.AssetItem is Consumable)
-            .Sum(entry => entry.AssetItem.Price);
+        var sum = Purchase.Entries
+            .Where(entry => entry.AssetItem is Consumable)
+            .Sum(entry => entry.PricePerItem * entry.Amount);
         return $"{sum:C}";
     }
 
