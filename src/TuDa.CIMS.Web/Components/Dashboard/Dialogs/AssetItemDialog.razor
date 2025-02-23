@@ -1,5 +1,4 @@
-﻿@using TuDa.CIMS.Shared.Dtos
-<!-- AssetItemDialog -->
+﻿<!-- AssetItemDialog -->
 
 <MudDialog>
     <TitleContent>
@@ -42,15 +41,12 @@
 
     [CascadingParameter] public required MudDialogInstance ProductDialog { get; set; }
 
-    [Parameter]
-    public EventCallback<CreateAssetItemDto> OnItemCreated { get; set; }
-
     private void Cancel()
     {
         ProductDialog.Cancel();
     }
 
-    public async Task SaveChanges()
+    public void SaveChanges()
     {
         bool hasErrors = _assetItemCreateForm.ErrorsInForm();
 
@@ -59,12 +55,7 @@
             return;
         }
 
-        CreateAssetItemDto createAssetItemDto = _assetItemCreateForm.SaveChanges();
-
-        if (OnItemCreated.HasDelegate)
-        {
-            await OnItemCreated.InvokeAsync(createAssetItemDto);
-        }
-        ProductDialog.Close();
+        var createAssetItemDto = _assetItemCreateForm.SaveChanges();
+        ProductDialog.Close(DialogResult.Ok(createAssetItemDto));
     }
 }

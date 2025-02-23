@@ -77,7 +77,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
     /// <summary>
     /// Returns the name of a given working group.
     /// </summary>
-    private static string ToString(WorkingGroupResponseDto workingGroup) =>
+    private static string WorkingGroupToString(WorkingGroupResponseDto workingGroup) =>
         workingGroup switch
         {
             null => "",

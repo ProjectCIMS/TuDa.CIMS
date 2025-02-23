@@ -2,6 +2,8 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using TuDa.CIMS.Api.Models;
+using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Api.Documents;
 
@@ -18,7 +20,7 @@ public class InvoiceTablesDocument : IDocument
     {
         container.Page(page =>
         {
-            page.Margin(50);
+            page.Margin(40);
 
             page.DefaultTextStyle(style => style.FontSize(11));
 
@@ -124,16 +126,16 @@ public class InvoiceTablesDocument : IDocument
         {
             table.ColumnsDefinition(columns =>
             {
-                columns.RelativeColumn(0.4f);
+                columns.RelativeColumn(0.3f);
                 columns.ConstantColumn(1); // Vertical Line
-                columns.RelativeColumn(1.7f);
-                columns.RelativeColumn(3.5f);
-                columns.RelativeColumn(2.5f);
+                columns.RelativeColumn(1.3f);
+                columns.RelativeColumn(2.3f);
+                columns.RelativeColumn(2.0f);
                 columns.ConstantColumn(1); // Vertical Line
-                columns.RelativeColumn(0.9f);
+                columns.RelativeColumn();
                 columns.RelativeColumn(1.5f);
                 columns.ConstantColumn(1); // Vertical Line
-                columns.RelativeColumn(1.4f);
+                columns.RelativeColumn(1.1f);
             });
 
             table.Header(header =>
@@ -149,7 +151,7 @@ public class InvoiceTablesDocument : IDocument
                 header.Cell(); // Vertical Line
 
                 header.Cell().Text("Anzahl").AlignCenter();
-                header.Cell().Text("Stückpreis").AlignCenter();
+                header.Cell().Text("Preis").AlignCenter();
 
                 header.Cell(); // Vertical Line
 
@@ -167,6 +169,7 @@ public class InvoiceTablesDocument : IDocument
                 (int index, InvoiceEntry entry) in entries.OrderBy(x => x.PurchaseDate).Index()
             )
             {
+                var priceUnit = AssetItemToPriceUnit(entry.AssetItem);
                 table.Cell().Element(CellStyle).Text($"{index + 1}");
 
                 table.Cell().Element(VerticalLine);
@@ -181,12 +184,16 @@ public class InvoiceTablesDocument : IDocument
 
                 table.Cell().Element(VerticalLine);
 
-                table.Cell().Element(CellStyle).Text($"{entry.Amount}").AlignCenter();
+                table
+                    .Cell()
+                    .Element(CellStyle)
+                    .Text($"{AmountString(entry)} {priceUnit}")
+                    .AlignCenter();
                 table
                     .Cell()
                     .Element(CellStyle)
                     .PaddingRight(3)
-                    .Text($"{entry.PricePerItem:C}")
+                    .Text($"{entry.PricePerItem:C}/{priceUnit}")
                     .AlignCenter();
 
                 table.Cell().Element(VerticalLine);
@@ -201,4 +208,19 @@ public class InvoiceTablesDocument : IDocument
 
     private static IContainer VerticalLine(IContainer container) =>
         container.Background("#000").Width(1).Height(1); // Adjust height as needed
+
+    private static string AssetItemToPriceUnit(AssetItem assetItem) =>
+        assetItem switch
+        {
+            Substance substance => substance.PriceUnit.ToDocumentAbbreviation(),
+            _ => MeasurementUnits.Piece.ToDocumentAbbreviation(),
+        };
+
+    private static string AmountString(InvoiceEntry entry) =>
+        entry.AssetItem switch
+        {
+            Substance substance when substance.PriceUnit is not MeasurementUnits.Piece =>
+                $"{entry.Amount:F}",
+            _ => $"{(int)entry.Amount}",
+        };
 }

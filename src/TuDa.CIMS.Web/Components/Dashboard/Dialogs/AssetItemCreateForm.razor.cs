@@ -9,12 +9,10 @@ namespace TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 public partial class AssetItemCreateForm
 {
     private readonly IAssetItemApi _assetItemApi;
-    private readonly ISnackbar _snackbar;
 
-    public AssetItemCreateForm(IAssetItemApi assetItemApi, ISnackbar snackbar)
+    public AssetItemCreateForm(IAssetItemApi assetItemApi)
     {
         _assetItemApi = assetItemApi;
-        _snackbar = snackbar;
     }
 
     /// <summary>
@@ -197,7 +195,6 @@ public partial class AssetItemCreateForm
                 $"Unsupported asset item type: {_selectedAssetItemType}"
             ),
         };
-        _snackbar.Add("Das Objekt wurde erfolgreich erstellt.", Severity.Success);
         return createDto!;
     }
 }

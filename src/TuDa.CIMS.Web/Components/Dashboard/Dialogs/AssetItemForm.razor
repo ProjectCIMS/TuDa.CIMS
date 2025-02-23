@@ -26,12 +26,6 @@
                   Variant="Variant.Filled"
                   FullWidth
                   Margin="Margin.Dense"/>
-    <MudTextField @bind-Value="FormNote"
-                  Label="Notiz"
-                  Placeholder="Notiz eingeben"
-                  Variant="Variant.Filled"
-                  FullWidth
-                  Margin="Margin.Dense"/>
     <MudNumericField @bind-Value="FormPrice"
                      Format="C"
                      Culture="@_de"
@@ -63,7 +57,13 @@
         }
 
     </MudSelect>
-
+    <MudTextField @bind-Value="FormNote"
+                  Label="Notiz"
+                  Lines="5"
+                  Placeholder="Notiz eingeben"
+                  Variant="Variant.Outlined"
+                  FullWidth
+                  Margin="Margin.Dense"/>
     <MudButton Color="Color.Primary"
                Class="mt-3"
                OnClick="ResetInputs">

@@ -9,26 +9,31 @@ namespace TuDa.CIMS.Web.Components.Pages;
 
 public partial class WorkingGroupListPage
 {
-    [Inject] private IDialogService DialogService { get; set; } = null!;
+    [Inject]
+    private IDialogService DialogService { get; set; } = null!;
 
-    [Inject] private IWorkingGroupApi _workingGroupApi { get; set; } = null!;
+    [Inject]
+    private IWorkingGroupApi _workingGroupApi { get; set; } = null!;
 
     private WorkingGroupPageWorkingGroupList _workingGroupList = null!;
 
     private async Task OpenDialogAsync()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        GenericInput field = new()
+        List<GenericInputField> fields =
+        [
+            new("Vorname des Professors"),
+            new("Nachname des Professors", true),
+            new("Titel des Professors"),
+            new("E-Mail-Adresse"),
+            new("Telefonnummer"),
+        ];
+
+        var parameters = new DialogParameters<GenericInputPopUp>
         {
-            Labels =
-            [
-                "Vorname des Professors", "Nachname des Professors", "Titel des Professors",
-                "E-Mail-Adresse", "Telefonnummer"
-            ],
-            Values = [string.Empty, string.Empty, string.Empty, string.Empty, string.Empty],
-            YesText = "Hinzufügen"
+            { popup => popup.Fields, fields },
+            { popup => popup.YesText, "Hinzufügen" },
         };
-        var parameters = new DialogParameters<GenericInputPopUp> { { up => up.Field, field } };
         var dialog = await DialogService.ShowAsync<GenericInputPopUp>(
             "Arbeitsgruppe erstellen",
             parameters,
@@ -38,14 +43,19 @@ public partial class WorkingGroupListPage
         if (result is { Canceled: false })
         {
             var returnedValues = (List<string>)result!.Data!;
-            CreateProfessorDto professor = new()
-            {
-                FirstName = returnedValues[0], Name = returnedValues[1], Title = returnedValues[2],
-            };
+            CreateProfessorDto professor =
+                new()
+                {
+                    FirstName = returnedValues[0],
+                    Name = returnedValues[1],
+                    Title = returnedValues[2],
+                };
             await _workingGroupApi.CreateAsync(
                 new CreateWorkingGroupDto
                 {
-                    Professor = professor, Email = returnedValues[3], PhoneNumber = returnedValues[4]
+                    Professor = professor,
+                    Email = returnedValues[3],
+                    PhoneNumber = returnedValues[4],
                 }
             );
             await _workingGroupList.ReloadDataGridAsync();
