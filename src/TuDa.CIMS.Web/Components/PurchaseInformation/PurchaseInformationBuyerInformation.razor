@@ -5,7 +5,7 @@
             <MudText Typo="Typo.h6">Käufer: @Purchase.Buyer.FirstName @Purchase.Buyer.Name</MudText>
         </MudItem>
         <MudItem>
-            @*<img src="@SignatureAsBase64" class="d-block"/>*@
+            <MudImage src="@SignatureAsBase64" class="d-block"/>
         </MudItem>
     </MudStack>
 </MudPaper>
@@ -15,7 +15,6 @@
     [CascadingParameter]
     public required PurchaseResponseDto Purchase { get; set; }
 
-    // TODO: Dto for the signature is needed here
     [Parameter]
     public required string SignatureAsBase64 { get; set; }
 }

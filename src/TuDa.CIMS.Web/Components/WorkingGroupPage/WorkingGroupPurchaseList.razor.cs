@@ -57,7 +57,11 @@ public partial class WorkingGroupPurchaseList
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
         // Set Parameters
-        var parameters = new DialogParameters { { "WorkingGroupId", WorkingGroupId }, { "Purchase", purchase } };
+        var parameters = new DialogParameters
+        {
+            { "WorkingGroupId", WorkingGroupId }, { "Purchase", purchase },
+            {"Signature", _iPurchaseApi.RetrieveSignatureAsync(WorkingGroupId, purchase.Id)}
+        };
         await _dialogService.ShowAsync<PurchaseInformationPopup>(
             "Rechnungsinformationen",
             parameters,

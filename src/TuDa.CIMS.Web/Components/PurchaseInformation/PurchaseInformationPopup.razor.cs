@@ -16,7 +16,6 @@ public partial class PurchaseInformationPopup
     [Parameter]
     public PurchaseResponseDto Purchase { get; set; } = null!;
 
-    // TODO: Dto for the signature is needed here
     [Parameter]
     public string SignatureAsBase64 { get; set; } = null!;
 
