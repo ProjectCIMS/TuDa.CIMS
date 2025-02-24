@@ -2,11 +2,19 @@
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
+using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 
 public partial class AssetItemEditForm
 {
+    public AssetItemEditForm(IConsumableApi consumableApi)
+    {
+        _consumableApi = consumableApi;
+    }
+
+    private IConsumableApi _consumableApi;
+
     /// <summary>
     /// Fields for Errors and Feedback
     /// </summary>
@@ -20,8 +28,50 @@ public partial class AssetItemEditForm
     private ConsumableItemForm _consumableItemForm = null!;
     private GasCylinderItemForm _gasCylinderForm = null!;
 
+    /// <summary>
+    /// Consumable Statistics if needed
+    /// </summary>
+    private int AmountLastYear = 0;
+    private int SoldThisYear = 0;
+    private int RestockedThisYear = 0;
+
     [Parameter]
     public required AssetItem UpdateItem { get; set; }
+
+    /// <summary>
+    /// Loads Consumable Statistics into the respective fields if it is a Consumable
+    /// </summary>
+    private async Task LoadConsumableStatistics()
+    {
+        if (UpdateItem is not Consumable consumableItem)
+            return;
+
+        var result = await _consumableApi.GetStatisticsAsync(
+            consumableItem.Id,
+            DateTime.UtcNow.Year
+        );
+
+        if (result.IsError)
+        {
+            return;
+        }
+
+        var stats = result.Value;
+
+        AmountLastYear = stats.PreviousYearAmount;
+        SoldThisYear = stats.TotalRemoved;
+        RestockedThisYear = stats.TotalAdded;
+
+        // StateHasChanged();
+    }
+
+    /// <summary>
+    /// After Parameters are set, calls the Method to load Consumable Statistics
+    /// </summary>
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadConsumableStatistics();
+    }
 
     /// <summary>
     /// Resetting all Inputs on every Form
