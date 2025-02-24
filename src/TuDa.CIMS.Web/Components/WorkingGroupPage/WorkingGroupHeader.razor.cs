@@ -51,6 +51,8 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi, Naviga
     public async Task ToggleWorkingGroupStatus()
     {
         await workingGroupApi.ToggleActiveAsync(WorkingGroupId);
+
+        // TODO: This is a workaround to reload the page after the dialog closes, change this to a better solution
         navigation.NavigateTo(navigation.Uri, forceLoad: true);
     }
 }
