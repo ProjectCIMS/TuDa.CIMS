@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Routing;
+﻿using System.Text;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
@@ -166,5 +167,19 @@ public class PurchaseRepository : IPurchaseRepository
             await transaction.CommitAsync();
             return Result.Success;
         });
+    }
+
+    public async Task<ErrorOr<string>> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId)
+    {
+        var purchase = await GetOneAsync(workingGroupId, purchaseId);
+        if (purchase is null)
+        {
+            return Error.NotFound(
+                "Purchase.RetrieveSignature",
+                $"Purchase with id {purchaseId} was not found."
+            );
+        }
+        byte[] signature = purchase.Signature;
+        return Convert.ToBase64String(signature);
     }
 }
