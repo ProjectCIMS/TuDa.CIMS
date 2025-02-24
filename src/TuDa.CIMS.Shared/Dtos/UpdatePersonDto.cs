@@ -27,4 +27,5 @@ public record UpdatePersonDto
     /// The phone number of the person.
     /// </summary>
     public string? PhoneNumber { get; set; }
+
 }

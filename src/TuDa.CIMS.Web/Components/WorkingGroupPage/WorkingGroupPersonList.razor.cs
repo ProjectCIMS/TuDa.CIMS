@@ -26,38 +26,34 @@ public partial class WorkingGroupPersonList : ComponentBase
         this.snackbar = snackbar;
     }
 
-    [Parameter]
-    public Guid WorkingGroupId { get; set; }
+    [Parameter] public Guid WorkingGroupId { get; set; }
 
-    private IEnumerable<Person> _persons = new List<Person>();
+    private IEnumerable<Student> _students = new List<Student>();
 
-    [Parameter]
-    public EventCallback<Person> PersonDeleted { get; set; }
+    [Parameter] public EventCallback<Person> PersonDeleted { get; set; }
 
-    [Parameter]
-    public EventCallback PersonAdded { get; set; }
+    [Parameter] public EventCallback PersonAdded { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var workingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
-        _persons = workingGroup.Value.Students;
+        _students = workingGroup.Value.Students;
     }
 
     /// <summary>
     /// Updates a specific student.
     /// </summary>
     /// <param name="student">The student that will be updated.</param>
-    private async Task EditBuyer(Person student)
+    private async Task EditBuyer(Student student)
     {
         var parameters = new DialogParameters<GenericInputPopUp>
         {
             {
-                up => up.Fields,
-
-                [
+                up => up.Fields, [
                     new("Vorname", student.FirstName),
                     new("Nachname", student.Name, true),
                     new("Telefonnummer", student.PhoneNumber),
+                    new("E-Mail-Adresse", student.Email)
                 ]
             },
             { up => up.YesText, "Speichern" },
@@ -77,14 +73,15 @@ public partial class WorkingGroupPersonList : ComponentBase
             student.FirstName = returnedValues[0];
             student.Name = returnedValues[1];
             student.PhoneNumber = returnedValues[2];
+            student.Email = returnedValues[3];
+
             var updatedStudent = await studentApi.UpdateAsync(
                 WorkingGroupId,
                 student.Id,
                 new UpdateStudentDto()
                 {
-                    FirstName = returnedValues[0],
-                    Name = returnedValues[1],
-                    PhoneNumber = returnedValues[2],
+                    FirstName = returnedValues[0], Name = returnedValues[1],
+                    PhoneNumber = returnedValues[2], Email = returnedValues[3]
                 }
             );
 
@@ -101,7 +98,7 @@ public partial class WorkingGroupPersonList : ComponentBase
     /// Removes a student when the user accept the dialog.
     /// </summary>
     /// <param name="student">Student that will be removed</param>
-    private async Task RemoveBuyer(Person student)
+    private async Task RemoveBuyer(Student student)
     {
         var messageBox = new MessageBoxOptions
         {
@@ -114,14 +111,14 @@ public partial class WorkingGroupPersonList : ComponentBase
         if (await dialogService.ShowMessageBox(messageBox) == true)
         {
             snackbar.Add("Die Person wurde erfolgreich entfernt", Severity.Success);
-            if (_persons.Any())
+            if (_students.Any())
             {
                 await studentApi.RemoveAsync(WorkingGroupId, student.Id);
 
                 // Have to be like this otherwise the list will only update after reload
-                var modifiedList = _persons.ToList();
+                var modifiedList = _students.ToList();
                 modifiedList.Remove(student);
-                _persons = modifiedList;
+                _students = modifiedList;
                 await PersonDeleted.InvokeAsync();
             }
         }
@@ -134,7 +131,8 @@ public partial class WorkingGroupPersonList : ComponentBase
     {
         var parameters = new DialogParameters<GenericInputPopUp>
         {
-            { up => up.Fields, [new("Vorname"), new("Nachname"), new("Telefonnummer")] },
+            { up => up.Fields, [new("Vorname"), new("Nachname")
+                , new("Telefonnummer"), new("E-Mail-Adresse")] },
             { up => up.YesText, "Hinzufügen" },
         };
         var options = new DialogOptions { CloseOnEscapeKey = true };
@@ -155,21 +153,20 @@ public partial class WorkingGroupPersonList : ComponentBase
                 WorkingGroupId,
                 new CreateStudentDto()
                 {
-                    FirstName = returnedValues[0],
-                    Name = returnedValues[1],
-                    PhoneNumber = returnedValues[2],
+                    FirstName = returnedValues[0], Name = returnedValues[1],
+                    PhoneNumber = returnedValues[2], Email = returnedValues[3],
                 }
             );
 
             // Have to be like this otherwise the list will only update after reload
-            var modifiableList = _persons.ToList();
+            var modifiableList = _students.ToList();
 
             if (!newStudent.IsError)
                 modifiableList.Add(newStudent.Value);
             else
                 snackbar.Add("Ein Fehler ist aufgetreten", Severity.Error);
 
-            _persons = modifiableList;
+            _students = modifiableList;
             await PersonAdded.InvokeAsync();
         }
     }
