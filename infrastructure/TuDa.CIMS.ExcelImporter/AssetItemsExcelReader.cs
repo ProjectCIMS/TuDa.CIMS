@@ -7,7 +7,7 @@ namespace TuDa.CIMS.ExcelImporter;
 public class AssetItemsExcelReader(string path)
 {
     private readonly XLWorkbook _workbook = new(path);
-    private readonly Room _stubRoom = new() { Name = "None" };
+    private readonly Rooms _stubRoom = Rooms.G27;
     private const string StubCas = "Unknown";
 
     public IEnumerable<AssetItem> ReadAssetItems() =>

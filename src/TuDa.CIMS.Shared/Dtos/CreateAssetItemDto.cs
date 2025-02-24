@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Shared.Dtos;
 
@@ -23,7 +23,7 @@ public class CreateAssetItemDto
     /// <summary>
     /// The room in which the item is located.
     /// </summary>
-    public required Guid RoomId { get; set; }
+    public required Rooms Room { get; set; }
 
     /// <summary>
     /// The item number of the item.

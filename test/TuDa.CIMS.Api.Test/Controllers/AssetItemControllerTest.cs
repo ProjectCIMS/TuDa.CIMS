@@ -283,10 +283,6 @@ public class AssetItemControllerTest(CIMSApiFactory apiFactory) : ControllerTest
     public async Task CreateAsync_ShouldCreateConsumableTransaction_WhenConsumableIsCreated()
     {
         // Arrange
-        var room = new Room { Name = "test", Id = Guid.NewGuid() };
-        await DbContext.Rooms.AddAsync(room);
-        await DbContext.SaveChangesAsync();
-
         var createConsumable = new CreateConsumableDto
         {
             ItemNumber = "12345",
@@ -294,7 +290,7 @@ public class AssetItemControllerTest(CIMSApiFactory apiFactory) : ControllerTest
             Note = "Test Note",
             Price = 50,
             Shop = "Test Shop",
-            RoomId = room.Id,
+            Room = Rooms.G27,
             Amount = 10,
             Manufacturer = "Test Manufacturer",
             SerialNumber = "ABC123",
