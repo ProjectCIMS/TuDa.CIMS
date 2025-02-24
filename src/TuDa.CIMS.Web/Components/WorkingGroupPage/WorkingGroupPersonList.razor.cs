@@ -26,13 +26,16 @@ public partial class WorkingGroupPersonList : ComponentBase
         this.snackbar = snackbar;
     }
 
-    [Parameter] public Guid WorkingGroupId { get; set; }
+    [Parameter]
+    public Guid WorkingGroupId { get; set; }
 
     private IEnumerable<Student> _students = new List<Student>();
 
-    [Parameter] public EventCallback<Person> PersonDeleted { get; set; }
+    [Parameter]
+    public EventCallback<Person> PersonDeleted { get; set; }
 
-    [Parameter] public EventCallback PersonAdded { get; set; }
+    [Parameter]
+    public EventCallback PersonAdded { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -49,11 +52,12 @@ public partial class WorkingGroupPersonList : ComponentBase
         var parameters = new DialogParameters<GenericInputPopUp>
         {
             {
-                up => up.Fields, [
+                up => up.Fields,
+                [
                     new("Vorname", student.FirstName),
                     new("Nachname", student.Name, true),
                     new("Telefonnummer", student.PhoneNumber),
-                    new("E-Mail-Adresse", student.Email)
+                    new("E-Mail-Adresse", student.Email),
                 ]
             },
             { up => up.YesText, "Speichern" },
@@ -80,8 +84,10 @@ public partial class WorkingGroupPersonList : ComponentBase
                 student.Id,
                 new UpdateStudentDto()
                 {
-                    FirstName = returnedValues[0], Name = returnedValues[1],
-                    PhoneNumber = returnedValues[2], Email = returnedValues[3]
+                    FirstName = returnedValues[0],
+                    Name = returnedValues[1],
+                    PhoneNumber = returnedValues[2],
+                    Email = returnedValues[3],
                 }
             );
 
@@ -131,8 +137,10 @@ public partial class WorkingGroupPersonList : ComponentBase
     {
         var parameters = new DialogParameters<GenericInputPopUp>
         {
-            { up => up.Fields, [new("Vorname"), new("Nachname")
-                , new("Telefonnummer"), new("E-Mail-Adresse")] },
+            {
+                up => up.Fields,
+                [new("Vorname"), new("Nachname"), new("Telefonnummer"), new("E-Mail-Adresse")]
+            },
             { up => up.YesText, "Hinzufügen" },
         };
         var options = new DialogOptions { CloseOnEscapeKey = true };
@@ -153,8 +161,10 @@ public partial class WorkingGroupPersonList : ComponentBase
                 WorkingGroupId,
                 new CreateStudentDto()
                 {
-                    FirstName = returnedValues[0], Name = returnedValues[1],
-                    PhoneNumber = returnedValues[2], Email = returnedValues[3],
+                    FirstName = returnedValues[0],
+                    Name = returnedValues[1],
+                    PhoneNumber = returnedValues[2],
+                    Email = returnedValues[3],
                 }
             );
 
