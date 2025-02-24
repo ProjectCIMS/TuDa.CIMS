@@ -71,7 +71,9 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
         {
             return [];
         }
-        return await api.GetAllAsync(name).Match(value => value, _ => []);
+        var workingGroups = await api.GetAllAsync(name).Match(value => value, _ => []);
+        workingGroups = workingGroups.Where(wg => wg.IsDeactivated == false).ToList();
+        return workingGroups;
     }
 
     /// <summary>
