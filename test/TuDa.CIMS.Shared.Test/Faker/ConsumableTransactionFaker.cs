@@ -9,7 +9,7 @@ public class ConsumableTransactionFaker : BaseEntityFaker<ConsumableTransaction>
     {
         RuleFor(t => t.Consumable, _ => consumable ?? new ConsumableFaker().Generate());
         RuleFor(t => t.Date, f => f.Date.Recent().ToUniversalTime());
-        RuleFor(t => t.AmountChange, f => f.Random.Int());
+        RuleFor(t => t.AmountChange, f => f.Random.Int(-100, 100));
         RuleFor(t => t.TransactionReason, f => f.Random.Enum<TransactionReasons>());
     }
 }

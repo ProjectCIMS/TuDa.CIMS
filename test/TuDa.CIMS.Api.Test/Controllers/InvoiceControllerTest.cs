@@ -11,23 +11,9 @@ using TuDa.CIMS.Shared.Test.Faker;
 namespace TuDa.CIMS.Api.Test.Controllers;
 
 [TestSubject(typeof(InvoiceController))]
-public class InvoiceControllerTest : IClassFixture<CIMSApiFactory>
+public class InvoiceControllerTest(CIMSApiFactory apiFactory) : ControllerTestBase(apiFactory)
 {
-    private readonly HttpClient _client;
-    private readonly CIMSDbContext _dbContext;
-
     private const double DoublePrecision = 0.001;
-
-    public InvoiceControllerTest(CIMSApiFactory apiFactory)
-    {
-        _client = apiFactory.CreateClient();
-
-        var scope = apiFactory.Services.CreateScope();
-        _dbContext = scope.ServiceProvider.GetRequiredService<CIMSDbContext>();
-
-        _dbContext.Database.EnsureDeleted();
-        _dbContext.Database.Migrate();
-    }
 
     [Fact]
     public async Task GetInvoiceStatistics_ShouldReturnCorrectStatistics_WhenDateRangeIsGiven()
@@ -50,10 +36,10 @@ public class InvoiceControllerTest : IClassFixture<CIMSApiFactory>
 
         workingGroup.Purchases = purchases;
 
-        await _dbContext.WorkingGroups.AddAsync(workingGroup);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.WorkingGroups.AddAsync(workingGroup);
+        await DbContext.SaveChangesAsync();
 
-        var response = await _client.GetAsync(
+        var response = await Client.GetAsync(
             $"api/working-groups/{workingGroup.Id}/invoices/statistics?beginDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}"
         );
 
@@ -88,10 +74,10 @@ public class InvoiceControllerTest : IClassFixture<CIMSApiFactory>
 
         workingGroup.Purchases = purchases;
 
-        await _dbContext.WorkingGroups.AddAsync(workingGroup);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.WorkingGroups.AddAsync(workingGroup);
+        await DbContext.SaveChangesAsync();
 
-        var response = await _client.GetAsync(
+        var response = await Client.GetAsync(
             $"api/working-groups/{workingGroup.Id}/invoices/statistics"
         );
 
@@ -124,10 +110,10 @@ public class InvoiceControllerTest : IClassFixture<CIMSApiFactory>
 
         workingGroup.Purchases = [completed, uncompleted];
 
-        await _dbContext.WorkingGroups.AddAsync(workingGroup);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.WorkingGroups.AddAsync(workingGroup);
+        await DbContext.SaveChangesAsync();
 
-        var response = await _client.GetAsync(
+        var response = await Client.GetAsync(
             $"api/working-groups/{workingGroup.Id}/invoices/statistics"
         );
 
@@ -161,10 +147,10 @@ public class InvoiceControllerTest : IClassFixture<CIMSApiFactory>
 
         workingGroup.Purchases = purchases;
 
-        await _dbContext.WorkingGroups.AddAsync(workingGroup);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.WorkingGroups.AddAsync(workingGroup);
+        await DbContext.SaveChangesAsync();
 
-        var response = await _client.PostAsync(
+        var response = await Client.PostAsync(
             $"api/working-groups/{workingGroup.Id}/invoices/document",
             JsonContent.Create(information)
         );

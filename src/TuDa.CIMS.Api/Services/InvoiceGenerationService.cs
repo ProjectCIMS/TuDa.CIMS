@@ -43,7 +43,7 @@ public class InvoiceGenerationService : IInvoiceGenerationService
             var purchasesInTimePeriod = await _invoiceRepository.GetPurchasesInTimePeriod(
                 workingGroupId,
                 beginDate.Value.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc),
-                endDate.Value.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)
+                endDate.Value.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)
             );
 
             var invoiceEntries = purchasesInTimePeriod

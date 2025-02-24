@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 
@@ -16,7 +17,7 @@ public partial class AssetItemForm
     public string FormItemNumber { get; private set; } = string.Empty;
     public string FormNote { get; private set; } = string.Empty;
     public double FormPrice { get; private set; }
-    public string FormRoomName { get; private set; } = string.Empty;
+    public Rooms? FormRoom { get; private set; }
 
     [Parameter]
     public bool FormShowError { get; set; }
@@ -25,7 +26,8 @@ public partial class AssetItemForm
     private bool NameIsError => FormShowError && FormName == string.Empty;
     private bool ShopIsError => FormShowError && FormShop == string.Empty;
     private bool ItemNumberIsError => FormShowError && FormItemNumber == string.Empty;
-    private bool IsError => PriceIsError || NameIsError || ShopIsError || ItemNumberIsError;
+    private bool RoomIsError => FormShowError && FormRoom is null;
+    private bool IsError => PriceIsError || NameIsError || ShopIsError || ItemNumberIsError || RoomIsError;
 
     [Parameter]
     public EventCallback OnReset { get; set; }
@@ -36,7 +38,7 @@ public partial class AssetItemForm
         FormNote = item.Note;
         FormPrice = item.Price;
         FormShop = item.Shop;
-        FormRoomName = item.Room.Name;
+        FormRoom = item.Room;
         FormItemNumber = item.ItemNumber;
     }
 
@@ -50,7 +52,7 @@ public partial class AssetItemForm
         FormItemNumber = string.Empty;
         FormNote = string.Empty;
         FormPrice = 0.0;
-        FormRoomName = string.Empty;
+        FormRoom = null;
         OnReset.InvokeAsync();
     }
 

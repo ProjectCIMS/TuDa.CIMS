@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Shared.Dtos;
 
@@ -18,7 +18,7 @@ public abstract record UpdateAssetItemDto
     /// <summary>
     /// The room in which the item is located.
     /// </summary>
-    public Guid? RoomId { get; set; }
+    public Rooms? Room { get; set; }
 
     /// <summary>
     /// The name of the item.

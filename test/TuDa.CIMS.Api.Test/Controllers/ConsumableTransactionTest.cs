@@ -12,22 +12,8 @@ using TuDa.CIMS.Shared.Test.Faker;
 
 namespace TuDa.CIMS.Api.Test.Controllers;
 
-public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
+public class ConsumableTransactionTest(CIMSApiFactory apiFactory) : ControllerTestBase(apiFactory)
 {
-    private readonly HttpClient _client;
-    private readonly CIMSDbContext _dbContext;
-
-    public ConsumableTransactionTest(CIMSApiFactory apiFactory)
-    {
-        _client = apiFactory.CreateClient();
-
-        var scope = apiFactory.Services.CreateScope();
-        _dbContext = scope.ServiceProvider.GetRequiredService<CIMSDbContext>();
-
-        _dbContext.Database.EnsureDeleted();
-        _dbContext.Database.Migrate();
-    }
-
     [Fact]
     public async Task GetAsync_ShouldReturnConsumableTransaction_WhenConsumableTransactionPresent()
     {
@@ -38,13 +24,13 @@ public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
             new ConsumableTransactionFaker(),
         ];
 
-        await _dbContext.ConsumableTransactions.AddRangeAsync(consumableTransactions);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.ConsumableTransactions.AddRangeAsync(consumableTransactions);
+        await DbContext.SaveChangesAsync();
 
         foreach (var consumableTransaction in consumableTransactions)
         {
             // Act
-            var response = await _client.GetAsync(
+            var response = await Client.GetAsync(
                 $"api/consumableTransaction/{consumableTransaction.Id}"
             );
 
@@ -60,7 +46,7 @@ public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
     [Fact]
     public async Task GetAsync_ShouldReturnNotFound_WhenConsumableTransactionNotPresent()
     {
-        var response = await _client.GetAsync($"api/consumableTransaction/{Guid.NewGuid()}");
+        var response = await Client.GetAsync($"api/consumableTransaction/{Guid.NewGuid()}");
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -75,11 +61,11 @@ public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
             new ConsumableTransactionFaker(),
         ];
 
-        await _dbContext.ConsumableTransactions.AddRangeAsync(consumableTransactions);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.ConsumableTransactions.AddRangeAsync(consumableTransactions);
+        await DbContext.SaveChangesAsync();
 
         // Act
-        var response = await _client.GetAsync($"api/consumableTransaction/");
+        var response = await Client.GetAsync($"api/consumableTransaction/");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -97,9 +83,9 @@ public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
 
         var WorkingGroupFaker = new WorkingGroupFaker(purchases: []).Generate();
 
-        _dbContext.WorkingGroups.Add(WorkingGroupFaker);
-        _dbContext.AssetItems.AddRange(consumables);
-        _dbContext.SaveChanges();
+        await DbContext.WorkingGroups.AddAsync(WorkingGroupFaker);
+        await DbContext.AssetItems.AddRangeAsync(consumables);
+        await DbContext.SaveChangesAsync();
 
         var entries = consumables
             .Select(consumable => new CreatePurchaseEntryDto()
@@ -118,16 +104,15 @@ public class ConsumableTransactionTest : IClassFixture<CIMSApiFactory>
         };
 
         // Act
-        var response = await _client.PostAsync(
+        var response = await Client.PostAsync(
             $"api/working-groups/{WorkingGroupFaker.Id}/purchases",
             JsonContent.Create(createPurchase)
         );
 
-        var reason = await response.Content.ReadAsStringAsync();
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var consumableTransactions = await _dbContext
+        var consumableTransactions = await DbContext
             .ConsumableTransactions.Include(consumableTransaction =>
                 consumableTransaction.Consumable
             )
