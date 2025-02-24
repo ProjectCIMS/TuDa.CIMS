@@ -5,7 +5,7 @@
 namespace TuDa.CIMS.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class AddEmailToStudent : Migration
+    public partial class AddEmailToPerson : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,7 +14,8 @@ namespace TuDa.CIMS.Api.Migrations
                 name: "Email",
                 table: "Persons",
                 type: "text",
-                nullable: true);
+                nullable: false,
+                defaultValue: "");
         }
 
         /// <inheritdoc />

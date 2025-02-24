@@ -28,4 +28,8 @@ public record UpdatePersonDto
     /// </summary>
     public string? PhoneNumber { get; set; }
 
+    /// <summary>
+    /// The email of the person.
+    /// </summary>
+    public string? Email { get; set; }
 }

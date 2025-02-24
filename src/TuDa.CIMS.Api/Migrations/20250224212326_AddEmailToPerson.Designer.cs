@@ -12,8 +12,8 @@ using TuDa.CIMS.Api.Database;
 namespace TuDa.CIMS.Api.Migrations
 {
     [DbContext(typeof(CIMSDbContext))]
-    [Migration("20250224194339_AddEmailToStudent")]
-    partial class AddEmailToStudent
+    [Migration("20250224212326_AddEmailToPerson")]
+    partial class AddEmailToPerson
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,6 +189,10 @@ namespace TuDa.CIMS.Api.Migrations
                         .IsRequired()
                         .HasMaxLength(13)
                         .HasColumnType("character varying(13)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -376,10 +380,6 @@ namespace TuDa.CIMS.Api.Migrations
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Student", b =>
                 {
                     b.HasBaseType("TuDa.CIMS.Shared.Entities.Person");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<Guid?>("WorkingGroupId")
                         .HasColumnType("uuid");

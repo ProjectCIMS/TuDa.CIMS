@@ -187,6 +187,10 @@ namespace TuDa.CIMS.Api.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("character varying(13)");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -373,10 +377,6 @@ namespace TuDa.CIMS.Api.Migrations
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Student", b =>
                 {
                     b.HasBaseType("TuDa.CIMS.Shared.Entities.Person");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<Guid?>("WorkingGroupId")
                         .HasColumnType("uuid");

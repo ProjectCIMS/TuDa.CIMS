@@ -29,6 +29,7 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
                 Address = new Address(),
                 FirstName = "",
                 Name = "",
+                Email = ""
             },
             Students = new List<Student>(),
             PhoneNumber = "",
@@ -234,7 +235,7 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
                     {
                         AddressStreet = ProfessorInfo.Address.Street,
                         AddressNumber = ProfessorInfo.Address.Number,
-                    },
+                    }
                 }
             );
             StateHasChanged();
@@ -274,11 +275,11 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
         }
     }
 
-    private async Task EditEmail()
+    private async Task EditAssistanceEmail()
     {
         var parameters = new DialogParameters<GenericInputPopUp>
         {
-            { up => up.Fields, [new("Email", WorkingGroup.Email)] },
+            { up => up.Fields, [new("Email-Adresse", WorkingGroup.Email)] },
         };
 
         var options = new DialogOptions() { CloseOnEscapeKey = true };
@@ -300,6 +301,36 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
                 WorkingGroupId,
                 new UpdateWorkingGroupDto() { Email = WorkingGroup.Email }
             );
+            StateHasChanged();
+        }
+    }
+
+    private async Task EditProfessorEmail()
+    {
+        var parameters = new DialogParameters<GenericInputPopUp>
+        {
+            { up => up.Fields, [new("Email-Adresse", ProfessorInfo.Email)] },
+        };
+
+        var options = new DialogOptions() { CloseOnEscapeKey = true };
+
+        var dialogReference = await DialogService.ShowAsync<GenericInputPopUp>(
+            "E-Mail bearbeiten",
+            parameters,
+            options
+        );
+
+        var result = await dialogReference.Result;
+
+        if (!result!.Canceled)
+        {
+            var returnedValues = (List<string>)result.Data!;
+            ProfessorInfo.Email = returnedValues[0];
+
+            await workingGroupApi.UpdateAsync(
+                WorkingGroupId,
+                new UpdateWorkingGroupDto() { Professor = new() { Email = ProfessorInfo.Email } }
+        );
             StateHasChanged();
         }
     }
