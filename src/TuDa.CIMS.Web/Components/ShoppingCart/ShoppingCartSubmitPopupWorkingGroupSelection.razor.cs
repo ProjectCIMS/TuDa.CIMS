@@ -62,7 +62,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
         await WorkingGroupChanged.InvokeAsync(item);
     }
 
-    private Task<IEnumerable<WorkingGroupResponseDto>> Search(
+    private async Task<IEnumerable<WorkingGroupResponseDto>> Search(
         string name,
         CancellationToken token
     )
