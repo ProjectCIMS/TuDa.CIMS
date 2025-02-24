@@ -62,7 +62,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
         await WorkingGroupChanged.InvokeAsync(item);
     }
 
-    private async Task<IEnumerable<WorkingGroupResponseDto>> Search(
+    private Task<IEnumerable<WorkingGroupResponseDto>> Search(
         string name,
         CancellationToken token
     )
@@ -75,6 +75,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
         workingGroups = workingGroups.Where(wg => wg.IsDeactivated == false).ToList();
         return workingGroups;
     }
+
 
     /// <summary>
     /// Returns the name of a given working group.

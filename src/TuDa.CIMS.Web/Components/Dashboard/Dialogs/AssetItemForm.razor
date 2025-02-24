@@ -1,3 +1,4 @@
+@using TuDa.CIMS.Shared.Entities.Enums
 @* AssetItemForm *@
 
 <MudForm Class="p-2">
@@ -36,12 +37,26 @@
                      Variant="Variant.Filled"
                      FullWidth
                      Margin="Margin.Dense"/>
-    <MudTextField @bind-Value="FormRoomName"
-                  Label="Raumname"
-                  Placeholder="Raumname eingeben"
-                  Variant="Variant.Filled"
-                  FullWidth
-                  Margin="Margin.Dense"/>
+    <MudSelect @bind-Value="FormRoom"
+               T="Rooms?"
+               Label="Raum"
+               Error="@RoomIsError"
+               ErrorText="Ein Raum muss ausgewählt werden!"
+               Variant="Variant.Filled"
+               Placeholder="Raum auswählen"
+               FullWidth
+               Margin="Margin.Dense">
+
+        <MudSelectItem T="Rooms?"
+                       Value="null">Nicht ausgewählt
+        </MudSelectItem>
+        @foreach (var room in Enum.GetValues<Rooms>())
+        {
+            <MudSelectItem T="Rooms?"
+                           Value="@room">@room</MudSelectItem>
+        }
+
+    </MudSelect>
     <MudTextField @bind-Value="FormNote"
                   Label="Notiz"
                   Lines="5"

@@ -71,4 +71,29 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
 
         return Result.Created;
     }
+
+    /// <inheritdoc />
+    public async Task<ErrorOr<List<ConsumableTransaction>>> GetAllOfConsumableAsync(
+        Guid consumableId,
+        int? year
+    )
+    {
+        if (!await _context.Consumables.AnyAsync(consumable => consumable.Id == consumableId))
+        {
+            return Error.NotFound("Consumable.NotFound", "ConsumableNotFound");
+        }
+
+        var transactionsQuery = ConsumableTransactionsFilledQuery.Where(transaction =>
+            transaction.Consumable.Id == consumableId
+        );
+
+        if (year is not null)
+        {
+            transactionsQuery = transactionsQuery.Where(transaction =>
+                transaction.Date.Year == year
+            );
+        }
+
+        return await transactionsQuery.ToListAsync();
+    }
 }

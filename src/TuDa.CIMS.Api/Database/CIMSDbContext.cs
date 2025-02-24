@@ -3,7 +3,7 @@ using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Database;
 
-public class CIMSDbContext : DbContext
+public class CIMSDbContext(DbContextOptions<CIMSDbContext> options) : DbContext(options)
 {
     #region AssetItem
 
@@ -34,11 +34,7 @@ public class CIMSDbContext : DbContext
     #endregion
 
     public DbSet<Hazard> Hazards { get; init; }
-    public DbSet<Room> Rooms { get; init; }
     public DbSet<ConsumableTransaction> ConsumableTransactions { get; set; }
-
-    public CIMSDbContext(DbContextOptions<CIMSDbContext> options)
-        : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

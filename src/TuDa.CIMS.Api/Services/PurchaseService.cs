@@ -152,4 +152,17 @@ public class PurchaseService : IPurchaseService
             return Error.Failure("PurchaseService.InvalidateAsync", ex.Message);
         }
     }
+
+    public async Task<ErrorOr<string>> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId)
+    {
+        try
+        {
+            return await _purchaseRepository.RetrieveSignatureAsync(workingGroupId, purchaseId);
+        }
+        catch (Exception ex)
+        {
+            return Error.Failure("PurchaseService.RetrieveSignatureAsync", ex.Message);
+        }
+    }
+
 }
