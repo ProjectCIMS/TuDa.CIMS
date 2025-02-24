@@ -13,22 +13,8 @@ using TuDa.CIMS.Shared.Test.Faker;
 namespace TuDa.CIMS.Api.Test.Controllers;
 
 [TestSubject(typeof(AssetItemController))]
-public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
+public class AssetItemControllerTest(CIMSApiFactory apiFactory) : ControllerTestBase(apiFactory)
 {
-    private readonly HttpClient _client;
-    private readonly CIMSDbContext _dbContext;
-
-    public AssetItemControllerTest(CIMSApiFactory apiFactory)
-    {
-        _client = apiFactory.CreateClient();
-
-        var scope = apiFactory.Services.CreateScope();
-        _dbContext = scope.ServiceProvider.GetRequiredService<CIMSDbContext>();
-
-        _dbContext.Database.EnsureDeleted();
-        _dbContext.Database.Migrate();
-    }
-
     [Fact]
     public async Task GetAsync_ShouldReturnAssetItem_WhenAssetItemPresent()
     {
@@ -41,13 +27,13 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             new GasCylinderFaker(),
         ];
 
-        await _dbContext.AssetItems.AddRangeAsync(assetItems);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.AssetItems.AddRangeAsync(assetItems);
+        await DbContext.SaveChangesAsync();
 
         foreach (var assetItem in assetItems)
         {
             // Act
-            var response = await _client.GetAsync($"api/asset-items/{assetItem.Id}");
+            var response = await Client.GetAsync($"api/asset-items/{assetItem.Id}");
 
             // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
@@ -61,7 +47,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
     [Fact]
     public async Task GetAsync_ShouldReturnNotFound_WhenAssetItemNotPresent()
     {
-        var response = await _client.GetAsync($"api/asset-items/{Guid.NewGuid()}");
+        var response = await Client.GetAsync($"api/asset-items/{Guid.NewGuid()}");
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -78,11 +64,11 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             new GasCylinderFaker(),
         ];
 
-        await _dbContext.AssetItems.AddRangeAsync(assetItems);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.AssetItems.AddRangeAsync(assetItems);
+        await DbContext.SaveChangesAsync();
 
         // Act
-        var response = await _client.GetAsync($"api/asset-items/");
+        var response = await Client.GetAsync($"api/asset-items/");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -104,29 +90,29 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             new GasCylinderFaker(),
         ];
 
-        await _dbContext.AssetItems.AddRangeAsync(assetItems);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.AssetItems.AddRangeAsync(assetItems);
+        await DbContext.SaveChangesAsync();
 
         foreach (var assetItem in assetItems)
         {
             // Act
-            var response = await _client.DeleteAsync($"api/asset-items/{assetItem.Id}");
+            var response = await Client.DeleteAsync($"api/asset-items/{assetItem.Id}");
 
             // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
 
-            var result = (await _dbContext.AssetItems.ToListAsync());
+            var result = (await DbContext.AssetItems.ToListAsync());
 
             result.Should().NotContain(assetItem);
         }
 
-        (await _dbContext.AssetItems.AnyAsync()).Should().BeFalse();
+        (await DbContext.AssetItems.AnyAsync()).Should().BeFalse();
     }
 
     [Fact]
     public async Task RemoveAsync_ShouldReturnNotFound_WhenAssetItemNotPresent()
     {
-        var response = await _client.DeleteAsync($"api/asset-items/{Guid.NewGuid()}");
+        var response = await Client.DeleteAsync($"api/asset-items/{Guid.NewGuid()}");
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -146,13 +132,16 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
         List<UpdateAssetItemDto> updateAssetItemDtos =
         [
             new UpdateChemicalDto(),
-            new UpdateConsumableDto() { StockUpdate = new StockUpdateDto(10, TransactionReasons.Restock) },
+            new UpdateConsumableDto()
+            {
+                StockUpdate = new StockUpdateDto(10, TransactionReasons.Restock),
+            },
             new UpdateSolventDto(),
             new UpdateGasCylinderDto(),
         ];
 
-        await _dbContext.AssetItems.AddRangeAsync(assetItems);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.AssetItems.AddRangeAsync(assetItems);
+        await DbContext.SaveChangesAsync();
 
         foreach (var (assetItem, updateAssetItemDto) in assetItems.Zip(updateAssetItemDtos))
         {
@@ -160,7 +149,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             updateAssetItemDto.Name = updatedName;
 
             // Act
-            var response = await _client.PatchAsync(
+            var response = await Client.PatchAsync(
                 $"api/asset-items/{assetItem.Id}",
                 JsonContent.Create(updateAssetItemDto)
             );
@@ -168,7 +157,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
 
-            var result = await _dbContext.AssetItems.SingleAsync(i => i.Id == assetItem.Id);
+            var result = await DbContext.AssetItems.SingleAsync(i => i.Id == assetItem.Id);
             result
                 .Should()
                 .BeEquivalentTo(updatedItem, options => options.Excluding(item => item.UpdatedAt));
@@ -179,10 +168,13 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
     [Fact]
     public async Task UpdateAsync_ShouldReturnNotFound_WhenAssetItemNotPresent()
     {
-        var response = await _client.PatchAsync(
+        var response = await Client.PatchAsync(
             $"api/asset-items/{Guid.NewGuid()}",
             JsonContent.Create<UpdateAssetItemDto>(
-                new UpdateConsumableDto() { StockUpdate = new StockUpdateDto(10, TransactionReasons.Restock) }
+                new UpdateConsumableDto()
+                {
+                    StockUpdate = new StockUpdateDto(10, TransactionReasons.Restock),
+                }
             )
         );
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -200,12 +192,12 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             new GasCylinderFaker(),
         ];
 
-        await _dbContext.AssetItems.AddRangeAsync(assetItems);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.AssetItems.AddRangeAsync(assetItems);
+        await DbContext.SaveChangesAsync();
 
-        var response1 = await _client.GetAsync("api/asset-items/paginated?pageNumber=1&pageSize=2");
-        var response2 = await _client.GetAsync("api/asset-items/paginated?pageNumber=2&pageSize=2");
-        var response3 = await _client.GetAsync("api/asset-items/paginated?pageNumber=3&pageSize=2");
+        var response1 = await Client.GetAsync("api/asset-items/paginated?pageNumber=1&pageSize=2");
+        var response2 = await Client.GetAsync("api/asset-items/paginated?pageNumber=2&pageSize=2");
+        var response3 = await Client.GetAsync("api/asset-items/paginated?pageNumber=3&pageSize=2");
 
         response1.IsSuccessStatusCode.Should().BeTrue();
         response2.IsSuccessStatusCode.Should().BeTrue();
@@ -243,14 +235,14 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             new UpdateConsumableDto
             {
                 Name = updatedName,
-                StockUpdate = new StockUpdateDto(updatedAmount, TransactionReasons.Restock)
+                StockUpdate = new StockUpdateDto(updatedAmount, TransactionReasons.Restock),
             },
             new UpdateSolventDto(),
             new UpdateGasCylinderDto(),
         ];
 
-        await _dbContext.AssetItems.AddRangeAsync(assetItems);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.AssetItems.AddRangeAsync(assetItems);
+        await DbContext.SaveChangesAsync();
 
         var previousAmount = consumableFaker.Amount;
         foreach (var (assetItem, updateAssetItemDto) in assetItems.Zip(updateAssetItemDtos))
@@ -259,7 +251,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             updateAssetItemDto.Name = updatedName;
 
             // Act
-            var response = await _client.PatchAsync(
+            var response = await Client.PatchAsync(
                 $"api/asset-items/{assetItem.Id}",
                 JsonContent.Create(updateAssetItemDto)
             );
@@ -267,7 +259,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
 
-            var result = await _dbContext.AssetItems.SingleAsync(i => i.Id == assetItem.Id);
+            var result = await DbContext.AssetItems.SingleAsync(i => i.Id == assetItem.Id);
             result
                 .Should()
                 .BeEquivalentTo(updatedItem, options => options.Excluding(item => item.UpdatedAt));
@@ -275,8 +267,8 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
 
             if (assetItem is Consumable)
             {
-                var transaction = await _dbContext.ConsumableTransactions
-                    .Where(t => t.Consumable.Id == assetItem.Id)
+                var transaction = await DbContext
+                    .ConsumableTransactions.Where(t => t.Consumable.Id == assetItem.Id)
                     .OrderByDescending(t => t.Date)
                     .FirstOrDefaultAsync();
 
@@ -286,6 +278,7 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             }
         }
     }
+
     [Fact]
     public async Task CreateAsync_ShouldCreateConsumableTransaction_WhenConsumableIsCreated()
     {
@@ -300,24 +293,24 @@ public class AssetItemControllerTest : IClassFixture<CIMSApiFactory>
             Room = Rooms.G27,
             Amount = 10,
             Manufacturer = "Test Manufacturer",
-            SerialNumber = "ABC123"
+            SerialNumber = "ABC123",
         };
 
         // Act
-        var response = await _client.PostAsync(
+        var response = await Client.PostAsync(
             "api/asset-items",
             JsonContent.Create<CreateAssetItemDto>(createConsumable)
         );
 
         // Assert
-        response.IsSuccessStatusCode.Should().BeTrue(); ;
+        response.IsSuccessStatusCode.Should().BeTrue();
 
-        var createdConsumable = await _dbContext.Consumables.SingleAsync();
+        var createdConsumable = await DbContext.Consumables.SingleAsync();
         createdConsumable.Should().NotBeNull();
         createdConsumable.Amount.Should().Be(createConsumable.Amount);
 
-        var transaction = await _dbContext.ConsumableTransactions
-            .Where(t => t.Consumable.Id == createdConsumable.Id)
+        var transaction = await DbContext
+            .ConsumableTransactions.Where(t => t.Consumable.Id == createdConsumable.Id)
             .SingleAsync();
 
         transaction.Should().NotBeNull();

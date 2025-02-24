@@ -12,22 +12,8 @@ using TuDa.CIMS.Shared.Test.Faker;
 namespace TuDa.CIMS.Api.Test.Controllers;
 
 [TestSubject(typeof(StudentController))]
-public class StudentControllerTest : IClassFixture<CIMSApiFactory>
+public class StudentControllerTest(CIMSApiFactory apiFactory) : ControllerTestBase(apiFactory)
 {
-    private readonly HttpClient _client;
-    private readonly CIMSDbContext _dbContext;
-
-    public StudentControllerTest(CIMSApiFactory apiFactory)
-    {
-        _client = apiFactory.CreateClient();
-
-        var scope = apiFactory.Services.CreateScope();
-        _dbContext = scope.ServiceProvider.GetRequiredService<CIMSDbContext>();
-
-        _dbContext.Database.EnsureDeleted();
-        _dbContext.Database.Migrate();
-    }
-
     [Fact]
     public async Task RemoveAsync_ShouldRemoveStudent_WhenStudentPresent()
     {
@@ -35,16 +21,16 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
         List<Student> students = [new StudentFaker(), new StudentFaker()];
         WorkingGroup workingGroup = new WorkingGroupFaker().Generate();
         workingGroup.Students = students;
-        await _dbContext.WorkingGroups.AddAsync(workingGroup);
-        await _dbContext.Students.AddRangeAsync(students);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.WorkingGroups.AddAsync(workingGroup);
+        await DbContext.Students.AddRangeAsync(students);
+        await DbContext.SaveChangesAsync();
 
         var studentsToRemove = students.ToList();
 
         foreach (var student in studentsToRemove)
         {
             // Act
-            var response = await _client.DeleteAsync(
+            var response = await Client.DeleteAsync(
                 $"/api/working-groups/{workingGroup.Id}/students/{student.Id}"
             );
 
@@ -59,7 +45,7 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
     public async Task RemoveAsync_ShouldReturnNotFound_WhenStudentNotPresent()
     {
         WorkingGroup workingGroup = new WorkingGroupFaker().Generate();
-        var response = await _client.DeleteAsync(
+        var response = await Client.DeleteAsync(
             $"/api/working-groups/{workingGroup.Id}/students/{Guid.NewGuid()}"
         );
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -74,9 +60,9 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
         var workingGroup = new WorkingGroupFaker().Generate();
         workingGroup.Students = students;
 
-        await _dbContext.WorkingGroups.AddAsync(workingGroup);
-        await _dbContext.Students.AddRangeAsync(students);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.WorkingGroups.AddAsync(workingGroup);
+        await DbContext.Students.AddRangeAsync(students);
+        await DbContext.SaveChangesAsync();
 
         const string updatedName = "Updated Student Name";
         List<UpdateStudentDto> updateStudentDtos =
@@ -89,7 +75,7 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
         // Act
         foreach (var (student, updateStudentDto) in students.Zip(updateStudentDtos))
         {
-            var response = await _client.PatchAsync(
+            var response = await Client.PatchAsync(
                 $"/api/working-groups/{workingGroup.Id}/students/{student.Id}",
                 JsonContent.Create(updateStudentDto)
             );
@@ -97,7 +83,7 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
             // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
 
-            var result = await _dbContext.Students.SingleAsync(s => s.Id == student.Id);
+            var result = await DbContext.Students.SingleAsync(s => s.Id == student.Id);
             result.Name.Should().Be(updatedName);
             result.UpdatedAt.Should().NotBeNull();
         }
@@ -110,7 +96,7 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
     public async Task UpdateAsync_ShouldReturnNotFound_WhenStudentNotPresent()
     {
         var workingGroup = new WorkingGroupFaker().Generate();
-        var response = await _client.PatchAsync(
+        var response = await Client.PatchAsync(
             $"/api/working-groups/{workingGroup.Id}/students/{Guid.NewGuid()}",
             JsonContent.Create(new UpdateStudentDto())
         );
@@ -125,8 +111,8 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
         var workingGroup = new WorkingGroupFaker().Generate();
         var student = new StudentFaker().Generate();
 
-        await _dbContext.WorkingGroups.AddRangeAsync(workingGroup);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.WorkingGroups.AddRangeAsync(workingGroup);
+        await DbContext.SaveChangesAsync();
 
         var createStudentDto = new CreateStudentDto
         {
@@ -137,7 +123,7 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
         };
 
         // Act
-        var response = await _client.PostAsync(
+        var response = await Client.PostAsync(
             $"api/working-groups/{workingGroup.Id}/students",
             JsonContent.Create(createStudentDto)
         );
@@ -147,7 +133,7 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
 
         var createResult = await response.Content.FromJsonAsync<Student>();
 
-        var result = await _dbContext.Students.SingleAsync(s => s.Id == createResult!.Id);
+        var result = await DbContext.Students.SingleAsync(s => s.Id == createResult!.Id);
 
         result.Should().NotBeNull();
         result.Name.Should().Be(student.Name);
@@ -161,7 +147,7 @@ public class StudentControllerTest : IClassFixture<CIMSApiFactory>
     [Fact]
     public async Task AddAsync_ShouldReturnNotFound_WhenWorkingGroupNotPresent()
     {
-        var response = await _client.PostAsync(
+        var response = await Client.PostAsync(
             $"/api/working-groups/{Guid.NewGuid()}/students",
             JsonContent.Create(new CreateStudentDto() { Name = "New Student" })
         );

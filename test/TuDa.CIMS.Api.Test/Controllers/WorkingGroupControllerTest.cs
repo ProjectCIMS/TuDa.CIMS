@@ -16,33 +16,19 @@ using TuDa.CIMS.Shared.Test.Faker;
 namespace TuDa.CIMS.Api.Test.Controllers;
 
 [TestSubject(typeof(WorkingGroupController))]
-public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
+public class WorkingGroupControllerTest(CIMSApiFactory apiFactory) : ControllerTestBase(apiFactory)
 {
-    private readonly HttpClient _client;
-    private readonly CIMSDbContext _dbContext;
-
-    public WorkingGroupControllerTest(CIMSApiFactory apiFactory)
-    {
-        _client = apiFactory.CreateClient();
-
-        var scope = apiFactory.Services.CreateScope();
-        _dbContext = scope.ServiceProvider.GetRequiredService<CIMSDbContext>();
-
-        _dbContext.Database.EnsureDeleted();
-        _dbContext.Database.Migrate();
-    }
-
     [Fact]
     public async Task GetAsync_ShouldReturnWorkingGroup_WhenPurchasePresent()
     {
         // Arrange
         WorkingGroup workingGroup = new WorkingGroupFaker();
 
-        await _dbContext.WorkingGroups.AddRangeAsync(workingGroup);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.WorkingGroups.AddRangeAsync(workingGroup);
+        await DbContext.SaveChangesAsync();
 
         // Act
-        var response = await _client.GetAsync($"api/working-groups/{workingGroup.Id}");
+        var response = await Client.GetAsync($"api/working-groups/{workingGroup.Id}");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -55,7 +41,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
     [Fact]
     public async Task GetAsync_ShouldReturnNotFound_WhenWorkingGroupNotPresent()
     {
-        var response = await _client.GetAsync($"api/working-groups/{Guid.NewGuid()}");
+        var response = await Client.GetAsync($"api/working-groups/{Guid.NewGuid()}");
 
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -67,11 +53,11 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         // Arrange
         List<WorkingGroup> workingGroups = new WorkingGroupFaker().GenerateBetween(2, 10);
 
-        await _dbContext.WorkingGroups.AddRangeAsync(workingGroups);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.WorkingGroups.AddRangeAsync(workingGroups);
+        await DbContext.SaveChangesAsync();
 
         // Act
-        var response = await _client.GetAsync($"api/working-groups");
+        var response = await Client.GetAsync($"api/working-groups");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -87,16 +73,16 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         // Arrange
         WorkingGroup workingGroup = new WorkingGroupFaker();
 
-        await _dbContext.WorkingGroups.AddAsync(workingGroup);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.WorkingGroups.AddAsync(workingGroup);
+        await DbContext.SaveChangesAsync();
 
         // Act
-        var response = await _client.DeleteAsync($"api/working-groups/{workingGroup.Id}");
+        var response = await Client.DeleteAsync($"api/working-groups/{workingGroup.Id}");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
 
-        var result = (await _dbContext.WorkingGroups.ToListAsync());
+        var result = (await DbContext.WorkingGroups.ToListAsync());
 
         result.Should().BeEmpty();
     }
@@ -104,7 +90,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
     [Fact]
     public async Task RemoveAsync_ShouldReturnNotFound_WhenWorkingGroupNotPresent()
     {
-        var response = await _client.DeleteAsync($"api/working-groups/{Guid.NewGuid()}");
+        var response = await Client.DeleteAsync($"api/working-groups/{Guid.NewGuid()}");
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -123,7 +109,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         };
 
         // Act
-        var response = await _client.PostAsync(
+        var response = await Client.PostAsync(
             $"api/working-groups",
             JsonContent.Create(createWorkingGroup)
         );
@@ -133,7 +119,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
 
         var createResult = await response.Content.FromJsonAsync<WorkingGroupResponseDto>();
 
-        var result = await _dbContext.WorkingGroups.Include(wg => wg.Professor).SingleAsync();
+        var result = await DbContext.WorkingGroups.Include(wg => wg.Professor).SingleAsync();
         result
             .ToResponseDto()
             .Professor.Should()
@@ -151,8 +137,8 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
     {
         // Arrange
         WorkingGroup workingGroup = new WorkingGroupFaker();
-        await _dbContext.WorkingGroups.AddAsync(workingGroup);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.WorkingGroups.AddAsync(workingGroup);
+        await DbContext.SaveChangesAsync();
 
         const string updateProfName = "Changed";
         var updateWorkingGroupDto = new UpdateWorkingGroupDto
@@ -165,7 +151,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
         };
 
         // Act
-        var response = await _client.PatchAsync(
+        var response = await Client.PatchAsync(
             $"api/working-groups/{workingGroup.Id}",
             JsonContent.Create(updateWorkingGroupDto)
         );
@@ -184,7 +170,7 @@ public class WorkingGroupControllerTest : IClassFixture<CIMSApiFactory>
     [Fact]
     public async Task UpdateAsync_ShouldReturnNotFound_WhenWorkingGroupNotPresent()
     {
-        var response = await _client.PatchAsync(
+        var response = await Client.PatchAsync(
             $"api/working-groups/{Guid.NewGuid()}",
             JsonContent.Create<UpdateWorkingGroupDto>(new UpdateWorkingGroupDto())
         );
