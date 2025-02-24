@@ -193,5 +193,49 @@ public class PurchaseControllerTest : IClassFixture<CIMSApiFactory>
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
+    [Fact]
+    public async Task RetrieveSignatureAsync_ShouldReturnBase64Signature_WhenPurchaseExists()
+    {
+        // Arrange
+        WorkingGroup workingGroup = new WorkingGroupFaker();
+        List<Purchase> purchases = new PurchaseFaker(workingGroup).GenerateBetween(2, 5);
+        workingGroup.Purchases = [.. purchases];
 
+        await _dbContext.WorkingGroups.AddAsync(workingGroup);
+        await _dbContext.SaveChangesAsync();
+
+        foreach (var purchase in purchases)
+        {
+            // Act
+            var response = await _client.GetAsync(
+                $"api/working-groups/{workingGroup.Id}/purchases/{purchase.Id}/signature"
+            );
+
+            // Assert
+            response.IsSuccessStatusCode.Should().BeTrue();
+
+            string base64Signature = await response.Content.ReadAsStringAsync();
+            string expectedBase64 = Convert.ToBase64String(purchase.Signature);
+
+            base64Signature.Should().Be(expectedBase64);
+        }
+    }
+    [Fact]
+    public async Task RetrieveSignatureAsync_ShouldReturnNotFound_WhenPurchaseDoesNotExist()
+    {
+        // Arrange
+        var workingGroup = new WorkingGroupFaker().Generate();
+        await _dbContext.WorkingGroups.AddAsync(workingGroup);
+        await _dbContext.SaveChangesAsync();
+
+        var nonExistentPurchaseId = Guid.NewGuid();
+
+        // Act
+        var response = await _client.GetAsync(
+            $"api/working-groups/{workingGroup.Id}/purchases/{nonExistentPurchaseId}/signature"
+        );
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
 }
