@@ -105,6 +105,7 @@ public class PurchaseController : CIMSBaseController
     }
 
     [HttpGet($"{{{nameof(purchaseId)}:guid}}/signature")]
+    [ProducesResponseType<string>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId)

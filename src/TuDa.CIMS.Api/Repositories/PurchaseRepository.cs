@@ -180,8 +180,6 @@ public class PurchaseRepository : IPurchaseRepository
             );
         }
         byte[] signature = purchase.Signature;
-        string signatureAsBase64 = Convert.ToBase64String(signature);
-        await _context.SaveChangesAsync();
-        return signatureAsBase64;
+        return Convert.ToBase64String(signature);
     }
 }

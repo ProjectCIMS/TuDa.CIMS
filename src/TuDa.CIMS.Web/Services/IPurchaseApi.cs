@@ -146,4 +146,15 @@ public interface IPurchaseApi
         Guid purchaseId,
         CreatePurchaseDto createModel
     );
+
+    /*public async Task<ErrorOr<string>> RetrieveSignatureAsync(
+        Guid workingGroupId,
+        Guid purchaseId
+    ) =>
+        await RetrieveSignatureAsync(workingGroupId, purchaseId)
+            .ToErrorOrAsync<Success>();
+
+    [Get($"{{{nameof(purchaseId)}:guid}}/signature")]
+    protected Task<IApiResponse> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId);
+*/
 }
