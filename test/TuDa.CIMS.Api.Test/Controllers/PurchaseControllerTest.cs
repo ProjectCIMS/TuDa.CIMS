@@ -186,13 +186,13 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
         List<Purchase> purchases = new PurchaseFaker(workingGroup).GenerateBetween(2, 5);
         workingGroup.Purchases = [.. purchases];
 
-        await _dbContext.WorkingGroups.AddAsync(workingGroup);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.WorkingGroups.AddAsync(workingGroup);
+        await DbContext.SaveChangesAsync();
 
         foreach (var purchase in purchases)
         {
             // Act
-            var response = await _client.GetAsync(
+            var response = await Client.GetAsync(
                 $"api/working-groups/{workingGroup.Id}/purchases/{purchase.Id}/signature"
             );
 
@@ -210,13 +210,13 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
     {
         // Arrange
         var workingGroup = new WorkingGroupFaker().Generate();
-        await _dbContext.WorkingGroups.AddAsync(workingGroup);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.WorkingGroups.AddAsync(workingGroup);
+        await DbContext.SaveChangesAsync();
 
         var nonExistentPurchaseId = Guid.NewGuid();
 
         // Act
-        var response = await _client.GetAsync(
+        var response = await Client.GetAsync(
             $"api/working-groups/{workingGroup.Id}/purchases/{nonExistentPurchaseId}/signature"
         );
 
