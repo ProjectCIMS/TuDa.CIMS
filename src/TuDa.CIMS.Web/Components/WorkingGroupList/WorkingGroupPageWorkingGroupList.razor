@@ -26,16 +26,17 @@
         <PropertyColumn Property="@(x => x.Professor.Name)" Title="Nachname"/>
         <PropertyColumn Property="@(x => x.PhoneNumber)" Title="Telefon Nr."/>
         <PropertyColumn Property="@(x => x.Email)" Title="E-Mail"/>
-        <PropertyColumn Property="@(x => x.IsDeactivated)"Title="Status">
+        <PropertyColumn Property="@(x => x.IsDeactivated)" Title="Status">
             <CellTemplate>
                 @if (context.Item.IsDeactivated)
                 {
-                    <MudChip Color="Color.Error" Variant="Variant.Outlined"> Deaktiviert </MudChip>
+                    <MudChip Color="Color.Error" Variant="Variant.Outlined"> Deaktiviert</MudChip>
                 }
                 else
                 {
-                    <MudChip Color="Color.Success" Variant="Variant.Outlined"> Aktiviert </MudChip>
+                    <MudChip Color="Color.Success" Variant="Variant.Outlined"> Aktiviert</MudChip>
                 }
             </CellTemplate>
-        </PropertyColumn>    </Columns>
+        </PropertyColumn>
+    </Columns>
 </MudDataGrid>
