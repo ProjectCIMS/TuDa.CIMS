@@ -13,7 +13,7 @@ public partial class AssetItemEditForm
         _consumableApi = consumableApi;
     }
 
-    private IConsumableApi _consumableApi;
+    private readonly IConsumableApi _consumableApi;
 
     /// <summary>
     /// Fields for Errors and Feedback
@@ -61,8 +61,6 @@ public partial class AssetItemEditForm
         AmountLastYear = stats.PreviousYearAmount;
         SoldThisYear = stats.TotalRemoved;
         RestockedThisYear = stats.TotalAdded;
-
-        // StateHasChanged();
     }
 
     /// <summary>
