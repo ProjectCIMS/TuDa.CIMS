@@ -1,5 +1,4 @@
-﻿@using TuDa.CIMS.Shared.Dtos
-<!-- AssetItemDialog -->
+﻿<!-- AssetItemDialog -->
 
 <MudDialog>
     <TitleContent>
@@ -47,7 +46,7 @@
         ProductDialog.Cancel();
     }
 
-    public async Task SaveChanges()
+    public void SaveChanges()
     {
         bool hasErrors = _assetItemCreateForm.ErrorsInForm();
 
@@ -56,7 +55,7 @@
             return;
         }
 
-        var createAssetItemDto = await _assetItemCreateForm.SaveChanges();
+        var createAssetItemDto = _assetItemCreateForm.SaveChanges();
         ProductDialog.Close(DialogResult.Ok(createAssetItemDto));
     }
 }

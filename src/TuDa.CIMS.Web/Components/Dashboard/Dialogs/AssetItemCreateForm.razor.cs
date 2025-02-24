@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Dtos;
-using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Services;
 
@@ -46,28 +45,28 @@ public partial class AssetItemCreateForm
         switch (_selectedAssetItemType)
         {
             case AssetItemType.Chemical:
-            {
-                _chemicalItemForm.ResetInputs();
-                break;
-            }
+                {
+                    _chemicalItemForm.ResetInputs();
+                    break;
+                }
 
             case AssetItemType.Consumable:
-            {
-                _consumableItemForm.ResetInputs();
-                break;
-            }
+                {
+                    _consumableItemForm.ResetInputs();
+                    break;
+                }
 
             case AssetItemType.GasCylinder:
-            {
-                _gasCylinderForm.ResetInputs();
-                break;
-            }
+                {
+                    _gasCylinderForm.ResetInputs();
+                    break;
+                }
 
             case AssetItemType.Solvent:
-            {
-                _chemicalItemForm.ResetInputs();
-                break;
-            }
+                {
+                    _chemicalItemForm.ResetInputs();
+                    break;
+                }
         }
         _showError = false;
         _showChemicalError = false;
@@ -131,12 +130,8 @@ public partial class AssetItemCreateForm
     /// <summary>
     /// Functionality of the "Änderungen speichern" Button: Create the Item
     /// </summary>
-    public async Task<CreateAssetItemDto> SaveChanges()
+    public CreateAssetItemDto SaveChanges()
     {
-        var errorOrItems = await _assetItemApi.GetAllAsync();
-        var items = errorOrItems.Value.ToList();
-        Guid roomId = items.FirstOrDefault()?.Room.Id ?? Guid.NewGuid();
-
         CreateAssetItemDto? createDto = _selectedAssetItemType switch
         {
             AssetItemType.Chemical => new CreateChemicalDto
@@ -145,12 +140,12 @@ public partial class AssetItemCreateForm
                 Shop = _assetItemForm.FormShop,
                 ItemNumber = _assetItemForm.FormItemNumber,
                 Note = _assetItemForm.FormNote,
+                Room = _assetItemForm.FormRoom ?? default,
                 Cas = _chemicalItemForm.FormCas,
                 Price = _assetItemForm.FormPrice,
                 Purity = _chemicalItemForm.FormPurity,
                 PriceUnit = _chemicalItemForm.FormPriceUnit!.Value,
                 BindingSize = _chemicalItemForm.FormBindingSize,
-                RoomId = roomId,
             },
 
             AssetItemType.Consumable => new CreateConsumableDto
@@ -160,7 +155,7 @@ public partial class AssetItemCreateForm
                 ItemNumber = _assetItemForm.FormItemNumber,
                 Note = _assetItemForm.FormNote,
                 Price = _assetItemForm.FormPrice,
-                RoomId = roomId,
+                Room = _assetItemForm.FormRoom ?? default,
                 Manufacturer = _consumableItemForm.FormManufacturer,
                 SerialNumber = _consumableItemForm.FormSerialNumber,
                 Amount = _consumableItemForm.FormConsumableAmount,
@@ -173,7 +168,7 @@ public partial class AssetItemCreateForm
                 ItemNumber = _assetItemForm.FormItemNumber,
                 Note = _assetItemForm.FormNote,
                 Price = _assetItemForm.FormPrice,
-                RoomId = roomId,
+                Room = _assetItemForm.FormRoom ?? default,
                 Cas = _gasCylinderForm.FormCas,
                 Purity = _gasCylinderForm.FormPurity,
                 Volume = _gasCylinderForm.FormVolume,
@@ -187,12 +182,12 @@ public partial class AssetItemCreateForm
                 Shop = _assetItemForm.FormShop,
                 ItemNumber = _assetItemForm.FormItemNumber,
                 Note = _assetItemForm.FormNote,
+                Room = _assetItemForm.FormRoom ?? default,
                 Cas = _chemicalItemForm.FormCas,
                 Price = _assetItemForm.FormPrice,
                 Purity = _chemicalItemForm.FormPurity,
                 PriceUnit = _chemicalItemForm.FormPriceUnit!.Value,
                 BindingSize = _chemicalItemForm.FormBindingSize,
-                RoomId = roomId,
             },
 
             _ => throw new ArgumentOutOfRangeException(

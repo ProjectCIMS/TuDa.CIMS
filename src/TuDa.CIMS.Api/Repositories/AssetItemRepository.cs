@@ -29,47 +29,47 @@ public class AssetItemRepository : IAssetItemRepository
     /// <summary>
     /// Query for all <see cref="AssetItem"/>s from the DB with included properties.
     /// </summary>
-    private IQueryable<AssetItem> AssetItemsFilledQuery => _context.AssetItems.Include(i => i.Room);
+    private IQueryable<AssetItem> AssetItemsQuery => _context.AssetItems;
 
     /// <summary>
     /// Query for all <see cref="Substance"/>s from the DB with included properties.
     /// </summary>
-    private IQueryable<Substance> SubstancesFilledQuery =>
-        AssetItemsFilledQuery.OfType<Substance>().Include(s => s.Hazards);
+    private IQueryable<Substance> SubstancesQuery =>
+        AssetItemsQuery.OfType<Substance>().Include(s => s.Hazards);
 
     /// <summary>
     /// Query for all <see cref="GasCylinder"/>s from the DB with included properties.
     /// </summary>
-    private IQueryable<GasCylinder> GasCylindersFilledQuery =>
-        SubstancesFilledQuery.OfType<GasCylinder>();
+    private IQueryable<GasCylinder> GasCylindersQuery =>
+        SubstancesQuery.OfType<GasCylinder>();
 
     /// <summary>
     /// Query for all <see cref="Solvent"/>s from the DB with included properties.
     /// </summary>
-    private IQueryable<Solvent> SolventsFilledQuery => SubstancesFilledQuery.OfType<Solvent>();
+    private IQueryable<Solvent> SolventsQuery => SubstancesQuery.OfType<Solvent>();
 
     /// <summary>
     /// Query for all <see cref="Chemical"/>s from the DB with included properties.
     /// </summary>
-    private IQueryable<Chemical> ChemicalsFilledQuery => SubstancesFilledQuery.OfType<Chemical>();
+    private IQueryable<Chemical> ChemicalsQuery => SubstancesQuery.OfType<Chemical>();
 
     /// <summary>
     /// Query for all <see cref="Consumable"/>s from the DB with included properties.
     /// </summary>
-    private IQueryable<Consumable> ConsumablesFilledQuery =>
-        AssetItemsFilledQuery.OfType<Consumable>();
+    private IQueryable<Consumable> ConsumablesQuery =>
+        AssetItemsQuery.OfType<Consumable>();
 
     /// <summary>
     /// Returns all existing AssetItems of the database.
     /// </summary>
-    public Task<List<AssetItem>> GetAllAsync() => AssetItemsFilledQuery.ToListAsync();
+    public Task<List<AssetItem>> GetAllAsync() => AssetItemsQuery.ToListAsync();
 
     /// <summary>
     /// Returns an existing AssetItem with the specific id.
     /// </summary>
     /// <param name="id">the unique id of the AssetItem</param>
     public Task<AssetItem?> GetOneAsync(Guid id) =>
-        AssetItemsFilledQuery.SingleOrDefaultAsync(item => item.Id == id);
+        AssetItemsQuery.SingleOrDefaultAsync(item => item.Id == id);
 
     /// <summary>
     /// Updates an existing AssetItem with the specified ID using the provided update model.
@@ -90,6 +90,7 @@ public class AssetItemRepository : IAssetItemRepository
         existingItem.Shop = updateModel.Shop ?? existingItem.Shop;
         existingItem.Name = updateModel.Name ?? existingItem.Name;
         existingItem.Price = updateModel.Price ?? existingItem.Price;
+        existingItem.Room = updateModel.Room ?? existingItem.Room;
 
         switch (existingItem, updateModel)
         {
@@ -140,20 +141,6 @@ public class AssetItemRepository : IAssetItemRepository
             await _consumableTransactionRepository.CreateAsync(createConsumableTransaction);
         }
 
-        if (updateModel.RoomId is not null)
-        {
-            var room = await _context.Rooms.SingleOrDefaultAsync(r => r.Id == updateModel.RoomId);
-            if (room is null)
-            {
-                return Error.NotFound(
-                    "Assetitem.update",
-                    $"Given RoomId {updateModel.RoomId} was not found."
-                );
-            }
-
-            existingItem.Room = room;
-        }
-
         await _context.SaveChangesAsync();
         return Result.Updated;
     }
@@ -199,7 +186,7 @@ public class AssetItemRepository : IAssetItemRepository
             );
 
         return await PaginatedResponseFactory<AssetItem>.CreateAsync(
-            AssetItemsFilledQuery,
+            AssetItemsQuery,
             queryParams.PageNumber,
             queryParams.PageSize
         );
@@ -223,8 +210,8 @@ public class AssetItemRepository : IAssetItemRepository
         }
 
         var searchQuery = isCas
-            ? SubstancesFilledQuery.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
-            : AssetItemsFilledQuery.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
+            ? SubstancesQuery.Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
+            : AssetItemsQuery.Where(i => EF.Functions.ILike(i.Name, $"{nameOrCas}%"));
         return await searchQuery.ToListAsync();
     }
 
@@ -240,7 +227,7 @@ public class AssetItemRepository : IAssetItemRepository
         {
             if (assetItemTypes.Contains(AssetItemType.Chemical))
             {
-                var chemicals = await ChemicalsFilledQuery
+                var chemicals = await ChemicalsQuery
                     .Where(c => c.GetType() == typeof(Chemical))
                     .Where(c => EF.Functions.ILike(c.Cas, $"{nameOrCas}%"))
                     .ToListAsync();
@@ -249,7 +236,7 @@ public class AssetItemRepository : IAssetItemRepository
 
             if (assetItemTypes.Contains(AssetItemType.Solvent))
             {
-                var solvents = await SolventsFilledQuery
+                var solvents = await SolventsQuery
                     .Where(s => EF.Functions.ILike(s.Cas, $"{nameOrCas}%"))
                     .ToListAsync();
                 result.AddRange(solvents);
@@ -259,7 +246,7 @@ public class AssetItemRepository : IAssetItemRepository
         {
             if (assetItemTypes.Contains(AssetItemType.Chemical))
             {
-                var chemicals = await ChemicalsFilledQuery
+                var chemicals = await ChemicalsQuery
                     .Where(c => c.GetType() == typeof(Chemical))
                     .Where(c => EF.Functions.ILike(c.Name, $"{nameOrCas}%"))
                     .ToListAsync();
@@ -268,7 +255,7 @@ public class AssetItemRepository : IAssetItemRepository
 
             if (assetItemTypes.Contains(AssetItemType.Consumable))
             {
-                var consumables = await ConsumablesFilledQuery
+                var consumables = await ConsumablesQuery
                     .Where(c => EF.Functions.ILike(c.Name, $"{nameOrCas}%"))
                     .ToListAsync();
                 result.AddRange(consumables);
@@ -276,7 +263,7 @@ public class AssetItemRepository : IAssetItemRepository
 
             if (assetItemTypes.Contains(AssetItemType.GasCylinder))
             {
-                var gasCylinders = await GasCylindersFilledQuery
+                var gasCylinders = await GasCylindersQuery
                     .Where(g => EF.Functions.ILike(g.Name, $"{nameOrCas}%"))
                     .ToListAsync();
                 result.AddRange(gasCylinders);
@@ -284,7 +271,7 @@ public class AssetItemRepository : IAssetItemRepository
 
             if (assetItemTypes.Contains(AssetItemType.Solvent))
             {
-                var solvents = await SolventsFilledQuery
+                var solvents = await SolventsQuery
                     .Where(s => EF.Functions.ILike(s.Name, $"{nameOrCas}%"))
                     .ToListAsync();
                 result.AddRange(solvents);
@@ -302,23 +289,23 @@ public class AssetItemRepository : IAssetItemRepository
         // Check for each asset item type in the provided list and query them individually
         if (filter.AssetItemTypes!.Contains(AssetItemType.Chemical))
         {
-            var chemicals = ChemicalsFilledQuery.Where(item => item.GetType() == typeof(Chemical));
+            var chemicals = ChemicalsQuery.Where(item => item.GetType() == typeof(Chemical));
             result.AddRange(await ApplyFilters(chemicals, filter));
         }
 
         if (filter.AssetItemTypes.Contains(AssetItemType.Consumable))
         {
-            result.AddRange(await ApplyFilters(ConsumablesFilledQuery, filter));
+            result.AddRange(await ApplyFilters(ConsumablesQuery, filter));
         }
 
         if (filter.AssetItemTypes.Contains(AssetItemType.GasCylinder))
         {
-            result.AddRange(await ApplyFilters(GasCylindersFilledQuery, filter));
+            result.AddRange(await ApplyFilters(GasCylindersQuery, filter));
         }
 
         if (filter.AssetItemTypes.Contains(AssetItemType.Solvent))
         {
-            result.AddRange(await ApplyFilters(SolventsFilledQuery, filter));
+            result.AddRange(await ApplyFilters(SolventsQuery, filter));
         }
 
         // Return the combined list of AssetItems
@@ -356,7 +343,7 @@ public class AssetItemRepository : IAssetItemRepository
 
         if (!string.IsNullOrEmpty(filter.RoomName))
         {
-            query = query.Where(i => EF.Functions.ILike(i.Room.Name, $"{filter.RoomName}%"));
+            query = query.Where(i => EF.Functions.ILike(i.Room.ToString(), $"{filter.RoomName}%"));
         }
 
         if (!string.IsNullOrEmpty(filter.Price))
@@ -383,7 +370,7 @@ public class AssetItemRepository : IAssetItemRepository
 
     public async Task<List<AssetItem>> FilterAsync(AssetItemFilterDto filter)
     {
-        IQueryable<AssetItem> query = AssetItemsFilledQuery;
+        IQueryable<AssetItem> query = AssetItemsQuery;
         foreach (var column in filter.AssetItemColumnsList)
         {
             switch (column)
@@ -394,7 +381,7 @@ public class AssetItemRepository : IAssetItemRepository
 
                     if (filter.Product.All(c => char.IsDigit(c) || c == '-'))
                     {
-                        query = SubstancesFilledQuery.Where(s =>
+                        query = SubstancesQuery.Where(s =>
                             EF.Functions.ILike(s.Cas, $"{filter.Product}%")
                         );
                     }
@@ -416,7 +403,7 @@ public class AssetItemRepository : IAssetItemRepository
 
                 case "Raum":
                     query = query.Where(i =>
-                        EF.Functions.ILike(i.Room.Name, $"{filter.RoomName}%")
+                        EF.Functions.ILike(i.Room.ToString(), $"{filter.RoomName}%")
                     );
                     break;
 
@@ -445,7 +432,7 @@ public class AssetItemRepository : IAssetItemRepository
         // Check for each asset item type in the provided list and query them individually
         if (assetItemTypes.Contains(AssetItemType.Chemical))
         {
-            var chemicals = await ChemicalsFilledQuery
+            var chemicals = await ChemicalsQuery
                 .Where(item => item.GetType() == typeof(Chemical))
                 .ToListAsync();
             result.AddRange(chemicals);
@@ -453,19 +440,19 @@ public class AssetItemRepository : IAssetItemRepository
 
         if (assetItemTypes.Contains(AssetItemType.Consumable))
         {
-            var consumables = await ConsumablesFilledQuery.ToListAsync();
+            var consumables = await ConsumablesQuery.ToListAsync();
             result.AddRange(consumables);
         }
 
         if (assetItemTypes.Contains(AssetItemType.GasCylinder))
         {
-            var gasCylinders = await GasCylindersFilledQuery.ToListAsync();
+            var gasCylinders = await GasCylindersQuery.ToListAsync();
             result.AddRange(gasCylinders);
         }
 
         if (assetItemTypes.Contains(AssetItemType.Solvent))
         {
-            var solvents = await SolventsFilledQuery.ToListAsync();
+            var solvents = await SolventsQuery.ToListAsync();
             result.AddRange(solvents);
         }
 
@@ -475,15 +462,6 @@ public class AssetItemRepository : IAssetItemRepository
 
     public async Task<ErrorOr<Created>> CreateAsync(CreateAssetItemDto createModel)
     {
-        var room = await _context.Rooms.SingleOrDefaultAsync(r => r.Id == createModel.RoomId);
-        if (room is null)
-        {
-            return Error.NotFound(
-                "Assetitem.create",
-                $"Given RoomId {createModel.RoomId} was not found."
-            );
-        }
-
         List<Hazard> hazards = [];
         if (createModel is CreateSubstanceDto createSubstanceDto)
         {
@@ -511,7 +489,7 @@ public class AssetItemRepository : IAssetItemRepository
                 Note = createModel.Note,
                 Price = createModel.Price,
                 Shop = createModel.Shop,
-                Room = room,
+                Room = createModel.Room,
                 Cas = solvent.Cas,
                 Hazards = hazards,
                 PriceUnit = solvent.PriceUnit,
@@ -525,7 +503,7 @@ public class AssetItemRepository : IAssetItemRepository
                 Note = createModel.Note,
                 Price = createModel.Price,
                 Shop = createModel.Shop,
-                Room = room,
+                Room = createModel.Room,
                 Cas = chemical.Cas,
                 Hazards = hazards,
                 PriceUnit = chemical.PriceUnit,
@@ -539,7 +517,7 @@ public class AssetItemRepository : IAssetItemRepository
                 Note = createModel.Note,
                 Price = createModel.Price,
                 Shop = createModel.Shop,
-                Room = room,
+                Room = createModel.Room,
                 Cas = gas.Cas,
                 Hazards = hazards,
                 PriceUnit = gas.PriceUnit,
@@ -554,7 +532,7 @@ public class AssetItemRepository : IAssetItemRepository
                 Note = createModel.Note,
                 Price = createModel.Price,
                 Shop = createModel.Shop,
-                Room = room,
+                Room = createModel.Room,
                 Amount = consumable.Amount,
                 Manufacturer = consumable.Manufacturer,
                 SerialNumber = consumable.SerialNumber,
