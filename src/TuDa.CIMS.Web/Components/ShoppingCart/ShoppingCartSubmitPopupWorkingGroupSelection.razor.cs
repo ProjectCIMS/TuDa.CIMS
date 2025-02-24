@@ -62,10 +62,17 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
         await WorkingGroupChanged.InvokeAsync(item);
     }
 
-    private Task<IEnumerable<WorkingGroupResponseDto>> Search(
+    private async Task<IEnumerable<WorkingGroupResponseDto>> Search(
         string name,
         CancellationToken token
-    ) => api.GetAllAsync(name).Match(value => value, _ => []);
+    )
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return [];
+        }
+        return await api.GetAllAsync(name).Match(value => value, _ => []);
+    }
 
     /// <summary>
     /// Returns the name of a given working group.

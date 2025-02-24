@@ -146,7 +146,7 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     public async Task<List<WorkingGroup>> SearchAsync(string name)
     {
         return await WorkingGroupsFilledQuery
-            .Where(s => string.IsNullOrWhiteSpace(name) ||EF.Functions.ILike(s.Professor.Name, $"%{name}%"))
+            .Where(s => EF.Functions.ILike(s.Professor.Name, $"%{name}%"))
             .ToListAsync();
     }
 }
