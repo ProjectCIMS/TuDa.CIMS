@@ -7,6 +7,8 @@ public interface IConsumableTransactionService
 {
     Task<ErrorOr<List<ConsumableTransaction>>> GetAllAsync();
     Task<ErrorOr<ConsumableTransaction>> GetOneAsync(Guid id);
-    Task<ErrorOr<Created>> CreateAsync(CreateConsumableTransactionDto consumableTransactionDto);
+    Task<ErrorOr<ConsumableTransaction>> CreateAsync(
+        CreateConsumableTransactionDto consumableTransactionDto
+    );
     Task<ErrorOr<Created>> CreateForPurchaseAsync(Purchase purchase);
 }

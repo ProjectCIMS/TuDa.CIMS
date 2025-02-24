@@ -46,7 +46,7 @@ public class ConsumableTransactionService : IConsumableTransactionService
     {
         try
         {
-            return (await _consumableTransactionRepository.GetOneAsync(id)) switch
+            return await _consumableTransactionRepository.GetOneAsync(id) switch
             {
                 null => Error.NotFound(
                     "ConsumableTransaction.GetOneAsync",
@@ -69,7 +69,7 @@ public class ConsumableTransactionService : IConsumableTransactionService
     /// or the result of the <see cref="CreateAsync"/> functionality if successful
     /// </summary>
     /// <param name="consumableTransactionDto"></param>
-    public async Task<ErrorOr<Created>> CreateAsync(
+    public async Task<ErrorOr<ConsumableTransaction>> CreateAsync(
         CreateConsumableTransactionDto consumableTransactionDto
     )
     {
@@ -95,24 +95,15 @@ public class ConsumableTransactionService : IConsumableTransactionService
                 return Error.Failure("Purchase not completed.");
             }
 
-            var consumableEntries = purchase.Entries.Where(e => e.AssetItem is Consumable);
-            foreach (var conEntry in consumableEntries)
+            foreach (var createDto in CreateDtosFromPurchase(purchase))
             {
-                CreateConsumableTransactionDto consumableTransaction = new()
+                var transaction = await CreateAsync(createDto);
+                if (transaction.IsError)
                 {
-                    ConsumableId = conEntry.AssetItem.Id,
-                    Date = purchase.CompletionDate.Value,
-                    AmountChange = (int)-conEntry.Amount,
-                    TransactionReason = TransactionReasons.Purchase,
-                };
-
-                var created = await _consumableTransactionRepository.CreateAsync(
-                    consumableTransaction
-                );
-                if (created.IsError)
-                {
-                    return created.Errors;
+                    return transaction.Errors;
                 }
+
+                purchase.ConsumableTransactions.Add(transaction.Value);
             }
             return Result.Created;
         }
@@ -124,4 +115,18 @@ public class ConsumableTransactionService : IConsumableTransactionService
             );
         }
     }
+
+    private static IEnumerable<CreateConsumableTransactionDto> CreateDtosFromPurchase(
+        Purchase purchase
+    ) =>
+        purchase
+            .Entries.Where(e => e.AssetItem is Consumable)
+            .GroupBy(entry => entry.AssetItem.Id)
+            .Select(group => new CreateConsumableTransactionDto()
+            {
+                ConsumableId = group.First().AssetItem.Id,
+                Date = purchase.CompletionDate!.Value,
+                AmountChange = (int)-group.Sum(entry => entry.Amount),
+                TransactionReason = TransactionReasons.Purchase,
+            });
 }
