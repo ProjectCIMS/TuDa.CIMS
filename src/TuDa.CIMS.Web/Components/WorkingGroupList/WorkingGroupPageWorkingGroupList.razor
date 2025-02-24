@@ -1,5 +1,4 @@
 @using TuDa.CIMS.Shared.Dtos.Responses
-@using TuDa.CIMS.Shared.Entities
 
 <MudDataGrid @ref="_dataGrid" T="WorkingGroupResponseDto" ServerData="ServerReload" Filterable="false"
              RowClick="GoToWorkingGroupInfoPage">
@@ -27,15 +26,15 @@
         <PropertyColumn Property="@(x => x.Professor.Name)" Title="Nachname"/>
         <PropertyColumn Property="@(x => x.PhoneNumber)" Title="Telefon Nr."/>
         <PropertyColumn Property="@(x => x.Email)" Title="E-Mail"/>
-        <PropertyColumn Title="Status">
+        <PropertyColumn Property="@(x => x.IsDeactivated)"Title="Status">
             <CellTemplate>
                 @if (context.Item.IsDeactivated)
                 {
-                    <MudBadge Color="Color.Error" BadgeContent="Deaktiviert" />
+                    <MudChip Color="Color.Error" Variant="Variant.Outlined"> Deaktiviert </MudChip>
                 }
                 else
                 {
-                    <MudBadge Color="Color.Success" BadgeContent="Aktiviert" />
+                    <MudChip Color="Color.Success" Variant="Variant.Outlined"> Aktiviert </MudChip>
                 }
             </CellTemplate>
         </PropertyColumn>    </Columns>
