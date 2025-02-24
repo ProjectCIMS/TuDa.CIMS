@@ -69,7 +69,7 @@
                         Title="Artikelnummer"/>
         <PropertyColumn Property="@(x => x.Shop)"
                         Title="Lieferant"/>
-        <PropertyColumn Property="@(x => x.Room.Name)"
+        <PropertyColumn Property="@(x => x.Room)"
                         Title="Raum"/>
         <PropertyColumn Property="@(x => GetPriceText(x))"
                         SortBy="@(x => x.Price)"
