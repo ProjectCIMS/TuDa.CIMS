@@ -10,42 +10,57 @@
                     <MudText Typo="Typo.h6">@purchaseEntry.AssetItem.Name</MudText>
                 </MudItem>
                 <MudGrid>
-                    <MudItem xs="4">@GetPricePerItemString(purchaseEntry)</MudItem>
-                    <MudItem xs="4">@GetAmountString(purchaseEntry)</MudItem>
-                    <MudItem xs="4">@GetTotalPriceString(purchaseEntry)</MudItem>
+                    <MudItem xs="5">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                            <MudText>Preis:</MudText>
+                            <MudText>@GetPricePerItemString(purchaseEntry)</MudText>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="3">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                            <MudText>Menge:</MudText>
+                            <MudText>@GetAmountString(purchaseEntry)</MudText>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                            <MudText>Endpreis:</MudText>
+                            <MudText>@GetTotalPriceString(purchaseEntry)</MudText>
+                        </MudStack>
+                    </MudItem>
                 </MudGrid>
             </MudItem>
         }
     </MudStack>
 </MudPaper>
 
+
 @code
 {
-    [CascadingParameter]
-    public required PurchaseResponseDto Purchase { get; set; }
+    [CascadingParameter] public required PurchaseResponseDto Purchase { get; set; }
 
-    private MarkupString GetPricePerItemString(PurchaseEntry purchaseEntry)
+    private string GetPricePerItemString(PurchaseEntry purchaseEntry)
     {
         var temp = purchaseEntry.AssetItem switch
         {
             Substance substance => substance.PriceUnit.ToAbbrevation(),
             _ => "Stück"
         };
-        return (MarkupString)$"Preis:<br>{purchaseEntry.PricePerItem:C}/{temp}";
+        return $"{purchaseEntry.PricePerItem:C}/{temp}";
     }
 
-    private MarkupString GetTotalPriceString(PurchaseEntry purchaseEntry)
+    private string GetTotalPriceString(PurchaseEntry purchaseEntry)
     {
-        return (MarkupString)$"Endpreis:<br>{purchaseEntry.TotalPrice:C}";
+        return $"{purchaseEntry.TotalPrice:C}";
     }
 
-    private MarkupString GetAmountString(PurchaseEntry purchaseEntry)
+    private string GetAmountString(PurchaseEntry purchaseEntry)
     {
         var temp = purchaseEntry.AssetItem switch
         {
             Substance substance => substance.PriceUnit.ToAbbrevation(),
             _ => "Stück"
         };
-        return (MarkupString)$"Menge:<br>{purchaseEntry.Amount} {temp}";
+        return $"{purchaseEntry.Amount} {temp}";
     }
 }

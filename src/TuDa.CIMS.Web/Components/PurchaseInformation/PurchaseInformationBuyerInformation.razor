@@ -1,3 +1,4 @@
+@using TuDa.CIMS.Shared.Dtos.Responses
 <MudPaper Class="p-2 rounded-lg elevation-1">
     <MudStack>
         <MudItem>
@@ -8,3 +9,13 @@
         </MudItem>
     </MudStack>
 </MudPaper>
+
+@code
+{
+    [CascadingParameter]
+    public required PurchaseResponseDto Purchase { get; set; }
+
+    // TODO: Dto for the signature is needed here
+    [Parameter]
+    public required string SignatureAsBase64 { get; set; }
+}

@@ -3,24 +3,24 @@
 <MudPaper>
     <MudStack Spacing="2">
         <MudStack Spacing="1" Class="m-lg-4">
-            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                 <MudText>Laborgeräte: </MudText>
                 <MudText Align="Align.Right">@GetTotalPriceConsumables()</MudText>
             </MudStack>
-            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                 <MudText>Lösungsmittel: </MudText>
                 <MudText Align="Align.Right">@GetTotalPriceSolvents()</MudText>
             </MudStack>
-            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                 <MudText>Chemikalien: </MudText>
                 <MudText Align="Align.Right">@GetTotalPriceChemicals()</MudText>
             </MudStack>
-            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                 <MudText>Technische Gase: </MudText>
                 <MudText Align="Align.Right">@GetTotalPriceGasCylinders()</MudText>
             </MudStack>
             <MudDivider Class="my-2" Style="border: 2px solid black;" />
-            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                 <MudText>Summe: </MudText>
                 <MudText Align="Align.Right">@GetTotalPrice()</MudText>
             </MudStack>

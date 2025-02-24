@@ -9,9 +9,6 @@ public partial class PurchaseInformationPopup
 
     [Parameter]
     public Guid WorkingGroupId { get; set; }
-
-    [Parameter]
-    public Guid PurchaseId { get; set; }
     public PurchaseInformationPopup(NavigationManager navigationManager)
     {
         _navigationManager = navigationManager;
@@ -19,9 +16,14 @@ public partial class PurchaseInformationPopup
     [Parameter]
     public PurchaseResponseDto Purchase { get; set; } = null!;
 
+    // TODO: Dto for the signature is needed here
+    [Parameter]
+    public string SignatureAsBase64 { get; set; } = null!;
+
+
     private void GoToInvalidation()
     {
-        _navigationManager.NavigateTo($"/shop/{WorkingGroupId}/{PurchaseId}");
+        _navigationManager.NavigateTo($"/shop/{WorkingGroupId}/{Purchase.Id}");
     }
 
 }
