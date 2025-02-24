@@ -18,14 +18,13 @@
       dockerfile: src/TuDa.CIMS.Api/Dockerfile
     depends_on:
       - cims-db
-      - cims-migration
     environment:
       - ConnectionStrings__CIMS=Host=cims-db;Port=5432;Database=CIMS;Username=postgres;Password=postgres
     ports:
       - "8080:8080"
 
   cims-db:
-    image: postgres:latest
+    image: postgres:16
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
