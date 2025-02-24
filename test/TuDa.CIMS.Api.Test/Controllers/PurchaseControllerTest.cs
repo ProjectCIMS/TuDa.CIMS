@@ -178,6 +178,7 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
+
     [Fact]
     public async Task RetrieveSignatureAsync_ShouldReturnBase64Signature_WhenPurchaseExists()
     {
@@ -205,6 +206,7 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
             base64Signature.Should().Be(expectedBase64);
         }
     }
+
     [Fact]
     public async Task RetrieveSignatureAsync_ShouldReturnNotFound_WhenPurchaseDoesNotExist()
     {
@@ -222,5 +224,117 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task InvalidateAsync_ShouldCorrectlyInvalidate_WhenPurchasePresent()
+    {
+        // Arrange
+        WorkingGroup workingGroup = new WorkingGroupFaker(purchases: []);
+        var entries = new PurchaseEntryFaker<Consumable>(
+            assetItemFaker: new ConsumableFaker()
+        ).Generate(4);
+
+        var newEntries = entries.Take(3).ToList();
+        newEntries[0].Amount += 1;
+        newEntries[1].Amount -= 1;
+
+        Consumable newConsumable = new ConsumableFaker();
+
+        newEntries.Add(new PurchaseEntryFaker<Consumable>(newConsumable));
+        newConsumable.Amount = (int)newEntries[2].Amount + 100;
+
+        foreach (var entry in entries)
+        {
+            (entry.AssetItem as Consumable)!.Amount = (int)entry.Amount + 100;
+        }
+
+        await DbContext.WorkingGroups.AddAsync(workingGroup);
+        await DbContext.AssetItems.AddRangeAsync(entries.Select(e => e.AssetItem));
+        await DbContext.AssetItems.AddAsync(newConsumable);
+        await DbContext.SaveChangesAsync();
+
+        var completionDate = DateTime.Now.ToUniversalTime();
+        var initialPurchase = new CreatePurchaseDto
+        {
+            Buyer = workingGroup.Professor.Id,
+            CompletionDate = completionDate,
+            Entries = entries
+                .Select(entry => new CreatePurchaseEntryDto
+                {
+                    AssetItemId = entry.AssetItem.Id,
+                    Amount = (int)entry.Amount,
+                    PricePerItem = entry.PricePerItem,
+                })
+                .ToList(),
+        };
+
+        var invalidatePurchase = new CreatePurchaseDto
+        {
+            Buyer = workingGroup.Professor.Id,
+            CompletionDate = completionDate,
+            Entries = newEntries
+                .Select(entry => new CreatePurchaseEntryDto
+                {
+                    AssetItemId = entry.AssetItem.Id,
+                    Amount = (int)entry.Amount,
+                    PricePerItem = entry.PricePerItem,
+                })
+                .ToList(),
+        };
+
+        // Act
+        var createResponse = await Client.PostAsync(
+            $"api/working-groups/{workingGroup.Id}/purchases/",
+            JsonContent.Create(initialPurchase)
+        );
+
+        await createResponse.ShouldBeSuccessAsync();
+        var createResult = await createResponse.Content.FromJsonAsync<PurchaseResponseDto>();
+
+        createResult.Should().NotBeNull();
+
+        var invalidateResponse = await Client.PatchAsync(
+            $"api/working-groups/{workingGroup.Id}/purchases/{createResult!.Id}/invalidate",
+            JsonContent.Create(invalidatePurchase)
+        );
+
+        // Assert
+        await invalidateResponse.ShouldBeSuccessAsync();
+
+        var invalidPurchase = await DbContext
+            .Purchases.Include(p => p.Successor)
+            .Include(purchase => purchase.ConsumableTransactions)
+            .SingleAsync(p => p.Id == createResult.Id);
+
+        var purchase = await DbContext
+            .Purchases.Include(p => p.Entries)
+            .ThenInclude(e => e.AssetItem)
+            .Include(purchase => purchase.ConsumableTransactions!)
+            .ThenInclude(consumableTransaction => consumableTransaction.Consumable)
+            .SingleAsync(p => p.Id != createResult.Id);
+
+        invalidPurchase.Invalidated.Should().BeTrue();
+        invalidPurchase.ConsumableTransactions.Should().BeEmpty();
+
+        purchase.ConsumableTransactions.Count.Should().Be(4);
+        purchase
+            .ConsumableTransactions.Find(t => t.Consumable.Id == entries[0].AssetItem.Id)!
+            .AmountChange.Should()
+            .Be((int)-newEntries[0].Amount);
+        purchase
+            .ConsumableTransactions.Find(t => t.Consumable.Id == entries[1].AssetItem.Id)!
+            .AmountChange.Should()
+            .Be((int)-newEntries[1].Amount);
+
+        purchase
+            .ConsumableTransactions.Find(t => t.Consumable.Id == entries[2].AssetItem.Id)!
+            .AmountChange.Should()
+            .Be((int)-newEntries[2].Amount);
+
+        purchase
+            .ConsumableTransactions.Find(t => t.Consumable.Id == newConsumable.Id)!
+            .AmountChange.Should()
+            .Be((int)-newEntries[3].Amount);
     }
 }
