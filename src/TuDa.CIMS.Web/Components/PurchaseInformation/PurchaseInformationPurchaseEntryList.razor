@@ -43,7 +43,7 @@
     {
         var temp = purchaseEntry.AssetItem switch
         {
-            Substance substance => substance.PriceUnit.ToAbbrevation(),
+            Substance substance => substance.PriceUnit.ToAbbreviation(),
             _ => "Stück"
         };
         return $"{purchaseEntry.PricePerItem:C}/{temp}";
@@ -58,7 +58,7 @@
     {
         var temp = purchaseEntry.AssetItem switch
         {
-            Substance substance => substance.PriceUnit.ToAbbrevation(),
+            Substance substance => substance.PriceUnit.ToAbbreviation(),
             _ => "Stück"
         };
         return $"{purchaseEntry.Amount} {temp}";
