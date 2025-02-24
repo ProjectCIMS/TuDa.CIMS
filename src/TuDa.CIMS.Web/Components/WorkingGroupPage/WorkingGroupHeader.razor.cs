@@ -16,6 +16,8 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi, Naviga
 
     [Parameter] public Guid WorkingGroupId { get; set; }
 
+    [Parameter] public bool IsDeactivated { get; set; }
+
     [Inject] private IDialogService DialogService { get; set; } = null!;
 
     /// <summary>
@@ -27,6 +29,7 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi, Naviga
         ProfessorName = workingGroup.Value.Professor.Name;
         ProfessorTitle = workingGroup.Value.Professor.Title;
         Professor = workingGroup.Value.Professor;
+        IsDeactivated = workingGroup.Value.IsDeactivated;
 
         await base.OnInitializedAsync();
     }
@@ -48,10 +51,6 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi, Naviga
     public async Task ToggleWorkingGroupStatus()
     {
         await workingGroupApi.ToggleActiveAsync(WorkingGroupId);
-    }
-
-    private bool IsGroupDeactivated()
-    {
-        return workingGroupApi.GetAsync(WorkingGroupId).Result.Value.IsDeactivated;
+        navigation.NavigateTo(navigation.Uri, forceLoad: true);
     }
 }

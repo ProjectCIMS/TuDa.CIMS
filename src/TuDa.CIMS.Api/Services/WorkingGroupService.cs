@@ -133,7 +133,7 @@ public class WorkingGroupService : IWorkingGroupService
     /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
     /// or the result of the <see cref="ToggleActiveAsync"/> functionality if successful
     /// </summary>
-    /// <param name="id">The id of the deativated/reactivated working group.</param>
+    /// <param name="id">The id of the deactivated/reactivated working group.</param>
     public async Task<ErrorOr<Success>> ToggleActiveAsync(Guid id)
     {
         try

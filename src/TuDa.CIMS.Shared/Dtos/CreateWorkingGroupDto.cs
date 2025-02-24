@@ -18,4 +18,9 @@ public record CreateWorkingGroupDto
     /// An email to contact the group.
     /// </summary>
     public string Email { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Every group can be deactivated or activated.
+    /// </summary>
+    public bool IsDeactivated { get; set; } = false;
 }

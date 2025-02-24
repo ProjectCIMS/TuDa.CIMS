@@ -107,7 +107,7 @@ public class WorkingGroupController : CIMSBaseController
     /// If an error occurs during the operation, an appropriate error response is returned.
     /// </summary>
     /// <param name="id">The id of the deactivated/reactivated working group</param>
-    [HttpPatch($"{{{nameof(id)}:guid}}")]
+    [HttpPatch($"{{{nameof(id)}:guid}}/toggle")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ToggleActiveAsync(Guid id)

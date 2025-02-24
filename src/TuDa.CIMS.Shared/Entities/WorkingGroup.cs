@@ -36,5 +36,5 @@ public record WorkingGroup : BaseEntity
     /// <summary>
     /// Every group can be deactivated or activated.
     /// </summary>
-    public bool IsDeactivated { get; set; } = false;
+    public bool IsDeactivated { get; set; }
 }

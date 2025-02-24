@@ -14,6 +14,7 @@ public static class WorkingGroupExtension
             PhoneNumber = workingGroup.PhoneNumber,
             Email = workingGroup.Email,
             Purchases = workingGroup.Purchases.Select(wg => wg.ToResponseDto()).ToList(),
+            IsDeactivated = workingGroup.IsDeactivated
         };
 
     public static List<WorkingGroupResponseDto> ToResponseDtos(
