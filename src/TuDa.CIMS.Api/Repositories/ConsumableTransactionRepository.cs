@@ -74,76 +74,6 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
         return consumableTransaction;
     }
 
-    public async Task<ErrorOr<Updated>> UpdateForInvalidatedPurchase(
-        Purchase invalidatedPurchase,
-        Purchase newPurchase
-    )
-    {
-        var invalidTransactions = invalidatedPurchase.ConsumableTransactions.ToDictionary(x =>
-            x.Consumable.Id
-        );
-
-        var changes = newPurchase
-            .Entries.Where(entry => entry.AssetItem is Consumable)
-            .ExceptBy(
-                invalidatedPurchase.Entries.Select(entry => new
-                {
-                    entry.AssetItem.Id,
-                    Amount = (int)entry.Amount,
-                }),
-                entry => new { entry.AssetItem.Id, Amount = (int)entry.Amount }
-            );
-
-        var changedGrouped = changes.GroupBy(e => e.AssetItem.Id).ToList();
-
-        var removedAssetItems = invalidatedPurchase
-            .ConsumableTransactions.Select(t => t.Consumable.Id)
-            .Except(newPurchase.Entries.Select(x => x.AssetItem.Id).Distinct());
-
-        invalidatedPurchase.ConsumableTransactions.RemoveAll(x =>
-            removedAssetItems.Contains(x.Consumable.Id)
-        );
-
-        foreach (var item in changedGrouped)
-        {
-            if (invalidTransactions.TryGetValue(item.Key, out var transaction))
-            {
-                var success = await UpdateAmountAsync(
-                    transaction.Id,
-                    (int)-item.Sum(x => x.Amount)
-                );
-                if (success.IsError)
-                {
-                    return success.Errors;
-                }
-            }
-            else
-            {
-                var newTransaction = await CreateAsync(
-                    new CreateConsumableTransactionDto()
-                    {
-                        ConsumableId = item.Key,
-                        Date = newPurchase.CompletionDate!.Value,
-                        AmountChange = (int)-item.Sum(x => x.Amount),
-                        TransactionReason = TransactionReasons.Purchase,
-                    }
-                );
-
-                if (newTransaction.IsError)
-                {
-                    return newTransaction.Errors;
-                }
-
-                newPurchase.ConsumableTransactions.Add(newTransaction.Value);
-            }
-        }
-
-        await _context.SaveChangesAsync();
-        await MoveToSuccessorPurchaseAsync(invalidatedPurchase.Id, newPurchase.Id);
-
-        return Result.Updated;
-    }
-
     /// <inheritdoc />
     public async Task<ErrorOr<Updated>> UpdateAmountAsync(
         Guid consumableTransactionId,
@@ -227,5 +157,43 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
         }
 
         return await transactionsQuery.ToListAsync();
+    }
+
+    private static IEnumerable<CreateConsumableTransactionDto> CreateDtosFromPurchase(
+        Purchase purchase
+    ) =>
+        purchase
+            .Entries.Where(e => e.AssetItem is Consumable)
+            .GroupBy(entry => entry.AssetItem.Id)
+            .Select(group => new CreateConsumableTransactionDto()
+            {
+                ConsumableId = group.First().AssetItem.Id,
+                Date = purchase.CompletionDate!.Value,
+                AmountChange = (int)-group.Sum(entry => entry.Amount),
+                TransactionReason = TransactionReasons.Purchase,
+            });
+
+    public async Task<ErrorOr<Success>> AddToPurchaseAsync(
+        Guid purchaseGuid,
+        Guid consumableTransactionGuid
+    )
+    {
+        var purchase = await _context
+            .Purchases.Include(p => p.ConsumableTransactions)
+            .SingleOrDefaultAsync(p => p.Id == purchaseGuid);
+        if (purchase is null)
+        {
+            return PurchaseError.NotFound(purchaseGuid);
+        }
+
+        var consumableTransaction = await GetOneAsync(consumableTransactionGuid);
+        if (consumableTransaction is null)
+        {
+            return ConsumableTransactionError.NotFound(consumableTransactionGuid);
+        }
+
+        purchase.ConsumableTransactions.Add(consumableTransaction);
+        await _context.SaveChangesAsync();
+        return Result.Success;
     }
 }

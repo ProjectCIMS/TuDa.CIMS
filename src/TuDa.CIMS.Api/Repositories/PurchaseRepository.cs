@@ -17,17 +17,22 @@ public class PurchaseRepository : IPurchaseRepository
     private readonly IPurchaseEntryRepository _purchaseEntryRepository;
     private readonly IConsumableTransactionRepository _consumableTransactionRepository;
 
+    // TODO: Codesmell - Service should not be used directly in repository
+    private readonly IPurchaseInvalidationService _purchaseInvalidationService;
+
     public PurchaseRepository(
         CIMSDbContext context,
         IWorkingGroupRepository workingGroupRepository,
         IPurchaseEntryRepository purchaseEntryRepository,
-        IConsumableTransactionRepository consumableTransactionRepository
+        IConsumableTransactionRepository consumableTransactionRepository,
+        IPurchaseInvalidationService purchaseInvalidationService
     )
     {
         _context = context;
         _workingGroupRepository = workingGroupRepository;
         _purchaseEntryRepository = purchaseEntryRepository;
         _consumableTransactionRepository = consumableTransactionRepository;
+        _purchaseInvalidationService = purchaseInvalidationService;
     }
 
     private IQueryable<Purchase> PurchaseFilledQuery(Guid workingGroupId) =>
@@ -167,7 +172,7 @@ public class PurchaseRepository : IPurchaseRepository
             oldPurchase.Successor = newPurchase.Value;
             newPurchase.Value.Predecessor = oldPurchase;
 
-            var updated = await _consumableTransactionRepository.UpdateForInvalidatedPurchase(
+            var updated = await _purchaseInvalidationService.UpdateForInvalidatedPurchase(
                 oldPurchase,
                 newPurchase.Value
             );

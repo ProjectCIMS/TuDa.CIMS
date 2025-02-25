@@ -104,7 +104,10 @@ public class ConsumableTransactionService : IConsumableTransactionService
                     return transaction.Errors;
                 }
 
-                purchase.ConsumableTransactions.Add(transaction.Value);
+                await _consumableTransactionRepository.AddToPurchaseAsync(
+                    purchase.Id,
+                    transaction.Value.Id
+                );
             }
             return Result.Created;
         }

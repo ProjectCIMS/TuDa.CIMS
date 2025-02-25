@@ -16,11 +16,6 @@ public interface IConsumableTransactionRepository
         Guid successorPurchaseId
     );
 
-    public Task<ErrorOr<Updated>> UpdateForInvalidatedPurchase(
-        Purchase invalidatedPurchase,
-        Purchase newPurchase
-    );
-
     /// <summary>
     /// Retrieves all consumable transactions for a specific consumable and optional year.
     /// </summary>
@@ -29,5 +24,10 @@ public interface IConsumableTransactionRepository
     Task<ErrorOr<List<ConsumableTransaction>>> GetAllOfConsumableAsync(
         Guid consumableId,
         int? year
+    );
+
+    public Task<ErrorOr<Success>> AddToPurchaseAsync(
+        Guid purchaseGuid,
+        Guid consumableTransactionGuid
     );
 }
