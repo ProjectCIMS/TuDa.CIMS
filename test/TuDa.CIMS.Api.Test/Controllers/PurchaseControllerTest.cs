@@ -178,6 +178,7 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
+
     [Fact]
     public async Task RetrieveSignatureAsync_ShouldReturnBase64Signature_WhenPurchaseExists()
     {
@@ -205,6 +206,7 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
             base64Signature.Should().Be(expectedBase64);
         }
     }
+
     [Fact]
     public async Task RetrieveSignatureAsync_ShouldReturnNotFound_WhenPurchaseDoesNotExist()
     {

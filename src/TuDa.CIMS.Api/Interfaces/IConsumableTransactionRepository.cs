@@ -7,7 +7,19 @@ public interface IConsumableTransactionRepository
 {
     Task<List<ConsumableTransaction>> GetAllAsync();
     Task<ConsumableTransaction?> GetOneAsync(Guid id);
-    Task<ErrorOr<Created>> CreateAsync(CreateConsumableTransactionDto consumableTransactionDto);
+    Task<ErrorOr<ConsumableTransaction>> CreateAsync(
+        CreateConsumableTransactionDto consumableTransactionDto
+    );
+    Task<ErrorOr<Updated>> UpdateAmountAsync(Guid consumableTransactionId, int newAmount);
+    Task<ErrorOr<Success>> MoveToSuccessorPurchaseAsync(
+        Guid predecessorPurchaseId,
+        Guid successorPurchaseId
+    );
+
+    public Task<ErrorOr<Updated>> UpdateForInvalidatedPurchase(
+        Purchase invalidatedPurchase,
+        Purchase newPurchase
+    );
 
     /// <summary>
     /// Retrieves all consumable transactions for a specific consumable and optional year.

@@ -46,6 +46,11 @@ public record Purchase : BaseEntity
     /// </summary>
     public Purchase? Predecessor { get; set; }
 
+    /// <summary>
+    /// All for the Purchase created Consumable transaction
+    /// <summary>
+    public List<ConsumableTransaction> ConsumableTransactions { get; set; } = [];
+
     #endregion
 
     #region Methods

@@ -15,16 +15,19 @@ public class PurchaseRepository : IPurchaseRepository
     private readonly CIMSDbContext _context;
     private readonly IWorkingGroupRepository _workingGroupRepository;
     private readonly IPurchaseEntryRepository _purchaseEntryRepository;
+    private readonly IConsumableTransactionRepository _consumableTransactionRepository;
 
     public PurchaseRepository(
         CIMSDbContext context,
         IWorkingGroupRepository workingGroupRepository,
-        IPurchaseEntryRepository purchaseEntryRepository
+        IPurchaseEntryRepository purchaseEntryRepository,
+        IConsumableTransactionRepository consumableTransactionRepository
     )
     {
         _context = context;
         _workingGroupRepository = workingGroupRepository;
         _purchaseEntryRepository = purchaseEntryRepository;
+        _consumableTransactionRepository = consumableTransactionRepository;
     }
 
     private IQueryable<Purchase> PurchaseFilledQuery(Guid workingGroupId) =>
@@ -34,6 +37,7 @@ public class PurchaseRepository : IPurchaseRepository
             .Include(i => i.Buyer)
             .Include(i => i.Successor)
             .Include(i => i.Predecessor)
+            .Include(i => i.ConsumableTransactions)
             .Include(i => i.Entries)
             .ThenInclude(i => i.AssetItem);
 
@@ -162,6 +166,16 @@ public class PurchaseRepository : IPurchaseRepository
 
             oldPurchase.Successor = newPurchase.Value;
             newPurchase.Value.Predecessor = oldPurchase;
+
+            var updated = await _consumableTransactionRepository.UpdateForInvalidatedPurchase(
+                oldPurchase,
+                newPurchase.Value
+            );
+
+            if (updated.IsError)
+            {
+                return updated.Errors;
+            }
 
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();

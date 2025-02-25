@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TuDa.CIMS.Api.Database;
@@ -11,9 +12,11 @@ using TuDa.CIMS.Api.Database;
 namespace TuDa.CIMS.Api.Migrations
 {
     [DbContext(typeof(CIMSDbContext))]
-    partial class CIMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250224172021_AddConsumableTransactionToPurchase")]
+    partial class AddConsumableTransactionToPurchase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,10 +195,6 @@ namespace TuDa.CIMS.Api.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("character varying(13)");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -308,9 +307,6 @@ namespace TuDa.CIMS.Api.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("IsDeactivated")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
