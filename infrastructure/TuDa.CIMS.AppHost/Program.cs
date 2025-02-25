@@ -1,6 +1,9 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgres = builder.AddPostgres("cims-postgres").WithLifetime(ContainerLifetime.Persistent);
+var postgres = builder
+    .AddPostgres("cims-postgres")
+    .WithPgWeb()
+    .WithLifetime(ContainerLifetime.Persistent);
 var postgresDb = postgres.AddDatabase("CIMS");
 
 var api = builder
