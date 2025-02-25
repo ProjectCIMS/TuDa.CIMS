@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api.Database;
+using TuDa.CIMS.Api.Errors;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
@@ -48,12 +49,12 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
 
         if (consumable is null)
         {
-            return Error.NotFound("Consumable not found");
+            return ConsumableError.NotFound(consumableTransactionDto.ConsumableId);
         }
 
         if (consumable.Amount + consumableTransactionDto.AmountChange < 0)
         {
-            return Error.Failure("Negative amount of consumable after a purchase is not possible.");
+            return ConsumableTransactionError.AmountChangeNegative();
         }
 
         consumable.Amount += consumableTransactionDto.AmountChange;
@@ -97,7 +98,7 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
 
         var removedAssetItems = invalidatedPurchase
             .ConsumableTransactions.Select(t => t.Consumable.Id)
-            .Except(changedGrouped.Select(x => x.Key));
+            .Except(newPurchase.Entries.Select(x => x.AssetItem.Id).Distinct());
 
         invalidatedPurchase.ConsumableTransactions.RemoveAll(x =>
             removedAssetItems.Contains(x.Consumable.Id)
@@ -107,7 +108,14 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
         {
             if (invalidTransactions.TryGetValue(item.Key, out var transaction))
             {
-                await UpdateAmountAsync(transaction.Id, (int)-item.Sum(x => x.Amount));
+                var success = await UpdateAmountAsync(
+                    transaction.Id,
+                    (int)-item.Sum(x => x.Amount)
+                );
+                if (success.IsError)
+                {
+                    return success.Errors;
+                }
             }
             else
             {
@@ -145,17 +153,17 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
         var transaction = await GetOneAsync(consumableTransactionId);
         if (transaction is null)
         {
-            return Error.NotFound(); // TODO: Add error message
+            return ConsumableTransactionError.NotFound(consumableTransactionId);
         }
 
         var consumable = transaction.Consumable;
 
-        if (consumable.Amount + transaction.AmountChange - newAmount < 0)
+        if (transaction.Consumable.Amount + newAmount < 0)
         {
-            return Error.Failure(); // TODO: Add error message
+            return ConsumableTransactionError.AmountChangeNegative();
         }
 
-        consumable.Amount += transaction.AmountChange - newAmount;
+        consumable.Amount -= transaction.AmountChange - newAmount;
 
         if (newAmount == 0)
         {
@@ -180,17 +188,17 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
             .SingleOrDefaultAsync(p => p.Id == predecessorPurchaseId);
 
         if (predecessor is null)
-            return Error.NotFound(); //TODO:
+            return PurchaseError.NotFound(predecessorPurchaseId);
 
         var successor = await _context
             .Purchases.Include(p => p.ConsumableTransactions)
             .SingleOrDefaultAsync(p => p.Id == successorPurchaseId);
 
         if (successor is null)
-            return Error.NotFound(); //TODO:
+            return PurchaseError.NotFound(successorPurchaseId);
 
         successor.ConsumableTransactions.AddRange(predecessor.ConsumableTransactions);
-        predecessor.ConsumableTransactions = [];
+        predecessor.ConsumableTransactions.Clear();
 
         await _context.SaveChangesAsync();
         return Result.Success;
@@ -204,7 +212,7 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
     {
         if (!await _context.Consumables.AnyAsync(consumable => consumable.Id == consumableId))
         {
-            return Error.NotFound("Consumable.NotFound", "ConsumableNotFound");
+            return ConsumableError.NotFound(consumableId);
         }
 
         var transactionsQuery = ConsumableTransactionsFilledQuery.Where(transaction =>

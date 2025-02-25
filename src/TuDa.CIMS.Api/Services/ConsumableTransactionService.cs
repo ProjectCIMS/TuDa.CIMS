@@ -1,4 +1,5 @@
-﻿using TuDa.CIMS.Api.Interfaces;
+﻿using TuDa.CIMS.Api.Errors;
+using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
@@ -92,7 +93,7 @@ public class ConsumableTransactionService : IConsumableTransactionService
         {
             if (purchase.CompletionDate is null)
             {
-                return Error.Failure("Purchase not completed.");
+                return PurchaseError.NotCompleted(purchase.Id);
             }
 
             foreach (var createDto in CreateDtosFromPurchase(purchase))
