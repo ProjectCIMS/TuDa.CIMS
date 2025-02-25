@@ -127,4 +127,20 @@ public interface IWorkingGroupApi
         Guid id,
         [Body] UpdateWorkingGroupDto updateWorkingGroupDto
     );
+
+    /// <summary>
+    /// Toggles the active status of a Working Group.
+    /// </summary>
+    /// <param name="id">The unique identifier of the Working Group.</param>
+    /// <returns></returns>
+    public async Task<ErrorOr<Success>> ToggleActiveAsync(Guid id) =>
+        await ToggleActiveAsyncInternal(id).ToErrorOrAsync<Success>();
+
+    /// <summary>
+    /// Internal method to toggle the active status of a Working Group.
+    /// </summary>
+    /// <param name="id">The unique identifier of the Working Group.</param>
+    /// <returns></returns>
+    [Patch("/{id}/toggle")]
+    protected Task<IApiResponse> ToggleActiveAsyncInternal(Guid id);
 }

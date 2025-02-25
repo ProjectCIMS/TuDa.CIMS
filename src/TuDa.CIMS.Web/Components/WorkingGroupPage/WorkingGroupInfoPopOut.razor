@@ -71,12 +71,23 @@
 
                 <MudTextField Text="@WorkingGroup.Email"
                               T="string"
-                              Label="Email-Adresse"
+                              Label="Assistenz-Email-Adresse"
                               Variant="Variant.Outlined"
                               ReadOnly="true"
                               Adornment="Adornment.End"
                               AdornmentIcon="@Icons.Material.Filled.Edit"
-                              OnAdornmentClick="EditEmail"
+                              OnAdornmentClick="EditAssistanceEmail"
+                              AdornmentColor="Color.Primary">
+                </MudTextField>
+
+                <MudTextField Text="@ProfessorInfo.Email"
+                              T="string"
+                              Label="Professor-Email-Adresse"
+                              Variant="Variant.Outlined"
+                              ReadOnly="true"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditProfessorEmail"
                               AdornmentColor="Color.Primary">
                 </MudTextField>
             </div>

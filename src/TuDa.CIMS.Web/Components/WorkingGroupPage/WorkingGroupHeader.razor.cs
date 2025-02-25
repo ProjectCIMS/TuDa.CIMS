@@ -16,6 +16,8 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi, Naviga
 
     [Parameter] public Guid WorkingGroupId { get; set; }
 
+    [Parameter] public bool IsDeactivated { get; set; }
+
     [Inject] private IDialogService DialogService { get; set; } = null!;
 
     /// <summary>
@@ -27,6 +29,7 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi, Naviga
         ProfessorName = workingGroup.Value.Professor.Name;
         ProfessorTitle = workingGroup.Value.Professor.Title;
         Professor = workingGroup.Value.Professor;
+        IsDeactivated = workingGroup.Value.IsDeactivated;
 
         await base.OnInitializedAsync();
     }
@@ -42,6 +45,14 @@ public partial class WorkingGroupHeader(IWorkingGroupApi workingGroupApi, Naviga
         // Wait for the dialog to close and then reload the page
         // TODO: This is a workaround to reload the page after the dialog closes, change this to a better solution
         await dialogReference.Result;
+        navigation.NavigateTo(navigation.Uri, forceLoad: true);
+    }
+
+    public async Task ToggleWorkingGroupStatus()
+    {
+        await workingGroupApi.ToggleActiveAsync(WorkingGroupId);
+
+        // TODO: This is a workaround to reload the page after the dialog closes, change this to a better solution
         navigation.NavigateTo(navigation.Uri, forceLoad: true);
     }
 }

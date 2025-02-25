@@ -199,6 +199,6 @@ public class PurchaseRepository : IPurchaseRepository
             );
         }
         byte[] signature = purchase.Signature;
-        return Convert.ToBase64String(signature);
+        return Encoding.UTF8.GetString(signature);
     }
 }

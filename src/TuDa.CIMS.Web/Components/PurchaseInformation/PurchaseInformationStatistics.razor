@@ -1,0 +1,87 @@
+@using TuDa.CIMS.Shared.Dtos.Responses
+@using TuDa.CIMS.Shared.Entities
+<MudPaper>
+    <MudStack Spacing="2">
+        <MudStack Spacing="1" Class="m-lg-4">
+            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudText>Laborgeräte: </MudText>
+                <MudText Align="Align.Right">@GetTotalPriceConsumables()</MudText>
+            </MudStack>
+            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudText>Lösungsmittel: </MudText>
+                <MudText Align="Align.Right">@GetTotalPriceSolvents()</MudText>
+            </MudStack>
+            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudText>Chemikalien: </MudText>
+                <MudText Align="Align.Right">@GetTotalPriceChemicals()</MudText>
+            </MudStack>
+            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudText>Technische Gase: </MudText>
+                <MudText Align="Align.Right">@GetTotalPriceGasCylinders()</MudText>
+            </MudStack>
+            <MudDivider Class="my-2" Style="border: 2px solid black;" />
+            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudText>Summe: </MudText>
+                <MudText Align="Align.Right">@GetTotalPrice()</MudText>
+            </MudStack>
+        </MudStack>
+    </MudStack>
+</MudPaper>
+
+@code
+{
+    [CascadingParameter]
+    public required PurchaseResponseDto Purchase { get; set; }
+
+    /// <summary>
+    /// Returns the TotalPriceChemicals text.
+    /// </summary>
+    private string GetTotalPriceChemicals()
+    {
+        var sum = Purchase.Entries
+            .Where(entry => entry.AssetItem is Chemical and not Solvent)
+            .Sum(entry => entry.PricePerItem * entry.Amount);
+        return $"{sum:C}";
+    }
+
+    /// <summary>
+    /// Returns the TotalPriceSolvents text.
+    /// </summary>
+    private string GetTotalPriceSolvents()
+    {
+        var sum = Purchase.Entries
+            .Where(entry => entry.AssetItem is Solvent)
+            .Sum(entry => entry.PricePerItem * entry.Amount);
+        return $"{sum:C}";
+    }
+
+    /// <summary>
+    /// Returns the TotalPriceGasCylinders text.
+    /// </summary>
+    private string GetTotalPriceGasCylinders()
+    {
+        var sum = Purchase.Entries
+            .Where(entry => entry.AssetItem is GasCylinder)
+            .Sum(entry => entry.PricePerItem * entry.Amount);
+        return $"{sum:C}";
+    }
+
+    /// <summary>
+    /// Returns the TotalPriceConsumables text.
+    /// </summary>
+    private string GetTotalPriceConsumables()
+    {
+        var sum = Purchase.Entries
+            .Where(entry => entry.AssetItem is Consumable)
+            .Sum(entry => entry.PricePerItem * entry.Amount);
+        return $"{sum:C}";
+    }
+
+    /// <summary>
+    /// Returns the TotalPrice text.
+    /// </summary>
+    private string GetTotalPrice()
+    {
+        return $"{Purchase.TotalPrice:C}";
+    }
+}

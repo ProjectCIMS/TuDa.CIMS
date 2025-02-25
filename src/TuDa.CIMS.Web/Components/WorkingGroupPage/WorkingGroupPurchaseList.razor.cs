@@ -1,20 +1,36 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using TuDa.CIMS.Shared.Dtos.Responses;
+using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Web.Components.PurchaseInformation;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
-public partial class WorkingGroupPurchaseList(IPurchaseApi _iPurchaseApi, NavigationManager _navigation) : ComponentBase
+public partial class WorkingGroupPurchaseList
 {
-    [Parameter]
-    public IEnumerable<PurchaseResponseDto> Purchases { get; set; } = [];
+    private readonly IDialogService _dialogService;
+    private readonly NavigationManager _navigation;
+    private readonly IPurchaseApi _iPurchaseApi;
 
-    [Parameter]
-    public Guid WorkingGroupId { get; set; }
+    public WorkingGroupPurchaseList(
+        IDialogService dialogService,
+        NavigationManager navigationManager,
+        IPurchaseApi iPurchaseApi
+    )
+    {
+        _dialogService = dialogService;
+        _navigation = navigationManager;
+        _iPurchaseApi = iPurchaseApi;
+    }
+    [Parameter] public IEnumerable<PurchaseResponseDto> Purchases { get; set; } = [];
+
+    [Parameter] public Guid WorkingGroupId { get; set; }
 
     private IEnumerable<PurchaseResponseDto> SortedPurchases =>
         Purchases.OrderByDescending(p => p.CompletionDate);
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,8 +53,20 @@ public partial class WorkingGroupPurchaseList(IPurchaseApi _iPurchaseApi, Naviga
             : "";
     }
 
-    private void NavigateToPurchase(PurchaseResponseDto purchase)
+    private async Task NavigateToPurchase(PurchaseResponseDto purchase)
     {
-        _navigation.NavigateTo($"shop/{WorkingGroupId}/{purchase.Id}");
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var signature = await _iPurchaseApi.RetrieveSignatureAsync(WorkingGroupId, purchase.Id).Else("");
+        // Set Parameters
+        var parameters = new DialogParameters<PurchaseInformationPopup>
+        {
+            { "WorkingGroupId", WorkingGroupId }, { "Purchase", purchase },
+            {"SignatureAsBase64", signature.Value}
+        };
+        await _dialogService.ShowAsync<PurchaseInformationPopup>(
+            "Rechnungsinformationen",
+            parameters,
+            options
+        );
     }
 }

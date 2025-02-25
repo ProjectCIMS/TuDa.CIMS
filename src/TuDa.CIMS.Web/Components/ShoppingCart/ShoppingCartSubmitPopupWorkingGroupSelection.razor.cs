@@ -42,6 +42,7 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
         {
             return "Eine Arbeitsgruppe muss ausgewählt werden.";
         }
+
         return "";
     }
 
@@ -64,8 +65,9 @@ public partial class ShoppingCartSubmitPopupWorkingGroupSelection(IWorkingGroupA
 
     private Task<IEnumerable<WorkingGroupResponseDto>> Search(
         string name,
-        CancellationToken token
-    ) => api.GetAllAsync(name).Match(value => value, _ => []);
+        CancellationToken token)
+        => api.GetAllAsync(name)
+            .Match(value => value.Where(wg => wg.IsDeactivated == false), _ => []);
 
     /// <summary>
     /// Returns the name of a given working group.

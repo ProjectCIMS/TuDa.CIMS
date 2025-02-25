@@ -15,10 +15,9 @@
                 Title="Preis"/>
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
-                    <!-- TODO: Return the icon info-->
                     <MudIconButton Size="@Size.Small"
-                                   Icon="@Icons.Material.Outlined.Recycling"
-                                   @onclick="@(() => NavigateToPurchase(context.Item))"/>
+                                   Icon="@Icons.Material.Outlined.Info"
+                                   OnClick="@(() => NavigateToPurchase(context.Item))"/>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TuDa.CIMS.Api.Database;
@@ -11,9 +12,11 @@ using TuDa.CIMS.Api.Database;
 namespace TuDa.CIMS.Api.Migrations
 {
     [DbContext(typeof(CIMSDbContext))]
-    partial class CIMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250224212326_AddEmailToPerson")]
+    partial class AddEmailToPerson
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,9 +138,6 @@ namespace TuDa.CIMS.Api.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("PurchaseId")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("TransactionReason")
                         .HasColumnType("integer");
 
@@ -147,8 +147,6 @@ namespace TuDa.CIMS.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ConsumableId");
-
-                    b.HasIndex("PurchaseId");
 
                     b.ToTable("ConsumableTransactions");
                 });
@@ -309,9 +307,6 @@ namespace TuDa.CIMS.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsDeactivated")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("text");
@@ -447,10 +442,6 @@ namespace TuDa.CIMS.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TuDa.CIMS.Shared.Entities.Purchase", null)
-                        .WithMany("ConsumableTransactions")
-                        .HasForeignKey("PurchaseId");
-
                     b.Navigation("Consumable");
                 });
 
@@ -525,8 +516,6 @@ namespace TuDa.CIMS.Api.Migrations
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Purchase", b =>
                 {
-                    b.Navigation("ConsumableTransactions");
-
                     b.Navigation("Entries");
 
                     b.Navigation("Predecessor");
