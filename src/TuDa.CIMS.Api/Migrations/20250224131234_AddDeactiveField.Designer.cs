@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TuDa.CIMS.Api.Database;
@@ -11,9 +12,11 @@ using TuDa.CIMS.Api.Database;
 namespace TuDa.CIMS.Api.Migrations
 {
     [DbContext(typeof(CIMSDbContext))]
-    partial class CIMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250224131234_AddDeactiveField")]
+    partial class AddDeactiveField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,8 +101,8 @@ namespace TuDa.CIMS.Api.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("Room")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Shop")
                         .IsRequired()
@@ -109,6 +112,8 @@ namespace TuDa.CIMS.Api.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
 
                     b.ToTable("AssetItems");
 
@@ -186,10 +191,6 @@ namespace TuDa.CIMS.Api.Migrations
                         .IsRequired()
                         .HasMaxLength(13)
                         .HasColumnType("character varying(13)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -289,6 +290,27 @@ namespace TuDa.CIMS.Api.Migrations
                     b.HasIndex("PurchaseId");
 
                     b.ToTable("PurchaseEntries");
+                });
+
+            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.Room", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.WorkingGroup", b =>
@@ -432,6 +454,17 @@ namespace TuDa.CIMS.Api.Migrations
                         .HasForeignKey("SubstanceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TuDa.CIMS.Shared.Entities.AssetItem", b =>
+                {
+                    b.HasOne("TuDa.CIMS.Shared.Entities.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("TuDa.CIMS.Shared.Entities.ConsumableTransaction", b =>

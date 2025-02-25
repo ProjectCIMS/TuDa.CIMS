@@ -32,4 +32,9 @@ public record WorkingGroup : BaseEntity
     /// All purchases done by the group.
     /// </summary>
     public List<Purchase> Purchases { get; set; } = [];
+
+    /// <summary>
+    /// Every group can be deactivated or activated.
+    /// </summary>
+    public bool IsDeactivated { get; set; }
 }
