@@ -61,6 +61,6 @@
             Substance substance => substance.PriceUnit.ToAbbreviation(),
             _ => "Stück"
         };
-        return $"{purchaseEntry.Amount} {temp}";
+        return $"{purchaseEntry.Amount:F} {temp}";
     }
 }

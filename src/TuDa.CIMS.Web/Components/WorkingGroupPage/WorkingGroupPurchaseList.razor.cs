@@ -56,16 +56,12 @@ public partial class WorkingGroupPurchaseList
     private async Task NavigateToPurchase(PurchaseResponseDto purchase)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        var signatureOrError = await _iPurchaseApi.RetrieveSignatureAsync(WorkingGroupId, purchase.Id);
-        if (signatureOrError.IsError)
-        {
-        }
-        string signature = signatureOrError.Value;
+        var signature = await _iPurchaseApi.RetrieveSignatureAsync(WorkingGroupId, purchase.Id).Else("");
         // Set Parameters
         var parameters = new DialogParameters<PurchaseInformationPopup>
         {
             { "WorkingGroupId", WorkingGroupId }, { "Purchase", purchase },
-            {"SignatureAsBase64", signature}
+            {"SignatureAsBase64", signature.Value}
         };
         await _dialogService.ShowAsync<PurchaseInformationPopup>(
             "Rechnungsinformationen",
