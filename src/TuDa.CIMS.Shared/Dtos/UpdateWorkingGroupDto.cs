@@ -15,7 +15,7 @@ public record UpdateWorkingGroupDto
     public string? PhoneNumber { get; set; }
 
     /// <summary>
-    /// An email to contract the group.
+    /// An email to contact the group.
     /// </summary>
     public string? Email { get; set; }
 }

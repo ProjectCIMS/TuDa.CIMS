@@ -1,6 +1,6 @@
 ﻿@using TuDa.CIMS.Shared.Entities
-<MudContainer MaxWidth="MaxWidth.Small" Class="bg-white rounded">
-    <MudDataGrid Items="@_persons"
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="bg-white rounded">
+    <MudDataGrid Items="@_students"
                  FixedHeader="@true"
                  SortMode="SortMode.None"
                  Hover="@true">
@@ -14,6 +14,9 @@
             <PropertyColumn
                 Property="@(p => p.PhoneNumber)"
                 Title="Telefonnummer"/>
+            <PropertyColumn
+                Property="@(p => p.Email)"
+                Title="E-Mail"/>
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
                     <MudIconButton Size="@Size.Small"
@@ -30,7 +33,7 @@
         <PagerContent>
             <MudDataGridPager RowsPerPageString="Personen pro Seite:"
                               PageSizeOptions="[ 5, 10, 20 ]"
-                              T="Person"/>
+                              T="Student"/>
         </PagerContent>
     </MudDataGrid>
     <div Class="d-flex justify-content-end">
