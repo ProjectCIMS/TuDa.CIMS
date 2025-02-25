@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Dtos.Responses;
+using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Components.PurchaseInformation;
 using TuDa.CIMS.Web.Services;
 
@@ -55,12 +56,16 @@ public partial class WorkingGroupPurchaseList
     private async Task NavigateToPurchase(PurchaseResponseDto purchase)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-
+        var signatureOrError = await _iPurchaseApi.RetrieveSignatureAsync(WorkingGroupId, purchase.Id);
+        if (signatureOrError.IsError)
+        {
+        }
+        string signature = signatureOrError.Value;
         // Set Parameters
-        var parameters = new DialogParameters
+        var parameters = new DialogParameters<PurchaseInformationPopup>
         {
             { "WorkingGroupId", WorkingGroupId }, { "Purchase", purchase },
-            {"Signature", _iPurchaseApi.RetrieveSignatureAsync(WorkingGroupId, purchase.Id)}
+            {"SignatureAsBase64", signature}
         };
         await _dialogService.ShowAsync<PurchaseInformationPopup>(
             "Rechnungsinformationen",

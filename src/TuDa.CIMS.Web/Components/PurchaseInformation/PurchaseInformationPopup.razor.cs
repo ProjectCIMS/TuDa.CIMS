@@ -17,8 +17,7 @@ public partial class PurchaseInformationPopup
     public PurchaseResponseDto Purchase { get; set; } = null!;
 
     [Parameter]
-    public string SignatureAsBase64 { get; set; } = null!;
-
+    public string SignatureAsBase64 { get; set; } = string.Empty;
 
     private void GoToInvalidation()
     {
