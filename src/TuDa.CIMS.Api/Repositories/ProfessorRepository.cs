@@ -39,6 +39,7 @@ public class ProfessorRepository : IProfessorRepository
         professor.FirstName = update.FirstName ?? professor.FirstName;
         professor.Title = update.Title ?? professor.Title;
         professor.Gender = update.Gender ?? professor.Gender;
+        professor.Email = update.Email ?? professor.Email;
         professor.PhoneNumber = update.PhoneNumber ?? professor.PhoneNumber;
         professor.Address.City = update.AddressCity ?? professor.Address.City;
         professor.Address.Street = update.AddressStreet ?? professor.Address.Street;

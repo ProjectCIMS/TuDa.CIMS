@@ -74,7 +74,8 @@ public class StudentRepository : IStudentRepository
             Name = createStudentDto.Name,
             FirstName = createStudentDto.FirstName,
             Gender = createStudentDto.Gender,
-            PhoneNumber = createStudentDto.PhoneNumber
+            PhoneNumber = createStudentDto.PhoneNumber,
+            Email = createStudentDto.Email
         };
 
         existingWorkingGroup.Students.Add(newStudent);
@@ -114,6 +115,7 @@ public class StudentRepository : IStudentRepository
         existingStudent.FirstName = updatedStudentDto.FirstName ?? existingStudent.FirstName;
         existingStudent.Gender = updatedStudentDto.Gender ?? existingStudent.Gender;
         existingStudent.PhoneNumber = updatedStudentDto.PhoneNumber ?? existingStudent.PhoneNumber;
+        existingStudent.Email = updatedStudentDto.Email ?? existingStudent.Email;
 
         await _context.SaveChangesAsync();
         return Result.Updated;

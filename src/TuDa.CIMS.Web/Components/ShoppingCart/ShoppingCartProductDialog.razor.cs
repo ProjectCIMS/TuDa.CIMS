@@ -29,7 +29,8 @@ public partial class ShoppingCartProductDialog
     public bool IsInt() =>
         Product is Consumable || (Product as Substance)!.PriceUnit == MeasurementUnits.Piece;
 
-    private bool IsError => Amount <= 0.0 || AmountInt <= 0;
+    private bool IsError =>
+        Amount <= 0.0 || AmountInt <= 0 || (Product is Consumable c && AmountInt > c.Amount);
 
     // Simple Functions to Submit and Cancel the Action.
     private void Submit()
@@ -55,8 +56,16 @@ public partial class ShoppingCartProductDialog
     {
         if (Amount > 0)
         {
-            Logger.LogInformation($"Product added with quantity: {Amount}");
-            Submit();
+            if (Product is Consumable c)
+            {
+                if (AmountInt > c.Amount)
+                {
+                    Logger.LogWarning("Consumable is out of Stock");
+                    return;
+                }
+                Logger.LogInformation($"Product added with quantity: {Amount}");
+                Submit();
+            }
         }
         else
         {

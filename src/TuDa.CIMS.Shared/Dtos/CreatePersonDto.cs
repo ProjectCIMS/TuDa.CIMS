@@ -27,4 +27,9 @@ public record CreatePersonDto
     /// The phone number of the person.
     /// </summary>
     public string PhoneNumber { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The email of the person.
+    /// </summary>
+    public string Email { get; set; } = string.Empty;
 }
