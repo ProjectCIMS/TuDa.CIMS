@@ -21,6 +21,31 @@
                     @ref="_consumableItemForm"
                     FormShowError="@ShowError"
                     OnReset="@(_ => StateHasChanged())"/>
+                <MudPaper Class="pa-4">
+                    <MudStack Spacing="2">
+                        <MudButton OnClick="OnExpandCollapseClick" Color="Color.Primary" Variant="Variant.Outlined">
+                            @(_expanded ? "Schließen" : "Statistik anzeigen")
+                        </MudButton>
+                        <MudDivider />
+                        <MudCollapse Expanded="_expanded">
+                            <MudStack Spacing="1" Class="pa-3">
+                                <MudText Typo="Typo.subtitle1" Align="Align.Left" Inline="false">
+                                     Menge letztes Jahr:
+                                    <strong>@AmountLastYear</strong>
+                                </MudText>
+                                <MudText Typo="Typo.subtitle1" Align="Align.Left" Inline="false">
+                                    Verkauft dieses Jahr:
+                                    <strong>@SoldThisYear</strong>
+                                </MudText>
+                                <MudText Typo="Typo.subtitle1" Align="Align.Left" Inline="false">
+                                     Aufgefüllt dieses Jahr:
+                                    <strong>@RestockedThisYear</strong>
+                                </MudText>
+                            </MudStack>
+                        </MudCollapse>
+                    </MudStack>
+                </MudPaper>
+
                 break;
             case GasCylinder:
                 <GasCylinderItemForm
@@ -31,3 +56,11 @@
         }
     </MudItem>
 </MudGrid>
+
+@code {
+    bool _expanded = true;
+
+    private void OnExpandCollapseClick() {
+        _expanded = !_expanded;
+    }
+}
