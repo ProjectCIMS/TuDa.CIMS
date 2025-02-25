@@ -1,0 +1,66 @@
+@using TuDa.CIMS.Shared.Dtos.Responses
+@using TuDa.CIMS.Shared.Entities
+@using TuDa.CIMS.Shared.Entities.Enums
+<MudPaper>
+    <MudStack Spacing="2" Style="display: flex; flex-direction: column-reverse; overflow: auto; height: 400px;">
+        @foreach (var purchaseEntry in Purchase.Entries)
+        {
+            <MudItem Class="p-2">
+                <MudItem>
+                    <MudText Typo="Typo.h6">@purchaseEntry.AssetItem.Name</MudText>
+                </MudItem>
+                <MudGrid>
+                    <MudItem xs="5">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                            <MudText>Preis:</MudText>
+                            <MudText>@GetPricePerItemString(purchaseEntry)</MudText>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="3">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                            <MudText>Menge:</MudText>
+                            <MudText>@GetAmountString(purchaseEntry)</MudText>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                            <MudText>Endpreis:</MudText>
+                            <MudText>@GetTotalPriceString(purchaseEntry)</MudText>
+                        </MudStack>
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+        }
+    </MudStack>
+</MudPaper>
+
+
+@code
+{
+    [CascadingParameter] public required PurchaseResponseDto Purchase { get; set; }
+
+    private string GetPricePerItemString(PurchaseEntry purchaseEntry)
+    {
+        var temp = purchaseEntry.AssetItem switch
+        {
+            Substance substance => substance.PriceUnit.ToAbbreviation(),
+            _ => "Stück"
+        };
+        return $"{purchaseEntry.PricePerItem:C}/{temp}";
+    }
+
+    private string GetTotalPriceString(PurchaseEntry purchaseEntry)
+    {
+        return $"{purchaseEntry.TotalPrice:C}";
+    }
+
+    private string GetAmountString(PurchaseEntry purchaseEntry)
+    {
+        var temp = purchaseEntry.AssetItem switch
+        {
+            Substance substance => substance.PriceUnit.ToAbbreviation(),
+            _ => "Stück"
+        };
+        return $"{purchaseEntry.Amount:F} {temp}";
+    }
+}

@@ -1,0 +1,40 @@
+<MudDialog Style="width: 100vw; max-width: 800px;">
+    <TitleContent>
+        <MudGrid Spacing="2">
+            <MudItem xs="6">
+                <MudText Typo="Typo.h6">@Purchase.CompletionDate?.ToString("dd.MM.yyyy")</MudText>
+            </MudItem>
+            <MudItem xs="6" Class="d-flex justify-end">
+                @if (Purchase.Invalidated)
+                {
+                    <MudChip T="string" Color="Color.Error">Rechnung ist ungültig</MudChip>
+                }
+                @if (!Purchase.Invalidated)
+                {
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => GoToInvalidation())">
+                        Invalidieren
+                    </MudButton>
+                }
+            </MudItem>
+        </MudGrid>
+    </TitleContent>
+    <DialogContent>
+        <MudGrid Spacing="2">
+            <CascadingValue Value="Purchase">
+                <MudItem xs="6">
+                    <PurchaseInformationPurchaseEntryList/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudStack>
+                        <MudItem>
+                            <PurchaseInformationBuyerInformation SignatureAsBase64="@SignatureAsBase64"/>
+                        </MudItem>
+                        <MudItem>
+                            <PurchaseInformationStatistics/>
+                        </MudItem>
+                    </MudStack>
+                </MudItem>
+            </CascadingValue>
+        </MudGrid>
+    </DialogContent>
+</MudDialog>
