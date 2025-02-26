@@ -82,16 +82,12 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
     {
         var transaction = await GetOneAsync(consumableTransactionId);
         if (transaction is null)
-        {
             return ConsumableTransactionError.NotFound(consumableTransactionId);
-        }
 
         var consumable = transaction.Consumable;
 
         if (transaction.Consumable.Amount + newAmount < 0)
-        {
             return ConsumableTransactionError.AmountChangeNegative();
-        }
 
         consumable.Amount -= transaction.AmountChange - newAmount;
 
