@@ -73,7 +73,7 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
         result.Should().BeEquivalentTo(workingGroup.Purchases.ToResponseDtos());
     }
 
-    [Fact(Skip = "This test is failing when running all tests together.")]
+    [Fact]
     public async Task RemoveAsync_ShouldRemovePurchase_WhenPurchasePresent()
     {
         // Arrange
@@ -101,7 +101,7 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
         (await DbContext.Purchases.AnyAsync()).Should().BeFalse();
     }
 
-    [Fact(Skip = "This test is failing when running all tests together.")]
+    [Fact]
     public async Task RemoveAsync_ShouldReturnNotFound_WhenPurchaseNotPresent()
     {
         WorkingGroup workingGroup = new WorkingGroupFaker();
@@ -178,7 +178,7 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "This test is failing when running all tests together.")]
+    [Fact]
     public async Task RetrieveSignatureAsync_ShouldReturnBase64Signature_WhenPurchaseExists()
     {
         // Arrange

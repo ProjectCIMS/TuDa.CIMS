@@ -41,7 +41,7 @@ public class PurchaseControllerInvalidationTest1(CIMSApiFactory apiFactory)
         invalidPurchase.Invalidated.Should().BeTrue();
     }
 
-    [Fact(Skip = "This test is failing when running all tests together.")]
+    [Fact]
     public async Task InvalidateAsync_ShouldClearConsumableTransactions_WhenPurchaseInvalidated()
     {
         // Arrange
@@ -123,7 +123,7 @@ public class PurchaseControllerInvalidationTest1(CIMSApiFactory apiFactory)
         consumables.Find(c => c.Id == newEntries[1].AssetItem.Id)!.Amount.Should().Be(101);
     }
 
-    [Fact(Skip = "This test is failing when running all tests together.")]
+    [Fact]
     public async Task InvalidateAsync_ShouldCreateCorrectTransactions_WhenAddingNewEntries()
     {
         // Arrange
@@ -301,6 +301,7 @@ public class PurchaseControllerInvalidationTest1(CIMSApiFactory apiFactory)
         WorkingGroup workingGroup = new WorkingGroupFaker(purchases: []);
         await DbContext.WorkingGroups.AddAsync(workingGroup);
         await DbContext.SaveChangesAsync();
+
         var entries = new PurchaseEntryFaker<Consumable>(
             assetItemFaker: new ConsumableFaker()
         ).Generate(entryCount);
@@ -311,15 +312,7 @@ public class PurchaseControllerInvalidationTest1(CIMSApiFactory apiFactory)
         }
 
         await DbContext.AssetItems.AddRangeAsync(entries.Select(e => e.AssetItem).ToList());
-        try
-        {
-            await DbContext.SaveChangesAsync();
-        }
-        catch (Exception e)
-        {
-            await DbContext.SaveChangesAsync();
-            Console.WriteLine(e);
-        }
+        await DbContext.SaveChangesAsync();
 
         return (workingGroup, entries);
     }
