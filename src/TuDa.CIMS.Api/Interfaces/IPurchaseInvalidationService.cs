@@ -5,7 +5,8 @@ namespace TuDa.CIMS.Api.Interfaces;
 public interface IPurchaseInvalidationService
 {
     public Task<ErrorOr<Updated>> UpdateForInvalidatedPurchase(
-        Purchase invalidatedPurchase,
-        Purchase newPurchase
+        Guid workingGroupId,
+        Guid invalidatedPurchaseId,
+        Guid newPurchaseId
     );
 }
