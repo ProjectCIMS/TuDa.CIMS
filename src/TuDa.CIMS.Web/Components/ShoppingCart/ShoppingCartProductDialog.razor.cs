@@ -63,9 +63,9 @@ public partial class ShoppingCartProductDialog
                     Logger.LogWarning("Consumable is out of Stock");
                     return;
                 }
-                Logger.LogInformation($"Product added with quantity: {Amount}");
-                Submit();
             }
+            Logger.LogInformation($"Product added with quantity: {Amount}");
+            Submit();
         }
         else
         {
