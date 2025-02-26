@@ -111,4 +111,14 @@ public static class ServiceExtensions
 
         return services;
     }
+
+    public static IServiceCollection AddDefaultLocalization(this IServiceCollection services) =>
+        services.Configure<RequestLocalizationOptions>(options =>
+        {
+            string[] supportedCultures = ["de-DE"];
+            options
+                .SetDefaultCulture(supportedCultures[0])
+                .AddSupportedCultures(supportedCultures)
+                .AddSupportedUICultures(supportedCultures);
+        });
 }
