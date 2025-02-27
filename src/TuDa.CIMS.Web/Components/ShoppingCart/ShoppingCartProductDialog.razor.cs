@@ -27,7 +27,7 @@ public partial class ShoppingCartProductDialog
     /// </summary>
     /// <returns>returns true if it should be an integer</returns>
     public bool IsInt() =>
-        Product is Consumable;
+        Product is Consumable || (Product as Substance)!.PriceUnit == MeasurementUnits.Piece;
 
     private bool IsError =>
         Amount <= 0.0 || AmountInt <= 0 || (Product is Consumable c && AmountInt > c.Amount);
@@ -54,19 +54,13 @@ public partial class ShoppingCartProductDialog
     /// </summary>
     private void CheckAndSubmit()
     {
-        if (Amount > 0)
+        if (Amount > 0 && AmountInt > 0)
         {
             if (Product is Consumable c)
             {
                 if (AmountInt > c.Amount)
                 {
                     Logger.LogWarning("Consumable is out of Stock");
-                    return;
-                }
-
-                if (AmountInt <= 0)
-                {
-                    Logger.LogWarning("Quantity must be greater than 0");
                     return;
                 }
             }
