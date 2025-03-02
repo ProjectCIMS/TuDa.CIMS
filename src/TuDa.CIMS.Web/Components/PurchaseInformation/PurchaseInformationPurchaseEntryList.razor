@@ -1,3 +1,4 @@
+@using System.Globalization
 @using TuDa.CIMS.Shared.Dtos.Responses
 @using TuDa.CIMS.Shared.Entities
 @using TuDa.CIMS.Shared.Entities.Enums
@@ -61,6 +62,10 @@
             Substance substance => substance.PriceUnit.ToAbbreviation(),
             _ => "Stück"
         };
-        return $"{purchaseEntry.Amount:F} {temp}";
+        var culture = new CultureInfo("de-DE");
+        var amountString = temp == "Stück"
+            ? purchaseEntry.Amount.ToString("0", culture)
+            : purchaseEntry.Amount.ToString("0.00", culture);
+        return $"{amountString} {temp}";
     }
 }
