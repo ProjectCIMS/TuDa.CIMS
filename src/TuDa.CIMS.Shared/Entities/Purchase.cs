@@ -14,7 +14,6 @@ public record Purchase : BaseEntity
     /// The signature of the buyer.
     /// </summary>
     /// <remarks>
-    /// TODO: The saving strategy is not final.
     /// </remarks>
     public byte[] Signature { get; set; } = [];
 
@@ -45,6 +44,11 @@ public record Purchase : BaseEntity
     /// The purchase this purchase is correcting.
     /// </summary>
     public Purchase? Predecessor { get; set; }
+
+    /// <summary>
+    /// All for the Purchase created Consumable transaction
+    /// </summary>
+    public List<ConsumableTransaction> ConsumableTransactions { get; init; } = [];
 
     #endregion
 

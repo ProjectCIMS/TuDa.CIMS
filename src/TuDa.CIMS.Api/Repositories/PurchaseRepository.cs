@@ -34,6 +34,7 @@ public class PurchaseRepository : IPurchaseRepository
             .Include(i => i.Buyer)
             .Include(i => i.Successor)
             .Include(i => i.Predecessor)
+            .Include(i => i.ConsumableTransactions)
             .Include(i => i.Entries)
             .ThenInclude(i => i.AssetItem);
 
@@ -130,45 +131,39 @@ public class PurchaseRepository : IPurchaseRepository
         return newPurchase;
     }
 
-    /// <inheritdoc/>
-    public async Task<ErrorOr<Success>> InvalidateAsync(
+    /// <inheritdoc />
+    public async Task<ErrorOr<Success>> SetSuccessorAndPredecessorAsync(
         Guid workingGroupId,
-        Guid purchaseId,
-        CreatePurchaseDto createModel
+        Guid predecessorId,
+        Guid successorId
     )
     {
-        var strategy = _context.Database.CreateExecutionStrategy();
-
-        return await strategy.ExecuteAsync<ErrorOr<Success>>(async () =>
+        var predecessor = await GetOneAsync(workingGroupId, predecessorId);
+        if (predecessor is null)
         {
-            await using var transaction = await _context.Database.BeginTransactionAsync();
+            return Error.NotFound(
+                "Purchase.SetSuccessorAndPredecessorAsync",
+                $"Purchase with id {predecessorId} was not found."
+            );
+        }
 
-            var oldPurchase = await GetOneAsync(workingGroupId, purchaseId);
-            if (oldPurchase is null)
-                return Error.NotFound(
-                    "PurchaseRepository.InvalidAsync",
-                    $"Purchase {purchaseId} of working group {workingGroupId} was not found."
-                );
+        var successor = await GetOneAsync(workingGroupId, successorId);
+        if (successor is null)
+        {
+            return Error.NotFound(
+                "Purchase.SetSuccessorAndPredecessorAsync",
+                $"Purchase with id {successorId} was not found."
+            );
+        }
 
-            if (oldPurchase.Invalidated)
-                return Error.Failure(
-                    "PurchaseRepository.InvalidateAsync",
-                    "Purchase is already invalidated."
-                );
+        predecessor.Successor = successor;
+        successor.Predecessor = predecessor;
 
-            var newPurchase = await CreateAsync(workingGroupId, createModel);
-            if (newPurchase.IsError)
-                return newPurchase.Errors;
-
-            oldPurchase.Successor = newPurchase.Value;
-            newPurchase.Value.Predecessor = oldPurchase;
-
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-            return Result.Success;
-        });
+        await _context.SaveChangesAsync();
+        return Result.Success;
     }
 
+    /// <inheritdoc />
     public async Task<ErrorOr<string>> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId)
     {
         var purchase = await GetOneAsync(workingGroupId, purchaseId);

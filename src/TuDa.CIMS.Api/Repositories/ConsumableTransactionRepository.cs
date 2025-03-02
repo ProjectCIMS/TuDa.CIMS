@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api.Database;
+using TuDa.CIMS.Api.Errors;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Api.Repositories;
 
@@ -37,7 +39,7 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
     /// Updates the amount of the specific Consumable of the ConsumableTransaction and creates a new transaction for a consumable item.
     /// </summary>
     /// <param name="consumableTransactionDto"></param>
-    public async Task<ErrorOr<Created>> CreateAsync(
+    public async Task<ErrorOr<ConsumableTransaction>> CreateAsync(
         CreateConsumableTransactionDto consumableTransactionDto
     )
     {
@@ -47,12 +49,12 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
 
         if (consumable is null)
         {
-            return Error.NotFound("Consumable not found");
+            return ConsumableError.NotFound(consumableTransactionDto.ConsumableId);
         }
 
         if (consumable.Amount + consumableTransactionDto.AmountChange < 0)
         {
-            return Error.Failure("Negative amount of consumable after a purchase is not possible.");
+            return ConsumableTransactionError.AmountChangeNegative();
         }
 
         consumable.Amount += consumableTransactionDto.AmountChange;
@@ -69,7 +71,63 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
         _context.ConsumableTransactions.Add(consumableTransaction);
         await _context.SaveChangesAsync();
 
-        return Result.Created;
+        return consumableTransaction;
+    }
+
+    /// <inheritdoc />
+    public async Task<ErrorOr<Updated>> UpdateAmountAsync(
+        Guid consumableTransactionId,
+        int newAmount
+    )
+    {
+        var transaction = await GetOneAsync(consumableTransactionId);
+        if (transaction is null)
+            return ConsumableTransactionError.NotFound(consumableTransactionId);
+
+        var consumable = transaction.Consumable;
+
+        if (transaction.Consumable.Amount + newAmount < 0)
+            return ConsumableTransactionError.AmountChangeNegative();
+
+        consumable.Amount -= transaction.AmountChange - newAmount;
+
+        if (newAmount == 0)
+        {
+            _context.ConsumableTransactions.Remove(transaction);
+        }
+        else
+        {
+            transaction.AmountChange = newAmount;
+        }
+
+        await _context.SaveChangesAsync();
+        return Result.Updated;
+    }
+
+    public async Task<ErrorOr<Success>> MoveToSuccessorPurchaseAsync(
+        Guid predecessorPurchaseId,
+        Guid successorPurchaseId
+    )
+    {
+        var predecessor = await _context
+            .Purchases.Include(p => p.ConsumableTransactions)
+            .SingleOrDefaultAsync(p => p.Id == predecessorPurchaseId);
+
+        if (predecessor is null)
+            return PurchaseError.NotFound(predecessorPurchaseId);
+
+        var successor = await _context
+            .Purchases.Include(p => p.ConsumableTransactions)
+            .SingleOrDefaultAsync(p => p.Id == successorPurchaseId);
+
+        if (successor is null)
+            return PurchaseError.NotFound(successorPurchaseId);
+
+        successor.ConsumableTransactions.AddRange(predecessor.ConsumableTransactions);
+        predecessor.ConsumableTransactions.Clear();
+
+        await _context.SaveChangesAsync();
+        return Result.Success;
     }
 
     /// <inheritdoc />
@@ -80,7 +138,7 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
     {
         if (!await _context.Consumables.AnyAsync(consumable => consumable.Id == consumableId))
         {
-            return Error.NotFound("Consumable.NotFound", "ConsumableNotFound");
+            return ConsumableError.NotFound(consumableId);
         }
 
         var transactionsQuery = ConsumableTransactionsFilledQuery.Where(transaction =>
@@ -95,5 +153,43 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
         }
 
         return await transactionsQuery.ToListAsync();
+    }
+
+    private static IEnumerable<CreateConsumableTransactionDto> CreateDtosFromPurchase(
+        Purchase purchase
+    ) =>
+        purchase
+            .Entries.Where(e => e.AssetItem is Consumable)
+            .GroupBy(entry => entry.AssetItem.Id)
+            .Select(group => new CreateConsumableTransactionDto()
+            {
+                ConsumableId = group.First().AssetItem.Id,
+                Date = purchase.CompletionDate!.Value,
+                AmountChange = (int)-group.Sum(entry => entry.Amount),
+                TransactionReason = TransactionReasons.Purchase,
+            });
+
+    public async Task<ErrorOr<Success>> AddToPurchaseAsync(
+        Guid purchaseGuid,
+        Guid consumableTransactionGuid
+    )
+    {
+        var purchase = await _context
+            .Purchases.Include(p => p.ConsumableTransactions)
+            .SingleOrDefaultAsync(p => p.Id == purchaseGuid);
+        if (purchase is null)
+        {
+            return PurchaseError.NotFound(purchaseGuid);
+        }
+
+        var consumableTransaction = await GetOneAsync(consumableTransactionGuid);
+        if (consumableTransaction is null)
+        {
+            return ConsumableTransactionError.NotFound(consumableTransactionGuid);
+        }
+
+        purchase.ConsumableTransactions.Add(consumableTransaction);
+        await _context.SaveChangesAsync();
+        return Result.Success;
     }
 }

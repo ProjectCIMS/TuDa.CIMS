@@ -12,25 +12,23 @@ public class PurchaseService : IPurchaseService
 {
     private readonly IPurchaseRepository _purchaseRepository;
     private readonly IConsumableTransactionService _consumableTransactionService;
-    private readonly CIMSDbContext _context;
+    private readonly IDbTransactionManager _transactionManager;
+    private readonly IPurchaseInvalidationService _purchaseInvalidationService;
 
     public PurchaseService(
         IPurchaseRepository purchaseRepository,
         IConsumableTransactionService consumableTransactionService,
-        CIMSDbContext context
+        IDbTransactionManager transactionManager,
+        IPurchaseInvalidationService purchaseInvalidationService
     )
     {
         _purchaseRepository = purchaseRepository;
         _consumableTransactionService = consumableTransactionService;
-        _context = context;
+        _transactionManager = transactionManager;
+        _purchaseInvalidationService = purchaseInvalidationService;
     }
 
-    /// <summary>
-    /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
-    /// or the result of the <see cref="GetAllAsync"/> functionality if successful
-    /// </summary>
-    /// <param name="workingGroupId">the unique id of a workinggroup</param>
-    /// <returns></returns>
+    /// <inheritdoc />
     public async Task<ErrorOr<List<Purchase>>> GetAllAsync(Guid workingGroupId)
     {
         try
@@ -43,22 +41,16 @@ public class PurchaseService : IPurchaseService
         }
     }
 
-    /// <summary>
-    /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
-    /// or the result of the <see cref="GetOneAsync"/> functionality if successful
-    /// </summary>
-    /// <param name="id">the unique id of the purchase</param>
-    /// <param name="workingGroupId">the unique id of a workinggroup</param>
-    /// <returns></returns>
-    public async Task<ErrorOr<Purchase>> GetOneAsync(Guid workingGroupId, Guid id)
+    /// <inheritdoc />
+    public async Task<ErrorOr<Purchase>> GetOneAsync(Guid workingGroupId, Guid purchaseId)
     {
         try
         {
-            return (await _purchaseRepository.GetOneAsync(workingGroupId, id)) switch
+            return (await _purchaseRepository.GetOneAsync(workingGroupId, purchaseId)) switch
             {
                 null => Error.NotFound(
                     "PurchaseService.GetOneAsync",
-                    $"Purchase with id {id} not found."
+                    $"Purchase with id {purchaseId} not found."
                 ),
                 var value => value,
             };
@@ -69,18 +61,12 @@ public class PurchaseService : IPurchaseService
         }
     }
 
-    /// <summary>
-    /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
-    /// or the result of the <see cref="RemoveAsync"/> functionality if successful
-    /// </summary>
-    /// <param name="id">the unique id of the purchase</param>
-    /// <param name="workingGroupId">the unique id of a workinggroup</param>
-    /// <returns></returns>
-    public async Task<ErrorOr<Deleted>> RemoveAsync(Guid workingGroupId, Guid id)
+    /// <inheritdoc />
+    public async Task<ErrorOr<Deleted>> RemoveAsync(Guid workingGroupId, Guid purchaseId)
     {
         try
         {
-            return await _purchaseRepository.RemoveAsync(workingGroupId, id);
+            return await _purchaseRepository.RemoveAsync(workingGroupId, purchaseId);
         }
         catch (Exception ex)
         {
@@ -88,71 +74,72 @@ public class PurchaseService : IPurchaseService
         }
     }
 
-    /// <summary>
-    /// Returns an <see cref="ErrorOr{T}"/> that either contains an error message if an error occurs,
-    /// or the result of the <see cref="CreateAsync"/> functionality if successful
-    /// </summary>
-    /// <param name="workingGroupId">the unique id of a workinggroup</param>
-    /// <param name="createModel">the model containing the created values for the purchase</param>
-    /// <returns></returns>
-    public async Task<ErrorOr<Purchase>> CreateAsync(
+    /// <inheritdoc />
+    public Task<ErrorOr<Purchase>> CreateAsync(
         Guid workingGroupId,
         CreatePurchaseDto createModel
-    )
-    {
-        var strategy = _context.Database.CreateExecutionStrategy();
-
-        return await strategy.ExecuteAsync<ErrorOr<Purchase>>(async () =>
+    ) =>
+        _transactionManager.RunInTransactionAsync(async () =>
         {
-            await using var transaction = await _context.Database.BeginTransactionAsync();
-            try
+            var purchase = await _purchaseRepository.CreateAsync(workingGroupId, createModel);
+            if (purchase.IsError)
             {
-                var purchase = await _purchaseRepository.CreateAsync(workingGroupId, createModel);
-                if (purchase.IsError)
-                {
-                    return purchase.Errors;
-                }
-
-                var errorOrCreated = await _consumableTransactionService.CreateForPurchaseAsync(
-                    purchase.Value
-                );
-                if (errorOrCreated.IsError)
-                {
-                    return errorOrCreated.Errors;
-                }
-
-                await transaction.CommitAsync();
-
-                return purchase;
+                return purchase.Errors;
             }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-                return Error.Failure("PurchaseService.CreateAsync", ex.Message);
-            }
+
+            var errorOrCreated = await _consumableTransactionService.CreateForPurchaseAsync(
+                purchase.Value
+            );
+
+            return errorOrCreated.IsError ? errorOrCreated.Errors : purchase;
         });
-    }
 
-    public async Task<ErrorOr<Success>> InvalidateAsync(
+    /// <inheritdoc />
+    public Task<ErrorOr<Success>> InvalidateAsync(
         Guid workingGroupId,
         Guid purchaseId,
         CreatePurchaseDto createModel
-    )
-    {
-        try
+    ) =>
+        _transactionManager.RunInTransactionAsync<Success>(async () =>
         {
-            return await _purchaseRepository.InvalidateAsync(
+            var oldPurchase = await _purchaseRepository.GetOneAsync(workingGroupId, purchaseId);
+            if (oldPurchase is null)
+                return Error.NotFound(
+                    "PurchaseRepository.InvalidAsync",
+                    $"Purchase {purchaseId} of working group {workingGroupId} was not found."
+                );
+
+            if (oldPurchase.Invalidated)
+                return Error.Failure(
+                    "PurchaseRepository.InvalidateAsync",
+                    "Purchase is already invalidated."
+                );
+
+            var newPurchase = await _purchaseRepository.CreateAsync(workingGroupId, createModel);
+            if (newPurchase.IsError)
+                return newPurchase.Errors;
+
+            var success = await _purchaseRepository.SetSuccessorAndPredecessorAsync(
                 workingGroupId,
                 purchaseId,
-                createModel
+                newPurchase.Value.Id
             );
-        }
-        catch (Exception ex)
-        {
-            return Error.Failure("PurchaseService.InvalidateAsync", ex.Message);
-        }
-    }
+            if (success.IsError)
+                return success.Errors;
 
+            var updated = await _purchaseInvalidationService.UpdateForInvalidatedPurchase(
+                workingGroupId,
+                oldPurchase.Id,
+                newPurchase.Value.Id
+            );
+
+            if (updated.IsError)
+                return updated.Errors;
+
+            return Result.Success;
+        });
+
+    /// <inheritdoc />
     public async Task<ErrorOr<string>> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId)
     {
         try
@@ -164,5 +151,4 @@ public class PurchaseService : IPurchaseService
             return Error.Failure("PurchaseService.RetrieveSignatureAsync", ex.Message);
         }
     }
-
 }

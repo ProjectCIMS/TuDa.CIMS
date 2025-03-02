@@ -13,6 +13,7 @@ namespace TuDa.CIMS.Api.Test.Integration;
 public class CIMSApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _databaseContainer = new PostgreSqlBuilder()
+        .WithImage("postgres:16")
         .WithUsername("workshop")
         .WithPassword("password")
         .WithDatabase("CIMS")
@@ -41,8 +42,12 @@ public class CIMSApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 
             AssertionOptions.AssertEquivalencyUsing(options =>
                 options.Excluding(member =>
-                    member.DeclaringType.IsAssignableTo(typeof(BaseEntity)) &&
-                    (member.Name == nameof(BaseEntity.CreatedAt) || member.Name == nameof(BaseEntity.UpdatedAt)))
+                    member.DeclaringType.IsAssignableTo(typeof(BaseEntity))
+                    && (
+                        member.Name == nameof(BaseEntity.CreatedAt)
+                        || member.Name == nameof(BaseEntity.UpdatedAt)
+                    )
+                )
             );
         });
     }
@@ -54,6 +59,7 @@ public class CIMSApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 
     public new async Task DisposeAsync()
     {
-        await _databaseContainer.StopAsync();
+        await _databaseContainer.DisposeAsync().AsTask();
+        await base.DisposeAsync();
     }
 }

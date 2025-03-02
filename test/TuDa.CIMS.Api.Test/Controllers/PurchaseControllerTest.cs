@@ -14,6 +14,7 @@ using TuDa.CIMS.Shared.Test.Faker;
 namespace TuDa.CIMS.Api.Test.Controllers;
 
 [TestSubject(typeof(PurchaseController))]
+[Collection("Sequential")]
 public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestBase(apiFactory)
 {
     [Fact]
@@ -41,7 +42,7 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
         }
     }
 
-    [Fact]
+    [Fact()]
     public async Task GetAsync_ShouldReturnNotFound_WhenPurchaseNotPresent()
     {
         WorkingGroup workingGroup = new WorkingGroupFaker(purchases: []);
@@ -77,11 +78,10 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
     {
         // Arrange
         WorkingGroup workingGroup = new WorkingGroupFaker();
-        List<Purchase> purchases = new PurchaseFaker(workingGroup).GenerateBetween(2, 5);
-        workingGroup.Purchases = [.. purchases];
-
         await DbContext.WorkingGroups.AddAsync(workingGroup);
         await DbContext.SaveChangesAsync();
+
+        var purchases = await DbContext.Purchases.ToListAsync();
 
         foreach (var purchase in purchases)
         {
@@ -104,8 +104,7 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
     [Fact]
     public async Task RemoveAsync_ShouldReturnNotFound_WhenPurchaseNotPresent()
     {
-        WorkingGroup workingGroup = new WorkingGroupFaker(purchases: []);
-
+        WorkingGroup workingGroup = new WorkingGroupFaker();
         await DbContext.WorkingGroups.AddAsync(workingGroup);
         await DbContext.SaveChangesAsync();
 
@@ -178,16 +177,16 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
+
     [Fact]
     public async Task RetrieveSignatureAsync_ShouldReturnBase64Signature_WhenPurchaseExists()
     {
         // Arrange
         WorkingGroup workingGroup = new WorkingGroupFaker();
-        List<Purchase> purchases = new PurchaseFaker(workingGroup).GenerateBetween(2, 5);
-        workingGroup.Purchases = [.. purchases];
-
         await DbContext.WorkingGroups.AddAsync(workingGroup);
         await DbContext.SaveChangesAsync();
+
+        var purchases = await DbContext.Purchases.ToListAsync();
 
         foreach (var purchase in purchases)
         {
@@ -205,6 +204,7 @@ public class PurchaseControllerTest(CIMSApiFactory apiFactory) : ControllerTestB
             base64Signature.Should().Be(expectedBase64);
         }
     }
+
     [Fact]
     public async Task RetrieveSignatureAsync_ShouldReturnNotFound_WhenPurchaseDoesNotExist()
     {

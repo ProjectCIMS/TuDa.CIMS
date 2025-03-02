@@ -10,17 +10,31 @@ public interface IPurchaseRepository
     Task<ErrorOr<Deleted>> RemoveAsync(Guid workingGroupId, Guid id);
     Task<ErrorOr<Purchase>> CreateAsync(Guid workingGroupId, CreatePurchaseDto createModel);
 
-    Task<ErrorOr<string>> RetrieveSignatureAsync(Guid workingGroupId, Guid id);
+    /// <summary>
+    /// Sets the successor and predecessor fields of two purchases.
+    /// Used when invalidating a purchase.
+    /// </summary>
+    /// <param name="workingGroupId">ID of the working group</param>
+    /// <param name="predecessorId">ID of the invalidated purchase</param>
+    /// <param name="successorId">ID of the new purchase</param>
+    /// <returns>
+    /// Success: The operation was successful.
+    /// Error: An error message.
+    /// </returns>
+    Task<ErrorOr<Success>> SetSuccessorAndPredecessorAsync(
+        Guid workingGroupId,
+        Guid predecessorId,
+        Guid successorId
+    );
 
     /// <summary>
-    /// Invalidate a purchase and correct it with a new one.
+    /// Retrieves the signature of a purchase and returns it as a string.
     /// </summary>
-    /// <param name="workingGroupId">The id of the workingGroup of the purchase.</param>
-    /// <param name="purchaseId">The id of the purchase to invalidate.</param>
-    /// <param name="createModel">The purchase to correct the old one.</param>
-    public Task<ErrorOr<Success>> InvalidateAsync(
-        Guid workingGroupId,
-        Guid purchaseId,
-        CreatePurchaseDto createModel
-    );
+    /// <param name="workingGroupId">ID of the working group </param>
+    /// <param name="purchaseId">ID of the purchase</param>
+    /// <returns>
+    /// Success: The signature of the purchase as a string.
+    /// Error: An error message.
+    /// </returns>
+    Task<ErrorOr<string>> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId);
 }
