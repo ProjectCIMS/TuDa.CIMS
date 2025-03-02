@@ -52,9 +52,8 @@ jobs:
           platforms: linux/arm64,linux/amd64
           push: true
           tags: |
-            ghcr.io/projectcims/cims-api:latest
+            ghcr.io/projectcims/cims-api:${{ github.event.release.prerelease ? 'prerelease' : 'latest' }}
             ghcr.io/projectcims/cims-api:${{ github.event.release.tag_name }}
-          secret-envs: "ConnectionStrings:CIMS=${{ secrets.DB_CONNECTION_STRING }}"
 
       - name: Build and push Web Docker image
         uses: docker/build-push-action@v6
@@ -64,5 +63,6 @@ jobs:
           platforms: linux/arm64,linux/amd64
           push: true
           tags: |
-            ghcr.io/projectcims/cims-web:latest
+            ghcr.io/projectcims/cims-web:${{ github.event.release.prerelease ? 'prerelease' : 'latest' }}
             ghcr.io/projectcims/cims-web:${{ github.event.release.tag_name }}
+
