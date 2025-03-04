@@ -1,6 +1,7 @@
 ﻿using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Models;
 
 namespace TuDa.CIMS.Api.Services;
@@ -65,20 +66,22 @@ public class ConsumableService : IConsumableService
     private static ConsumableStatistics TransactionsToStatistics(
         List<ConsumableTransaction> transactions
     ) =>
-        transactions.Aggregate(
-            new ConsumableStatistics(),
-            (statistics, transaction) =>
-            {
-                if (transaction.AmountChange > 0)
+        transactions
+            .Where(x => x.TransactionReason is not TransactionReasons.Init)
+            .Aggregate(
+                new ConsumableStatistics(),
+                (statistics, transaction) =>
                 {
-                    statistics.TotalAdded += transaction.AmountChange;
-                }
-                else
-                {
-                    statistics.TotalRemoved -= transaction.AmountChange;
-                }
+                    if (transaction.AmountChange > 0)
+                    {
+                        statistics.TotalAdded += transaction.AmountChange;
+                    }
+                    else
+                    {
+                        statistics.TotalRemoved -= transaction.AmountChange;
+                    }
 
-                return statistics;
-            }
-        );
+                    return statistics;
+                }
+            );
 }
