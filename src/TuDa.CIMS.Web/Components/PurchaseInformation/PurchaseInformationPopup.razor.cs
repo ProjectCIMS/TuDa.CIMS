@@ -7,12 +7,14 @@ public partial class PurchaseInformationPopup
 {
     private readonly NavigationManager _navigationManager;
 
-    [Parameter]
-    public Guid WorkingGroupId { get; set; }
     public PurchaseInformationPopup(NavigationManager navigationManager)
     {
         _navigationManager = navigationManager;
     }
+
+    [Parameter]
+    public Guid WorkingGroupId { get; set; }
+
     [Parameter]
     public PurchaseResponseDto Purchase { get; set; } = null!;
 
@@ -24,4 +26,6 @@ public partial class PurchaseInformationPopup
         _navigationManager.NavigateTo($"/shop/{WorkingGroupId}/{Purchase.Id}");
     }
 
+    private string CompletionDateString =>
+        Purchase.CompletionDate?.ToLocalTime().ToString("dd.MM.yyyy") ?? "";
 }

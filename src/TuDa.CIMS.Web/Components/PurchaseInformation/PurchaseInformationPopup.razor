@@ -2,7 +2,7 @@
     <TitleContent>
         <MudGrid Spacing="2">
             <MudItem xs="6">
-                <MudText Typo="Typo.h6">@Purchase.CompletionDate?.ToString("dd.MM.yyyy")</MudText>
+                <MudText Typo="Typo.h6">@CompletionDateString </MudText>
             </MudItem>
             <MudItem xs="6" Class="d-flex justify-end">
                 @if (Purchase.Invalidated)
@@ -22,15 +22,15 @@
         <MudGrid Spacing="2">
             <CascadingValue Value="Purchase">
                 <MudItem xs="6">
-                    <PurchaseInformationPurchaseEntryList/>
+                    <PurchaseInformationPurchaseEntryList />
                 </MudItem>
                 <MudItem xs="6">
                     <MudStack>
                         <MudItem>
-                            <PurchaseInformationBuyerInformation SignatureAsBase64="@SignatureAsBase64"/>
+                            <PurchaseInformationBuyerInformation SignatureAsBase64="@SignatureAsBase64" />
                         </MudItem>
                         <MudItem>
-                            <PurchaseInformationStatistics/>
+                            <PurchaseInformationStatistics />
                         </MudItem>
                     </MudStack>
                 </MudItem>
