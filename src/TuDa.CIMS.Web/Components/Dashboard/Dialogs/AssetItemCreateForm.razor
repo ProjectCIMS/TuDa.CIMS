@@ -36,7 +36,7 @@
                     OnReset="@(_ => StateHasChanged())"/>
                 break;
             case AssetItemType.Consumable:
-                <ConsumableItemForm
+                <ConsumableItemCreateForm
                     @ref="_consumableItemForm"
                     FormShowError="@_showConsumableError"
                     OnReset="@(_ => StateHasChanged())"/>

@@ -34,7 +34,7 @@ public partial class AssetItemCreateForm
     /// </summary>
     private AssetItemForm _assetItemForm = null!;
     private ChemicalItemForm _chemicalItemForm = null!;
-    private ConsumableItemForm _consumableItemForm = null!;
+    private ConsumableItemCreateForm _consumableItemForm = null!;
     private GasCylinderItemForm _gasCylinderForm = null!;
 
     /// <summary>
@@ -45,28 +45,28 @@ public partial class AssetItemCreateForm
         switch (_selectedAssetItemType)
         {
             case AssetItemType.Chemical:
-                {
-                    _chemicalItemForm.ResetInputs();
-                    break;
-                }
+            {
+                _chemicalItemForm.ResetInputs();
+                break;
+            }
 
             case AssetItemType.Consumable:
-                {
-                    _consumableItemForm.ResetInputs();
-                    break;
-                }
+            {
+                _consumableItemForm.ResetInputs();
+                break;
+            }
 
             case AssetItemType.GasCylinder:
-                {
-                    _gasCylinderForm.ResetInputs();
-                    break;
-                }
+            {
+                _gasCylinderForm.ResetInputs();
+                break;
+            }
 
             case AssetItemType.Solvent:
-                {
-                    _chemicalItemForm.ResetInputs();
-                    break;
-                }
+            {
+                _chemicalItemForm.ResetInputs();
+                break;
+            }
         }
         _showError = false;
         _showChemicalError = false;
@@ -158,6 +158,8 @@ public partial class AssetItemCreateForm
                 Room = _assetItemForm.FormRoom ?? default,
                 Manufacturer = _consumableItemForm.FormManufacturer,
                 SerialNumber = _consumableItemForm.FormSerialNumber,
+                ExcludeFromConsumableStatistics =
+                    _consumableItemForm.ExcludeFromConsumableStatistics,
                 Amount = _consumableItemForm.FormConsumableAmount,
             },
 
