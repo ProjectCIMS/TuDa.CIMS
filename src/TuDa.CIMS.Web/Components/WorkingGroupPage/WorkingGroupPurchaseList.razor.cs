@@ -54,7 +54,7 @@ public partial class WorkingGroupPurchaseList
     }
 
     private static string GetTextStyle(PurchaseResponseDto purchase) =>
-        purchase.Invalidated ? "text-decoration: line-through;" : "";
+        purchase.Invalidated ? $"color: {Colors.Red.Default}; text-decoration: line-through;" : "";
 
     private async Task NavigateToPurchase(PurchaseResponseDto purchase)
     {
