@@ -25,31 +25,32 @@ public partial class ShoppingCartPage
         _snackbar = snackbar;
     }
 
+    /// <summary>
+    /// This saves the state of touched consumables.
+    /// </summary>
+    private readonly Dictionary<Guid, int> _touchedConsumables = [];
+
     protected PurchaseResponseDto Purchase { get; set; } = new() { Buyer = null! };
 
     private async Task OpenSelectDialogAsync(AssetItem product)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        AdaptAmountOfConsumableIfNeeded(product);
+        var consumable = AdaptAmountOfConsumableIfNeeded(product);
 
         // Set Parameters
-        var parameters = new DialogParameters { { "Product", product } };
+        var parameters = new DialogParameters { { "Product", consumable ?? product } };
 
         var dialog = await _dialogService.ShowAsync<ShoppingCartProductDialog>(
             "Mengenangabe",
             parameters,
             options
         );
-        var result = await dialog.Result;
 
-        if (result is { Canceled: false })
+        double? amount = await dialog.GetReturnValueAsync<double?>();
+        if (amount is > 0)
         {
-            double amount = (double)result.Data!;
-            if (amount > 0)
-            {
-                AddProductEntry(amount, product);
-            }
+            AddProductEntry(amount.Value, product);
         }
     }
 
@@ -63,15 +64,11 @@ public partial class ShoppingCartPage
             parameters,
             options
         );
-        var result = await dialog.Result;
-
-        if (result is { Canceled: true })
-            return;
 
         var ids = await dialog.GetReturnValueAsync<WorkingGroupWithBuyer>();
 
         if (ids is null)
-            _snackbar.Add("Beim abschließen ist etwas schiefgelaufen", Severity.Error);
+            return;
 
         byte[]? signResult = await OpenSigningDialog();
 
@@ -79,7 +76,7 @@ public partial class ShoppingCartPage
             return;
 
         var errorOr = await _purchaseApi.CreateAsync(
-            ids!.WorkingGroupId,
+            ids.WorkingGroupId,
             new CreatePurchaseDto
             {
                 Buyer = ids.BuyerId,
@@ -122,27 +119,7 @@ public partial class ShoppingCartPage
             signOptions
         );
 
-        var signResult = await signDialog.Result;
-
-        if (signResult?.Canceled ?? false)
-        {
-            _snackbar.Add("Unterschrift wurde abgebrochen", Severity.Warning);
-            return null;
-        }
-
-        return signResult?.Data as byte[];
-    }
-
-    protected virtual void AdaptAmountOfConsumableIfNeeded(AssetItem assetItem)
-    {
-        if (assetItem is not Consumable consumable)
-            return;
-
-        var entry = Purchase.Entries.FirstOrDefault(entry => entry.AssetItem.Id == assetItem.Id);
-        if (entry?.AssetItem is not Consumable sameConsumable)
-            return;
-
-        consumable.Amount = sameConsumable.Amount;
+        return await signDialog.GetReturnValueAsync<byte[]?>();
     }
 
     private void ResetEntries()
@@ -176,9 +153,35 @@ public partial class ShoppingCartPage
         StateHasChanged();
     }
 
-    protected virtual void AdaptAmountOfAllConsumablesByAssetItemId(
+    /// <summary>
+    /// Updates the amount of a consumable if it is already in the purchase or was touched.
+    /// </summary>
+    /// <param name="assetItem">The asset item to check and update.</param>
+    /// <returns>Adapted consumable if it was touched, otherwise null.</returns>
+    private Consumable? AdaptAmountOfConsumableIfNeeded(AssetItem assetItem)
+    {
+        if (
+            assetItem is not Consumable consumable
+            || _touchedConsumables.All(pair => pair.Key != consumable.Id)
+        )
+        {
+            return null;
+        }
+
+        return consumable with
+        {
+            Amount = _touchedConsumables[consumable.Id],
+        };
+    }
+
+    /// <summary>
+    /// Adapts the amount of all consumables with the same asset item id.
+    /// </summary>
+    /// <param name="consumable">The consumable to adapt.</param>
+    /// <param name="amountToSubtract">The amount to subtract.</param>
+    private void AdaptAmountOfAllConsumablesByAssetItemId(
         Consumable consumable,
-        int amount
+        int amountToSubtract
     )
     {
         var sameConsumables = Purchase
@@ -187,7 +190,16 @@ public partial class ShoppingCartPage
 
         foreach (var c in sameConsumables)
         {
-            c!.Amount -= amount;
+            c!.Amount -= amountToSubtract;
+        }
+
+        if (_touchedConsumables.Any(pair => pair.Key == consumable.Id))
+        {
+            _touchedConsumables[consumable.Id] -= amountToSubtract;
+        }
+        else
+        {
+            _touchedConsumables.Add(consumable.Id, consumable.Amount);
         }
     }
 }

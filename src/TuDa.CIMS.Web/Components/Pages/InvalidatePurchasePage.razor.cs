@@ -20,11 +20,6 @@ public class InvalidatePurchasePage : ShoppingCartPage
     private readonly ISnackbar _snackbar;
     private readonly NavigationManager _navigationManager;
 
-    /// <summary>
-    /// This saves the state of touched consumables.
-    /// </summary>
-    private readonly Dictionary<Guid, int> _touchedConsumables = [];
-
     public InvalidatePurchasePage(
         IDialogService dialogService,
         IPurchaseApi purchaseApi,
@@ -89,38 +84,6 @@ public class InvalidatePurchasePage : ShoppingCartPage
             }
 
             _navigationManager.NavigateTo("/");
-        }
-    }
-
-    protected override void AdaptAmountOfConsumableIfNeeded(AssetItem assetItem)
-    {
-        if (
-            assetItem is Consumable consumable
-            && Purchase.Entries.All(entry => entry.AssetItem.Id != consumable.Id)
-            && _touchedConsumables.Any(pair => pair.Key == consumable.Id)
-        )
-        {
-            consumable.Amount += _touchedConsumables[consumable.Id];
-        }
-        else
-        {
-            base.AdaptAmountOfConsumableIfNeeded(assetItem);
-        }
-    }
-
-    protected override void AdaptAmountOfAllConsumablesByAssetItemId(
-        Consumable consumable,
-        int amount
-    )
-    {
-        base.AdaptAmountOfAllConsumablesByAssetItemId(consumable, amount);
-        if (_touchedConsumables.Any(pair => pair.Key == consumable.Id))
-        {
-            _touchedConsumables[consumable.Id] -= amount;
-        }
-        else
-        {
-            _touchedConsumables.Add(consumable.Id, consumable.Amount);
         }
     }
 }
