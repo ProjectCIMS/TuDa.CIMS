@@ -184,22 +184,13 @@ public partial class ShoppingCartPage
         int amountToSubtract
     )
     {
-        var sameConsumables = Purchase
-            .Entries.Where(entry => entry.AssetItem.Id == consumable.Id)
-            .Select(entry => entry.AssetItem as Consumable!);
-
-        foreach (var c in sameConsumables)
-        {
-            c!.Amount -= amountToSubtract;
-        }
-
         if (_touchedConsumables.Any(pair => pair.Key == consumable.Id))
         {
             _touchedConsumables[consumable.Id] -= amountToSubtract;
         }
         else
         {
-            _touchedConsumables.Add(consumable.Id, consumable.Amount);
+            _touchedConsumables.Add(consumable.Id, consumable.Amount - amountToSubtract);
         }
     }
 }
