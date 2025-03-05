@@ -31,6 +31,8 @@ public partial class ShoppingCartPage
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
+        AdaptAmountOfConsumableIfNeeded(product);
+
         // Set Parameters
         var parameters = new DialogParameters { { "Product", product } };
 
@@ -84,7 +86,9 @@ public partial class ShoppingCartPage
                 Entries = Purchase
                     .Entries.Select(entry => new CreatePurchaseEntryDto
                     {
-                        AssetItemId = entry.AssetItem.Id, Amount = entry.Amount, PricePerItem = entry.PricePerItem,
+                        AssetItemId = entry.AssetItem.Id,
+                        Amount = entry.Amount,
+                        PricePerItem = entry.PricePerItem,
                     })
                     .ToList(),
                 CompletionDate = DateTime.Now.ToUniversalTime(),
@@ -108,7 +112,10 @@ public partial class ShoppingCartPage
     {
         var signOptions = new DialogOptions
         {
-            CloseOnEscapeKey = true, BackdropClick = false, FullWidth = true, MaxWidth = MaxWidth.Large,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large,
         };
         var signDialog = await _dialogService.ShowAsync<SignDialog>(
             "Unterschrift erforderlich",
@@ -126,6 +133,18 @@ public partial class ShoppingCartPage
         return signResult?.Data as byte[];
     }
 
+    private void AdaptAmountOfConsumableIfNeeded(AssetItem assetItem)
+    {
+        if (assetItem is not Consumable consumable)
+            return;
+
+        var entry = Purchase.Entries.FirstOrDefault(entry => entry.AssetItem.Id == assetItem.Id);
+        if (entry?.AssetItem is not Consumable sameConsumable)
+            return;
+
+        consumable.Amount = sameConsumable.Amount;
+    }
+
     private void ResetEntries()
     {
         Purchase.Entries.Clear();
@@ -133,8 +152,45 @@ public partial class ShoppingCartPage
 
     private void AddProductEntry(double amount, AssetItem product)
     {
+        if (product is Consumable consumable)
+        {
+            product = AdaptAmountOfAllConsumablesByAssetItemId(consumable, (int)amount);
+        }
+
         Purchase.Entries.Add(
-            new PurchaseEntry() { Amount = amount, AssetItem = product, PricePerItem = product.Price, }
+            new PurchaseEntry()
+            {
+                Amount = amount,
+                AssetItem = product,
+                PricePerItem = product.Price,
+            }
         );
+    }
+
+    private void RemovePurchaseEntry(PurchaseEntry entry)
+    {
+        if (entry.AssetItem is Consumable consumable)
+        {
+            AdaptAmountOfAllConsumablesByAssetItemId(consumable, (int)entry.Amount);
+        }
+        Purchase.Entries.Remove(entry);
+        StateHasChanged();
+    }
+
+    private Consumable AdaptAmountOfAllConsumablesByAssetItemId(Consumable consumable, int amount)
+    {
+        var sameConsumables = Purchase
+            .Entries.Where(entry => entry.AssetItem.Id == consumable.Id)
+            .Select(entry => entry.AssetItem as Consumable!);
+
+        foreach (var c in sameConsumables)
+        {
+            c!.Amount -= amount;
+        }
+
+        return consumable with
+        {
+            Amount = consumable.Amount - amount,
+        };
     }
 }
