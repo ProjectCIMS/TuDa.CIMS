@@ -11,6 +11,7 @@ public interface IConsumableTransactionRepository
         CreateConsumableTransactionDto consumableTransactionDto
     );
     Task<ErrorOr<Updated>> UpdateAmountAsync(Guid consumableTransactionId, int newAmount);
+    Task<ErrorOr<Deleted>> RemoveAsync(Guid consumableTransactionId);
     Task<ErrorOr<Success>> MoveToSuccessorPurchaseAsync(
         Guid predecessorPurchaseId,
         Guid successorPurchaseId

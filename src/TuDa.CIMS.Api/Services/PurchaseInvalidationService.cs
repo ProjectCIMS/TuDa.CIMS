@@ -128,13 +128,12 @@ public class PurchaseInvalidationService : IPurchaseInvalidationService
 
         foreach (var removed in removedAssetItems)
         {
-            var success = await _consumableTransactionRepository.UpdateAmountAsync(
-                invalidTransactions[removed].Id,
-                0
+            var deleted = await _consumableTransactionRepository.RemoveAsync(
+                invalidTransactions[removed].Id
             );
-            if (success.IsError)
+            if (deleted.IsError)
             {
-                return success.Errors;
+                return deleted.Errors;
             }
         }
 

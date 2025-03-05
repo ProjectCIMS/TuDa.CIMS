@@ -85,23 +85,36 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
             return ConsumableTransactionError.NotFound(consumableTransactionId);
 
         var consumable = transaction.Consumable;
+        int dif = newAmount - transaction.AmountChange;
 
-        if (transaction.Consumable.Amount + newAmount < 0)
+        if (transaction.Consumable.Amount + dif < 0)
             return ConsumableTransactionError.AmountChangeNegative();
-
-        consumable.Amount -= transaction.AmountChange - newAmount;
 
         if (newAmount == 0)
         {
-            _context.ConsumableTransactions.Remove(transaction);
+            await RemoveAsync(consumableTransactionId);
         }
         else
         {
-            transaction.AmountChange = newAmount;
+            consumable.Amount += dif;
+            transaction.AmountChange += dif;
         }
 
         await _context.SaveChangesAsync();
         return Result.Updated;
+    }
+
+    public async Task<ErrorOr<Deleted>> RemoveAsync(Guid consumableTransactionId)
+    {
+        var transaction = await GetOneAsync(consumableTransactionId);
+        if (transaction is null)
+            return ConsumableTransactionError.NotFound(consumableTransactionId);
+
+        transaction.Consumable.Amount -= transaction.AmountChange;
+
+        _context.ConsumableTransactions.Remove(transaction);
+        await _context.SaveChangesAsync();
+        return Result.Deleted;
     }
 
     public async Task<ErrorOr<Success>> MoveToSuccessorPurchaseAsync(
