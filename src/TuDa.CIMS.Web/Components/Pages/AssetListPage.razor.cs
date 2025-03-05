@@ -40,28 +40,6 @@ public partial class AssetListPage
         if (createDto is null)
             return;
 
-        if (createDto is CreateConsumableDto createConsumableDto)
-        {
-            var boxOptions = new MessageBoxOptions
-            {
-                Title = "Soll die initiale Menge aus der Inventur ausgeschlossen werden?",
-                MarkupMessage = new MarkupString(
-                    """
-                    <p>Ja - Die Menge wird als schon zuvor vorhanden betrachtet und somit nicht in diesem Jahr als neu hinzugefügt.</p>
-                    <p>Nein - Die Menge wird als neu hinzugefügt betrachtet und somit in diesem Jahr als neu hinzugefügt.</p>
-                    """
-                ),
-                YesText = "Ja",
-                NoText = "Nein",
-            };
-            bool? exclude = await _dialogService.ShowMessageBox(boxOptions);
-
-            if (exclude is not null && exclude.Value)
-            {
-                createConsumableDto.ExcludeFromConsumableStatistics = true;
-            }
-        }
-
         await CreateItemAsync(createDto);
     }
 
