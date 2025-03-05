@@ -1,6 +1,5 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
 name: CIMS Build and Test
 
 on:
@@ -8,19 +7,77 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
-
+  build-shared:
+    name: Build Shared Package
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Restore Shared Dependencies
+        run: dotnet restore src/TuDa.CIMS.Shared
+      - name: Build Shared Package
+        run: dotnet build src/TuDa.CIMS.Shared --no-restore
+
+  build-web:
+    name: Build Web Project
+    runs-on: ubuntu-latest
+    needs: build-shared
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Restore Web Dependencies
+        run: dotnet restore src/TuDa.CIMS.Web
+      - name: Build Web Project
+        run: dotnet build src/TuDa.CIMS.Web --no-restore
+
+  build-api:
+    name: Build API Project
+    runs-on: ubuntu-latest
+    needs: build-shared
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Restore API Dependencies
+        run: dotnet restore src/TuDa.CIMS.Api
+      - name: Build API Project
+        run: dotnet build src/TuDa.CIMS.Api --no-restore
+
+  test-web:
+    name: Test Web Project
+    runs-on: ubuntu-latest
+    needs: build-web
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Restore Web Test Dependencies
+        run: dotnet restore test/TuDa.CIMS.Web.Test
+      - name: Run Web Tests
+        run: dotnet test test/TuDa.CIMS.Web.Test --no-build --verbosity normal
+
+  test-api:
+    name: Test API Project
+    runs-on: ubuntu-latest
+    needs: build-api
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Restore API Test Dependencies
+        run: dotnet restore test/TuDa.CIMS.Api.Test
+      - name: Run API Tests
+        run: dotnet test test/TuDa.CIMS.Api.Test --no-build --verbosity normal
+
