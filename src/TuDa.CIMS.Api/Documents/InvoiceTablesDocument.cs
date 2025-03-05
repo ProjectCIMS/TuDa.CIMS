@@ -219,8 +219,7 @@ public class InvoiceTablesDocument : IDocument
     private static string AmountString(InvoiceEntry entry) =>
         entry.AssetItem switch
         {
-            Substance substance when substance.PriceUnit is not MeasurementUnits.Piece =>
-                $"{entry.Amount:F}",
+            Substance { PriceUnit: not MeasurementUnits.Piece } => $"{entry.Amount:0.00}",
             _ => $"{(int)entry.Amount}",
         };
 }
