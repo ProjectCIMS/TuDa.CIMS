@@ -133,7 +133,7 @@ public partial class ShoppingCartPage
         return signResult?.Data as byte[];
     }
 
-    private void AdaptAmountOfConsumableIfNeeded(AssetItem assetItem)
+    protected virtual void AdaptAmountOfConsumableIfNeeded(AssetItem assetItem)
     {
         if (assetItem is not Consumable consumable)
             return;
@@ -152,11 +152,6 @@ public partial class ShoppingCartPage
 
     private void AddProductEntry(double amount, AssetItem product)
     {
-        if (product is Consumable consumable)
-        {
-            product = AdaptAmountOfAllConsumablesByAssetItemId(consumable, (int)amount);
-        }
-
         Purchase.Entries.Add(
             new PurchaseEntry()
             {
@@ -165,19 +160,26 @@ public partial class ShoppingCartPage
                 PricePerItem = product.Price,
             }
         );
+        if (product is Consumable consumable)
+        {
+            AdaptAmountOfAllConsumablesByAssetItemId(consumable, (int)amount);
+        }
     }
 
     private void RemovePurchaseEntry(PurchaseEntry entry)
     {
         if (entry.AssetItem is Consumable consumable)
         {
-            AdaptAmountOfAllConsumablesByAssetItemId(consumable, (int)entry.Amount);
+            AdaptAmountOfAllConsumablesByAssetItemId(consumable, -(int)entry.Amount);
         }
         Purchase.Entries.Remove(entry);
         StateHasChanged();
     }
 
-    private Consumable AdaptAmountOfAllConsumablesByAssetItemId(Consumable consumable, int amount)
+    protected virtual void AdaptAmountOfAllConsumablesByAssetItemId(
+        Consumable consumable,
+        int amount
+    )
     {
         var sameConsumables = Purchase
             .Entries.Where(entry => entry.AssetItem.Id == consumable.Id)
@@ -187,10 +189,5 @@ public partial class ShoppingCartPage
         {
             c!.Amount -= amount;
         }
-
-        return consumable with
-        {
-            Amount = consumable.Amount - amount,
-        };
     }
 }
