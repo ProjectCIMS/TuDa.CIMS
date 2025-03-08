@@ -1,19 +1,14 @@
-﻿<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="d-flex justify-content-between align-items-center p-3 rounded white">
-    <MudItem Class="d-flex justify-content-between align-items-center">
-        <MudText Typo="Typo.h5"> @ProfessorTitle
-            @ProfessorName</MudText>
-        <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Primary" OnClick="OpenInformationDialog"></MudIconButton>
-    </MudItem>
-    @if (IsDeactivated)
-    {
-        <MudButton Class="align-items-end" Variant="Variant.Outlined" Color="Color.Success" OnClick="ToggleWorkingGroupStatus">
-            Aktivieren
-        </MudButton>
-    }
-    else
-    {
-        <MudButton Class="align-items-end" Variant="Variant.Outlined" Color="Color.Error" OnClick="ToggleWorkingGroupStatus">
-            Deaktivieren
-        </MudButton>
-    }
-</MudContainer>
+﻿<MudItem Class="d-flex justify-content-between align-items-center">
+    <!-- Linke Gruppe: Text + Info-Icon direkt nebeneinander -->
+    <div class="d-flex align-items-center">
+        <MudText Typo="Typo.h5" Class="me-2"> @ProfessorTitle @ProfessorName </MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Primary"
+                       OnClick="OpenInformationDialog"></MudIconButton>
+    </div>
+
+    <!-- Rechte Gruppe: Button (ganz rechts) -->
+    <MudButton Variant="Variant.Outlined" Color="@(IsDeactivated ? Color.Success : Color.Error)"
+               OnClick="ToggleWorkingGroupStatus">
+        @(IsDeactivated ? "Aktivieren" : "Deaktivieren")
+    </MudButton>
+</MudItem>
