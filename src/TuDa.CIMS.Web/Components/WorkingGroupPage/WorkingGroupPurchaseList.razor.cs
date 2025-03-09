@@ -53,6 +53,9 @@ public partial class WorkingGroupPurchaseList
             : "";
     }
 
+    private static string GetTextStyle(PurchaseResponseDto purchase) =>
+        purchase.Invalidated ? $"color: {Colors.Red.Default}; text-decoration: line-through;" : "";
+
     private async Task NavigateToPurchase(PurchaseResponseDto purchase)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };

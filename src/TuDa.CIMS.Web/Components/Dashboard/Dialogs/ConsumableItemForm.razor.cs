@@ -8,14 +8,14 @@ public partial class ConsumableItemForm
     /// <summary>
     /// Input Fields
     /// </summary>
-    public string FormManufacturer { get; private set; } = string.Empty;
-    public string FormSerialNumber { get; private set; } = string.Empty;
-    public int FormConsumableAmount { get; private set; }
+    public string FormManufacturer { get; protected set; } = string.Empty;
+    public string FormSerialNumber { get; protected set; } = string.Empty;
+    public int FormConsumableAmount { get; protected set; }
 
     [Parameter]
     public bool FormShowError { get; set; }
 
-    private bool IsError => FormShowError && FormConsumableAmount <= 0;
+    protected bool IsError => FormShowError && FormConsumableAmount <= 0;
 
     public void SetForm(Consumable item)
     {
@@ -44,7 +44,7 @@ public partial class ConsumableItemForm
     /// <summary>
     /// Resets the Input lines
     /// </summary>
-    public void ResetInputs()
+    public virtual void ResetInputs()
     {
         FormManufacturer = string.Empty;
         FormSerialNumber = string.Empty;

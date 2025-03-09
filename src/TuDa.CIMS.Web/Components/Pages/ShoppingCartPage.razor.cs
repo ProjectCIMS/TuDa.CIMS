@@ -25,29 +25,32 @@ public partial class ShoppingCartPage
         _snackbar = snackbar;
     }
 
+    /// <summary>
+    /// This saves the state of touched consumables.
+    /// </summary>
+    private readonly Dictionary<Guid, int> _touchedConsumables = [];
+
     protected PurchaseResponseDto Purchase { get; set; } = new() { Buyer = null! };
 
     private async Task OpenSelectDialogAsync(AssetItem product)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
+        var consumable = AdaptAmountOfConsumableIfNeeded(product);
+
         // Set Parameters
-        var parameters = new DialogParameters { { "Product", product } };
+        var parameters = new DialogParameters { { "Product", consumable ?? product } };
 
         var dialog = await _dialogService.ShowAsync<ShoppingCartProductDialog>(
             "Mengenangabe",
             parameters,
             options
         );
-        var result = await dialog.Result;
 
-        if (result is { Canceled: false })
+        double? amount = await dialog.GetReturnValueAsync<double?>();
+        if (amount is > 0)
         {
-            double amount = (double)result.Data!;
-            if (amount > 0)
-            {
-                AddProductEntry(amount, product);
-            }
+            AddProductEntry(amount.Value, product);
         }
     }
 
@@ -61,15 +64,11 @@ public partial class ShoppingCartPage
             parameters,
             options
         );
-        var result = await dialog.Result;
-
-        if (result is { Canceled: true })
-            return;
 
         var ids = await dialog.GetReturnValueAsync<WorkingGroupWithBuyer>();
 
         if (ids is null)
-            _snackbar.Add("Beim abschließen ist etwas schiefgelaufen", Severity.Error);
+            return;
 
         byte[]? signResult = await OpenSigningDialog();
 
@@ -77,14 +76,16 @@ public partial class ShoppingCartPage
             return;
 
         var errorOr = await _purchaseApi.CreateAsync(
-            ids!.WorkingGroupId,
+            ids.WorkingGroupId,
             new CreatePurchaseDto
             {
                 Buyer = ids.BuyerId,
                 Entries = Purchase
                     .Entries.Select(entry => new CreatePurchaseEntryDto
                     {
-                        AssetItemId = entry.AssetItem.Id, Amount = entry.Amount, PricePerItem = entry.PricePerItem,
+                        AssetItemId = entry.AssetItem.Id,
+                        Amount = entry.Amount,
+                        PricePerItem = entry.PricePerItem,
                     })
                     .ToList(),
                 CompletionDate = DateTime.Now.ToUniversalTime(),
@@ -108,22 +109,17 @@ public partial class ShoppingCartPage
     {
         var signOptions = new DialogOptions
         {
-            CloseOnEscapeKey = true, BackdropClick = false, FullWidth = true, MaxWidth = MaxWidth.Large,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large,
         };
         var signDialog = await _dialogService.ShowAsync<SignDialog>(
             "Unterschrift erforderlich",
             signOptions
         );
 
-        var signResult = await signDialog.Result;
-
-        if (signResult?.Canceled ?? false)
-        {
-            _snackbar.Add("Unterschrift wurde abgebrochen", Severity.Warning);
-            return null;
-        }
-
-        return signResult?.Data as byte[];
+        return await signDialog.GetReturnValueAsync<byte[]?>();
     }
 
     private void ResetEntries()
@@ -134,7 +130,67 @@ public partial class ShoppingCartPage
     private void AddProductEntry(double amount, AssetItem product)
     {
         Purchase.Entries.Add(
-            new PurchaseEntry() { Amount = amount, AssetItem = product, PricePerItem = product.Price, }
+            new PurchaseEntry()
+            {
+                Amount = amount,
+                AssetItem = product,
+                PricePerItem = product.Price,
+            }
         );
+        if (product is Consumable consumable)
+        {
+            AdaptAmountOfAllConsumablesByAssetItemId(consumable, (int)amount);
+        }
+    }
+
+    private void RemovePurchaseEntry(PurchaseEntry entry)
+    {
+        if (entry.AssetItem is Consumable consumable)
+        {
+            AdaptAmountOfAllConsumablesByAssetItemId(consumable, -(int)entry.Amount);
+        }
+        Purchase.Entries.Remove(entry);
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Updates the amount of a consumable if it is already in the purchase or was touched.
+    /// </summary>
+    /// <param name="assetItem">The asset item to check and update.</param>
+    /// <returns>Adapted consumable if it was touched, otherwise null.</returns>
+    private Consumable? AdaptAmountOfConsumableIfNeeded(AssetItem assetItem)
+    {
+        if (
+            assetItem is not Consumable consumable
+            || _touchedConsumables.All(pair => pair.Key != consumable.Id)
+        )
+        {
+            return null;
+        }
+
+        return consumable with
+        {
+            Amount = _touchedConsumables[consumable.Id],
+        };
+    }
+
+    /// <summary>
+    /// Adapts the amount of all consumables with the same asset item id.
+    /// </summary>
+    /// <param name="consumable">The consumable to adapt.</param>
+    /// <param name="amountToSubtract">The amount to subtract.</param>
+    private void AdaptAmountOfAllConsumablesByAssetItemId(
+        Consumable consumable,
+        int amountToSubtract
+    )
+    {
+        if (_touchedConsumables.Any(pair => pair.Key == consumable.Id))
+        {
+            _touchedConsumables[consumable.Id] -= amountToSubtract;
+        }
+        else
+        {
+            _touchedConsumables.Add(consumable.Id, consumable.Amount - amountToSubtract);
+        }
     }
 }
