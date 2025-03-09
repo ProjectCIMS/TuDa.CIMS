@@ -8,10 +8,21 @@ namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
 public partial class WorkingGroupPersonList : ComponentBase
 {
-    private readonly IDialogService dialogService;
-    private readonly IWorkingGroupApi workingGroupApi;
-    private readonly IStudentApi studentApi;
-    private readonly ISnackbar snackbar;
+    [Parameter]
+    public Guid WorkingGroupId { get; set; }
+
+    [Parameter]
+    public EventCallback<Person> PersonDeleted { get; set; }
+
+    [Parameter]
+    public EventCallback PersonAdded { get; set; }
+
+    private readonly IDialogService _dialogService;
+    private readonly IWorkingGroupApi _workingGroupApi;
+    private readonly IStudentApi _studentApi;
+    private readonly ISnackbar _snackbar;
+
+    private List<Student> _students = [];
 
     public WorkingGroupPersonList(
         IDialogService dialogService,
@@ -20,26 +31,15 @@ public partial class WorkingGroupPersonList : ComponentBase
         ISnackbar snackbar
     )
     {
-        this.dialogService = dialogService;
-        this.workingGroupApi = workingGroupApi;
-        this.studentApi = studentApi;
-        this.snackbar = snackbar;
+        _dialogService = dialogService;
+        _workingGroupApi = workingGroupApi;
+        _studentApi = studentApi;
+        _snackbar = snackbar;
     }
-
-    [Parameter]
-    public Guid WorkingGroupId { get; set; }
-
-    private IEnumerable<Student> _students = new List<Student>();
-
-    [Parameter]
-    public EventCallback<Person> PersonDeleted { get; set; }
-
-    [Parameter]
-    public EventCallback PersonAdded { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var workingGroup = await workingGroupApi.GetAsync(WorkingGroupId);
+        var workingGroup = await _workingGroupApi.GetAsync(WorkingGroupId);
         _students = workingGroup.Value.Students;
     }
 
@@ -53,6 +53,7 @@ public partial class WorkingGroupPersonList : ComponentBase
         {
             {
                 up => up.Fields,
+
                 [
                     new("Vorname", student.FirstName),
                     new("Nachname", student.Name, true),
@@ -64,39 +65,41 @@ public partial class WorkingGroupPersonList : ComponentBase
         };
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        var dialogReference = await dialogService.ShowAsync<GenericInputPopUp>(
+        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
             "Person bearbeiten",
             parameters,
             options
         );
 
-        var result = await dialogReference.Result;
-        if (!result!.Canceled)
-        {
-            var returnedValues = (List<string>)result.Data!;
-            student.FirstName = returnedValues[0];
-            student.Name = returnedValues[1];
-            student.PhoneNumber = returnedValues[2];
-            student.Email = returnedValues[3];
+        var result = await dialogReference.GetReturnValueAsync<List<string>>();
+        if (result is null)
+            return;
 
-            var updatedStudent = await studentApi.UpdateAsync(
-                WorkingGroupId,
-                student.Id,
-                new UpdateStudentDto()
-                {
-                    FirstName = returnedValues[0],
-                    Name = returnedValues[1],
-                    PhoneNumber = returnedValues[2],
-                    Email = returnedValues[3],
-                }
-            );
+        student.FirstName = result[0];
+        student.Name = result[1];
+        student.PhoneNumber = result[2];
+        student.Email = result[3];
 
-            if (updatedStudent.IsError)
+        var updatedStudent = await _studentApi.UpdateAsync(
+            WorkingGroupId,
+            student.Id,
+            new UpdateStudentDto()
             {
-                snackbar.Add("Beim Speichervorgang ist ein Fehler aufgetreten", Severity.Error);
+                FirstName = result[0],
+                Name = result[1],
+                PhoneNumber = result[2],
+                Email = result[3],
             }
+        );
 
-            StateHasChanged();
+        if (updatedStudent.IsError)
+        {
+            _snackbar.Add("Beim Speichervorgang ist ein Fehler aufgetreten", Severity.Error);
+        }
+        else
+        {
+            _snackbar.Add("Erfolgreich gespeichert", Severity.Success);
+            await InvokeAsync(StateHasChanged);
         }
     }
 
@@ -114,18 +117,25 @@ public partial class WorkingGroupPersonList : ComponentBase
             NoText = "Nein",
         };
 
-        if (await dialogService.ShowMessageBox(messageBox) == true)
-        {
-            snackbar.Add("Die Person wurde erfolgreich entfernt", Severity.Success);
-            if (_students.Any())
-            {
-                await studentApi.RemoveAsync(WorkingGroupId, student.Id);
+        if (await _dialogService.ShowMessageBox(messageBox) is false)
+            return;
 
+        if (_students.Count != 0)
+        {
+            var deleted = await _studentApi.RemoveAsync(WorkingGroupId, student.Id);
+
+            if (deleted.IsError)
+            {
+                _snackbar.Add("Beim Löschen ist ein Fehler aufgetreten", Severity.Error);
+            }
+            else
+            {
                 // Have to be like this otherwise the list will only update after reload
-                var modifiedList = _students.ToList();
-                modifiedList.Remove(student);
-                _students = modifiedList;
+                _students.Remove(student);
                 await PersonDeleted.InvokeAsync();
+                await InvokeAsync(StateHasChanged);
+
+                _snackbar.Add("Die Person wurde erfolgreich entfernt", Severity.Success);
             }
         }
     }
@@ -139,45 +149,43 @@ public partial class WorkingGroupPersonList : ComponentBase
         {
             {
                 up => up.Fields,
-                [new("Vorname"), new("Nachname"), new("Telefonnummer"), new("E-Mail-Adresse")]
+                [new("Vorname"), new("Nachname", true), new("Telefonnummer"), new("E-Mail-Adresse")]
             },
             { up => up.YesText, "Hinzufügen" },
         };
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        var dialogReference = await dialogService.ShowAsync<GenericInputPopUp>(
+        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
             "Person hinzufügen",
             parameters,
             options
         );
 
-        var result = await dialogReference.Result;
+        var result = await dialogReference.GetReturnValueAsync<List<string>>();
+        if (result is null)
+            return;
 
-        if (!result!.Canceled)
+        var newStudent = await _studentApi.AddAsync(
+            WorkingGroupId,
+            new CreateStudentDto()
+            {
+                FirstName = result[0],
+                Name = result[1],
+                PhoneNumber = result[2],
+                Email = result[3],
+            }
+        );
+
+        // Have to be like this otherwise the list will only update after reload
+        if (newStudent.IsError)
         {
-            var returnedValues = (List<string>)result.Data!;
-
-            var newStudent = await studentApi.AddAsync(
-                WorkingGroupId,
-                new CreateStudentDto()
-                {
-                    FirstName = returnedValues[0],
-                    Name = returnedValues[1],
-                    PhoneNumber = returnedValues[2],
-                    Email = returnedValues[3],
-                }
-            );
-
-            // Have to be like this otherwise the list will only update after reload
-            var modifiableList = _students.ToList();
-
-            if (!newStudent.IsError)
-                modifiableList.Add(newStudent.Value);
-            else
-                snackbar.Add("Ein Fehler ist aufgetreten", Severity.Error);
-
-            _students = modifiableList;
+            _snackbar.Add("Ein Fehler ist aufgetreten", Severity.Error);
+        }
+        else
+        {
+            _students.Add(newStudent.Value);
             await PersonAdded.InvokeAsync();
+            await InvokeAsync(StateHasChanged);
         }
     }
 }
