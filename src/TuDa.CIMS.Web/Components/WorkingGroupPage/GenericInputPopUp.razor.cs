@@ -36,8 +36,9 @@ public partial class GenericInputPopUp : ComponentBase
 
     private MudForm _form { get; set; } = null!;
 
-    private void Submit()
+    private async Task Submit()
     {
+        await _form.Validate();
         if (_form.IsValid)
         {
             MudDialog.Close(DialogResult.Ok(Fields.Select(f => f.Value).ToList()));
