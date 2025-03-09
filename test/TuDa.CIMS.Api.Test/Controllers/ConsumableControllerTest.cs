@@ -1,6 +1,7 @@
 ﻿using TuDa.CIMS.Api.Controllers;
 using TuDa.CIMS.Api.Test.Integration;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Models;
 using TuDa.CIMS.Shared.Test.Faker;
 
@@ -34,7 +35,7 @@ public class ConsumableControllerTest(CIMSApiFactory apiFactory) : ControllerTes
     public async Task GetStatisticsForYear_ShouldProduceCorrectStatistics_WhenAllSameConsumableButDifferentYear()
     {
         var (consumable, transactions) = await SeedConsumableWithTransactionsAsync();
-        await SeedTransactionsAsync(consumable, DefaultYear + 1);
+        await SeedTransactionsWithYearAsync(consumable, DefaultYear + 1);
 
         var expected = TransactionsToStatistics(consumable, transactions);
 
@@ -72,8 +73,30 @@ public class ConsumableControllerTest(CIMSApiFactory apiFactory) : ControllerTes
     public async Task GetStatisticsForYear_ShouldProduceCorrectStatistics_WhenMultipleConsumableAndYears()
     {
         var (consumable, transactions) = await SeedConsumableWithTransactionsAsync();
-        await SeedTransactionsAsync(consumable, DefaultYear + 1);
+        await SeedTransactionsWithYearAsync(consumable, DefaultYear + 1);
         await SeedConsumableWithTransactionsAsync();
+
+        var expected = TransactionsToStatistics(consumable, transactions);
+
+        var response = await Client.GetAsync(
+            $"{BaseRoute}/{consumable.Id}/statistics/{DefaultYear}"
+        );
+
+        response.IsSuccessStatusCode.Should().BeTrue();
+
+        var statistics = await response.Content.FromJsonAsync<ConsumableStatistics>();
+
+        statistics.Should().Be(expected);
+    }
+
+    [Fact]
+    public async Task GetStatisticsForYear_ShouldSkipConsumableTransaction_WhenTransactionReasonIsInit()
+    {
+        var (consumable, transactions) = await SeedConsumableWithTransactionsAsync();
+        await SeedTransactionsAsync(
+            consumable,
+            transaction => transaction with { TransactionReason = TransactionReasons.Init }
+        );
 
         var expected = TransactionsToStatistics(consumable, transactions);
 
@@ -96,7 +119,7 @@ public class ConsumableControllerTest(CIMSApiFactory apiFactory) : ControllerTes
     )> SeedConsumableWithTransactionsAsync(int year = DefaultYear)
     {
         var consumable = await SeedConsumableAsync();
-        var transactions = await SeedTransactionsAsync(consumable, year);
+        var transactions = await SeedTransactionsWithYearAsync(consumable, year);
 
         return (consumable, transactions);
     }
@@ -111,12 +134,26 @@ public class ConsumableControllerTest(CIMSApiFactory apiFactory) : ControllerTes
 
     private async Task<List<ConsumableTransaction>> SeedTransactionsAsync(
         Consumable consumable,
-        int year
+        Func<ConsumableTransaction, ConsumableTransaction> action
     )
     {
         var transactions = new ConsumableTransactionFaker(consumable)
             .Generate(5)
-            .Select(transaction =>
+            .Select(action)
+            .ToList();
+
+        await DbContext.ConsumableTransactions.AddRangeAsync(transactions);
+        await DbContext.SaveChangesAsync();
+        return transactions;
+    }
+
+    private Task<List<ConsumableTransaction>> SeedTransactionsWithYearAsync(
+        Consumable consumable,
+        int year
+    ) =>
+        SeedTransactionsAsync(
+            consumable,
+            transaction =>
                 transaction with
                 {
                     Date = new DateTime(
@@ -129,13 +166,7 @@ public class ConsumableControllerTest(CIMSApiFactory apiFactory) : ControllerTes
                         DateTimeKind.Utc
                     ),
                 }
-            )
-            .ToList();
-
-        await DbContext.ConsumableTransactions.AddRangeAsync(transactions);
-        await DbContext.SaveChangesAsync();
-        return transactions;
-    }
+        );
 
     private static ConsumableStatistics TransactionsToStatistics(
         Consumable consumable,

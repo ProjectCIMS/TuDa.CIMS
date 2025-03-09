@@ -1,4 +1,5 @@
-﻿using MudBlazor;
+﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Components.Dashboard;
@@ -36,8 +37,10 @@ public partial class AssetListPage
 
         var createDto = await dialog.GetReturnValueAsync<CreateAssetItemDto>();
 
-        if (createDto is not null)
-            await CreateItemAsync(createDto);
+        if (createDto is null)
+            return;
+
+        await CreateItemAsync(createDto);
     }
 
     private async Task ShowAndHandleEditDialog(AssetItem assetItem)

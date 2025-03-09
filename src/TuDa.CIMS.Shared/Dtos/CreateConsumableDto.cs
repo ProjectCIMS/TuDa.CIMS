@@ -2,7 +2,7 @@
 
 namespace TuDa.CIMS.Shared.Dtos;
 
-public class CreateConsumableDto: CreateAssetItemDto
+public class CreateConsumableDto : CreateAssetItemDto
 {
     /// <summary>
     /// The amount of the consumable item.
@@ -18,4 +18,9 @@ public class CreateConsumableDto: CreateAssetItemDto
     /// The serial number of the consumable item.
     /// </summary>
     public string SerialNumber { get; set; } = string.Empty;
+
+    /// <summary>
+    /// If the initial amount of the consumable item should be excluded from statistics.
+    /// </summary>
+    public bool ExcludeFromConsumableStatistics { get; set; }
 }

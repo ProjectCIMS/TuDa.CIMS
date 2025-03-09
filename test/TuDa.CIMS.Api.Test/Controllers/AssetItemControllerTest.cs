@@ -315,6 +315,6 @@ public class AssetItemControllerTest(CIMSApiFactory apiFactory) : ControllerTest
 
         transaction.Should().NotBeNull();
         transaction.AmountChange.Should().Be(createConsumable.Amount);
-        transaction.TransactionReason.Should().Be(TransactionReasons.Init);
+        transaction.TransactionReason.Should().Be(TransactionReasons.Restock);
     }
 }
