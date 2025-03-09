@@ -3,19 +3,19 @@
 @using TuDa.CIMS.Web.Components.WorkingGroupPage
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="bg-white rounded-xl">
-    <MudGrid>
+    <MudGrid Justify="Justify.SpaceBetween">
         <!-- Header spans full width -->
         <MudItem xs="12" Class="mt-2 col-md-1">
         <WorkingGroupHeader WorkingGroupId="WorkingGroupId"></WorkingGroupHeader>
         </MudItem>
 
         <!-- Left column -->
-        <MudItem xs="12" md="6" Class="d-flex flex-column">
+        <MudItem xs="12" md="7" Class="d-flex flex-column">
             <WorkingGroupPersonList WorkingGroupId="WorkingGroupId"></WorkingGroupPersonList>
         </MudItem>
 
         <!-- Right column -->
-        <MudItem xs="12" md="6" Class="d-flex flex-column">
+        <MudItem xs="12" md="5" Class="d-flex flex-column">
             <WorkingGroupPurchaseList WorkingGroupId="WorkingGroupId"></WorkingGroupPurchaseList>
         </MudItem>
     </MudGrid>
