@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Extensions;
 using TuDa.CIMS.Web.Services;
 
@@ -8,9 +9,11 @@ namespace TuDa.CIMS.Web.Components.Pages;
 [Route("/shop/{WorkingGroupId:guid}/{PurchaseId:guid}")]
 public class InvalidatePurchasePage : ShoppingCartPage
 {
-    [Parameter] public Guid WorkingGroupId { get; set; }
+    [Parameter]
+    public Guid WorkingGroupId { get; set; }
 
-    [Parameter] public Guid PurchaseId { get; set; }
+    [Parameter]
+    public Guid PurchaseId { get; set; }
 
     private readonly IDialogService _dialogService;
     private readonly IPurchaseApi _purchaseApi;
@@ -65,7 +68,10 @@ public class InvalidatePurchasePage : ShoppingCartPage
             var success = await _purchaseApi.InvalidateAsync(
                 WorkingGroupId,
                 PurchaseId,
-                Purchase.ToCreateDto() with { Signature = signingResult }
+                Purchase.ToCreateDto() with
+                {
+                    Signature = signingResult,
+                }
             );
 
             if (success.IsError)

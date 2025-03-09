@@ -1,0 +1,43 @@
+﻿@inherits ConsumableItemForm
+
+<MudForm>
+    <MudContainer Class="p-2">
+        <MudTextField @bind-Value="FormManufacturer"
+                      Label="Hersteller"
+                      Placeholder="Hersteller eingeben"
+                      Variant="Variant.Filled"
+                      FullWidth
+                      Margin="Margin.Dense"/>
+
+        <MudTextField @bind-Value="FormSerialNumber"
+                      Label="Seriennummer"
+                      Placeholder="Seriennummer eingeben"
+                      Variant="Variant.Filled"
+                      FullWidth
+                      Margin="Margin.Dense"/>
+
+        <MudNumericField @bind-Value="FormConsumableAmount"
+                         Label="Menge"
+                         Error="@IsError"
+                         ErrorText="Die Menge muss größer als 0 betragen!"
+                         Placeholder="Menge eingeben"
+                         Variant="Variant.Filled"
+                         FullWidth
+                         Margin="Margin.Dense"/>
+    </MudContainer>
+    <MudSwitch @bind-Value="ExcludeFromConsumableStatistics"
+               Class="ps-2"
+               Label="Von Inventur ausschließen"
+               LabelPosition="LabelPosition.End"
+               Color="Color.Error"/>
+</MudForm>
+
+@code {
+    public bool ExcludeFromConsumableStatistics { get; private set; }
+
+    public override void ResetInputs()
+    {
+        ExcludeFromConsumableStatistics = false;
+        base.ResetInputs();
+    }
+}

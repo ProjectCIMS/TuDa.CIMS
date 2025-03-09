@@ -119,8 +119,8 @@
         };
 
     private static string GetPriceText(AssetItem assetItem) =>
-        assetItem.Price.ToString("F")
-        + " €/"
+        assetItem.Price.ToString("C")
+        + "/"
         + assetItem switch
         {
             Substance substance => substance.PriceUnit.ToAbbreviation(),

@@ -18,7 +18,7 @@ public partial class PurchaseEntryList : ComponentBase
     public required PurchaseResponseDto Purchase { get; set; }
 
     [Parameter]
-    public EventCallback<AssetItem> AssetItemDeleted { get; set; }
+    public EventCallback<PurchaseEntry> PurchaseEntryDeleted { get; set; }
 
     private readonly IDialogService _dialogService;
 
@@ -47,8 +47,7 @@ public partial class PurchaseEntryList : ComponentBase
 
         if (await _dialogService.ShowMessageBox(messageBox) ?? false)
         {
-            Purchase.Entries.Remove(entry);
-            await AssetItemDeleted.InvokeAsync();
+            await PurchaseEntryDeleted.InvokeAsync(entry);
         }
     }
 }

@@ -180,7 +180,7 @@ public class InvoiceCoverDocument : IDocument
                         {
                             row.AutoItem().Text("Chemikalien: ").AlignLeft();
                             row.RelativeItem()
-                                .Text($"{_invoice.ChemicalsTotalPrice():F2} €")
+                                .Text($"{_invoice.ChemicalsTotalPrice():C}")
                                 .AlignRight();
                         });
 
@@ -192,7 +192,7 @@ public class InvoiceCoverDocument : IDocument
                         {
                             row.AutoItem().Text("Laborgeräte: ").AlignLeft();
                             row.RelativeItem()
-                                .Text($"{_invoice.ConsumablesTotalPrice():F2} €")
+                                .Text($"{_invoice.ConsumablesTotalPrice():C}")
                                 .AlignRight();
                         });
 
@@ -204,7 +204,7 @@ public class InvoiceCoverDocument : IDocument
                         {
                             row.AutoItem().Text("Lösungsmittel: ").AlignLeft();
                             row.RelativeItem()
-                                .Text($"{_invoice.SolventsTotalPrice():F2} €")
+                                .Text($"{_invoice.SolventsTotalPrice():C}")
                                 .AlignRight();
                         });
 
@@ -216,7 +216,7 @@ public class InvoiceCoverDocument : IDocument
                         {
                             row.AutoItem().Text("Technische Gase: ").AlignLeft();
                             row.RelativeItem()
-                                .Text($"{_invoice.GasCylindersTotalPrice():F2} €")
+                                .Text($"{_invoice.GasCylindersTotalPrice():C}")
                                 .AlignRight();
                         });
 
@@ -227,10 +227,7 @@ public class InvoiceCoverDocument : IDocument
                     .Row(row =>
                     {
                         row.AutoItem().Text("Gesamtsumme: ").Bold().AlignLeft();
-                        row.RelativeItem()
-                            .Text($"{_invoice.TotalPrice():F2} €")
-                            .Bold()
-                            .AlignRight();
+                        row.RelativeItem().Text($"{_invoice.TotalPrice():C}").Bold().AlignRight();
                     });
             });
     }

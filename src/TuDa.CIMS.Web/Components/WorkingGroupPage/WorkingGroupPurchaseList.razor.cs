@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Dtos.Responses;
-using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Web.Components.PurchaseInformation;
 using TuDa.CIMS.Web.Services;
 
@@ -12,7 +11,7 @@ public partial class WorkingGroupPurchaseList
 {
     private readonly IDialogService _dialogService;
     private readonly NavigationManager _navigation;
-    private readonly IPurchaseApi _iPurchaseApi;
+    private readonly IPurchaseApi _purchaseApi;
 
     public WorkingGroupPurchaseList(
         IDialogService dialogService,
@@ -22,19 +21,21 @@ public partial class WorkingGroupPurchaseList
     {
         _dialogService = dialogService;
         _navigation = navigationManager;
-        _iPurchaseApi = iPurchaseApi;
+        _purchaseApi = iPurchaseApi;
     }
-    [Parameter] public IEnumerable<PurchaseResponseDto> Purchases { get; set; } = [];
 
-    [Parameter] public Guid WorkingGroupId { get; set; }
+    [Parameter]
+    public IEnumerable<PurchaseResponseDto> Purchases { get; set; } = [];
+
+    [Parameter]
+    public Guid WorkingGroupId { get; set; }
 
     private IEnumerable<PurchaseResponseDto> SortedPurchases =>
         Purchases.OrderByDescending(p => p.CompletionDate);
 
-
     protected override async Task OnInitializedAsync()
     {
-        var purchases = await _iPurchaseApi.GetAllAsync(WorkingGroupId);
+        var purchases = await _purchaseApi.GetAllAsync(WorkingGroupId);
         Purchases = purchases.Value;
     }
 
@@ -46,22 +47,27 @@ public partial class WorkingGroupPurchaseList
     private static string FormatCompletionDate(PurchaseResponseDto? value)
     {
         return value!.CompletionDate.HasValue
-            ? value.CompletionDate.Value.ToString(
-                "dd.MM.yyyy HH:mm:ss",
-                CultureInfo.GetCultureInfo("de-DE")
-            )
+            ? value
+                .CompletionDate.Value.ToLocalTime()
+                .ToString("dd.MM.yyyy HH:mm:ss", CultureInfo.GetCultureInfo("de-DE"))
             : "";
     }
+
+    private static string GetTextStyle(PurchaseResponseDto purchase) =>
+        purchase.Invalidated ? $"color: {Colors.Red.Default}; text-decoration: line-through;" : "";
 
     private async Task NavigateToPurchase(PurchaseResponseDto purchase)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        var signature = await _iPurchaseApi.RetrieveSignatureAsync(WorkingGroupId, purchase.Id).Else("");
+        var signature = await _purchaseApi
+            .RetrieveSignatureAsync(WorkingGroupId, purchase.Id)
+            .Else("");
         // Set Parameters
         var parameters = new DialogParameters<PurchaseInformationPopup>
         {
-            { "WorkingGroupId", WorkingGroupId }, { "Purchase", purchase },
-            {"SignatureAsBase64", signature.Value}
+            { "WorkingGroupId", WorkingGroupId },
+            { "Purchase", purchase },
+            { "SignatureAsBase64", signature.Value },
         };
         await _dialogService.ShowAsync<PurchaseInformationPopup>(
             "Rechnungsinformationen",

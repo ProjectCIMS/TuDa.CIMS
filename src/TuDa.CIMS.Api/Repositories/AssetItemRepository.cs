@@ -40,8 +40,7 @@ public class AssetItemRepository : IAssetItemRepository
     /// <summary>
     /// Query for all <see cref="GasCylinder"/>s from the DB with included properties.
     /// </summary>
-    private IQueryable<GasCylinder> GasCylindersQuery =>
-        SubstancesQuery.OfType<GasCylinder>();
+    private IQueryable<GasCylinder> GasCylindersQuery => SubstancesQuery.OfType<GasCylinder>();
 
     /// <summary>
     /// Query for all <see cref="Solvent"/>s from the DB with included properties.
@@ -56,8 +55,7 @@ public class AssetItemRepository : IAssetItemRepository
     /// <summary>
     /// Query for all <see cref="Consumable"/>s from the DB with included properties.
     /// </summary>
-    private IQueryable<Consumable> ConsumablesQuery =>
-        AssetItemsQuery.OfType<Consumable>();
+    private IQueryable<Consumable> ConsumablesQuery => AssetItemsQuery.OfType<Consumable>();
 
     /// <summary>
     /// Returns all existing AssetItems of the database.
@@ -130,13 +128,14 @@ public class AssetItemRepository : IAssetItemRepository
         )
         {
             var previousAmount = con.Amount;
-            CreateConsumableTransactionDto createConsumableTransaction = new()
-            {
-                ConsumableId = con.Id,
-                Date = DateTime.UtcNow,
-                AmountChange = updateConsumable.StockUpdate.Amount - previousAmount,
-                TransactionReason = updateConsumable.StockUpdate.Reason,
-            };
+            CreateConsumableTransactionDto createConsumableTransaction =
+                new()
+                {
+                    ConsumableId = con.Id,
+                    Date = DateTime.UtcNow,
+                    AmountChange = updateConsumable.StockUpdate.Amount - previousAmount,
+                    TransactionReason = updateConsumable.StockUpdate.Reason,
+                };
             //amount of conusmable is now set in CreateAsync of ConsumableTransaction
             await _consumableTransactionRepository.CreateAsync(createConsumableTransaction);
         }
@@ -312,7 +311,7 @@ public class AssetItemRepository : IAssetItemRepository
         return result;
     }
 
-    private async Task<List<AssetItem>> ApplyFilters(
+    private static async Task<List<AssetItem>> ApplyFilters(
         IQueryable<AssetItem> query,
         AssetItemFilterDto filter
     )
@@ -540,15 +539,18 @@ public class AssetItemRepository : IAssetItemRepository
             _ => throw new ArgumentException("Unsupported create model type", nameof(createModel)),
         };
 
-        if (newItem is Consumable con)
+        if (newItem is Consumable con && createModel is CreateConsumableDto createConsumableModel)
         {
-            ConsumableTransaction consumableTransaction = new()
-            {
-                Consumable = con,
-                Date = DateTime.UtcNow,
-                AmountChange = con.Amount,
-                TransactionReason = TransactionReasons.Init,
-            };
+            ConsumableTransaction consumableTransaction =
+                new()
+                {
+                    Consumable = con,
+                    Date = DateTime.UtcNow,
+                    AmountChange = con.Amount,
+                    TransactionReason = createConsumableModel.ExcludeFromConsumableStatistics
+                        ? TransactionReasons.Init
+                        : TransactionReasons.Restock,
+                };
             await _context.ConsumableTransactions.AddAsync(consumableTransaction);
         }
         await _context.AssetItems.AddAsync(newItem);
