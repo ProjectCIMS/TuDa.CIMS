@@ -24,6 +24,11 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
     [CascadingParameter]
     public string ProfessorName { get; set; } = string.Empty;
 
+    private string StreetAndNumber =>
+        $"{ProfessorInfo.Address.Street} {ProfessorInfo.Address.Number}";
+
+    private string FullName => $"{ProfessorInfo.FirstName} {ProfessorInfo.Name}";
+
     private readonly DialogOptions _dialogOptions = new() { CloseOnEscapeKey = true };
 
     private readonly IDialogService _dialogService;
