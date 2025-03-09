@@ -5,14 +5,14 @@ namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
 public record GenericInputField
 {
-    public string Label { get; init; }
-    public string? Value { get; set; }
-    public bool Required { get; init; } = false;
+    public string Label { get; }
+    public string Value { get; set; } = string.Empty;
+    public bool Required { get; }
 
     public GenericInputField(string label, string? value = null, bool required = false)
     {
         Label = label;
-        Value = value;
+        Value = value ?? string.Empty;
         Required = required;
     }
 
