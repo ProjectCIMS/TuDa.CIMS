@@ -5,7 +5,6 @@ using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Entities;
-using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Api.Repositories;
 
@@ -22,23 +21,15 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
     private IQueryable<ConsumableTransaction> ConsumableTransactionsFilledQuery =>
         _context.ConsumableTransactions.Include(ct => ct.Consumable);
 
-    /// <summary>
-    /// Returns all existing AssetItems of the database.
-    /// </summary>
+    /// <inheritdoc />
     public Task<List<ConsumableTransaction>> GetAllAsync() =>
         ConsumableTransactionsFilledQuery.ToListAsync();
 
-    /// <summary>
-    /// Returns an existing ConsumableTransaction with the specific id.
-    /// </summary>
-    /// <param name="id">the unique id of the ConsumableTransaction</param>
+    /// <inheritdoc />
     public Task<ConsumableTransaction?> GetOneAsync(Guid id) =>
         ConsumableTransactionsFilledQuery.SingleOrDefaultAsync(i => i.Id == id);
 
-    /// <summary>
-    /// Updates the amount of the specific Consumable of the ConsumableTransaction and creates a new transaction for a consumable item.
-    /// </summary>
-    /// <param name="consumableTransactionDto"></param>
+    /// <inheritdoc />
     public async Task<ErrorOr<ConsumableTransaction>> CreateAsync(
         CreateConsumableTransactionDto consumableTransactionDto
     )
@@ -85,25 +76,40 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
             return ConsumableTransactionError.NotFound(consumableTransactionId);
 
         var consumable = transaction.Consumable;
+        int dif = newAmount - transaction.AmountChange;
 
-        if (transaction.Consumable.Amount + newAmount < 0)
+        if (transaction.Consumable.Amount + dif < 0)
             return ConsumableTransactionError.AmountChangeNegative();
-
-        consumable.Amount -= transaction.AmountChange - newAmount;
 
         if (newAmount == 0)
         {
-            _context.ConsumableTransactions.Remove(transaction);
+            await RemoveAsync(consumableTransactionId);
         }
         else
         {
-            transaction.AmountChange = newAmount;
+            consumable.Amount += dif;
+            transaction.AmountChange += dif;
         }
 
         await _context.SaveChangesAsync();
         return Result.Updated;
     }
 
+    /// <inheritdoc />
+    public async Task<ErrorOr<Deleted>> RemoveAsync(Guid consumableTransactionId)
+    {
+        var transaction = await GetOneAsync(consumableTransactionId);
+        if (transaction is null)
+            return ConsumableTransactionError.NotFound(consumableTransactionId);
+
+        transaction.Consumable.Amount -= transaction.AmountChange;
+
+        _context.ConsumableTransactions.Remove(transaction);
+        await _context.SaveChangesAsync();
+        return Result.Deleted;
+    }
+
+    /// <inheritdoc />
     public async Task<ErrorOr<Success>> MoveToSuccessorPurchaseAsync(
         Guid predecessorPurchaseId,
         Guid successorPurchaseId
@@ -155,20 +161,7 @@ public class ConsumableTransactionRepository : IConsumableTransactionRepository
         return await transactionsQuery.ToListAsync();
     }
 
-    private static IEnumerable<CreateConsumableTransactionDto> CreateDtosFromPurchase(
-        Purchase purchase
-    ) =>
-        purchase
-            .Entries.Where(e => e.AssetItem is Consumable)
-            .GroupBy(entry => entry.AssetItem.Id)
-            .Select(group => new CreateConsumableTransactionDto()
-            {
-                ConsumableId = group.First().AssetItem.Id,
-                Date = purchase.CompletionDate!.Value,
-                AmountChange = (int)-group.Sum(entry => entry.Amount),
-                TransactionReason = TransactionReasons.Purchase,
-            });
-
+    /// <inheritdoc />
     public async Task<ErrorOr<Success>> AddToPurchaseAsync(
         Guid purchaseGuid,
         Guid consumableTransactionGuid

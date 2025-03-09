@@ -255,19 +255,19 @@ public class PurchaseControllerInvalidationTest1(CIMSApiFactory apiFactory)
         // Arrange
         // Setup a working group with one purchase entry.
         var (workingGroup, entries) = await SetupWorkingGroupWithEntriesAsync(1);
+        var consumableAmount = entries[0].AssetItem.As<Consumable>().Amount;
 
         // Create the initial purchase.
         var createResult = await CreatePurchaseAsync(
             workingGroup.Id,
             workingGroup.Professor.Id,
-            entries.Select(e => e with { Amount = e.AssetItem.As<Consumable>().Amount })
+            entries.Select(e => e with { Amount = consumableAmount })
         );
 
-        var invalidAmount = entries[0].AssetItem.As<Consumable>().Amount + 1;
         var newEntry = new CreatePurchaseEntryDto
         {
             AssetItemId = entries[0].AssetItem.Id,
-            Amount = invalidAmount,
+            Amount = consumableAmount + 1,
             PricePerItem = entries[0].PricePerItem,
         };
 
