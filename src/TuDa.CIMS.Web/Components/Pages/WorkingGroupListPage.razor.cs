@@ -52,13 +52,12 @@ public partial class WorkingGroupListPage
         if (result is null)
             return;
 
-        CreateProfessorDto professor =
-            new()
-            {
-                FirstName = result[0],
-                Name = result[1],
-                Title = result[2],
-            };
+        CreateProfessorDto professor = new()
+        {
+            FirstName = result[0],
+            Name = result[1],
+            Title = result[2],
+        };
         var created = await _workingGroupApi.CreateAsync(
             new CreateWorkingGroupDto
             {
@@ -70,7 +69,7 @@ public partial class WorkingGroupListPage
 
         if (created.IsError)
         {
-            _snackbar.Add("Etwa ist schief gelaufen", Severity.Error);
+            _snackbar.Add("Etwas ist schief gelaufen", Severity.Error);
         }
         else
         {
