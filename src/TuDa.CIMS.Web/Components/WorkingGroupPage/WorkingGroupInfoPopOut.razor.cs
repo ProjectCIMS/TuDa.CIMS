@@ -16,10 +16,23 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
     public required MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public required WorkingGroupResponseDto WorkingGroup { get; set; }
+    public required WorkingGroupResponseDto WorkingGroup { get; set; } = new()
+    {
+        Professor = new Professor()
+        {
+            Address = new Address(),
+            FirstName = "",
+            Name = "",
+        }, PhoneNumber = "", Email = "",
+    };
 
     [Parameter]
-    public required Professor ProfessorInfo { get; set; }
+    public required Professor ProfessorInfo { get; set; } = new()
+    {
+        Address = new Address(),
+        FirstName = "",
+        Name = "",
+    };
 
     [CascadingParameter]
     public string ProfessorName { get; set; } = string.Empty;
