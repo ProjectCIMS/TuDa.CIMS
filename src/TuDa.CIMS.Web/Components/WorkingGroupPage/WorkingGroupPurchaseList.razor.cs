@@ -33,12 +33,6 @@ public partial class WorkingGroupPurchaseList
     private IEnumerable<PurchaseResponseDto> SortedPurchases =>
         Purchases.OrderByDescending(p => p.CompletionDate);
 
-    protected override async Task OnInitializedAsync()
-    {
-        var purchases = await _purchaseApi.GetAllAsync(WorkingGroupId);
-        Purchases = purchases.Value;
-    }
-
     /// <summary>
     /// Formats the completion date of a purchase in the wished form.
     /// </summary>
