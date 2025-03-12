@@ -7,7 +7,7 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
-public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : ComponentBase
+public partial class WorkingGroupInfoPopOut : ComponentBase
 {
     [Parameter]
     public Guid WorkingGroupId { get; set; }
@@ -15,52 +15,60 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
     [CascadingParameter]
     public required MudDialogInstance MudDialog { get; set; }
 
+    [Parameter]
+    public required WorkingGroupResponseDto WorkingGroup { get; set; }
+
+    [Parameter]
+    public required Professor ProfessorInfo { get; set; }
+
+    [CascadingParameter]
+    public string ProfessorName { get; set; } = string.Empty;
+
     private string StreetAndNumber =>
         $"{ProfessorInfo.Address.Street} {ProfessorInfo.Address.Number}";
 
     private string FullName => $"{ProfessorInfo.FirstName} {ProfessorInfo.Name}";
 
-    [Parameter]
-    public WorkingGroupResponseDto WorkingGroup { get; set; } =
-        new()
-        {
-            Professor = new Professor()
-            {
-                Address = new Address(),
-                FirstName = "",
-                Name = "",
-                Email = ""
-            },
-            Students = new List<Student>(),
-            PhoneNumber = "",
-            Email = "",
-            Purchases = new List<PurchaseResponseDto>(),
-        };
+    private readonly DialogOptions _dialogOptions = new() { CloseOnEscapeKey = true };
 
-    [Inject]
-    private IDialogService DialogService { get; set; } = null!;
+    private readonly IDialogService _dialogService;
+    private readonly IWorkingGroupApi _workingGroupApi;
+    private readonly ISnackbar _snackbar;
 
-    [Parameter]
-    public Professor ProfessorInfo { get; set; } =
-        new()
-        {
-            Address = new Address(),
-            FirstName = "",
-            Name = "",
-        };
-
-    [CascadingParameter]
-    public string ProfessorName { get; set; } = String.Empty;
+    public WorkingGroupInfoPopOut(
+        IWorkingGroupApi workingGroupApi,
+        IDialogService dialogService,
+        ISnackbar snackbar
+    )
+    {
+        _workingGroupApi = workingGroupApi;
+        _dialogService = dialogService;
+        _snackbar = snackbar;
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        var information = await workingGroupApi.GetAsync(WorkingGroupId);
+        var information = await _workingGroupApi.GetAsync(WorkingGroupId);
         ProfessorInfo = information.Value.Professor;
         WorkingGroup = information.Value;
         ProfessorName = WorkingGroup.Professor.Name;
     }
 
     private void GoBack() => MudDialog.Cancel();
+
+    private async Task SendUpdateRequestAsync(UpdateWorkingGroupDto updateDto)
+    {
+        var success = await _workingGroupApi.UpdateAsync(WorkingGroupId, updateDto);
+        if (success.IsError)
+        {
+            _snackbar.Add("Etwas ist schief gelaufen", Severity.Error);
+        }
+        else
+        {
+            _snackbar.Add("Erfolgreich aktualisiert", Severity.Success);
+            StateHasChanged();
+        }
+    }
 
     private async Task EditProfessorTitle()
     {
@@ -69,27 +77,21 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
             { up => up.Fields, [new("Titel", ProfessorInfo.Title)] },
         };
 
-        var options = new DialogOptions() { CloseOnEscapeKey = true };
-
-        var dialogReference = await DialogService.ShowAsync<GenericInputPopUp>(
+        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
             "Titel bearbeiten",
             parameters,
-            options
+            _dialogOptions
         );
 
-        var result = await dialogReference.Result;
+        var result = await dialogReference.GetReturnValueAsync<List<string>>();
+        if (result is null)
+            return;
 
-        if (!result!.Canceled)
-        {
-            var returnedValues = (List<string>)result.Data!;
-            ProfessorInfo.Title = returnedValues[0];
+        ProfessorInfo.Title = result[0];
 
-            await workingGroupApi.UpdateAsync(
-                WorkingGroupId,
-                new UpdateWorkingGroupDto() { Professor = new() { Title = ProfessorInfo.Title } }
-            );
-            StateHasChanged();
-        }
+        await SendUpdateRequestAsync(
+            new UpdateWorkingGroupDto() { Professor = new() { Title = ProfessorInfo.Title } }
+        );
     }
 
     private async Task EditProfessor()
@@ -102,35 +104,29 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
             },
         };
 
-        var options = new DialogOptions() { CloseOnEscapeKey = true };
-
-        var dialogReference = await DialogService.ShowAsync<GenericInputPopUp>(
+        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
             "Professor bearbeiten",
             parameters,
-            options
+            _dialogOptions
         );
 
-        var result = await dialogReference.Result;
+        var result = await dialogReference.GetReturnValueAsync<List<string>>();
+        if (result is null)
+            return;
 
-        if (!result!.Canceled)
-        {
-            var returnedValues = (List<string>)result.Data!;
-            ProfessorInfo.FirstName = returnedValues[0];
-            ProfessorInfo.Name = returnedValues[1];
+        ProfessorInfo.FirstName = result[0];
+        ProfessorInfo.Name = result[1];
 
-            await workingGroupApi.UpdateAsync(
-                WorkingGroupId,
-                new UpdateWorkingGroupDto()
+        await SendUpdateRequestAsync(
+            new UpdateWorkingGroupDto()
+            {
+                Professor = new()
                 {
-                    Professor = new()
-                    {
-                        Name = ProfessorInfo.Name,
-                        FirstName = ProfessorInfo.FirstName,
-                    },
-                }
-            );
-            StateHasChanged();
-        }
+                    Name = ProfessorInfo.Name,
+                    FirstName = ProfessorInfo.FirstName,
+                },
+            }
+        );
     }
 
     private async Task EditPhoneNumber()
@@ -140,27 +136,21 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
             { up => up.Fields, [new("Telefonnummer", WorkingGroup.PhoneNumber)] },
         };
 
-        var options = new DialogOptions() { CloseOnEscapeKey = true };
-
-        var dialogReference = await DialogService.ShowAsync<GenericInputPopUp>(
+        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
             "Telefonnummer bearbeiten",
             parameters,
-            options
+            _dialogOptions
         );
 
-        var result = await dialogReference.Result;
+        var result = await dialogReference.GetReturnValueAsync<List<string>>();
+        if (result is null)
+            return;
 
-        if (!result!.Canceled)
-        {
-            var returnedValues = (List<string>)result.Data!;
-            WorkingGroup.PhoneNumber = returnedValues[0];
+        WorkingGroup.PhoneNumber = result[0];
 
-            await workingGroupApi.UpdateAsync(
-                WorkingGroupId,
-                new UpdateWorkingGroupDto() { PhoneNumber = WorkingGroup.PhoneNumber }
-            );
-            StateHasChanged();
-        }
+        await SendUpdateRequestAsync(
+            new UpdateWorkingGroupDto() { PhoneNumber = WorkingGroup.PhoneNumber }
+        );
     }
 
     private async Task EditAddressCity()
@@ -170,31 +160,24 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
             { up => up.Fields, [new("Stadt", ProfessorInfo.Address.City)] },
         };
 
-        var options = new DialogOptions() { CloseOnEscapeKey = true };
-
-        var dialogReference = await DialogService.ShowAsync<GenericInputPopUp>(
+        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
             "Stadt bearbeiten",
             parameters,
-            options
+            _dialogOptions
         );
 
-        var result = await dialogReference.Result;
+        var result = await dialogReference.GetReturnValueAsync<List<string>>();
+        if (result is null)
+            return;
 
-        if (!result!.Canceled)
-        {
-            var returnedValues = (List<string>)result.Data!;
-            ProfessorInfo.Address.City = returnedValues[0];
+        ProfessorInfo.Address.City = result[0];
 
-            await workingGroupApi.UpdateAsync(
-                WorkingGroupId,
-                new UpdateWorkingGroupDto()
-                {
-                    Professor = new() { AddressCity = ProfessorInfo.Address.City },
-                }
-            );
-        }
-
-        StateHasChanged();
+        await SendUpdateRequestAsync(
+            new UpdateWorkingGroupDto()
+            {
+                Professor = new() { AddressCity = ProfessorInfo.Address.City },
+            }
+        );
     }
 
     private async Task EditAddressStreetAndNumber()
@@ -211,35 +194,29 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
             },
         };
 
-        var options = new DialogOptions() { CloseOnEscapeKey = true };
-
-        var dialogReference = await DialogService.ShowAsync<GenericInputPopUp>(
+        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
             "Straße und Hausnummer bearbeiten",
             parameters,
-            options
+            _dialogOptions
         );
 
-        var result = await dialogReference.Result;
+        var result = await dialogReference.GetReturnValueAsync<List<string>>();
+        if (result is null)
+            return;
 
-        if (!result!.Canceled)
-        {
-            var returnedValues = (List<string>)result.Data!;
-            ProfessorInfo.Address.Street = returnedValues[0];
-            ProfessorInfo.Address.Number = int.Parse(returnedValues[1]);
+        ProfessorInfo.Address.Street = result[0];
+        ProfessorInfo.Address.Number = int.TryParse(result[1], out int number) ? number : 0;
 
-            await workingGroupApi.UpdateAsync(
-                WorkingGroupId,
-                new UpdateWorkingGroupDto()
+        await SendUpdateRequestAsync(
+            new UpdateWorkingGroupDto()
+            {
+                Professor = new()
                 {
-                    Professor = new()
-                    {
-                        AddressStreet = ProfessorInfo.Address.Street,
-                        AddressNumber = ProfessorInfo.Address.Number,
-                    }
-                }
-            );
-            StateHasChanged();
-        }
+                    AddressStreet = ProfessorInfo.Address.Street,
+                    AddressNumber = ProfessorInfo.Address.Number,
+                },
+            }
+        );
     }
 
     private async Task EditAddressZipNumber()
@@ -249,30 +226,24 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
             { up => up.Fields, [new("Postleitzahl", ProfessorInfo.Address.ZipCode)] },
         };
 
-        var options = new DialogOptions() { CloseOnEscapeKey = true };
-
-        var dialogReference = await DialogService.ShowAsync<GenericInputPopUp>(
+        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
             "Postleitzahl bearbeiten",
             parameters,
-            options
+            _dialogOptions
         );
 
-        var result = await dialogReference.Result;
+        var result = await dialogReference.GetReturnValueAsync<List<string>>();
+        if (result is null)
+            return;
 
-        if (!result!.Canceled)
-        {
-            var returnedValues = (List<string>)result.Data!;
-            ProfessorInfo.Address.ZipCode = returnedValues[0];
+        ProfessorInfo.Address.ZipCode = result[0];
 
-            await workingGroupApi.UpdateAsync(
-                WorkingGroupId,
-                new UpdateWorkingGroupDto()
-                {
-                    Professor = new() { AddressZipCode = ProfessorInfo.Address.ZipCode },
-                }
-            );
-            StateHasChanged();
-        }
+        await SendUpdateRequestAsync(
+            new UpdateWorkingGroupDto()
+            {
+                Professor = new() { AddressZipCode = ProfessorInfo.Address.ZipCode },
+            }
+        );
     }
 
     private async Task EditAssistanceEmail()
@@ -282,27 +253,19 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
             { up => up.Fields, [new("Email-Adresse", WorkingGroup.Email)] },
         };
 
-        var options = new DialogOptions() { CloseOnEscapeKey = true };
-
-        var dialogReference = await DialogService.ShowAsync<GenericInputPopUp>(
+        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
             "E-Mail bearbeiten",
             parameters,
-            options
+            _dialogOptions
         );
 
-        var result = await dialogReference.Result;
+        var result = await dialogReference.GetReturnValueAsync<List<string>>();
+        if (result is null)
+            return;
 
-        if (!result!.Canceled)
-        {
-            var returnedValues = (List<string>)result.Data!;
-            WorkingGroup.Email = returnedValues[0];
+        WorkingGroup.Email = result[0];
 
-            await workingGroupApi.UpdateAsync(
-                WorkingGroupId,
-                new UpdateWorkingGroupDto() { Email = WorkingGroup.Email }
-            );
-            StateHasChanged();
-        }
+        await SendUpdateRequestAsync(new UpdateWorkingGroupDto() { Email = WorkingGroup.Email });
     }
 
     private async Task EditProfessorEmail()
@@ -312,26 +275,20 @@ public partial class WorkingGroupInfoPopOut(IWorkingGroupApi workingGroupApi) : 
             { up => up.Fields, [new("Email-Adresse", ProfessorInfo.Email)] },
         };
 
-        var options = new DialogOptions() { CloseOnEscapeKey = true };
-
-        var dialogReference = await DialogService.ShowAsync<GenericInputPopUp>(
+        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
             "E-Mail bearbeiten",
             parameters,
-            options
+            _dialogOptions
         );
 
-        var result = await dialogReference.Result;
+        var result = await dialogReference.GetReturnValueAsync<List<string>>();
+        if (result is null)
+            return;
 
-        if (!result!.Canceled)
-        {
-            var returnedValues = (List<string>)result.Data!;
-            ProfessorInfo.Email = returnedValues[0];
+        ProfessorInfo.Email = result[0];
 
-            await workingGroupApi.UpdateAsync(
-                WorkingGroupId,
-                new UpdateWorkingGroupDto() { Professor = new() { Email = ProfessorInfo.Email } }
+        await SendUpdateRequestAsync(
+            new UpdateWorkingGroupDto() { Professor = new() { Email = ProfessorInfo.Email } }
         );
-            StateHasChanged();
-        }
     }
 }
