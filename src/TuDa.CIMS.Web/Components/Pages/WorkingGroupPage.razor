@@ -2,21 +2,29 @@
 
 @using TuDa.CIMS.Web.Components.WorkingGroupPage
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="bg-white rounded-xl">
-    <MudGrid Justify="Justify.SpaceBetween">
-        <!-- Header spans full width -->
-        <MudItem xs="12" Class="mt-2 col-md-1">
-        <WorkingGroupHeader WorkingGroupId="WorkingGroupId"></WorkingGroupHeader>
-        </MudItem>
+@if (WorkingGroup is null)
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="bg-white rounded-xl">
+        <MudGrid Justify="Justify.SpaceBetween">
+            <!-- Header spans full width -->
+            <MudItem xs="12" Class="mt-2 col-md-1">
+                <WorkingGroupHeader WorkingGroup="@WorkingGroup"></WorkingGroupHeader>
+            </MudItem>
 
-        <!-- Left column -->
-        <MudItem xs="12" md="7" Class="d-flex flex-column">
-            <WorkingGroupPersonList WorkingGroupId="WorkingGroupId"></WorkingGroupPersonList>
-        </MudItem>
+            <!-- Left column -->
+            <MudItem xs="12" md="7" Class="d-flex flex-column">
+                <WorkingGroupPersonList WorkingGroup="@WorkingGroup"></WorkingGroupPersonList>
+            </MudItem>
 
-        <!-- Right column -->
-        <MudItem xs="12" md="5" Class="d-flex flex-column">
-            <WorkingGroupPurchaseList WorkingGroupId="WorkingGroupId"></WorkingGroupPurchaseList>
-        </MudItem>
-    </MudGrid>
-</MudContainer>
+            <!-- Right column -->
+            <MudItem xs="12" md="5" Class="d-flex flex-column">
+                <WorkingGroupPurchaseList WorkingGroupId="@WorkingGroup.Id" Purchases="@WorkingGroup.Purchases">
+                </WorkingGroupPurchaseList>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+}
