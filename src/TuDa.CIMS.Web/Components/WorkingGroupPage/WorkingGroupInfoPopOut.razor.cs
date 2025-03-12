@@ -9,33 +9,25 @@ namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 
 public partial class WorkingGroupInfoPopOut : ComponentBase
 {
-    [Parameter]
-    public Guid WorkingGroupId { get; set; }
+    [Parameter] public Guid WorkingGroupId { get; set; }
 
-    [CascadingParameter]
-    public required MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] public required MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
     public required WorkingGroupResponseDto WorkingGroup { get; set; } = new()
     {
-        Professor = new Professor()
-        {
-            Address = new Address(),
-            FirstName = "",
-            Name = "",
-        }, PhoneNumber = "", Email = "",
+        Professor = new Professor() { Address = new Address(), FirstName = "", Name = "", },
+        PhoneNumber = "",
+        Email = "",
     };
 
     [Parameter]
     public required Professor ProfessorInfo { get; set; } = new()
     {
-        Address = new Address(),
-        FirstName = "",
-        Name = "",
+        Address = new Address(), FirstName = "", Name = "",
     };
 
-    [CascadingParameter]
-    public string ProfessorName { get; set; } = string.Empty;
+    [CascadingParameter] public string ProfessorName { get; set; } = string.Empty;
 
     private string StreetAndNumber =>
         $"{ProfessorInfo.Address.Street} {ProfessorInfo.Address.Number}";
@@ -112,8 +104,7 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
         var parameters = new DialogParameters<GenericInputPopUp>
         {
             {
-                up => up.Fields,
-                [new("Vorname", ProfessorInfo.FirstName), new("Nachname", ProfessorInfo.Name, true)]
+                up => up.Fields, [new("Vorname", ProfessorInfo.FirstName), new("Nachname", ProfessorInfo.Name, true)]
             },
         };
 
@@ -133,11 +124,7 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
         await SendUpdateRequestAsync(
             new UpdateWorkingGroupDto()
             {
-                Professor = new()
-                {
-                    Name = ProfessorInfo.Name,
-                    FirstName = ProfessorInfo.FirstName,
-                },
+                Professor = new() { Name = ProfessorInfo.Name, FirstName = ProfessorInfo.FirstName, },
             }
         );
     }
@@ -186,10 +173,7 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
         ProfessorInfo.Address.City = result[0];
 
         await SendUpdateRequestAsync(
-            new UpdateWorkingGroupDto()
-            {
-                Professor = new() { AddressCity = ProfessorInfo.Address.City },
-            }
+            new UpdateWorkingGroupDto() { Professor = new() { AddressCity = ProfessorInfo.Address.City }, }
         );
     }
 
@@ -198,9 +182,7 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
         var parameters = new DialogParameters<GenericInputPopUp>
         {
             {
-                up => up.Fields,
-
-                [
+                up => up.Fields, [
                     new("Straße", ProfessorInfo.Address.Street),
                     new("Hausnummer", ProfessorInfo.Address.Number.ToString()),
                 ]
@@ -225,8 +207,7 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
             {
                 Professor = new()
                 {
-                    AddressStreet = ProfessorInfo.Address.Street,
-                    AddressNumber = ProfessorInfo.Address.Number,
+                    AddressStreet = ProfessorInfo.Address.Street, AddressNumber = ProfessorInfo.Address.Number,
                 },
             }
         );
@@ -252,10 +233,7 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
         ProfessorInfo.Address.ZipCode = result[0];
 
         await SendUpdateRequestAsync(
-            new UpdateWorkingGroupDto()
-            {
-                Professor = new() { AddressZipCode = ProfessorInfo.Address.ZipCode },
-            }
+            new UpdateWorkingGroupDto() { Professor = new() { AddressZipCode = ProfessorInfo.Address.ZipCode }, }
         );
     }
 
