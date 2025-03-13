@@ -7,10 +7,12 @@
     <Columns>
         <PropertyColumn
             Property="@(p => FormatCompletionDate(p))"
-            Title="Datum"/>
+            Title="Datum"
+            CellStyleFunc="@(p => GetTextStyle(p))"/>
         <PropertyColumn
             Property="@(p => p.TotalPrice.ToString("C", CultureInfo.GetCultureInfo("de-DE")))"
-            Title="Preis"/>
+            Title="Preis"
+            CellStyleFunc="@(p => GetTextStyle(p))"/>
         <TemplateColumn CellClass="d-flex justify-end">
             <CellTemplate>
                 <MudIconButton Size="@Size.Small"
@@ -21,8 +23,8 @@
     </Columns>
     <PagerContent>
         <MudDataGridPager RowsPerPageString="Einkäufe pro Seite:"
-                          PageSizeOptions="[ 5, 10, 20 ]"
-                          T="PurchaseResponseDto"/>
+                   PageSizeOptions="[ 5, 10, 20 ]"
+            T="PurchaseResponseDto" />
     </PagerContent>
 </MudDataGrid>
 <WorkingGroupInvoiceButton></WorkingGroupInvoiceButton>
