@@ -70,7 +70,7 @@ It is a project developed by IT students as part of their **Bachelor Praktikum**
 2. **Build and run with Docker Compose**:
 
     ```sh
-    docker compose -f ./docker-compose.dev.yml up --build
+    docker compose -f ./docker-compose.dev.yml up --build -d
     ```
 
 3. **The `API`, `Web`, and `DB` containers should now be running**
