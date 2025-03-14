@@ -52,10 +52,12 @@ It is a project developed by IT students as part of their **Bachelor Praktikum**
 
 3. **The `API`, `Web`, and `DB` containers should now be running**
 
-> [!TIP] Using a specific Version
+> [!TIP]
+> #### Using a specific Version
 > If you want to use a specific version of the application,
 > you can specify the version in the `docker-compose.yml` file.
 > Change `:latest` to the desired version in the `image` field.
+> CIMS is using [SemVersioning](https://semver.org/).
 
 ### Build Docker image locally
 
