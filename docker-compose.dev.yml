@@ -1,0 +1,38 @@
+﻿services:
+  cims-web:
+    image: ghcr.io/projectcims/cims-web:dev
+    build:
+      context: .
+      dockerfile: src/TuDa.CIMS.Web/Dockerfile
+    depends_on:
+      - cims-api
+    environment:
+      - Api__BaseUrl=http://cims-api:8080
+    ports:
+      - "80:8080"
+
+  cims-api:
+    image: ghcr.io/projectcims/cims-api:dev
+    build:
+      context: .
+      dockerfile: src/TuDa.CIMS.Api/Dockerfile
+    depends_on:
+      - cims-db
+    environment:
+      - ConnectionStrings__CIMS=Host=cims-db;Port=5432;Database=CIMS;Username=postgres;Password=postgres
+    ports:
+      - "8080:8080"
+
+  cims-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: CIMS
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
