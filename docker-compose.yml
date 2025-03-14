@@ -1,9 +1,6 @@
 ﻿services:
   cims-web:
     image: ghcr.io/projectcims/cims-web:latest
-    build:
-      context: .
-      dockerfile: src/TuDa.CIMS.Web/Dockerfile
     depends_on:
       - cims-api
     environment:
@@ -13,9 +10,6 @@
 
   cims-api:
     image: ghcr.io/projectcims/cims-api:latest
-    build:
-      context: .
-      dockerfile: src/TuDa.CIMS.Api/Dockerfile
     depends_on:
       - cims-db
     environment:
