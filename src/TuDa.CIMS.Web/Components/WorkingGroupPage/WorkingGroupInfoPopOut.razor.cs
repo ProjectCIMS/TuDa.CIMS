@@ -3,6 +3,7 @@ using MudBlazor;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Web.Extensions;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
@@ -19,8 +20,6 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
     private string ProfessorName => WorkingGroup.Professor.Name;
     private string StreetAndNumber => $"{Professor.Address.Street} {Professor.Address.Number}";
     private string FullName => $"{Professor.FirstName} {Professor.Name}";
-
-    private readonly DialogOptions _dialogOptions = new() { CloseOnEscapeKey = true };
 
     private readonly IDialogService _dialogService;
     private readonly IWorkingGroupApi _workingGroupApi;
@@ -39,34 +38,12 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
 
     private void GoBack() => MudDialog.Cancel();
 
-    private async Task SendUpdateRequestAsync(UpdateWorkingGroupDto updateDto)
-    {
-        var success = await _workingGroupApi.UpdateAsync(WorkingGroup.Id, updateDto);
-        if (success.IsError)
-        {
-            _snackbar.Add("Etwas ist schief gelaufen", Severity.Error);
-        }
-        else
-        {
-            _snackbar.Add("Erfolgreich aktualisiert", Severity.Success);
-            StateHasChanged();
-        }
-    }
-
     private async Task EditProfessorTitle()
     {
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            { up => up.Fields, [new("Titel", Professor.Title)] },
-        };
-
-        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
+        var result = await _dialogService.OpenGenericInputPopupAsync(
             "Titel bearbeiten",
-            parameters,
-            _dialogOptions
+            [new("Titel", Professor.Title)]
         );
-
-        var result = await dialogReference.GetReturnValueAsync<List<string>>();
         if (result is null)
             return;
 
@@ -79,21 +56,10 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
 
     private async Task EditProfessor()
     {
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            {
-                up => up.Fields,
-                [new("Vorname", Professor.FirstName), new("Nachname", Professor.Name, true)]
-            },
-        };
-
-        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
+        var result = await _dialogService.OpenGenericInputPopupAsync(
             "Professor bearbeiten",
-            parameters,
-            _dialogOptions
+            [new("Vorname", Professor.FirstName), new("Nachname", Professor.Name, true)]
         );
-
-        var result = await dialogReference.GetReturnValueAsync<List<string>>();
         if (result is null)
             return;
 
@@ -110,18 +76,10 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
 
     private async Task EditPhoneNumber()
     {
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            { up => up.Fields, [new("Telefonnummer", WorkingGroup.PhoneNumber)] },
-        };
-
-        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
+        var result = await _dialogService.OpenGenericInputPopupAsync(
             "Telefonnummer bearbeiten",
-            parameters,
-            _dialogOptions
+            [new("Telefonnummer", WorkingGroup.PhoneNumber)]
         );
-
-        var result = await dialogReference.GetReturnValueAsync<List<string>>();
         if (result is null)
             return;
 
@@ -134,18 +92,10 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
 
     private async Task EditAddressCity()
     {
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            { up => up.Fields, [new("Stadt", Professor.Address.City)] },
-        };
-
-        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
+        var result = await _dialogService.OpenGenericInputPopupAsync(
             "Stadt bearbeiten",
-            parameters,
-            _dialogOptions
+            [new("Stadt", Professor.Address.City)]
         );
-
-        var result = await dialogReference.GetReturnValueAsync<List<string>>();
         if (result is null)
             return;
 
@@ -161,24 +111,13 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
 
     private async Task EditAddressStreetAndNumber()
     {
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            {
-                up => up.Fields,
-                [
-                    new("Straße", Professor.Address.Street),
-                    new("Hausnummer", Professor.Address.Number.ToString()),
-                ]
-            },
-        };
-
-        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
+        var result = await _dialogService.OpenGenericInputPopupAsync(
             "Straße und Hausnummer bearbeiten",
-            parameters,
-            _dialogOptions
+            [
+                new("Straße", Professor.Address.Street),
+                new("Hausnummer", Professor.Address.Number.ToString()),
+            ]
         );
-
-        var result = await dialogReference.GetReturnValueAsync<List<string>>();
         if (result is null)
             return;
 
@@ -199,18 +138,10 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
 
     private async Task EditAddressZipNumber()
     {
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            { up => up.Fields, [new("Postleitzahl", Professor.Address.ZipCode)] },
-        };
-
-        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
+        var result = await _dialogService.OpenGenericInputPopupAsync(
             "Postleitzahl bearbeiten",
-            parameters,
-            _dialogOptions
+            [new("Postleitzahl", Professor.Address.ZipCode)]
         );
-
-        var result = await dialogReference.GetReturnValueAsync<List<string>>();
         if (result is null)
             return;
 
@@ -226,18 +157,10 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
 
     private async Task EditAssistanceEmail()
     {
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            { up => up.Fields, [new("Email-Adresse", WorkingGroup.Email)] },
-        };
-
-        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
+        var result = await _dialogService.OpenGenericInputPopupAsync(
             "E-Mail bearbeiten",
-            parameters,
-            _dialogOptions
+            [new("Email-Adresse", WorkingGroup.Email)]
         );
-
-        var result = await dialogReference.GetReturnValueAsync<List<string>>();
         if (result is null)
             return;
 
@@ -248,18 +171,10 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
 
     private async Task EditProfessorEmail()
     {
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            { up => up.Fields, [new("Email-Adresse", Professor.Email)] },
-        };
-
-        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
-            "E-Mail bearbeiten",
-            parameters,
-            _dialogOptions
+        var result = await _dialogService.OpenGenericInputPopupAsync(
+            "Professor E-Mail bearbeiten",
+            [new("Email-Adresse", Professor.Email)]
         );
-
-        var result = await dialogReference.GetReturnValueAsync<List<string>>();
         if (result is null)
             return;
 
@@ -268,5 +183,19 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
         await SendUpdateRequestAsync(
             new UpdateWorkingGroupDto() { Professor = new() { Email = Professor.Email } }
         );
+    }
+
+    private async Task SendUpdateRequestAsync(UpdateWorkingGroupDto updateDto)
+    {
+        var success = await _workingGroupApi.UpdateAsync(WorkingGroup.Id, updateDto);
+        if (success.IsError)
+        {
+            _snackbar.Add("Etwas ist schief gelaufen", Severity.Error);
+        }
+        else
+        {
+            _snackbar.Add("Erfolgreich aktualisiert", Severity.Success);
+            StateHasChanged();
+        }
     }
 }

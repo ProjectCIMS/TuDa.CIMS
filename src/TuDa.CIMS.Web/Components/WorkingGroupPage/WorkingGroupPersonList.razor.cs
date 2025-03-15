@@ -3,6 +3,7 @@ using MudBlazor;
 using TuDa.CIMS.Shared.Dtos;
 using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Web.Extensions;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
@@ -41,28 +42,17 @@ public partial class WorkingGroupPersonList : ComponentBase
     /// <param name="student">The student that will be updated.</param>
     private async Task EditBuyer(Student student)
     {
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            {
-                up => up.Fields,
-                [
-                    new("Vorname", student.FirstName),
-                    new("Nachname", student.Name, true),
-                    new("Telefonnummer", student.PhoneNumber),
-                    new("E-Mail-Adresse", student.Email),
-                ]
-            },
-            { up => up.YesText, "Speichern" },
-        };
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
+        var result = await _dialogService.OpenGenericInputPopupAsync(
             "Person bearbeiten",
-            parameters,
-            options
+            [
+                new("Vorname", student.FirstName),
+                new("Nachname", student.Name, true),
+                new("Telefonnummer", student.PhoneNumber),
+                new("E-Mail-Adresse", student.Email),
+            ],
+            "Speichern"
         );
 
-        var result = await dialogReference.GetReturnValueAsync<List<string>>();
         if (result is null)
             return;
 
@@ -136,23 +126,11 @@ public partial class WorkingGroupPersonList : ComponentBase
     /// </summary>
     private async Task AddBuyerDialog()
     {
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            {
-                up => up.Fields,
-                [new("Vorname"), new("Nachname", true), new("Telefonnummer"), new("E-Mail-Adresse")]
-            },
-            { up => up.YesText, "Hinzufügen" },
-        };
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
+        var result = await _dialogService.OpenGenericInputPopupAsync(
             "Person hinzufügen",
-            parameters,
-            options
+            [new("Vorname"), new("Nachname", true), new("Telefonnummer"), new("E-Mail-Adresse")],
+            "Hinzufügen"
         );
-
-        var result = await dialogReference.GetReturnValueAsync<List<string>>();
         if (result is null)
             return;
 
