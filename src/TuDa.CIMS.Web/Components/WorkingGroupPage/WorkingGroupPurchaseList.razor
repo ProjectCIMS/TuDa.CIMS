@@ -1,16 +1,17 @@
 ﻿@using System.Globalization
 @using TuDa.CIMS.Shared.Dtos.Responses
+
 <MudDataGrid Items="@SortedPurchases"
              FixedHeader="@true"
              SortMode="SortMode.None"
              Hover="@true">
     <Columns>
-        <PropertyColumn
-            Property="@(p => FormatCompletionDate(p))"
-            Title="Datum"/>
-        <PropertyColumn
-            Property="@(p => p.TotalPrice.ToString("C", CultureInfo.GetCultureInfo("de-DE")))"
-            Title="Preis"/>
+        <PropertyColumn Property="@(p => FormatCompletionDate(p))"
+                        Title="Datum"
+                        CellStyleFunc="@(p => GetTextStyle(p))"/>
+        <PropertyColumn Property="@(p => p.TotalPrice.ToString("C", CultureInfo.GetCultureInfo("de-DE")))"
+                        Title="Preis"
+                        CellStyleFunc="@(p => GetTextStyle(p))"/>
         <TemplateColumn CellClass="d-flex justify-end">
             <CellTemplate>
                 <MudIconButton Size="@Size.Small"
@@ -20,9 +21,9 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager RowsPerPageString="Einkäufe pro Seite:"
+        <MudDataGridPager RowsPerPageString="Einkäufe pro Seite"
                           PageSizeOptions="[ 5, 10, 20 ]"
-                          T="PurchaseResponseDto"/>
+                          T="PurchaseResponseDto" />
     </PagerContent>
 </MudDataGrid>
 <WorkingGroupInvoiceButton></WorkingGroupInvoiceButton>

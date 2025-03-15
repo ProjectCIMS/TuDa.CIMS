@@ -18,7 +18,6 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
     private Professor Professor => WorkingGroup.Professor;
     private string ProfessorName => WorkingGroup.Professor.Name;
     private string StreetAndNumber => $"{Professor.Address.Street} {Professor.Address.Number}";
-
     private string FullName => $"{Professor.FirstName} {Professor.Name}";
 
     private readonly DialogOptions _dialogOptions = new() { CloseOnEscapeKey = true };
