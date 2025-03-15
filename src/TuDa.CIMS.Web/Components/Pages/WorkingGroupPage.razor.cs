@@ -13,7 +13,8 @@ public partial class WorkingGroupPage : ComponentBase
 
     public readonly IWorkingGroupApi _workingGroupApi;
 
-    public WorkingGroupPage(IWorkingGroupApi workingGroupApi) => _workingGroupApi = workingGroupApi;
+    public WorkingGroupPage(IWorkingGroupApi workingGroupApi)
+        => _workingGroupApi = workingGroupApi;
 
     protected override async Task OnInitializedAsync()
     {

@@ -2,13 +2,9 @@
 
 @using TuDa.CIMS.Web.Components.WorkingGroupPage
 
-@if (WorkingGroup is null)
+@if (WorkingGroup is not null)
 {
-    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
-}
-else
-{
-    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="bg-white rounded-xl">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="bg-white rounded-xl pb-2">
         <MudGrid Justify="Justify.SpaceBetween">
             <!-- Header spans full width -->
             <MudItem xs="12" Class="mt-2 col-md-1">
@@ -22,8 +18,7 @@ else
 
             <!-- Right column -->
             <MudItem xs="12" md="5" Class="d-flex flex-column">
-                <WorkingGroupPurchaseList WorkingGroupId="@WorkingGroup.Id" Purchases="@WorkingGroup.Purchases">
-                </WorkingGroupPurchaseList>
+                <WorkingGroupPurchaseList WorkingGroupId="@WorkingGroup.Id" Purchases="@WorkingGroup.Purchases"/>
             </MudItem>
         </MudGrid>
     </MudContainer>
