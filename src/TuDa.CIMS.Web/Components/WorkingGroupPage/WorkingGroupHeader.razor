@@ -1,14 +1,16 @@
-﻿<MudItem Class="d-flex justify-content-between align-items-center">
+﻿<MudStack Row Class="d-flex justify-content-between align-items-center">
     <!-- Linke Gruppe: Text + Info-Icon direkt nebeneinander -->
-    <div class="d-flex align-items-center">
+    <MudStack Row Class="d-flex align-items-center justify-content-start">
         <MudText Typo="Typo.h5" Class="me-2"> @Professor.Title @Professor.Name </MudText>
-        <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Primary" OnClick="OpenInformationDialog">
-        </MudIconButton>
-    </div>
+        <MudIconButton Icon="@Icons.Material.Filled.Info"
+                       Color="Color.Primary"
+                       OnClick="OpenInformationDialog"/>
+    </MudStack>
 
     <!-- Rechte Gruppe: Button (ganz rechts) -->
-    <MudButton Variant="Variant.Outlined" Color="@(WorkingGroup.IsDeactivated? Color.Success: Color.Error)"
-        OnClick="ToggleWorkingGroupStatus">
+    <MudButton Variant="Variant.Outlined"
+               Color="@(WorkingGroup.IsDeactivated? Color.Success: Color.Error)"
+               OnClick="ToggleWorkingGroupStatus">
         @(WorkingGroup.IsDeactivated ? "Aktivieren" : "Deaktivieren")
     </MudButton>
-</MudItem>
+</MudStack>
