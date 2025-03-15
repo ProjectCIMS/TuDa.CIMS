@@ -16,16 +16,19 @@ public partial class WorkingGroupHeader : ComponentBase
     private readonly IDialogService _dialogService;
     private readonly IWorkingGroupApi _workingGroupApi;
     private readonly NavigationManager _navigation;
+    private readonly ISnackbar _snackbar;
 
     public WorkingGroupHeader(
         IDialogService dialogService,
         IWorkingGroupApi workingGroupApi,
-        NavigationManager navigation
+        NavigationManager navigation,
+        ISnackbar snackbar
     )
     {
         _dialogService = dialogService;
         _workingGroupApi = workingGroupApi;
         _navigation = navigation;
+        _snackbar = snackbar;
     }
 
     /// <summary>
@@ -33,7 +36,7 @@ public partial class WorkingGroupHeader : ComponentBase
     /// </summary>
     public async Task OpenInformationDialog()
     {
-        var dialogReference = _dialogService.Show<WorkingGroupInfoPopOut>(
+        var dialogReference = await _dialogService.ShowAsync<WorkingGroupInfoPopOut>(
             "Informationen zur Arbeitsgruppe",
             new DialogParameters<WorkingGroupInfoPopOut>
             {
@@ -46,6 +49,17 @@ public partial class WorkingGroupHeader : ComponentBase
 
     public async Task ToggleWorkingGroupStatus()
     {
-        await _workingGroupApi.ToggleActiveAsync(WorkingGroup.Id);
+        var success = await _workingGroupApi.ToggleActiveAsync(WorkingGroup.Id);
+        if (success.IsError)
+        {
+            _snackbar.Add(
+                "Etwas is schiefgelaufen die Arbeitsgruppe zu deaktivieren.",
+                Severity.Error
+            );
+        }
+        else
+        {
+            WorkingGroup.IsDeactivated = !WorkingGroup.IsDeactivated;
+        }
     }
 }
