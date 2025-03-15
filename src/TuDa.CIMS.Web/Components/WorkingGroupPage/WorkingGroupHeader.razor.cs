@@ -15,19 +15,16 @@ public partial class WorkingGroupHeader : ComponentBase
 
     private readonly IDialogService _dialogService;
     private readonly IWorkingGroupApi _workingGroupApi;
-    private readonly NavigationManager _navigation;
     private readonly ISnackbar _snackbar;
 
     public WorkingGroupHeader(
         IDialogService dialogService,
         IWorkingGroupApi workingGroupApi,
-        NavigationManager navigation,
         ISnackbar snackbar
     )
     {
         _dialogService = dialogService;
         _workingGroupApi = workingGroupApi;
-        _navigation = navigation;
         _snackbar = snackbar;
     }
 
