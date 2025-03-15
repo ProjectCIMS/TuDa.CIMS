@@ -1,56 +1,103 @@
 ﻿<MudDialog>
     <DialogContent>
-        <MudContainer Class="rounded bg-white" MaxWidth="MaxWidth.Medium">
-            <div class="d-flex flex-column gap-4">
+        <MudContainer Class="rounded bg-white"
+                      MaxWidth="MaxWidth.Medium">
+            <MudStack Spacing="2">
 
-                <MudTextField Text="@Professor.Title" T="string" Label="Titel" Variant="Variant.Outlined"
-                    ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Edit"
-                    OnAdornmentClick="EditProfessorTitle" AdornmentColor="Color.Primary">
+                <MudTextField Text="@Professor.Title"
+                              T="string"
+                              Label="Titel"
+                              Variant="Variant.Outlined"
+                              ReadOnly
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditProfessorTitle"
+                              AdornmentColor="Color.Primary">
                 </MudTextField>
 
-                <MudTextField Text="@FullName" T="string" Label="Vor- und Nachname" Variant="Variant.Outlined"
-                    ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Edit"
-                    OnAdornmentClick="EditProfessor" AdornmentColor="Color.Primary">
+                <MudTextField Text="@FullName"
+                              T="string"
+                              Label="Vor- und Nachname"
+                              Variant="Variant.Outlined"
+                              ReadOnly
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditProfessor"
+                              AdornmentColor="Color.Primary">
                 </MudTextField>
 
-                <MudTextField Text="@WorkingGroup.PhoneNumber" T="string" Label="TelefonNr." Variant="Variant.Outlined"
-                    ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Edit"
-                    OnAdornmentClick="EditPhoneNumber" AdornmentColor="Color.Primary">
+                <MudTextField Text="@WorkingGroup.PhoneNumber"
+                              T="string"
+                              Label="TelefonNr."
+                              Variant="Variant.Outlined"
+                              ReadOnly
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditPhoneNumber"
+                              AdornmentColor="Color.Primary">
                 </MudTextField>
 
-                <MudTextField Text="@Professor.Address.City" T="string" Label="Stadt" Variant="Variant.Outlined"
-                    ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Edit"
-                    OnAdornmentClick="EditAddressCity" AdornmentColor="Color.Primary">
+                <MudTextField Text="@Professor.Address.City"
+                              T="string"
+                              Label="Stadt"
+                              Variant="Variant.Outlined"
+                              ReadOnly
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditAddressCity"
+                              AdornmentColor="Color.Primary">
                 </MudTextField>
 
-                <MudTextField Text="@StreetAndNumber" T="string" Label="Straße und Hausnummer"
-                    Variant="Variant.Outlined" ReadOnly="true" Adornment="Adornment.End"
-                    AdornmentIcon="@Icons.Material.Filled.Edit" OnAdornmentClick="EditAddressStreetAndNumber"
-                    AdornmentColor="Color.Primary">
+                <MudTextField Text="@StreetAndNumber"
+                              T="string"
+                              Label="Straße und Hausnummer"
+                              Variant="Variant.Outlined"
+                              ReadOnly
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditAddressStreetAndNumber"
+                              AdornmentColor="Color.Primary">
                 </MudTextField>
 
-                <MudTextField Text="@Professor.Address.ZipCode" T="string" Label="PLZ" Variant="Variant.Outlined"
-                    ReadOnly="true" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Edit"
-                    OnAdornmentClick="EditAddressZipNumber" AdornmentColor="Color.Primary">
+                <MudTextField Text="@Professor.Address.ZipCode"
+                              T="string"
+                              Label="PLZ"
+                              Variant="Variant.Outlined"
+                              ReadOnly
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditAddressZipNumber"
+                              AdornmentColor="Color.Primary">
                 </MudTextField>
 
-                <MudTextField Text="@WorkingGroup.Email" T="string" Label="Assistenz-Email-Adresse"
-                    Variant="Variant.Outlined" ReadOnly="true" Adornment="Adornment.End"
-                    AdornmentIcon="@Icons.Material.Filled.Edit" OnAdornmentClick="EditAssistanceEmail"
-                    AdornmentColor="Color.Primary">
+                <MudTextField Text="@WorkingGroup.Email"
+                              T="string"
+                              Label="Assistenz-Email-Adresse"
+                              Variant="Variant.Outlined"
+                              ReadOnly
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditAssistanceEmail"
+                              AdornmentColor="Color.Primary">
                 </MudTextField>
 
-                <MudTextField Text="@Professor.Email" T="string" Label="Professor-Email-Adresse"
-                    Variant="Variant.Outlined" ReadOnly="true" Adornment="Adornment.End"
-                    AdornmentIcon="@Icons.Material.Filled.Edit" OnAdornmentClick="EditProfessorEmail"
-                    AdornmentColor="Color.Primary">
+                <MudTextField Text="@Professor.Email"
+                              T="string"
+                              Label="Professor-Email-Adresse"
+                              Variant="Variant.Outlined"
+                              ReadOnly
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Edit"
+                              OnAdornmentClick="EditProfessorEmail"
+                              AdornmentColor="Color.Primary">
                 </MudTextField>
-            </div>
+            </MudStack>
         </MudContainer>
 
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="GoBack" Color="Color.Primary">
+        <MudButton OnClick="GoBack"
+                   Color="Color.Primary">
             Okay
         </MudButton>
     </DialogActions>
