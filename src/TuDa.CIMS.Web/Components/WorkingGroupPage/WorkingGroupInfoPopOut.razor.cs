@@ -190,7 +190,7 @@ public partial class WorkingGroupInfoPopOut : ComponentBase
         var success = await _workingGroupApi.UpdateAsync(WorkingGroup.Id, updateDto);
         if (success.IsError)
         {
-            _snackbar.Add("Etwas ist schief gelaufen", Severity.Error);
+            _snackbar.Add("Etwas ist schiefgelaufen", Severity.Error);
         }
         else
         {

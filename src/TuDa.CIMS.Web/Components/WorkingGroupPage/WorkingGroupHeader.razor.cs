@@ -50,7 +50,7 @@ public partial class WorkingGroupHeader : ComponentBase
         if (success.IsError)
         {
             _snackbar.Add(
-                "Etwas is schiefgelaufen die Arbeitsgruppe zu deaktivieren.",
+                "Beim Deaktivieren der Arbeitgruppe ist ein Fehler aufgetreten",
                 Severity.Error
             );
         }
