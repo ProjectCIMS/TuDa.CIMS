@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Shared.Entities;
+using TuDa.CIMS.Web.Extensions;
 using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
@@ -9,7 +11,7 @@ namespace TuDa.CIMS.Web.Components.WorkingGroupPage;
 public partial class WorkingGroupPersonList : ComponentBase
 {
     [Parameter]
-    public Guid WorkingGroupId { get; set; }
+    public required WorkingGroupResponseDto WorkingGroup { get; set; }
 
     [Parameter]
     public EventCallback<Person> PersonDeleted { get; set; }
@@ -18,29 +20,20 @@ public partial class WorkingGroupPersonList : ComponentBase
     public EventCallback PersonAdded { get; set; }
 
     private readonly IDialogService _dialogService;
-    private readonly IWorkingGroupApi _workingGroupApi;
     private readonly IStudentApi _studentApi;
     private readonly ISnackbar _snackbar;
 
-    private List<Student> _students = [];
+    private List<Student> _students => WorkingGroup.Students;
 
     public WorkingGroupPersonList(
         IDialogService dialogService,
-        IWorkingGroupApi workingGroupApi,
         IStudentApi studentApi,
         ISnackbar snackbar
     )
     {
         _dialogService = dialogService;
-        _workingGroupApi = workingGroupApi;
         _studentApi = studentApi;
         _snackbar = snackbar;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var workingGroup = await _workingGroupApi.GetAsync(WorkingGroupId);
-        _students = workingGroup.Value.Students;
     }
 
     /// <summary>
@@ -49,29 +42,17 @@ public partial class WorkingGroupPersonList : ComponentBase
     /// <param name="student">The student that will be updated.</param>
     private async Task EditBuyer(Student student)
     {
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            {
-                up => up.Fields,
-
-                [
-                    new("Vorname", student.FirstName),
-                    new("Nachname", student.Name, true),
-                    new("Telefonnummer", student.PhoneNumber),
-                    new("E-Mail-Adresse", student.Email),
-                ]
-            },
-            { up => up.YesText, "Speichern" },
-        };
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
+        var result = await _dialogService.OpenGenericInputPopupAsync(
             "Person bearbeiten",
-            parameters,
-            options
+            [
+                new("Vorname", student.FirstName),
+                new("Nachname", student.Name, true),
+                new("Telefonnummer", student.PhoneNumber),
+                new("E-Mail-Adresse", student.Email),
+            ],
+            "Speichern"
         );
 
-        var result = await dialogReference.GetReturnValueAsync<List<string>>();
         if (result is null)
             return;
 
@@ -81,7 +62,7 @@ public partial class WorkingGroupPersonList : ComponentBase
         student.Email = result[3];
 
         var updatedStudent = await _studentApi.UpdateAsync(
-            WorkingGroupId,
+            WorkingGroup.Id,
             student.Id,
             new UpdateStudentDto()
             {
@@ -122,7 +103,7 @@ public partial class WorkingGroupPersonList : ComponentBase
 
         if (_students.Count != 0)
         {
-            var deleted = await _studentApi.RemoveAsync(WorkingGroupId, student.Id);
+            var deleted = await _studentApi.RemoveAsync(WorkingGroup.Id, student.Id);
 
             if (deleted.IsError)
             {
@@ -145,28 +126,16 @@ public partial class WorkingGroupPersonList : ComponentBase
     /// </summary>
     private async Task AddBuyerDialog()
     {
-        var parameters = new DialogParameters<GenericInputPopUp>
-        {
-            {
-                up => up.Fields,
-                [new("Vorname"), new("Nachname", true), new("Telefonnummer"), new("E-Mail-Adresse")]
-            },
-            { up => up.YesText, "Hinzufügen" },
-        };
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        var dialogReference = await _dialogService.ShowAsync<GenericInputPopUp>(
+        var result = await _dialogService.OpenGenericInputPopupAsync(
             "Person hinzufügen",
-            parameters,
-            options
+            [new("Vorname"), new("Nachname", true), new("Telefonnummer"), new("E-Mail-Adresse")],
+            "Hinzufügen"
         );
-
-        var result = await dialogReference.GetReturnValueAsync<List<string>>();
         if (result is null)
             return;
 
         var newStudent = await _studentApi.AddAsync(
-            WorkingGroupId,
+            WorkingGroup.Id,
             new CreateStudentDto()
             {
                 FirstName = result[0],
