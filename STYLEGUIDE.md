@@ -26,9 +26,10 @@ In Rider, you can use `Ctrl + Alt + L` to format your code.
 
 ## Dependency Injection
 
-- Use constructor injection for mandatory dependencies. (Except for [Blazor](#dependency-injection-in-blazor))
+- Use constructor injection for mandatory dependencies. (Even for Blazor)
+  - Use readonly for injected services.
 - Register services in the `RegisterServices.cs` file.
-- For every registered service, add a interface and use this for dependency injection instead of the concrete class.
+- For every registered service, add an interface and use this for dependency injection instead of the concrete class.
 
 ## Error Handling
 
@@ -164,9 +165,3 @@ To improve readability and overview of the code, add section comments where appl
 
 - Prefer CSS Isolation for component-specific styles using `ComponentName.razor.css`.
 - Use CSS classes instead of inline styles for reusability.
-
-### Dependency Injection In Blazor
-
-- In _Blazor_ it is not possible to use constructor injection.
-- Use the `[Inject]` attribute to inject services into components.
-  - If a `razor.cs` file is present, inject services in it.
