@@ -1,0 +1,25 @@
+﻿<MudAppBar Class="bg-body text-black">
+    <MudStack Row
+              Spacing="2"
+              AlignItems="AlignItems.Center">
+        <NavLink ActiveClass="d-flex align-center me-4" href="/">
+            <MudIcon Icon="@Icons.Material.Filled.Science" Size="Size.Large"></MudIcon>
+            <MudText Color="Color.Dark"
+                     Typo="Typo.h3">
+                CIMS
+            </MudText>
+        </NavLink>
+        <MudButton Href="/shop"
+                 Color="Color.Inherit">
+            Ausgabe
+        </MudButton>
+        <MudButton Href="/asset-list"
+                 Color="Color.Inherit">
+            Datenbank
+        </MudButton>
+        <MudButton Href="/working-groups"
+                 Color="Color.Inherit">
+            Arbeitsgruppen
+        </MudButton>
+    </MudStack>
+</MudAppBar>
