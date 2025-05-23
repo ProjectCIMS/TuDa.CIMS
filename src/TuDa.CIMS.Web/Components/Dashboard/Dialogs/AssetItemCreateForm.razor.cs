@@ -8,13 +8,6 @@ namespace TuDa.CIMS.Web.Components.Dashboard.Dialogs;
 
 public partial class AssetItemCreateForm
 {
-    private readonly IAssetItemApi _assetItemApi;
-
-    public AssetItemCreateForm(IAssetItemApi assetItemApi)
-    {
-        _assetItemApi = assetItemApi;
-    }
-
     /// <summary>
     /// Fields for Errors and Feedback
     /// </summary>

@@ -1,6 +1,8 @@
 @page "/"
 @code {
-    [Inject] private NavigationManager _navigationManager { get; set; } = null!;
+    private readonly NavigationManager _navigationManager;
+
+    public HomePage(NavigationManager navigationManager) => _navigationManager = navigationManager;
 
     protected override void OnInitialized()
     {
