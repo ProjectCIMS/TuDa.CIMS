@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
@@ -8,11 +7,12 @@ namespace TuDa.CIMS.Web.Components.ShoppingCart;
 
 public partial class ShoppingCartProductDialog
 {
+    private readonly ILogger<ShoppingCartProductDialog> _logger;
+
+    public ShoppingCartProductDialog(ILogger<ShoppingCartProductDialog> logger) => _logger = logger;
+
     [CascadingParameter]
     public required MudDialogInstance ProductDialog { get; set; }
-
-    [Inject]
-    private ILogger<ShoppingCartProductDialog> Logger { get; set; } = null!;
 
     // Product to be shown in Dialog.
     [Parameter]
@@ -60,16 +60,16 @@ public partial class ShoppingCartProductDialog
             {
                 if (AmountInt > c.Amount)
                 {
-                    Logger.LogWarning("Consumable is out of Stock");
+                    _logger.LogWarning("Consumable is out of Stock");
                     return;
                 }
             }
-            Logger.LogInformation($"Product added with quantity: {Amount}");
+            _logger.LogInformation("Product added with quantity: {D}", Amount);
             Submit();
         }
         else
         {
-            Logger.LogWarning("Quantity must be greater than 0");
+            _logger.LogWarning("Quantity must be greater than 0");
         }
     }
 }

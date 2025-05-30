@@ -7,19 +7,21 @@ namespace TuDa.CIMS.Web.Components.WorkingGroupList;
 
 public partial class WorkingGroupPageWorkingGroupList
 {
-    public WorkingGroupPageWorkingGroupList(IWorkingGroupApi workingGroupApi)
+    private readonly IWorkingGroupApi _workingGroupApi;
+    private readonly NavigationManager _navigationManager;
+
+    public WorkingGroupPageWorkingGroupList(
+        IWorkingGroupApi workingGroupApi,
+        NavigationManager navigationManager
+    )
     {
         _workingGroupApi = workingGroupApi;
+        _navigationManager = navigationManager;
     }
 
     private MudDataGrid<WorkingGroupResponseDto> _dataGrid { get; set; } = new();
 
-    private readonly IWorkingGroupApi _workingGroupApi;
-
     private string _searchString { get; set; } = string.Empty;
-
-    [Inject]
-    private NavigationManager _navigationManager { get; set; } = null!;
 
     private void GoToWorkingGroupInfoPage(DataGridRowClickEventArgs<WorkingGroupResponseDto> args)
     {
