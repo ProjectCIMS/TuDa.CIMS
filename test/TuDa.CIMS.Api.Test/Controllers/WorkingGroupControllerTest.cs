@@ -1,14 +1,12 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using TuDa.CIMS.Api.Controllers;
-using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Test.Integration;
-using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Create;
 using TuDa.CIMS.Shared.Dtos.Responses;
+using TuDa.CIMS.Shared.Dtos.Update;
 using TuDa.CIMS.Shared.Entities;
-using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Extensions;
 using TuDa.CIMS.Shared.Test.Extensions;
 using TuDa.CIMS.Shared.Test.Faker;

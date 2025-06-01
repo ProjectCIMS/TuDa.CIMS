@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared;
-using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Create;
 using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Shared.Extensions;
 
@@ -110,8 +110,9 @@ public class PurchaseController : CIMSBaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RetrieveSignatureAsync(Guid workingGroupId, Guid purchaseId)
     {
-        return (
-            await _purchaseService.RetrieveSignatureAsync(workingGroupId, purchaseId)
-        ).Match(onValue: value => Ok(value), onError: ErrorsToProblem);
+        return (await _purchaseService.RetrieveSignatureAsync(workingGroupId, purchaseId)).Match(
+            onValue: value => Ok(value),
+            onError: ErrorsToProblem
+        );
     }
 }

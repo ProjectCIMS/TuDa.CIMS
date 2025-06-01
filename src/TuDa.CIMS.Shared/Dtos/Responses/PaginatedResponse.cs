@@ -1,4 +1,4 @@
-﻿namespace TuDa.CIMS.Shared.Dtos;
+﻿namespace TuDa.CIMS.Shared.Dtos.Responses;
 
 /// <summary>
 /// A class that represents a paginated response.

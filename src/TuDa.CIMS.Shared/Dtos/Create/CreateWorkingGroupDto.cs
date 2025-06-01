@@ -1,6 +1,4 @@
-﻿using TuDa.CIMS.Shared.Entities;
-
-namespace TuDa.CIMS.Shared.Dtos;
+﻿namespace TuDa.CIMS.Shared.Dtos.Create;
 
 public record CreateWorkingGroupDto
 {

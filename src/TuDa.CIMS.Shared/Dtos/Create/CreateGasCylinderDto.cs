@@ -1,6 +1,6 @@
-﻿namespace TuDa.CIMS.Shared.Dtos;
+﻿namespace TuDa.CIMS.Shared.Dtos.Create;
 
-public class CreateGasCylinderDto:CreateSubstanceDto
+public class CreateGasCylinderDto : CreateSubstanceDto
 {
     /// <summary>
     /// The volume of the item.

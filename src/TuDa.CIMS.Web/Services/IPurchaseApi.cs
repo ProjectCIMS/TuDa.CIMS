@@ -1,6 +1,6 @@
 ﻿using Refit;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
-using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Create;
 using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Web.Extensions;
 
@@ -160,8 +160,7 @@ public interface IPurchaseApi
     public async Task<ErrorOr<string>> RetrieveSignatureAsync(
         Guid workingGroupId,
         Guid purchaseId
-    ) =>
-         await RetrieveSignatureAsyncInternal(workingGroupId, purchaseId).ToErrorOrAsync();
+    ) => await RetrieveSignatureAsyncInternal(workingGroupId, purchaseId).ToErrorOrAsync();
 
     /// <summary>
     /// Internal API call to retrieve the signature of a purchase.

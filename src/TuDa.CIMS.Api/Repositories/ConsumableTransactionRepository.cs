@@ -3,7 +3,7 @@ using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Errors;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
-using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Create;
 using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Repositories;

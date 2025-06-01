@@ -1,13 +1,9 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Test.Integration;
-using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Create;
 using TuDa.CIMS.Shared.Entities;
-using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Test.Faker;
 
 namespace TuDa.CIMS.Api.Test.Controllers;

@@ -1,9 +1,8 @@
-﻿using TuDa.CIMS.Shared.Entities;
-using TuDa.CIMS.Shared.Entities.Enums;
+﻿using TuDa.CIMS.Shared.Entities.Enums;
 
-namespace TuDa.CIMS.Shared.Dtos;
+namespace TuDa.CIMS.Shared.Dtos.Create;
 
-public class CreateSubstanceDto:CreateAssetItemDto
+public class CreateSubstanceDto : CreateAssetItemDto
 {
     /// <summary>
     /// A unique identifier for the chemical.

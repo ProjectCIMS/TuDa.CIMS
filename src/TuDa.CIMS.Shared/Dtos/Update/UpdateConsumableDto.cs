@@ -1,6 +1,4 @@
-﻿using TuDa.CIMS.Shared.Entities.Enums;
-
-namespace TuDa.CIMS.Shared.Dtos;
+﻿namespace TuDa.CIMS.Shared.Dtos.Update;
 
 public record UpdateConsumableDto : UpdateAssetItemDto
 {
@@ -15,5 +13,4 @@ public record UpdateConsumableDto : UpdateAssetItemDto
     public string? SerialNumber { get; set; }
 
     public StockUpdateDto? StockUpdate { get; set; }
-
 }

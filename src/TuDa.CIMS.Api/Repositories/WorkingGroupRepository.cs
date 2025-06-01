@@ -2,8 +2,8 @@
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
-using TuDa.CIMS.Shared.Dtos;
-using TuDa.CIMS.Shared.Dtos.Responses;
+using TuDa.CIMS.Shared.Dtos.Create;
+using TuDa.CIMS.Shared.Dtos.Update;
 using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Repositories;
@@ -152,7 +152,9 @@ public class WorkingGroupRepository : IWorkingGroupRepository
     public async Task<List<WorkingGroup>> SearchAsync(string name)
     {
         return await WorkingGroupsFilledQuery
-            .Where(s => string.IsNullOrWhiteSpace(name) ||EF.Functions.ILike(s.Professor.Name, $"%{name}%"))
+            .Where(s =>
+                string.IsNullOrWhiteSpace(name) || EF.Functions.ILike(s.Professor.Name, $"%{name}%")
+            )
             .ToListAsync();
     }
 

@@ -1,7 +1,7 @@
 ﻿using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 
-namespace TuDa.CIMS.Shared.Dtos;
+namespace TuDa.CIMS.Shared.Dtos.Update;
 
 public record UpdateChemicalItemDto : UpdateAssetItemDto
 {

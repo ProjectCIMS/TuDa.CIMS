@@ -1,6 +1,4 @@
-﻿using TuDa.CIMS.Shared.Entities;
-
-namespace TuDa.CIMS.Api.Interfaces;
+﻿namespace TuDa.CIMS.Api.Interfaces;
 
 public interface IPurchaseInvalidationService
 {

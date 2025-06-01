@@ -1,5 +1,4 @@
-﻿using TuDa.CIMS.Api.Models;
-using TuDa.CIMS.Shared.Entities;
+﻿using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Interfaces;
 

@@ -1,5 +1,5 @@
 using MudBlazor;
-using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Create;
 using TuDa.CIMS.Web.Components.WorkingGroupList;
 using TuDa.CIMS.Web.Components.WorkingGroupPage;
 using TuDa.CIMS.Web.Services;
@@ -52,12 +52,13 @@ public partial class WorkingGroupListPage
         if (result is null)
             return;
 
-        CreateProfessorDto professor = new()
-        {
-            FirstName = result[0],
-            Name = result[1],
-            Title = result[2],
-        };
+        CreateProfessorDto professor =
+            new()
+            {
+                FirstName = result[0],
+                Name = result[1],
+                Title = result[2],
+            };
         var created = await _workingGroupApi.CreateAsync(
             new CreateWorkingGroupDto
             {
