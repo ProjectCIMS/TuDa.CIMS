@@ -4,7 +4,6 @@ public record CreatePurchaseEntryDto
 {
     /// <summary>
     /// The purchased asset item.
-    /// TODO: Could change AssetItem to Guid and load the entity in the repository.
     /// </summary>
     public required Guid AssetItemId { get; set; }
 

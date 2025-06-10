@@ -10,9 +10,6 @@ public record CreatePurchaseDto
     /// <summary>
     /// The signature of the buyer.
     /// </summary>
-    /// <remarks>
-    /// TODO: The saving strategy is not final.
-    /// </remarks>
     public byte[] Signature { get; set; } = [];
 
     /// <summary>
