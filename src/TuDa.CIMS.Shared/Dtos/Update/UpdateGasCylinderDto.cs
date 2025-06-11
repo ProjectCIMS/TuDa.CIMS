@@ -1,4 +1,4 @@
-﻿namespace TuDa.CIMS.Shared.Dtos;
+﻿namespace TuDa.CIMS.Shared.Dtos.Update;
 
 public record UpdateGasCylinderDto : UpdateSubstanceDto
 {

@@ -2,7 +2,8 @@
 using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
-using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Create;
+using TuDa.CIMS.Shared.Dtos.Update;
 using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Repositories;
@@ -45,7 +46,6 @@ public class ProfessorRepository : IProfessorRepository
         professor.Address.Street = update.AddressStreet ?? professor.Address.Street;
         professor.Address.Number = update.AddressNumber ?? professor.Address.Number;
         professor.Address.ZipCode = update.AddressZipCode ?? professor.Address.ZipCode;
-
 
         await _context.SaveChangesAsync();
 

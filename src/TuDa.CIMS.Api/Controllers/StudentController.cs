@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TuDa.CIMS.Api.Interfaces;
-using TuDa.CIMS.Api.Services;
 using TuDa.CIMS.Shared;
-using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Create;
+using TuDa.CIMS.Shared.Dtos.Update;
 
 namespace TuDa.CIMS.Api.Controllers;
 

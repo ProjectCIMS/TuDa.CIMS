@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using TuDa.CIMS.Shared.Entities.Enums;
 
-namespace TuDa.CIMS.Shared.Dtos;
+namespace TuDa.CIMS.Shared.Dtos.Create;
 
 [JsonPolymorphic]
 [JsonDerivedType(typeof(CreateProfessorDto), nameof(CreateProfessorDto))]

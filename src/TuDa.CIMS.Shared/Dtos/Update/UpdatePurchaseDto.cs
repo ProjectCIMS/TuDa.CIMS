@@ -1,6 +1,6 @@
 ﻿using TuDa.CIMS.Shared.Entities;
 
-namespace TuDa.CIMS.Shared.Dtos;
+namespace TuDa.CIMS.Shared.Dtos.Update;
 
 public record UpdatePurchaseDto
 {

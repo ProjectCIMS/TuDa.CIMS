@@ -2,7 +2,7 @@
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 
-namespace TuDa.CIMS.Shared.Dtos;
+namespace TuDa.CIMS.Shared.Dtos.Update;
 
 [JsonPolymorphic]
 [JsonDerivedType(typeof(UpdateChemicalDto), nameof(UpdateChemicalDto))]

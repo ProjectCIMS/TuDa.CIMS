@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Update;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Web.Services;

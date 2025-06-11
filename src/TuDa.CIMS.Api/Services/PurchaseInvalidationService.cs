@@ -1,7 +1,7 @@
 ﻿using TuDa.CIMS.Api.Errors;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
-using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Create;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 

@@ -1,4 +1,4 @@
-﻿using TuDa.CIMS.Shared.Dtos;
+﻿using TuDa.CIMS.Shared.Dtos.Create;
 using TuDa.CIMS.Shared.Entities;
 
 namespace TuDa.CIMS.Api.Interfaces;

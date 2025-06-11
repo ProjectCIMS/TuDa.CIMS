@@ -1,4 +1,3 @@
-﻿namespace TuDa.CIMS.Shared.Dtos;
+﻿namespace TuDa.CIMS.Shared.Dtos.Update;
 
 public record UpdateStudentDto : UpdatePersonDto;
-

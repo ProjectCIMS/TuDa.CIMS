@@ -1,29 +1,29 @@
-﻿namespace TuDa.CIMS.Shared.Dtos;
+﻿namespace TuDa.CIMS.Shared.Dtos.Update;
 
-public record CreateProfessorDto : CreatePersonDto
+public record UpdateProfessorDto : UpdatePersonDto
 {
     /// <summary>
     /// The title of the professor.
     /// </summary>
-    public string Title { get; set; } = string.Empty;
+    public string? Title { get; set; }
 
     /// <summary>
     /// The street of the professor.
     /// </summary>
-    public string AddressStreet { get; set; } = string.Empty;
+    public string? AddressStreet { get; set; }
 
     /// <summary>
     /// The number of the street.
     /// </summary>
-    public int AddressNumber { get; set; } = 0;
+    public int? AddressNumber { get; set; }
 
     /// <summary>
     /// The zip code of the city.
     /// </summary>
-    public string AddressZipCode { get; set; } = string.Empty;
+    public string? AddressZipCode { get; set; }
 
     /// <summary>
     /// The city of the professors address.
     /// </summary>
-    public string AddressCity { get; set; } = string.Empty;
+    public string? AddressCity { get; set; }
 }

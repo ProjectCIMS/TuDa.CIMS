@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Responses;
 
 namespace TuDa.CIMS.Api.Factories;
 
@@ -12,7 +12,11 @@ public static class PaginatedResponseFactory<T>
     /// <param name="pageNumber"></param>
     /// <param name="pageSize"></param>
     /// <returns></returns>
-    public static async Task<PaginatedResponse<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
+    public static async Task<PaginatedResponse<T>> CreateAsync(
+        IQueryable<T> source,
+        int pageNumber,
+        int pageSize
+    )
     {
         var countTask = source.CountAsync();
         var itemsTask = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();

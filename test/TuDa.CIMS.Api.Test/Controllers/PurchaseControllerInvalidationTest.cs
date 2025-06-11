@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using TuDa.CIMS.Api.Controllers;
 using TuDa.CIMS.Api.Test.Integration;
-using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Create;
 using TuDa.CIMS.Shared.Dtos.Responses;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Test.Faker;

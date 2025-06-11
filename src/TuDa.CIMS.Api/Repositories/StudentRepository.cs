@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TuDa.CIMS.Api.Database;
+﻿using TuDa.CIMS.Api.Database;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
-using TuDa.CIMS.Shared.Dtos;
+using TuDa.CIMS.Shared.Dtos.Create;
+using TuDa.CIMS.Shared.Dtos.Update;
 using TuDa.CIMS.Shared.Entities;
-using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.Api.Repositories;
 
@@ -75,7 +74,7 @@ public class StudentRepository : IStudentRepository
             FirstName = createStudentDto.FirstName,
             Gender = createStudentDto.Gender,
             PhoneNumber = createStudentDto.PhoneNumber,
-            Email = createStudentDto.Email
+            Email = createStudentDto.Email,
         };
 
         existingWorkingGroup.Students.Add(newStudent);

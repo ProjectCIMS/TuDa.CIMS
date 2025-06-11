@@ -1,5 +1,4 @@
 ﻿using QuestPDF.Fluent;
-using QuestPDF.Infrastructure;
 using TuDa.CIMS.Api.Documents;
 using TuDa.CIMS.Api.Interfaces;
 using TuDa.CIMS.Shared.Attributes.ServiceRegistration;
