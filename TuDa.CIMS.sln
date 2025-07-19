@@ -32,6 +32,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.TestingDataServic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.TestExcelImporter", "infrastructure\TuDa.CIMS.TestExcelImporter\TuDa.CIMS.TestExcelImporter.csproj", "{FEE3854D-2321-48DA-ADCB-CF95BFF0F9D7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{96EB29C1-D15F-4A65-B4C5-FA7A258C57D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.AssetItemImporter", "TuDa.CIMS.AssetItemImporter\TuDa.CIMS.AssetItemImporter.csproj", "{FA6E5059-BB33-4822-9987-3ACC6857D7E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +82,10 @@ Global
 		{FEE3854D-2321-48DA-ADCB-CF95BFF0F9D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEE3854D-2321-48DA-ADCB-CF95BFF0F9D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEE3854D-2321-48DA-ADCB-CF95BFF0F9D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA6E5059-BB33-4822-9987-3ACC6857D7E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA6E5059-BB33-4822-9987-3ACC6857D7E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA6E5059-BB33-4822-9987-3ACC6857D7E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA6E5059-BB33-4822-9987-3ACC6857D7E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,6 +101,7 @@ Global
 		{010B5E27-E764-4C39-9BD5-645604184711} = {75B40CC1-517E-4A53-8993-23F59613AA30}
 		{06216752-C73E-4496-9899-B8FE77871137} = {75B40CC1-517E-4A53-8993-23F59613AA30}
 		{FEE3854D-2321-48DA-ADCB-CF95BFF0F9D7} = {75B40CC1-517E-4A53-8993-23F59613AA30}
+		{FA6E5059-BB33-4822-9987-3ACC6857D7E7} = {96EB29C1-D15F-4A65-B4C5-FA7A258C57D4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B490D6E1-3A6B-4BEA-AC94-F5B81C53D618}
