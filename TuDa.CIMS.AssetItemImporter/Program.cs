@@ -7,6 +7,7 @@ await CoconaApp.RunAsync(
     {
         AssetItemReader reader = type switch
         {
+            AssetItemType.Lösungsmittel => new SolventReader(path),
             AssetItemType.Laborgeräte => new ConsumableReader(path),
             _ => throw new NotImplementedException(),
         };
