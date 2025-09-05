@@ -17,4 +17,41 @@ public abstract class AssetItemReader
 
     protected static Rooms GetRoom(string roomString) =>
         Enum.TryParse(roomString, out Rooms room) ? room : Rooms.None;
+
+    protected static (double BindingSize, MeasurementUnits PriceUnit) GetBindingSize(string input)
+    {
+        string[] splitted = input.Split(" ");
+        double bindingSize;
+        MeasurementUnits priceUnit;
+        if (splitted.Length == 2)
+        {
+            bindingSize = double.TryParse(splitted[0], out double result) ? result : 0;
+            priceUnit = ParsePriceUnit(splitted[1]);
+        }
+        else
+        {
+            if (double.TryParse(splitted[0], out double result))
+            {
+                bindingSize = result;
+                priceUnit = MeasurementUnits.Piece;
+            }
+            else
+            {
+                bindingSize = 0;
+                priceUnit = ParsePriceUnit(splitted[0]);
+            }
+        }
+
+        return (bindingSize, priceUnit);
+    }
+
+    private static MeasurementUnits ParsePriceUnit(string input) =>
+        input switch
+        {
+            "ml" => MeasurementUnits.MilliLiter,
+            "l" => MeasurementUnits.Liter,
+            "g" => MeasurementUnits.Gram,
+            "kg" => MeasurementUnits.KiloGram,
+            _ => MeasurementUnits.Piece,
+        };
 }

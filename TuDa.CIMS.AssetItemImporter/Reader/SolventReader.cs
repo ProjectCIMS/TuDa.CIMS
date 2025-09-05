@@ -1,5 +1,4 @@
 ﻿using TuDa.CIMS.Shared.Dtos.Create;
-using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.AssetItemImporter.Reader;
 
@@ -11,6 +10,11 @@ public class SolventReader(string path) : AssetItemReader(path)
     private const int Price = 4;
     private const int Room = 5;
     private const int BindingSizeAndUnit = 6;
+
+    /// <summary>
+    /// Not used, as <see cref="BindingSizeAndUnit"/> has unit inside.
+    /// </summary>
+    private const int Unit = 7;
 
     public override IEnumerable<CreateAssetItemDto> GetAssetItems() =>
         Workbook
@@ -39,24 +43,4 @@ public class SolventReader(string path) : AssetItemReader(path)
                     Purity = Unknown,
                 };
             });
-
-    private static (double BindingSize, MeasurementUnits PriceUnit) GetBindingSize(string input)
-    {
-        string[] splitted = input.Split(" ");
-        double bindingSize = double.TryParse(splitted[0], out double result) ? result : 0;
-        MeasurementUnits priceUnit =
-            splitted.Length >= 2 ? ParsePriceUnit(splitted[1]) : MeasurementUnits.Piece;
-
-        return (bindingSize, priceUnit);
-    }
-
-    private static MeasurementUnits ParsePriceUnit(string input) =>
-        input switch
-        {
-            "ml" => MeasurementUnits.MilliLiter,
-            "l" => MeasurementUnits.Liter,
-            "g" => MeasurementUnits.Gram,
-            "kg" => MeasurementUnits.KiloGram,
-            _ => MeasurementUnits.Piece,
-        };
 }
