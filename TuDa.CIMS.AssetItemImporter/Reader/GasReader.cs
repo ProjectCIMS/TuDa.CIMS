@@ -27,9 +27,7 @@ public class GasReader(string path) : AssetItemReader(path)
                 Shop = row.Cell(Shop).GetString(),
                 ItemNumber = row.Cell(ItemNumber).GetString(),
                 Price = row.Cell(Price).GetDouble(),
-                Room = Enum.TryParse<Rooms>(row.Cell(Room).GetString(), out var room)
-                    ? room
-                    : Rooms.None,
+                Room = GetRoom(row.Cell(Room).GetString()),
                 Cas = row.Cell(Cas).GetString(),
                 Purity = row.Cell(Purity).GetString(),
                 PriceUnit = MeasurementUnits.Piece,

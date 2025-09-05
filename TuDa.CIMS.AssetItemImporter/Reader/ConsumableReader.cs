@@ -25,7 +25,7 @@ public class ConsumableReader(string path) : AssetItemReader(path)
                 Shop = row.Cell(Shop).GetString(),
                 ItemNumber = row.Cell(ItemNumber).GetString(),
                 Price = row.Cell(Price).GetDouble(),
-                Room = Enum.Parse<Rooms>(row.Cell(Room).GetString()),
+                Room = GetRoom(row.Cell(Room).GetString()),
                 Amount = row.Cell(Amount).TryGetValue(out int amount) ? amount : 0,
                 SerialNumber = row.Cell(SerialNumber).GetString(),
                 Manufacturer = row.Cell(Manufacturer).GetString(),

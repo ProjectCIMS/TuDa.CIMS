@@ -29,7 +29,7 @@ public class SolventReader(string path) : AssetItemReader(path)
                     Shop = row.Cell(Shop).GetString(),
                     ItemNumber = row.Cell(ItemNumber).GetString(),
                     Price = row.Cell(Price).GetDouble(),
-                    Room = Enum.Parse<Rooms>(row.Cell(Room).GetString()),
+                    Room = GetRoom(row.Cell(Room).GetString()),
                     PriceUnit = priceUnit,
                     BindingSize = bindingSize,
                     // Not in the Excel
