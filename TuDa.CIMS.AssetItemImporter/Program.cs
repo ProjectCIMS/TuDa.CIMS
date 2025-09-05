@@ -1,22 +1,10 @@
-﻿using System.ComponentModel;
-using Cocona;
+﻿using Cocona;
 using TuDa.CIMS.AssetItemImporter;
-using TuDa.CIMS.AssetItemImporter.Reader;
 
-await CoconaApp.RunAsync(
-    ([Argument] string path, [Argument] AssetItemType type) =>
-    {
-        AssetItemReader reader = type switch
-        {
-            AssetItemType.Lösungsmittel => new SolventReader(path),
-            AssetItemType.Laborgeräte => new ConsumableReader(path),
-            AssetItemType.Gase => new GasReader(path),
-            AssetItemType.Chemikalien => new ChemicalReader(path),
-            _ => throw new InvalidEnumArgumentException(),
-        };
+var builder = CoconaApp.CreateBuilder();
 
-        var items = reader.GetAssetItems();
+var app = builder.Build();
 
-        Console.Out.WriteLine(items.ToList());
-    }
-);
+app.AddCommand("check", Commands.CheckExcel);
+
+await app.RunAsync();
