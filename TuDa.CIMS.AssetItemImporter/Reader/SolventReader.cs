@@ -23,8 +23,6 @@ public class SolventReader(string path) : AssetItemReader(path)
                 var (bindingSize, priceUnit) = GetBindingSize(
                     row.Cell(BindingSizeAndUnit).GetString()
                 );
-                Console.WriteLine(row.Cell(Name).GetString());
-                Console.WriteLine(row.Cell(Room).GetString());
 
                 return new CreateSolventDto
                 {
@@ -37,7 +35,7 @@ public class SolventReader(string path) : AssetItemReader(path)
                     BindingSize = bindingSize,
                     // Not in the Excel
                     Hazards = [],
-                    Note = "",
+                    Note = string.Empty,
                     Cas = Unknown,
                     Purity = Unknown,
                 };
