@@ -9,6 +9,7 @@ await CoconaApp.RunAsync(
         {
             AssetItemType.Lösungsmittel => new SolventReader(path),
             AssetItemType.Laborgeräte => new ConsumableReader(path),
+            AssetItemType.Gase => new GasReader(path),
             _ => throw new NotImplementedException(),
         };
 
