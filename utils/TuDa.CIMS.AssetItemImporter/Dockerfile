@@ -9,13 +9,16 @@ ARG TARGETARCH
 
 # Restore dependencies with layer caching
 COPY ["src/TuDa.CIMS.Shared/TuDa.CIMS.Shared.csproj", "src/TuDa.CIMS.Shared/"]
-RUN dotnet restore "src/TuDa.CIMS.Shared/TuDa.CIMS.Shared.csproj" -a $TARGETARCH \
-    COPY ["src/TuDa.CIMS.Web/TuDa.CIMS.Web.csproj", "src/TuDa.CIMS.Web/"]
-RUN dotnet restore "src/TuDa.CIMS.Web/TuDa.CIMS.Web.csproj" -a $TARGETARCH \
-    COPY ["utils/TuDa.CIMS.AssetItemImporter/TuDa.CIMS.AssetItemImporter.csproj", "utils/TuDa.CIMS.AssetItemImporter/"]
-RUN dotnet restore "utils/TuDa.CIMS.AssetItemImporter/TuDa.CIMS.AssetItemImporter.csproj" -a $TARGETARCH \
-    # Copy the entire source and build
-    COPY . .
+RUN dotnet restore "src/TuDa.CIMS.Shared/TuDa.CIMS.Shared.csproj" -a $TARGETARCH
+
+COPY ["src/TuDa.CIMS.Web/TuDa.CIMS.Web.csproj", "src/TuDa.CIMS.Web/"]
+RUN dotnet restore "src/TuDa.CIMS.Web/TuDa.CIMS.Web.csproj" -a $TARGETARCH
+
+COPY ["utils/TuDa.CIMS.AssetItemImporter/TuDa.CIMS.AssetItemImporter.csproj", "utils/TuDa.CIMS.AssetItemImporter/"]
+RUN dotnet restore "utils/TuDa.CIMS.AssetItemImporter/TuDa.CIMS.AssetItemImporter.csproj" -a $TARGETARCH 
+
+# Copy the entire source and build
+COPY . .
 WORKDIR "/src/utils/TuDa.CIMS.AssetItemImporter"
 RUN dotnet build "TuDa.CIMS.AssetItemImporter.csproj" -c $BUILD_CONFIGURATION -o /app/build --no-restore
 
