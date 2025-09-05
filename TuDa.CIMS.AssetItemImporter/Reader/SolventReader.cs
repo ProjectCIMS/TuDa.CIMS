@@ -5,17 +5,20 @@ namespace TuDa.CIMS.AssetItemImporter.Reader;
 
 public class SolventReader(string path) : AssetItemReader(path)
 {
-    private const int Name = 1;
-    private const int Shop = 2;
-    private const int ItemNumber = 3;
-    private const int Price = 4;
-    private const int Room = 5;
-    private const int BindingSizeAndUnit = 6;
+    private static class Indexes
+    {
+        public const int Name = 1;
+        public const int Shop = 2;
+        public const int ItemNumber = 3;
+        public const int Price = 4;
+        public const int Room = 5;
+        public const int BindingSizeAndUnit = 6;
 
-    /// <summary>
-    /// Not used, as <see cref="BindingSizeAndUnit"/> has unit inside.
-    /// </summary>
-    private const int Unit = 7;
+        /// <summary>
+        /// Not used, as <see cref="BindingSizeAndUnit"/> has unit inside.
+        /// </summary>
+        public const int Unit = 7;
+    }
 
     public override IEnumerable<CreateAssetItemDto> GetAssetItems() =>
         Workbook
@@ -25,16 +28,16 @@ public class SolventReader(string path) : AssetItemReader(path)
             .Select(row =>
             {
                 var (bindingSize, priceUnit) = GetBindingSize(
-                    row.Cell(BindingSizeAndUnit).GetString()
+                    row.Cell(Indexes.BindingSizeAndUnit).GetString()
                 );
 
                 return new CreateSolventDto
                 {
-                    Name = row.Cell(Name).GetString(),
-                    Shop = row.Cell(Shop).GetString(),
-                    ItemNumber = row.Cell(ItemNumber).GetString(),
-                    Price = row.Cell(Price).GetDoubleOrDefault(),
-                    Room = GetRoom(row.Cell(Room).GetString()),
+                    Name = row.Cell(Indexes.Name).GetString(),
+                    Shop = row.Cell(Indexes.Shop).GetString(),
+                    ItemNumber = row.Cell(Indexes.ItemNumber).GetString(),
+                    Price = row.Cell(Indexes.Price).GetDoubleOrDefault(),
+                    Room = GetRoom(row.Cell(Indexes.Room).GetString()),
                     PriceUnit = priceUnit,
                     BindingSize = bindingSize,
                     // Not in the Excel

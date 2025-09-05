@@ -6,16 +6,19 @@ namespace TuDa.CIMS.AssetItemImporter.Reader;
 
 public class GasReader(string path) : AssetItemReader(path)
 {
-    private const int Name = 1;
-    private const int Shop = 2;
-    private const int ItemNumber = 3;
-    private const int Price = 4;
-    private const int Room = 5;
-    private const int Cas = 6;
-    private const int Purity = 7;
-    private const int Volume = 9;
-    private const int Pressure = 10;
-    private const int Producer = 11;
+    private static class Indexes
+    {
+        public const int Name = 1;
+        public const int Shop = 2;
+        public const int ItemNumber = 3;
+        public const int Price = 4;
+        public const int Room = 5;
+        public const int Cas = 6;
+        public const int Purity = 7;
+        public const int Volume = 9;
+        public const int Pressure = 10;
+        public const int Producer = 11;
+    }
 
     public override IEnumerable<CreateAssetItemDto> GetAssetItems() =>
         Workbook
@@ -24,17 +27,17 @@ public class GasReader(string path) : AssetItemReader(path)
             .Skip(1)
             .Select(row => new CreateGasCylinderDto
             {
-                Name = row.Cell(Name).GetString(),
-                Shop = row.Cell(Shop).GetString(),
-                ItemNumber = row.Cell(ItemNumber).GetString(),
-                Price = row.Cell(Price).GetDoubleOrDefault(),
-                Room = GetRoom(row.Cell(Room).GetString()),
-                Cas = row.Cell(Cas).GetString(),
-                Purity = row.Cell(Purity).GetString(),
+                Name = row.Cell(Indexes.Name).GetString(),
+                Shop = row.Cell(Indexes.Shop).GetString(),
+                ItemNumber = row.Cell(Indexes.ItemNumber).GetString(),
+                Price = row.Cell(Indexes.Price).GetDoubleOrDefault(),
+                Room = GetRoom(row.Cell(Indexes.Room).GetString()),
+                Cas = row.Cell(Indexes.Cas).GetString(),
+                Purity = row.Cell(Indexes.Purity).GetString(),
                 PriceUnit = MeasurementUnits.Piece,
-                Volume = ParseDoubleFromAnyString(row.Cell(Volume).GetString()),
-                Pressure = ParseDoubleFromAnyString(row.Cell(Pressure).GetString()),
-                Note = $"Producer {row.Cell(Producer).GetString()}",
+                Volume = ParseDoubleFromAnyString(row.Cell(Indexes.Volume).GetString()),
+                Pressure = ParseDoubleFromAnyString(row.Cell(Indexes.Pressure).GetString()),
+                Note = $"Producer {row.Cell(Indexes.Producer).GetString()}",
                 // Not in the Excel
                 Hazards = [],
             });
