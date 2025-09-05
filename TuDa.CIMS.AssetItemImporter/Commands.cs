@@ -9,24 +9,27 @@ namespace TuDa.CIMS.AssetItemImporter;
 
 public static class Commands
 {
-    public static void CheckExcel([Argument] AssetItemType itemType, [Argument] string excelPath)
+    public static void CheckExcel(
+        [Argument(Description = "Asset item type to process")] AssetItemType itemType,
+        [Argument(Description = "Path to the Excel .xlsx file")] string excelPath
+    )
     {
         var items = GetItems(itemType, excelPath);
 
-        Console.WriteLine($"{items.Count()} {itemType} gefunden");
+        Console.WriteLine($"{items.Count()} '{itemType}' found");
 
         foreach (var item in items)
         {
             Console.WriteLine(
-                $"Name: '{item.Name}', Produktnummer: '{item.ItemNumber}', Preis: '{item.Price}', Raum: '{item.Room}'"
+                $"Name: '{item.Name}', Item number: '{item.ItemNumber}', Price: '{item.Price}', Room: '{item.Room}'"
             );
         }
     }
 
     public static async Task ImportExcel(
-        [Argument] AssetItemType itemType,
-        [Argument] string excelPath,
-        [Argument] string apiUrl
+        [Argument(Description = "Asset item type to import")] AssetItemType itemType,
+        [Argument(Description = "Path to the Excel .xlsx file")] string excelPath,
+        [Argument(Description = "TuDa CIMS API base URL (e.g., https://host)")] string apiUrl
     )
     {
         var items = GetItems(itemType, excelPath);
