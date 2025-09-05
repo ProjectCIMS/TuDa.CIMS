@@ -24,9 +24,9 @@ public class ConsumableReader(string path) : AssetItemReader(path)
                 Name = row.Cell(Name).GetString(),
                 Shop = row.Cell(Shop).GetString(),
                 ItemNumber = row.Cell(ItemNumber).GetString(),
-                Price = row.Cell(Price).TryGetDouble(),
+                Price = row.Cell(Price).GetDoubleOrDefault(),
                 Room = GetRoom(row.Cell(Room).GetString()),
-                Amount = row.Cell(Amount).TryGetInt(),
+                Amount = row.Cell(Amount).GetIntOrDefault(),
                 SerialNumber = row.Cell(SerialNumber).GetString(),
                 Manufacturer = row.Cell(Manufacturer).GetString(),
                 // Not in the Excel

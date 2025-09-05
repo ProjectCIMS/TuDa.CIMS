@@ -35,7 +35,7 @@ public class ChemicalReader(string path) : AssetItemReader(path)
                     Name = row.Cell(Name).GetString(),
                     Shop = row.Cell(Shop).GetString(),
                     ItemNumber = row.Cell(ItemNumber).GetString(),
-                    Price = row.Cell(Price).TryGetDouble(),
+                    Price = row.Cell(Price).GetDoubleOrDefault(),
                     Room = GetRoom(row.Cell(Room).GetString()),
                     Cas = row.Cell(Cas).GetString(),
                     Purity = row.Cell(Purity).GetString(),
