@@ -1,3 +1,4 @@
+using TuDa.CIMS.AssetItemImporter.Extensions;
 using TuDa.CIMS.Shared.Dtos.Create;
 using TuDa.CIMS.Shared.Entities.Enums;
 
@@ -26,7 +27,7 @@ public class GasReader(string path) : AssetItemReader(path)
                 Name = row.Cell(Name).GetString(),
                 Shop = row.Cell(Shop).GetString(),
                 ItemNumber = row.Cell(ItemNumber).GetString(),
-                Price = row.Cell(Price).GetDouble(),
+                Price = row.Cell(Price).TryGetDouble(),
                 Room = GetRoom(row.Cell(Room).GetString()),
                 Cas = row.Cell(Cas).GetString(),
                 Purity = row.Cell(Purity).GetString(),

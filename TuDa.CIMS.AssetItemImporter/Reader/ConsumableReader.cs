@@ -1,5 +1,5 @@
-﻿using TuDa.CIMS.Shared.Dtos.Create;
-using TuDa.CIMS.Shared.Entities.Enums;
+﻿using TuDa.CIMS.AssetItemImporter.Extensions;
+using TuDa.CIMS.Shared.Dtos.Create;
 
 namespace TuDa.CIMS.AssetItemImporter.Reader;
 
@@ -24,9 +24,9 @@ public class ConsumableReader(string path) : AssetItemReader(path)
                 Name = row.Cell(Name).GetString(),
                 Shop = row.Cell(Shop).GetString(),
                 ItemNumber = row.Cell(ItemNumber).GetString(),
-                Price = row.Cell(Price).GetDouble(),
+                Price = row.Cell(Price).TryGetDouble(),
                 Room = GetRoom(row.Cell(Room).GetString()),
-                Amount = row.Cell(Amount).TryGetValue(out int amount) ? amount : 0,
+                Amount = row.Cell(Amount).TryGetInt(),
                 SerialNumber = row.Cell(SerialNumber).GetString(),
                 Manufacturer = row.Cell(Manufacturer).GetString(),
                 // Not in the Excel
