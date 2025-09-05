@@ -1,4 +1,5 @@
-﻿using Cocona;
+﻿using System.ComponentModel;
+using Cocona;
 using TuDa.CIMS.AssetItemImporter;
 using TuDa.CIMS.AssetItemImporter.Reader;
 
@@ -10,7 +11,8 @@ await CoconaApp.RunAsync(
             AssetItemType.Lösungsmittel => new SolventReader(path),
             AssetItemType.Laborgeräte => new ConsumableReader(path),
             AssetItemType.Gase => new GasReader(path),
-            _ => throw new NotImplementedException(),
+            AssetItemType.Chemikalien => new ChemicalReader(path),
+            _ => throw new InvalidEnumArgumentException(),
         };
 
         var items = reader.GetAssetItems();
