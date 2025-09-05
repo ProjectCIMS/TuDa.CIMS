@@ -33,7 +33,10 @@ public static class Commands
     )
     {
         var items = GetItems(itemType, excelPath);
-        var client = RestService.For<IAssetItemApi>(apiUrl);
+
+        var clientUrl = apiUrl + IAssetItemApi.RoutePrefix.TrimEnd('/');
+        Console.WriteLine($"Running import against '{clientUrl}'");
+        var client = RestService.For<IAssetItemApi>(clientUrl);
 
         foreach (var item in items)
         {
@@ -42,11 +45,11 @@ public static class Commands
             if (result.IsError)
             {
                 var error = result.FirstError;
-                Console.WriteLine($"Error occured: ({error.Code}) {error.Description}");
+                Console.WriteLine($"Error occured: '({error.Code}) {error.Description}'");
             }
             else
             {
-                Console.WriteLine($"Successfully created {item.Name}");
+                Console.WriteLine($"Successfully created '{item.Name}'");
             }
         }
     }
