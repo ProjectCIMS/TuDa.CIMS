@@ -9,11 +9,11 @@ namespace TuDa.CIMS.AssetItemImporter;
 
 public static class Commands
 {
-    public static void CheckExcel([Argument] AssetItemType type, [Argument] string path)
+    public static void CheckExcel([Argument] AssetItemType itemType, [Argument] string excelPath)
     {
-        var items = GetItems(type, path);
+        var items = GetItems(itemType, excelPath);
 
-        Console.WriteLine($"{items.Count()} {type} gefunden");
+        Console.WriteLine($"{items.Count()} {itemType} gefunden");
 
         foreach (var item in items)
         {
@@ -24,13 +24,13 @@ public static class Commands
     }
 
     public static async Task ImportExcel(
-        [Argument] AssetItemType type,
-        [Argument] string path,
-        [Argument] string url
+        [Argument] AssetItemType itemType,
+        [Argument] string excelPath,
+        [Argument] string apiUrl
     )
     {
-        var items = GetItems(type, path);
-        var client = RestService.For<IAssetItemApi>(url);
+        var items = GetItems(itemType, excelPath);
+        var client = RestService.For<IAssetItemApi>(apiUrl);
 
         foreach (var item in items)
         {
@@ -48,14 +48,17 @@ public static class Commands
         }
     }
 
-    private static IEnumerable<CreateAssetItemDto> GetItems(AssetItemType type, string path)
+    private static IEnumerable<CreateAssetItemDto> GetItems(
+        AssetItemType itemType,
+        string excelPath
+    )
     {
-        AssetItemReader reader = type switch
+        AssetItemReader reader = itemType switch
         {
-            AssetItemType.Lösungsmittel => new SolventReader(path),
-            AssetItemType.Laborgeräte => new ConsumableReader(path),
-            AssetItemType.Gase => new GasReader(path),
-            AssetItemType.Chemikalien => new ChemicalReader(path),
+            AssetItemType.Lösungsmittel => new SolventReader(excelPath),
+            AssetItemType.Laborgeräte => new ConsumableReader(excelPath),
+            AssetItemType.Gase => new GasReader(excelPath),
+            AssetItemType.Chemikalien => new ChemicalReader(excelPath),
             _ => throw new InvalidEnumArgumentException(),
         };
 
