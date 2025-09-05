@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -15,5 +15,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\src\TuDa.CIMS.Shared\TuDa.CIMS.Shared.csproj" />
+      <ProjectReference Include="..\src\TuDa.CIMS.Web\TuDa.CIMS.Web.csproj" />
     </ItemGroup>
 </Project>
