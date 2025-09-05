@@ -14,10 +14,9 @@ public class ConsumableReader(string path) : AssetItemReader(path)
     private const int SerialNumber = 7;
     private const int Manufacturer = 8;
 
-    public override IEnumerable<CreateAssetItemDto> GetAssetItems()
-    {
-        var worksheet = Workbook.Worksheets.First();
-        return worksheet
+    public override IEnumerable<CreateAssetItemDto> GetAssetItems() =>
+        Workbook
+            .Worksheets.First()
             .RowsUsed()
             .Skip(1)
             .Select(row => new CreateConsumableDto
@@ -31,8 +30,7 @@ public class ConsumableReader(string path) : AssetItemReader(path)
                 SerialNumber = row.Cell(SerialNumber).GetString(),
                 Manufacturer = row.Cell(Manufacturer).GetString(),
                 // Not in the Excel
-                Note = "",
+                Note = string.Empty,
                 ExcludeFromConsumableStatistics = true, // Initial one
             });
-    }
 }

@@ -12,10 +12,9 @@ public class SolventReader(string path) : AssetItemReader(path)
     private const int Room = 5;
     private const int BindingSizeAndUnit = 6;
 
-    public override IEnumerable<CreateAssetItemDto> GetAssetItems()
-    {
-        var worksheet = Workbook.Worksheets.First();
-        return worksheet
+    public override IEnumerable<CreateAssetItemDto> GetAssetItems() =>
+        Workbook
+            .Worksheets.First()
             .RowsUsed()
             .Skip(1)
             .Select(row =>
@@ -40,7 +39,6 @@ public class SolventReader(string path) : AssetItemReader(path)
                     Purity = Unknown,
                 };
             });
-    }
 
     private static (double BindingSize, MeasurementUnits PriceUnit) GetBindingSize(string input)
     {
