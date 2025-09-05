@@ -34,7 +34,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.TestExcelImporter
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{96EB29C1-D15F-4A65-B4C5-FA7A258C57D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.AssetItemImporter", "TuDa.CIMS.AssetItemImporter\TuDa.CIMS.AssetItemImporter.csproj", "{FA6E5059-BB33-4822-9987-3ACC6857D7E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuDa.CIMS.AssetItemImporter", "utils\TuDa.CIMS.AssetItemImporter\TuDa.CIMS.AssetItemImporter.csproj", "{FA6E5059-BB33-4822-9987-3ACC6857D7E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
