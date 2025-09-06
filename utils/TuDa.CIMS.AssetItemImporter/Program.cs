@@ -1,15 +1,12 @@
-﻿using Cocona;
-using Refit;
-using TuDa.CIMS.AssetItemImporter;
-using TuDa.CIMS.Web.Services;
+﻿using System.CommandLine;
+using TuDa.CIMS.AssetItemImporter.Commands;
 
-var builder = CoconaApp.CreateBuilder();
+RootCommand root =
+    new("Import asset items from typed excel files")
+    {
+        CheckCommand.AsCommand(),
+        ImportCommand.AsCommand(),
+    };
 
-builder.Services.AddRefitClient<IAssetItemApi>();
-
-var app = builder.Build();
-
-app.AddCommand("check", Commands.CheckExcel);
-app.AddCommand("import", Commands.ImportExcel);
-
-await app.RunAsync();
+var result = root.Parse(args);
+await result.InvokeAsync();

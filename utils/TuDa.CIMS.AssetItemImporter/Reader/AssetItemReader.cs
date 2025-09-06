@@ -1,4 +1,5 @@
-﻿using ClosedXML.Excel;
+﻿using System.ComponentModel;
+using ClosedXML.Excel;
 using TuDa.CIMS.Shared.Dtos.Create;
 using TuDa.CIMS.Shared.Entities.Enums;
 
@@ -12,6 +13,19 @@ public abstract class AssetItemReader
     protected AssetItemReader(XLWorkbook workbook) => Workbook = workbook;
 
     protected AssetItemReader(string path) => Workbook = new XLWorkbook(path);
+
+    public static AssetItemReader FromAssetItemType(
+        AssetItemType assetItemType,
+        string excelPath
+    ) =>
+        assetItemType switch
+        {
+            AssetItemType.Lösungsmittel => new SolventReader(excelPath),
+            AssetItemType.Laborgeräte => new ConsumableReader(excelPath),
+            AssetItemType.Gase => new GasReader(excelPath),
+            AssetItemType.Chemikalien => new ChemicalReader(excelPath),
+            _ => throw new InvalidEnumArgumentException(),
+        };
 
     public abstract IEnumerable<CreateAssetItemDto> GetAssetItems();
 
