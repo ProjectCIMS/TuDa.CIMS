@@ -5,10 +5,10 @@ namespace TuDa.CIMS.AssetItemImporter.Commands;
 
 public class CheckCommand : CommandBase
 {
-    private static readonly ArgumentBase<AssetItemType> s_assetItemTypeArgument =
+    private static readonly CommandArgument<AssetItemType> s_assetItemTypeArgument =
         new("assetItemType", "Asset item type to process");
 
-    private static readonly ArgumentBase<string> s_excelPathArgument =
+    private static readonly CommandArgument<string> s_excelPathArgument =
         new("excelPath", "Path to excel file");
 
     public CheckCommand()

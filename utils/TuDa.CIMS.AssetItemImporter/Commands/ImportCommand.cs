@@ -7,13 +7,13 @@ namespace TuDa.CIMS.AssetItemImporter.Commands;
 
 public class ImportCommand : CommandBase
 {
-    private static readonly ArgumentBase<AssetItemType> s_assetItemTypeArgument =
+    private static readonly CommandArgument<AssetItemType> s_assetItemTypeArgument =
         new("assetItemType", "Asset item type to process");
 
-    private static readonly ArgumentBase<string> s_excelPathArgument =
+    private static readonly CommandArgument<string> s_excelPathArgument =
         new("excelPath", "Path to the Excel .xlsx file");
 
-    private static readonly ArgumentBase<string> s_apiUrlArgument =
+    private static readonly CommandArgument<string> s_apiUrlArgument =
         new("apiUrl", "TuDa CIMS API base URL (e.g., https://host)");
 
     public ImportCommand()

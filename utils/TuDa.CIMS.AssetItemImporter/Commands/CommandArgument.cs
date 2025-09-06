@@ -2,12 +2,12 @@
 
 namespace TuDa.CIMS.AssetItemImporter.Commands;
 
-public class ArgumentBase<T>(string name, string description, ArgumentArity arity)
+public class CommandArgument<T>(string name, string description, ArgumentArity arity)
 {
-    public ArgumentBase(string name)
+    public CommandArgument(string name)
         : this(name, string.Empty, ArgumentArity.ExactlyOne) { }
 
-    public ArgumentBase(string name, string description)
+    public CommandArgument(string name, string description)
         : this(name, description, ArgumentArity.ExactlyOne) { }
 
     public Argument<T> AsArgument() => new(name) { Description = description, Arity = arity };
