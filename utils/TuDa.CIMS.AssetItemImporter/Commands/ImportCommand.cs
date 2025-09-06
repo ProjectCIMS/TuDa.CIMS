@@ -5,6 +5,11 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.AssetItemImporter.Commands;
 
+/// <summary>
+/// Implements the 'import' command which parses the Excel file via
+/// <see cref="Reader.AssetItemReader"/> and creates asset items via
+/// the TuDa CIMS HTTP API (<see cref="TuDa.CIMS.Web.Services.IAssetItemApi"/>).
+/// </summary>
 public class ImportCommand : CommandBase
 {
     private static readonly CommandArgument<AssetItemType> s_assetItemTypeArgument =

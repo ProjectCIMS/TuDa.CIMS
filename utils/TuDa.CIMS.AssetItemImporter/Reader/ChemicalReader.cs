@@ -3,6 +3,10 @@ using TuDa.CIMS.Shared.Dtos.Create;
 
 namespace TuDa.CIMS.AssetItemImporter.Reader;
 
+/// <summary>
+/// Reader for chemical items where the binding size and unit are provided in a single column.
+/// Produces <see cref="TuDa.CIMS.Shared.Dtos.Create.CreateChemicalDto"/> instances.
+/// </summary>
 public class ChemicalReader(string path) : AssetItemReader(path)
 {
     private static class Indexes

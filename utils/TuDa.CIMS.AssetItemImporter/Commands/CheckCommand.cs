@@ -3,6 +3,11 @@ using TuDa.CIMS.AssetItemImporter.Reader;
 
 namespace TuDa.CIMS.AssetItemImporter.Commands;
 
+/// <summary>
+/// Implements the 'check' command which parses the Excel file via
+/// <see cref="Reader.AssetItemReader"/> for the selected <see cref="AssetItemType"/>
+/// and prints a summary without calling the API.
+/// </summary>
 public class CheckCommand : CommandBase
 {
     private static readonly CommandArgument<AssetItemType> s_assetItemTypeArgument =

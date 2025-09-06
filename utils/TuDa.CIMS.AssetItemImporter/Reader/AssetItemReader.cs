@@ -5,6 +5,11 @@ using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.AssetItemImporter.Reader;
 
+/// <summary>
+/// Base class for reading asset items from an Excel workbook using ClosedXML
+/// (<see cref="ClosedXML.Excel.XLWorkbook"/>). Concrete readers interpret
+/// specific column layouts per <see cref="AssetItemType"/>.
+/// </summary>
 public abstract class AssetItemReader
 {
     protected readonly XLWorkbook Workbook;
@@ -14,6 +19,9 @@ public abstract class AssetItemReader
 
     protected AssetItemReader(string path) => Workbook = new XLWorkbook(path);
 
+    /// <summary>
+    /// Factory that returns a concrete reader for the given <see cref="AssetItemType"/>.
+    /// </summary>
     public static AssetItemReader FromAssetItemType(
         AssetItemType assetItemType,
         string excelPath
@@ -29,11 +37,20 @@ public abstract class AssetItemReader
             ),
         };
 
+    /// <summary>
+    /// Read and transform rows from the workbook into DTOs ready for API submission
+    /// (<see cref="TuDa.CIMS.Shared.Dtos.Create.CreateAssetItemDto"/>).
+    /// </summary>
     public abstract IEnumerable<CreateAssetItemDto> GetAssetItems();
 
+    /// <summary>Parse a <see cref="Rooms"/> value, or <see cref="Rooms.None"/> if unknown.</summary>
     protected static Rooms GetRoom(string roomString) =>
         Enum.TryParse(roomString, out Rooms room) ? room : Rooms.None;
 
+    /// <summary>
+    /// Parses binding size and unit from a value like "500 ml" or "500".
+    /// Returns the numeric size and a <see cref="MeasurementUnits"/> value.
+    /// </summary>
     protected static (double BindingSize, MeasurementUnits PriceUnit) GetBindingSize(string input)
     {
         string[] splitted = input.Split(" ");
@@ -61,6 +78,7 @@ public abstract class AssetItemReader
         return (bindingSize, priceUnit);
     }
 
+    /// <summary>Map unit string tokens to <see cref="MeasurementUnits"/>.</summary>
     private static MeasurementUnits ParsePriceUnit(string input) =>
         input switch
         {

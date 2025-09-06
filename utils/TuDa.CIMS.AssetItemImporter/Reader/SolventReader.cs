@@ -3,6 +3,10 @@ using TuDa.CIMS.Shared.Dtos.Create;
 
 namespace TuDa.CIMS.AssetItemImporter.Reader;
 
+/// <summary>
+/// Reader for solvent items; unit is embedded with binding size.
+/// Produces <see cref="TuDa.CIMS.Shared.Dtos.Create.CreateSolventDto"/> instances.
+/// </summary>
 public class SolventReader(string path) : AssetItemReader(path)
 {
     private static class Indexes

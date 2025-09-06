@@ -3,6 +3,10 @@ using TuDa.CIMS.Shared.Dtos.Create;
 
 namespace TuDa.CIMS.AssetItemImporter.Reader;
 
+/// <summary>
+/// Reader for consumable/lab equipment items with amount, serial number and manufacturer.
+/// Produces <see cref="TuDa.CIMS.Shared.Dtos.Create.CreateConsumableDto"/> instances.
+/// </summary>
 public class ConsumableReader(string path) : AssetItemReader(path)
 {
     private static class Indexes

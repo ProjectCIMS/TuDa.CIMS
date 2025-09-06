@@ -4,6 +4,10 @@ using TuDa.CIMS.Shared.Entities.Enums;
 
 namespace TuDa.CIMS.AssetItemImporter.Reader;
 
+/// <summary>
+/// Reader for gas cylinder items with volume and pressure columns.
+/// Produces <see cref="TuDa.CIMS.Shared.Dtos.Create.CreateGasCylinderDto"/> instances.
+/// </summary>
 public class GasReader(string path) : AssetItemReader(path)
 {
     private static class Indexes
@@ -42,6 +46,9 @@ public class GasReader(string path) : AssetItemReader(path)
                 Hazards = [],
             });
 
+    /// <summary>
+    /// Extract a numeric prefix (including decimal point) from a string and parse as <see cref="double"/>.
+    /// </summary>
     private static double ParseDoubleFromAnyString(string volume)
     {
         string numericString = string.Concat(
