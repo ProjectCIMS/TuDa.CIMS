@@ -47,7 +47,7 @@ public class ImportCommand : CommandBase
             if (result.IsError)
             {
                 var error = result.FirstError;
-                Console.WriteLine($"Error occured: '({error.Code}) {error.Description}'");
+                Console.WriteLine($"Error occurred: '({error.Code}) {error.Description}'");
             }
             else
             {

@@ -109,7 +109,7 @@ jobs:
             ghcr.io/projectcims/cims-web:${{ steps.semver.outputs.prerelease }}
             ghcr.io/projectcims/cims-web:${{ steps.semver.outputs.fullversion }}
 
-      - name: Build and push Asset Item Importer Docker image (stable)
+      - name: Build and push Asset Item Importer Docker image (prerelease)
         if: ${{ github.event.release.prerelease }}
         uses: docker/build-push-action@v6
         with:
