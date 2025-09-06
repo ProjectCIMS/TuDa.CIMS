@@ -6,7 +6,9 @@ param(
   [string]$Workdir,
 
   [Parameter(ValueFromRemainingArguments = $true)]
-  [string[]]$DockerArgs
+  [string[]]$DockerArgs,
+
+  [switch]$Rebuild
 )
 
 $ErrorActionPreference = 'Stop'
@@ -45,6 +47,12 @@ if ($LASTEXITCODE -ne 0) {
   & docker build -t $Image -f $Dockerfile $Context
   if ($LASTEXITCODE -ne 0) {
     throw "Docker build failed. See output above. Dockerfile='$Dockerfile' Context='$Context'"
+  }
+} elseif ($Rebuild -or ($env:REBUILD -eq '1')) {
+  Write-Host "Rebuilding image '$Image' ..."
+  & docker build --no-cache -t $Image -f $Dockerfile $Context
+  if ($LASTEXITCODE -ne 0) {
+    throw "Docker rebuild failed. See output above. Dockerfile='$Dockerfile' Context='$Context'"
   }
 }
 
