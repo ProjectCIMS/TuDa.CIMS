@@ -53,7 +53,7 @@ public abstract class AssetItemReader
     /// </summary>
     protected static (double BindingSize, MeasurementUnits PriceUnit) GetBindingSize(string input)
     {
-        string[] splitted = input.Split(" ");
+        string[] splitted = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
         double bindingSize;
         MeasurementUnits priceUnit;
         if (splitted.Length == 2)
