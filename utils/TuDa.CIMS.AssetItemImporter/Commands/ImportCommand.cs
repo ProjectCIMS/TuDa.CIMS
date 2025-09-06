@@ -5,63 +5,34 @@ using TuDa.CIMS.Web.Services;
 
 namespace TuDa.CIMS.AssetItemImporter.Commands;
 
-public static class ImportCommand
+public class ImportCommand : CommandBase
 {
-    private const string Name = "import";
+    private static readonly ArgumentBase<AssetItemType> s_assetItemTypeArgument =
+        new("assetItemType", "Asset item type to process");
 
-    private const string Description = "Import asset items from typed excel files";
+    private static readonly ArgumentBase<string> s_excelPathArgument =
+        new("excelPath", "Path to the Excel .xlsx file");
 
-    private static class Arguments
-    {
-        public static class AssetItemType
-        {
-            public const string Name = "assetItemType";
+    private static readonly ArgumentBase<string> s_apiUrlArgument =
+        new("apiUrl", "TuDa CIMS API base URL (e.g., https://host)");
 
-            public const string Description = "Asset item type to process";
-
-            public static Argument<AssetItemImporter.AssetItemType> AsArgument() =>
-                new(Name) { Description = Description, Arity = ArgumentArity.ExactlyOne };
-        }
-
-        public static class ExcelPath
-        {
-            public const string Name = "excelPath";
-
-            public const string Description = "Path to the Excel .xlsx file";
-
-            public static Argument<string> AsArgument() =>
-                new(Name) { Description = Description, Arity = ArgumentArity.ExactlyOne };
-        }
-
-        public static class ApiUrl
-        {
-            public const string Name = "apiUrl";
-
-            public const string Description = "TuDa CIMS API base URL (e.g., https://host)";
-
-            public static Argument<string> AsArgument() =>
-                new(Name) { Description = Description, Arity = ArgumentArity.ExactlyOne };
-        }
-    }
-
-    public static Command AsCommand()
-    {
-        var command = new Command(Name, Description)
-        {
-            Arguments.AssetItemType.AsArgument(),
-            Arguments.ExcelPath.AsArgument(),
-            Arguments.ApiUrl.AsArgument(),
-        };
-
-        command.SetAction(Action);
-        return command;
-    }
+    public ImportCommand()
+        : base(
+            "import",
+            "Import asset items from typed excel files",
+            [
+                s_assetItemTypeArgument.AsArgument(),
+                s_excelPathArgument.AsArgument(),
+                s_apiUrlArgument.AsArgument(),
+            ],
+            Action
+        ) { }
 
     private static async Task Action(ParseResult parseResult)
     {
-        var itemType = parseResult.GetRequiredValue<AssetItemType>(Arguments.AssetItemType.Name);
-        var excelPath = parseResult.GetRequiredValue<string>(Arguments.ExcelPath.Name);
-        var apiUrl = parseResult.GetRequiredValue<string>(Arguments.ApiUrl.Name);
+        var itemType = s_assetItemTypeArgument.GetRequiredValue(parseResult);
+        var excelPath = s_excelPathArgument.GetRequiredValue(parseResult);
+        var apiUrl = s_apiUrlArgument.GetRequiredValue(parseResult);
 
         var items = AssetItemReader.FromAssetItemType(itemType, excelPath).GetAssetItems();
 

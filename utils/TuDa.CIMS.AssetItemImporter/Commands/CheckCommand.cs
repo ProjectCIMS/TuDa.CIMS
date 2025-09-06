@@ -3,52 +3,26 @@ using TuDa.CIMS.AssetItemImporter.Reader;
 
 namespace TuDa.CIMS.AssetItemImporter.Commands;
 
-public static class CheckCommand
+public class CheckCommand : CommandBase
 {
-    private const string Name = "check";
+    private static readonly ArgumentBase<AssetItemType> s_assetItemTypeArgument =
+        new("assetItemType", "Asset item type to process");
 
-    private const string Description = "Check parsing of excel files";
+    private static readonly ArgumentBase<string> s_excelPathArgument =
+        new("excelPath", "Path to excel file");
 
-    private static class Arguments
-    {
-        public static class AssetItemType
-        {
-            public const string Name = "assetItemType";
-
-            private const string Description = "Asset item type to process";
-
-            public static Argument<AssetItemImporter.AssetItemType> AsArgument() =>
-                new(Name) { Description = Description, Arity = ArgumentArity.ExactlyOne };
-        }
-
-        public static class ExcelPath
-        {
-            public const string Name = "excelPath";
-
-            private const string Description = "Path to the Excel .xlsx file";
-
-            public static Argument<string> AsArgument() =>
-                new(Name) { Description = Description, Arity = ArgumentArity.ExactlyOne };
-        }
-    }
-
-    public static Command AsCommand()
-    {
-        var command = new Command(Name, Description)
-        {
-            Arguments.AssetItemType.AsArgument(),
-            Arguments.ExcelPath.AsArgument(),
-        };
-
-        command.SetAction(Action);
-
-        return command;
-    }
+    public CheckCommand()
+        : base(
+            "check",
+            "Check parsing of excel files",
+            [s_assetItemTypeArgument.AsArgument(), s_excelPathArgument.AsArgument()],
+            Action
+        ) { }
 
     private static void Action(ParseResult parseResult)
     {
-        var itemType = parseResult.GetRequiredValue<AssetItemType>(Arguments.AssetItemType.Name);
-        var excelPath = parseResult.GetRequiredValue<string>(Arguments.ExcelPath.Name);
+        var itemType = s_assetItemTypeArgument.GetRequiredValue(parseResult);
+        var excelPath = s_excelPathArgument.GetRequiredValue(parseResult);
 
         var items = AssetItemReader.FromAssetItemType(itemType, excelPath).GetAssetItems();
 
