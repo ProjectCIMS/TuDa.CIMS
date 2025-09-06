@@ -25,7 +25,8 @@ RUN dotnet build "TuDa.CIMS.AssetItemImporter.csproj" -c $BUILD_CONFIGURATION -o
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 ARG TARGETARCH
-RUN dotnet publish "TuDa.CIMS.AssetItemImporter.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false -a $TARGETARCH
+RUN dotnet publish "TuDa.CIMS.AssetItemImporter.csproj" -c $BUILD_CONFIGURATION -o /app/publish  \
+    /p:UseAppHost=false -a $TARGETARCH
 
 FROM base AS final
 
