@@ -24,7 +24,9 @@ public abstract class AssetItemReader
             AssetItemType.Laborgeräte => new ConsumableReader(excelPath),
             AssetItemType.Gase => new GasReader(excelPath),
             AssetItemType.Chemikalien => new ChemicalReader(excelPath),
-            _ => throw new InvalidEnumArgumentException(),
+            _ => throw new InvalidEnumArgumentException(
+                $"Unknown asset item type: {assetItemType}"
+            ),
         };
 
     public abstract IEnumerable<CreateAssetItemDto> GetAssetItems();

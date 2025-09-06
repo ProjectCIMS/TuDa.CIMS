@@ -42,6 +42,11 @@ public class GasReader(string path) : AssetItemReader(path)
                 Hazards = [],
             });
 
-    private static double ParseDoubleFromAnyString(string volume) =>
-        double.Parse(string.Concat(volume.TakeWhile(x => x is (>= '0' and <= '9') or '.')));
+    private static double ParseDoubleFromAnyString(string volume)
+    {
+        string numericString = string.Concat(
+            volume.TakeWhile(x => x is (>= '0' and <= '9') or '.')
+        );
+        return double.TryParse(numericString, out double result) ? result : 0.0;
+    }
 }
