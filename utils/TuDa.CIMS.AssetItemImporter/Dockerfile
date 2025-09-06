@@ -41,13 +41,14 @@ ENV LANGUAGE=de_DE:de
 ENV LC_ALL=de_DE.UTF-8
 # == End of setting the locale ==
 
-USER $APP_UID
 WORKDIR /app
 COPY --from=publish /app/publish .
 
 # Convenience CLI wrapper inside the image
 COPY utils/TuDa.CIMS.AssetItemImporter/container/asset-importer.sh /usr/local/bin/asset-importer
 RUN chmod +x /usr/local/bin/asset-importer
+
+USER $APP_UID
 
 # Run the CLI by default; users can pass args. If no args are provided,
 # show help to make the container self-explanatory.
