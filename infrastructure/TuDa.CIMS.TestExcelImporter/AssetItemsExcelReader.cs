@@ -2,7 +2,7 @@
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 
-namespace TuDa.CIMS.ExcelImporter;
+namespace TuDa.CIMS.TestExcelImporter;
 
 public class AssetItemsExcelReader(string path)
 {
