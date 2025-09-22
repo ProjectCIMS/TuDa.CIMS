@@ -12,9 +12,11 @@ namespace TuDa.CIMS.Web.Services;
 /// <summary>
 /// Refit client interface for performing operations on AssetItems.
 /// </summary>
-[RefitClient("/api/asset-items")]
+[RefitClient(RoutePrefix)]
 public interface IAssetItemApi
 {
+    public const string RoutePrefix = "/api/asset-items";
+
     /// <summary>
     /// Retrieves an AssetItem by its unique identifier.
     /// </summary>

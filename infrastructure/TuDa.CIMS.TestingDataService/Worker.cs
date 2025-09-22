@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using OpenTelemetry.Trace;
 using TuDa.CIMS.Api.Database;
-using TuDa.CIMS.ExcelImporter;
 using TuDa.CIMS.Shared.Entities;
 using TuDa.CIMS.Shared.Entities.Enums;
 using TuDa.CIMS.Shared.Test.Faker;
+using TuDa.CIMS.TestExcelImporter;
 
 namespace TuDa.CIMS.TestingDataService;
 
@@ -68,7 +68,7 @@ public class Worker(
     {
         Randomizer.Seed = new Random(12345);
 
-        (Consumable consumable, Chemical _) = await SeedAssetItem(dbContext,cancellationToken);
+        (Consumable consumable, Chemical _) = await SeedAssetItem(dbContext, cancellationToken);
 
         var professor = new ProfessorFaker().Generate();
         var students = new PersonFaker<Student>().GenerateBetween(5, 5);

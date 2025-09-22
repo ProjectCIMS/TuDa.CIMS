@@ -14,4 +14,7 @@ public enum Rooms
     G25,
     G26,
     G27,
+
+    // Used if no room is specified
+    None = int.MaxValue,
 }

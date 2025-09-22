@@ -70,6 +70,20 @@ jobs:
             ghcr.io/projectcims/cims-web:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
             ghcr.io/projectcims/cims-web:${{ steps.semver.outputs.fullversion }}
 
+      - name: Build and push Asset Item Importer Docker image (stable)
+        if: ${{ !github.event.release.prerelease }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./utils/TuDa.CIMS.AssetItemImporter/Dockerfile
+          platforms: linux/arm64,linux/amd64
+          push: true
+          tags: |
+            ghcr.io/projectcims/cims-asset-item-importer:latest
+            ghcr.io/projectcims/cims-asset-item-importer:${{ steps.semver.outputs.major }}
+            ghcr.io/projectcims/cims-asset-item-importer:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
+            ghcr.io/projectcims/cims-asset-item-importer:${{ steps.semver.outputs.fullversion }}
+
       # Prerelease builds
       - name: Build and push API Docker image (prerelease)
         if: ${{ github.event.release.prerelease }}
@@ -94,3 +108,15 @@ jobs:
           tags: |
             ghcr.io/projectcims/cims-web:${{ steps.semver.outputs.prerelease }}
             ghcr.io/projectcims/cims-web:${{ steps.semver.outputs.fullversion }}
+
+      - name: Build and push Asset Item Importer Docker image (prerelease)
+        if: ${{ github.event.release.prerelease }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./utils/TuDa.CIMS.AssetItemImporter/Dockerfile
+          platforms: linux/arm64,linux/amd64
+          push: true
+          tags: |
+            ghcr.io/projectcims/cims-asset-item-importer:${{ steps.semver.outputs.prerelease }}
+            ghcr.io/projectcims/cims-asset-item-importer:${{ steps.semver.outputs.fullversion }}
