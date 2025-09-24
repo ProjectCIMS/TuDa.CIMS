@@ -27,10 +27,22 @@
 
 ### Container usage
 
-- Build image: `docker build -t cims-asset-importer:local -f utils/TuDa.CIMS.AssetItemImporter/Dockerfile .`
-- Attach shell: `./utils/TuDa.CIMS.AssetItemImporter/run-container-attach.sh /your/host/dir [--rebuild]`
-- Inside container, run: `asset-importer check <type> "/work/file.xlsx"`
-- Or import: `asset-importer import <type> "/work/file.xlsx" <api-url>`
+The AssetItemImporter is available as a prebuild container from the GitHub registry, eliminating the need to build locally:
+
+- **Use prebuild container (recommended):**
+  - Attach shell: `./utils/TuDa.CIMS.AssetItemImporter/run-container-attach.sh /your/host/dir`
+  - PowerShell: `./utils/TuDa.CIMS.AssetItemImporter/run-container-attach.ps1 /your/host/dir`
+
+- **Build and use local container (for development/testing):**
+  - Attach shell: `./utils/TuDa.CIMS.AssetItemImporter/run-container-attach.sh /your/host/dir --local`
+  - PowerShell: `./utils/TuDa.CIMS.AssetItemImporter/run-container-attach.ps1 /your/host/dir -Local`
+  - Force rebuild: Add `--rebuild` (shell) or `-Rebuild` (PowerShell) flag
+
+- **Inside container, run:**
+  - Check: `asset-importer check <type> "/work/file.xlsx"`
+  - Import: `asset-importer import <type> "/work/file.xlsx" <api-url>`
+
+**Container image:** `ghcr.io/projectcims/cims-asset-item-importer:latest`
 
 ## Types
 
