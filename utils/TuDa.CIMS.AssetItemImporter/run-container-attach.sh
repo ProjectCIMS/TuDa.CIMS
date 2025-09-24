@@ -17,16 +17,16 @@ set -euo pipefail
 #   ./utils/TuDa.CIMS.AssetItemImporter/run-container-attach.sh [--local] [--rebuild] [--image <tag>] <host-workdir> [extra docker args]
 #
 # Env overrides:
-#   IMAGE       - image tag to use (default: ghcr.io/projectcims/cims-asset-importer:latest)
+#   IMAGE       - image tag to use (default: ghcr.io/projectcims/cims-asset-item-importer:latest)
 #   DOCKERFILE  - Dockerfile to use when building locally
 #   CONTEXT     - build context when building locally
 #   REBUILD     - if "1", force rebuild on local build
 
 set -euo pipefail
 
-IMAGE_DEFAULT="ghcr.io/projectcims/cims-asset-importer:latest"
+IMAGE_DEFAULT="ghcr.io/projectcims/cims-asset-item-importer:latest"
 IMAGE="${IMAGE:-$IMAGE_DEFAULT}"
-LOCAL_IMAGE_DEFAULT="cims-asset-importer:local"
+LOCAL_IMAGE_DEFAULT="cims-asset-item-importer:local"
 DOCKERFILE="${DOCKERFILE:-utils/TuDa.CIMS.AssetItemImporter/Dockerfile}"
 CONTEXT="${CONTEXT:-.}"
 REBUILD_FLAG="${REBUILD:-0}"

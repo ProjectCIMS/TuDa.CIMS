@@ -24,7 +24,7 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = (Resolve-Path (Join-Path $ScriptDir '..\..')).Path
 
 # Default to registry image to match docker-compose; allow override via param or env.
-$DefaultRegistryImage = 'ghcr.io/projectcims/cims-asset-importer:latest'
+$DefaultRegistryImage = 'ghcr.io/projectcims/cims-asset-item-importer:latest'
 $Image = if ($PSBoundParameters.ContainsKey('Image')) { $Image } elseif ($env:IMAGE) { $env:IMAGE } else { $DefaultRegistryImage }
 
 # Default Dockerfile/Context anchored at repo root; allow env overrides
@@ -50,7 +50,7 @@ $mount = ($FullPath + ':/work')
 if ($Local) {
   if (-not $PSBoundParameters.ContainsKey('Image') -and -not $env:IMAGE -and $Image -eq $DefaultRegistryImage) {
     # If user didn't provide an image explicitly, use a sensible local default
-    $Image = 'cims-asset-importer:local'
+    $Image = 'cims-asset-item-importer:local'
   }
 
   Write-Host "Using Dockerfile: $Dockerfile"

@@ -27,10 +27,10 @@
 
 ### Container usage
 
-- Default (uses registry image): `./utils/TuDa.CIMS.AssetItemImporter/run-container-attach.sh /your/host/dir`
+- Default (uses registry image `ghcr.io/projectcims/cims-asset-item-importer:latest`): `./utils/TuDa.CIMS.AssetItemImporter/run-container-attach.sh /your/host/dir`
 - Use local image (build if needed): `./utils/TuDa.CIMS.AssetItemImporter/run-container-attach.sh --local /your/host/dir`
 - Force rebuild local image: `./utils/TuDa.CIMS.AssetItemImporter/run-container-attach.sh --local --rebuild /your/host/dir`
-- Manually build: `docker build -t cims-asset-importer:local -f utils/TuDa.CIMS.AssetItemImporter/Dockerfile .`
+- Manually build: `docker build -t cims-asset-item-importer:local -f utils/TuDa.CIMS.AssetItemImporter/Dockerfile .`
 - Inside container, run: `asset-importer check <type> "/work/file.xlsx"`
 - Or import: `asset-importer import <type> "/work/file.xlsx" <api-url>`
 
