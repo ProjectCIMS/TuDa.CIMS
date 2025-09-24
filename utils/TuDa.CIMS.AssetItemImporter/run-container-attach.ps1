@@ -8,7 +8,8 @@ param(
   [Parameter(ValueFromRemainingArguments = $true)]
   [string[]]$DockerArgs,
 
-  [switch]$Rebuild
+  [switch]$Rebuild,
+  [switch]$Local
 )
 
 $ErrorActionPreference = 'Stop'
@@ -21,7 +22,14 @@ if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = (Resolve-Path (Join-Path $ScriptDir '..\..')).Path
 
-$Image = if ($env:IMAGE) { $env:IMAGE } else { 'cims-asset-importer:local' }
+# Default to GitHub registry image, allow override via environment or flag
+$Image = if ($env:IMAGE) { 
+  $env:IMAGE 
+} elseif ($Local -or $Rebuild) { 
+  'cims-asset-importer:local' 
+} else { 
+  'ghcr.io/projectcims/cims-asset-item-importer:latest' 
+}
 
 # Default Dockerfile/Context anchored at repo root; allow env overrides
 $Dockerfile = if ($env:DOCKERFILE) { $env:DOCKERFILE } else { Join-Path $RepoRoot 'utils\TuDa.CIMS.AssetItemImporter\Dockerfile' }
@@ -37,22 +45,43 @@ if (-not (Test-Path -LiteralPath $Workdir)) {
 $FullPath = [System.IO.Path]::GetFullPath($Workdir)
 $mount = ($FullPath + ':/work')
 
-# Inspect image; if missing, build it
-Write-Host "Using Dockerfile: $Dockerfile"
-Write-Host "Using context:     $Context"
-
-& docker image inspect $Image *> $null
-if ($LASTEXITCODE -ne 0) {
-  Write-Host "Image '$Image' not found locally. Building..."
-  & docker build -t $Image -f $Dockerfile $Context
+# Handle container image: pull from registry or build locally
+if ($Local -or $Rebuild) {
+  # Build local image if requested
+  Write-Host "Using Dockerfile: $Dockerfile"
+  Write-Host "Using context:     $Context"
+  
+  & docker image inspect $Image *> $null
   if ($LASTEXITCODE -ne 0) {
-    throw "Docker build failed. See output above. Dockerfile='$Dockerfile' Context='$Context'"
+    Write-Host "Local image '$Image' not found. Building..."
+    & docker build -t $Image -f $Dockerfile $Context
+    if ($LASTEXITCODE -ne 0) {
+      throw "Docker build failed. See output above. Dockerfile='$Dockerfile' Context='$Context'"
+    }
+  } elseif ($Rebuild -or ($env:REBUILD -eq '1')) {
+    Write-Host "Rebuilding local image '$Image' ..."
+    & docker build --no-cache -t $Image -f $Dockerfile $Context
+    if ($LASTEXITCODE -ne 0) {
+      throw "Docker rebuild failed. See output above. Dockerfile='$Dockerfile' Context='$Context'"
+    }
+  } else {
+    Write-Host "Using existing local image '$Image'"
   }
-} elseif ($Rebuild -or ($env:REBUILD -eq '1')) {
-  Write-Host "Rebuilding image '$Image' ..."
-  & docker build --no-cache -t $Image -f $Dockerfile $Context
+} else {
+  # Pull from GitHub registry
+  & docker image inspect $Image *> $null
   if ($LASTEXITCODE -ne 0) {
-    throw "Docker rebuild failed. See output above. Dockerfile='$Dockerfile' Context='$Context'"
+    Write-Host "Pulling latest image from GitHub registry: $Image"
+    & docker pull $Image
+    if ($LASTEXITCODE -ne 0) {
+      throw "Docker pull failed for image: $Image"
+    }
+  } else {
+    Write-Host "Checking for updates to registry image: $Image"
+    & docker pull $Image
+    if ($LASTEXITCODE -ne 0) {
+      Write-Warning "Failed to pull updates, using existing local image"
+    }
   }
 }
 
